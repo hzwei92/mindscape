@@ -1,0 +1,467 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type AddTwigResult {
+  abstract: Arrow!
+  role: Role
+  twig: Twig!
+}
+
+type Arrow {
+  abstract: Arrow!
+  abstractId: String!
+  activeDate: DateTime!
+  canEdit: String!
+  canHear: String!
+  canPost: String!
+  canTalk: String!
+  canView: String!
+  city: String
+  clicks: Int!
+  color: String!
+  commitDate: DateTime
+  country: String
+  createDate: DateTime!
+  deleteDate: DateTime
+  details: [Arrow!]!
+  draft: String
+  faviconUrl: String
+  id: String!
+  inCount: Float!
+  ins: [Arrow!]!
+  isOpaque: Boolean!
+  lat: Float
+  lng: Float
+  outCount: Float!
+  outs: [Arrow!]!
+  removeDate: DateTime
+  roles: [Role!]!
+  rootTwigId: String
+  routeName: String!
+  saveDate: DateTime!
+  sheaf: Sheaf!
+  sheafId: String!
+  source: Arrow
+  sourceId: String
+  state: String
+  subs: [Sub!]!
+  target: Arrow
+  targetId: String
+  text: String!
+  title: String
+  tokens: Float!
+  twigN: Float!
+  twigZ: Float!
+  twigs: [Twig!]!
+  updateDate: DateTime!
+  url: String
+  user: User!
+  userId: String!
+  votes: [Vote!]!
+  weight: Float!
+}
+
+input BookmarkEntry {
+  arrowId: String!
+  bookmarkId: String!
+  degree: Int!
+  faviconUrl: String
+  parentTwigId: String!
+  rank: Int!
+  title: String!
+  twigId: String!
+  url: String
+}
+
+type CopyTwigResult {
+  role: Role
+  sibs: [Twig!]!
+  twigs: [Twig!]!
+}
+
+type CreateTabResult {
+  sibs: [Twig!]!
+  twigs: [Twig!]!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type DragTwigResult {
+  dx: Int!
+  dy: Int!
+  twigId: String!
+}
+
+type GraftTwigResult {
+  descs: [Twig!]!
+  prevSibs: [Twig!]!
+  role: Role
+  sibs: [Twig!]!
+  twig: Twig!
+}
+
+input GroupEntry {
+  arrowId: String!
+  color: String!
+  groupId: Int!
+  parentTwigId: String!
+  rank: Int!
+  twigId: String!
+  windowId: Int!
+}
+
+type Lead {
+  createDate: DateTime!
+  deleteDate: DateTime
+  follower: User!
+  followerId: String!
+  id: String!
+  leader: User!
+  leaderId: String!
+}
+
+type LinkTwigsResult {
+  abstract: Arrow!
+  role: Role
+  source: Arrow!
+  target: Arrow!
+  twigs: [Twig!]!
+}
+
+type MoveTabResult {
+  descs: [Twig!]!
+  prevSibs: [Twig!]!
+  sibs: [Twig!]!
+  twig: Twig!
+}
+
+type MoveTwigResult {
+  role: Role
+  twigs: [Twig!]!
+}
+
+type Mutation {
+  addTwig(arrowId: String!, parentTwigId: String!, sessionId: String!): AddTwigResult!
+  changeBookmark(bookmarkId: String!, title: String!, url: String): Twig!
+  copyToBookmark(entries: [BookmarkEntry!]!): [Twig!]!
+  copyToTab(entries: [TabEntry!]!, groupEntry: GroupEntry): [Twig!]!
+  copyTwig(parentTwigId: String!, twigId: String!): CopyTwigResult!
+  createBookmark(bookmark: BookmarkEntry): TabResult!
+  createGraphTab(arrowId: String, name: String!, routeName: String!): [Tab!]!
+  createGroup(groupEntry: GroupEntry!): TabResult!
+  createTab(arrowId: String!, i: Int, isFocus: Boolean!, isFrame: Boolean!): [Tab!]!
+  createTabByRoutename(i: Int, isFocus: Boolean!, isFrame: Boolean!, routename: String!): [Tab!]!
+  createWindow(windowEntry: WindowEntry!): TabResult!
+  dragTwig(abstractId: String!, dx: Int!, dy: Int!, sessionId: String!, twigId: String!): Twig!
+  followUser(userId: String!): Lead!
+  getArrowByRouteName(routeName: String!): Arrow
+  getCurrentUser: User!
+  getCurrentUserLeads: [Lead!]!
+  getIns(arrowId: String!, offset: Int!): [Arrow!]!
+  getOuts(arrowId: String!, offset: Int!): [Arrow!]!
+  getTwigs(abstractId: String!): [Twig!]!
+  getUser(userId: String!): User!
+  graftTwig(parentTwigId: String!, sessionId: String!, twigId: String!): GraftTwigResult!
+  initUser(palette: String!): User!
+  inviteRole(arrowId: String!, sessionId: String!, userName: String!): Role!
+  linkTwigs(abstractId: String!, sessionId: String!, sourceId: String!, targetId: String!): LinkTwigsResult!
+  loginGoogleUser(token: String!): User!
+  loginUser(email: String!, pass: String!): User!
+  logoutUser: User!
+  moveBookmark(bookmarkId: String!, parentBookmarkId: String!): MoveTabResult!
+  moveTab(groupTwigId: String!, parentTwigId: String, twigId: String!): MoveTabResult!
+  moveTwig(sessionId: String!, twigId: String!, x: Int!, y: Int!): MoveTwigResult!
+  openTwig(sessionId: String!, shouldOpen: Boolean!, twigId: String!): OpenTwigResult!
+  publishCursor(abstractId: String!, sessionId: String!, x: Int!, y: Int!): User!
+  refreshToken: User!
+  registerGoogleUser(token: String!): User!
+  registerUser(email: String!, pass: String!): User!
+  removeBookmark(bookmarkId: String!): RemoveBookmarkResult!
+  removeGroup(twigId: String!): TabResult!
+  removeRole(roleId: String!, sessionId: String!): Role!
+  removeTab(tabId: String!): RemoveTabResult!
+  removeTwig(sessionId: String!, shouldRemoveDescs: Boolean!, twigId: String!): RemoveTwigResult!
+  removeWindow(twigId: String!): TabResult!
+  replyArrow(abstractId: String!, linkDraft: String!, linkId: String!, sessionId: String!, sourceId: String!, targetDraft: String!, targetId: String!): ReplyArrowResult!
+  replyTwig(draft: String!, parentTwigId: String!, postId: String!, sessionId: String!, twigId: String!, x: Int!, y: Int!): ReplyTwigResult!
+  requestRole(arrowId: String!, sessionId: String!): Role!
+  resendUserVerification: User!
+  saveArrow(arrowId: String!, draft: String!, sessionId: String!): Arrow!
+  selectTwig(sessionId: String!, twigId: String!): SelectTwigResult!
+  setArrowColor(arrowId: String!, color: String!): Arrow!
+  setUserColor(color: String!, sessionId: String!): User!
+  setUserMap(lat: Float!, lng: Float!, zoom: Float!): User!
+  setUserName(name: String!, sessionId: String!): User!
+  setUserPalette(palette: String!, sessionId: String!): User!
+  syncBookmarks(bookmarks: [BookmarkEntry!]!, twigId: String!): SyncBookmarksResult!
+  syncTabState(groups: [GroupEntry!]!, tabs: [TabEntry!]!, twigId: String!, windows: [WindowEntry!]!): SyncTabStateResult!
+  unfollowUser(userId: String!): Lead!
+  updateTab(i: Int!, isFocus: Boolean!, isFrame: Boolean!, tabId: String!): [Tab!]!
+  verifyUser(code: String!): User!
+  voteArrow(arrowId: String!, clicks: Int!, sessionId: String!): VoteArrowResult!
+}
+
+type OpenTwigResult {
+  role: Role
+  twig: Twig!
+}
+
+type Query {
+  getUserByEmail(email: String!): User
+  getUserByName(name: String!): User
+}
+
+type RemoveBookmarkResult {
+  sibs: [Twig!]!
+  twigs: [Twig!]!
+}
+
+type RemoveTabResult {
+  sibs: [Tab!]!
+  tab: Tab!
+}
+
+type RemoveTabResult1 {
+  children: [Twig!]!
+  descs: [Twig!]!
+  links: [Twig!]!
+  sibs: [Twig!]!
+  twig: Twig!
+}
+
+type RemoveTwigResult {
+  abstract: Arrow!
+  parent: Twig!
+  role: Role
+  twigs: [Twig!]!
+}
+
+type ReplyArrowResult {
+  link: Arrow!
+  source: Arrow!
+  target: Arrow!
+}
+
+type ReplyTwigResult {
+  abstract: Arrow!
+  link: Twig!
+  role: Role
+  source: Arrow!
+  target: Twig!
+}
+
+type Role {
+  arrow: Arrow!
+  arrowId: String!
+  createDate: DateTime!
+  deleteDate: DateTime
+  id: String!
+  isInvited: Boolean!
+  isRequested: Boolean!
+  type: String!
+  updateDate: DateTime!
+  user: User!
+  userId: String!
+}
+
+type SelectTwigResult {
+  abstract: Arrow!
+  role: Role
+  twigs: [Twig!]!
+}
+
+type Sheaf {
+  arrows: [Arrow!]!
+  clicks: Int!
+  createDate: DateTime!
+  deleteDate: DateTime
+  id: String!
+  inCount: Float!
+  ins: [Sheaf!]!
+  links: [Arrow!]!
+  outCount: Float!
+  outs: [Sheaf!]!
+  routeName: String!
+  source: Sheaf
+  sourceId: String
+  target: Sheaf
+  targetId: String
+  tokens: Float!
+  updateDate: DateTime!
+  url: String
+  weight: Float!
+}
+
+type Sub {
+  arrow: Arrow!
+  arrowId: String!
+  createDate: DateTime!
+  deleteDate: DateTime
+  id: String!
+  user: User!
+  userId: String!
+}
+
+type Subscription {
+  addTwig(abstractId: String!, sessionId: String!): AddTwigResult!
+  arrowRole(arrowId: String!, sessionId: String!): Role!
+  dragTwig(abstractId: String!, sessionId: String!): DragTwigResult!
+  graftTwig(abstractId: String!, sessionId: String!): Twig!
+  moveTwig(abstractId: String!, sessionId: String!): Twig!
+  publishCursor(abstractId: String!, sessionId: String!): UserCursor!
+  removeTwig(abstractId: String!, sessionId: String!): RemoveTwigResult!
+  replyTwig(abstractId: String!, sessionId: String!): ReplyTwigResult!
+  saveArrow(arrowIds: [String!]!, sessionId: String!, userId: String!): Arrow!
+  selectTwig(abstractId: String!, sessionId: String!): SelectTwigResult!
+  setUserFocus(abstractId: String!, sessionId: String!): User!
+  updateUser(sessionId: String!, userIds: [String!]!): User!
+  userLead(userId: String!): Lead!
+  userRole(sessionId: String!, userId: String!): Role!
+}
+
+type SyncBookmarksResult {
+  bookmarks: [Twig!]!
+  deleted: [Twig!]!
+}
+
+type SyncTabStateResult {
+  deleted: [Twig!]!
+  groups: [Twig!]!
+  tabs: [Twig!]!
+  windows: [Twig!]!
+}
+
+type Tab {
+  arrow: Arrow!
+  arrowId: String!
+  createDate: DateTime!
+  deleteDate: DateTime
+  i: Float!
+  id: String!
+  isFocus: Boolean!
+  isFrame: Boolean!
+  updateDate: DateTime!
+  user: User!
+  userId: String!
+}
+
+input TabEntry {
+  arrowId: String!
+  color: String!
+  degree: Int!
+  faviconUrl: String
+  groupId: Int!
+  parentTwigId: String!
+  rank: Int!
+  tabId: Int!
+  title: String!
+  twigId: String!
+  url: String!
+  windowId: Int!
+}
+
+type TabResult {
+  sibs: [Twig!]!
+  twig: Twig!
+}
+
+type Twig {
+  abstract: Arrow!
+  abstractId: String!
+  bookmarkId: String
+  children: [Twig!]!
+  createDate: DateTime!
+  deleteDate: DateTime
+  detail: Arrow
+  detailId: String!
+  groupId: Int
+  i: Int!
+  id: String!
+  isOpen: Boolean!
+  isRoot: Boolean!
+  parent: Twig
+  source: Twig
+  sourceId: String
+  tabId: Int
+  target: Twig
+  targetId: String
+  updateDate: DateTime!
+  user: User!
+  userId: String!
+  windowId: Int
+  x: Int!
+  y: Int!
+  z: Int!
+}
+
+type UpdateTabResult {
+  deleted: [Twig!]!
+  twigs: [Twig!]!
+}
+
+type User {
+  activeDate: DateTime!
+  color: String!
+  createDate: DateTime!
+  deleteDate: DateTime
+  description: String!
+  email: String
+  focus: Arrow
+  focusId: String
+  followers: [Lead!]!
+  frame: Arrow
+  frameId: String
+  id: String!
+  isAdmin: Boolean!
+  isRegisteredWithGoogle: Boolean!
+  leaders: [Lead!]!
+  lowercaseName: String!
+  mapLat: Float
+  mapLng: Float
+  mapZoom: Float
+  name: String!
+  palette: String!
+  roles: [Role!]!
+  routeName: String!
+  tabs: [Tab!]!
+  updateDate: DateTime!
+  verifyEmailDate: DateTime
+}
+
+type UserCursor {
+  color: String!
+  id: String!
+  name: String!
+  x: Int!
+  y: Int!
+}
+
+type Vote {
+  arrow: Arrow!
+  arrowId: String!
+  clicks: Int!
+  createDate: DateTime!
+  deleteDate: DateTime
+  id: String!
+  tokens: Int!
+  user: User!
+  userId: String!
+  weight: Int!
+}
+
+type VoteArrowResult {
+  arrow: Arrow!
+  votes: [Vote!]!
+}
+
+input WindowEntry {
+  arrowId: String!
+  parentTwigId: String!
+  rank: Int!
+  twigId: String!
+  windowId: Int!
+}

@@ -1,0 +1,61 @@
+version: "3"
+services:
+  app:
+    container_name: mindscape_app_1
+    build: .
+    networks:
+      - net
+    ports:
+      - 9000:9000
+    depends_on:
+      - redis
+      - postgres
+    env_file:
+      - .env
+    command: yarn start:dev
+    volumes: 
+      - .:/Users/peterwei/workspace/mindscape
+      - /Users/peterwei/workspace/mindscape/node_modules
+  redis:
+    container_name: mindscape_redis_1
+    networks:
+      - net
+    image: redis
+    ports:
+      - 6379:6379
+  postgres:
+    container_name: mindscape_postgres_1
+    networks:
+      - net
+    image: postgis/postgis
+    platform: linux/amd64
+    restart: always
+    env_file:
+      - docker.env
+    ports:
+      - 5432:5432
+    volumes: 
+      - db:/var/lib/postgres
+  adminer: # to connect use host.docker.internal
+    container_name: mindscape_adminer_1
+    networks:
+      - net
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+  graphql_playground:
+    container_name: mindscape_playground_1
+    networks:
+      - net
+    image: mkrou/graphql-playground-docker
+    restart: always
+    env_file:
+      - docker.env
+    ports: 
+      - 8081:8080
+volumes:
+  nodemodules:
+  db:
+networks:
+  net:

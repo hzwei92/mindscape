@@ -1,0 +1,8 @@
+{
+  "name": "mindscape",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react",
+  "id": "4437d394"
+}
