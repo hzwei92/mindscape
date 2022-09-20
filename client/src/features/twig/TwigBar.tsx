@@ -119,6 +119,9 @@ function TwigBar(props: TwigBarProps) {
           <IonLabel style={{
             marginLeft: '3px',
             fontSize: 12,
+            color: palette === 'dark'
+              ? 'black'
+              : 'white',
           }}>
             {props.twig.i}
           </IonLabel>
@@ -133,8 +136,16 @@ function TwigBar(props: TwigBarProps) {
           >
             {
               props.twig.isOpen
-               ? <IonIcon icon={removeOutline} size='medium'/>
-               : <IonIcon icon={addOutline} size='medium'/>
+                ? <IonIcon icon={removeOutline} size='medium' style={{
+                    color: palette === 'dark'
+                      ? 'black'
+                      : 'white'
+                  }}/>
+                : <IonIcon icon={addOutline} size='medium'  style={{
+                    color: palette === 'dark'
+                      ? 'black'
+                      : 'white'
+                  }}/>
             }
           </IonButton>
           <IonButton
@@ -148,7 +159,11 @@ function TwigBar(props: TwigBarProps) {
             onMouseDown={dontDrag}
             onClick={handleRemoveClick}
           >
-            <IonIcon icon={closeOutline} size='medium'/>
+            <IonIcon icon={closeOutline} size='medium' style={{
+              color: palette === 'dark'
+                ? 'black'
+                : 'white'
+            }}/>
           </IonButton>
         </IonButtons>
       </div>
