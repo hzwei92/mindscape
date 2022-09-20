@@ -182,7 +182,7 @@ export default function SpaceControls(props: SpaceControlsProps) {
         </IonCard>
         <div>
         <IonFab>
-          <IonFabButton href='/about' title='Close' size='small' color={'light'} onClick={handleCloseClick}>
+          <IonFabButton routerLink='/about' title='Close' size='small' color={'light'} onClick={handleCloseClick}>
             <IonIcon icon={close} size='small'/>
           </IonFabButton> 
           <IonFabButton title='Settings' size='small' color={'light'}onClick={handleSettingsClick}>

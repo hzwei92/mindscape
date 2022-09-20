@@ -154,7 +154,7 @@ type Mutation {
   createGraphTab(arrowId: String, name: String!, routeName: String!): [Tab!]!
   createGroup(groupEntry: GroupEntry!): TabResult!
   createTab(arrowId: String!, i: Int, isFocus: Boolean!, isFrame: Boolean!): [Tab!]!
-  createTabByRoutename(i: Int, isFocus: Boolean!, isFrame: Boolean!, routename: String!): [Tab!]!
+  createTabByRouteName(i: Int, isFocus: Boolean!, isFrame: Boolean!, routeName: String!): [Tab!]!
   createWindow(windowEntry: WindowEntry!): TabResult!
   dragTwig(abstractId: String!, dx: Int!, dy: Int!, sessionId: String!, twigId: String!): Twig!
   followUser(userId: String!): Lead!

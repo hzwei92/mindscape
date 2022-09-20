@@ -80,15 +80,15 @@ export class TabsResolver {
   }
 
   @UseGuards(GqlAuthGuard)
-  @Mutation(() => [Tab], { name: 'createTabByRoutename' })
-  async createTabByRoutename(
+  @Mutation(() => [Tab], { name: 'createTabByRouteName' })
+  async createTabByRouteName(
     @CurrentUser() user: UserEntity,
-    @Args('routename') routename: string,
+    @Args('routeName') routeName: string,
     @Args('i', {type: () => Int, nullable: true}) i: number,
     @Args('isFrame') isFrame: boolean,
     @Args('isFocus') isFocus: boolean,
   ) {
-    const arrow = await this.arrowsService.getArrowByRouteName(routename);
+    const arrow = await this.arrowsService.getArrowByRouteName(routeName);
     if (!arrow) {
       throw new BadRequestException('Arrow not found');
     }

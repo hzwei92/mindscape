@@ -14,8 +14,8 @@ const CREATE_TAB = gql`
 `;
 
 const CREATE_TAB_BY_ROUTENAME = gql`
-  mutation CreateTabByRoutename($routename: String!, $i: Int, $isFrame: Boolean!, $isFocus: Boolean!) {
-    createTabByRoutename(routename: $routename, i: $i, isFrame: $isFrame, isFocus: $isFocus) {
+  mutation CreateTabByRouteName($routeName: String!, $i: Int, $isFrame: Boolean!, $isFocus: Boolean!) {
+    createTabByRouteName(routeName: $routeName, i: $i, isFrame: $isFrame, isFocus: $isFocus) {
       ...FullTabFields
     }
   }
@@ -25,13 +25,13 @@ const CREATE_TAB_BY_ROUTENAME = gql`
 export default function useCreateTab() {
   const dispatch = useAppDispatch();
 
-  const [createByRoutename] = useMutation(CREATE_TAB_BY_ROUTENAME, {
+  const [createByRouteName] = useMutation(CREATE_TAB_BY_ROUTENAME, {
     onError: err => {
       console.error(err);
     },
     onCompleted: data  => {
       console.log(data);
-      dispatch(mergeTabs(data.createTabByRoutename));
+      dispatch(mergeTabs(data.createTabByRouteName));
     }
   });
 
@@ -45,10 +45,10 @@ export default function useCreateTab() {
     }
   });
 
-  const createTabByRoutename = (routename: string, i: number | null, isFrame: boolean, isFocus: boolean) => {
-    createByRoutename({
+  const createTabByRouteName = (routeName: string, i: number | null, isFrame: boolean, isFocus: boolean) => {
+    createByRouteName({
       variables: {
-        routename,
+        routeName,
         i,
         isFrame,
         isFocus,
@@ -67,5 +67,5 @@ export default function useCreateTab() {
     });
   }
 
-  return { createTabByRoutename, createTab };
+  return { createTabByRouteName, createTab };
 }

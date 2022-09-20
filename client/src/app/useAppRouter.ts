@@ -14,6 +14,7 @@ import useSelectTwig from "../features/twig/useSelectTwig";
 import { checkPermit } from "../utils";
 import { Role } from "../features/role/role";
 import { AppContext } from "./App";
+import useCreateTab from "../features/tab/useCreateTab";
 
 const useAppRouter = () => {
   const router = useIonRouter();
@@ -21,6 +22,9 @@ const useAppRouter = () => {
   const { user } = useContext(AppContext);
 
   const focusTab = useAppSelector(selectFocusTab);
+
+  const { createTabByRouteName } = useCreateTab();
+
 
   let focusRole = null as Role | null;
   (user?.roles || []).filter(role_i => !role_i.deleteDate).some(role => {
@@ -50,43 +54,46 @@ const useAppRouter = () => {
   useEffect(() => {
     const path = router.routeInfo?.pathname.split('/') || [];
     console.log('path', path, router.routeInfo)
-    if (path)
     if (path[1] === 'g') {
       let tab = null as Tab | null;
       let arrow = null as Arrow | null;
-      Object.values(idToTab).some(t => {
-        const a = idToArrow[t.arrowId];
-        if (a && a.routeName === path[2]) {
-          if (t.isFocus) {
+      Object.values(idToTab)
+        .filter(t => !t.deleteDate)
+        .some(t => {
+          const a = idToArrow[t.arrowId];
+          if (a && a.routeName === path[2]) {
             tab = t;
             arrow = a;
           }
-          else {
-            updateTab(t, false, true);
-          }
-        }
-        return !!tab;
-      })
+          return !!tab;
+        })
 
       if (tab && arrow) {
-        document.title = arrow.title || ''
+        if (tab.isFocus) {
+          document.title = arrow.title || ''
 
-        const focusSelectedTwig = focusIdToTwig[focusSelectedTwigId];
-        if (path[3] !== (focusSelectedTwig?.i ?? -1).toString()) {
-          const twigId = focusIToTwigId[path[3] || (focusSelectedTwig?.i ?? -1)]
-          const twig = focusIdToTwig[twigId];
-          if (twig?.id && !twig?.deleteDate) {
-            console.log('focus, index select');
-            focusSelectTwig(tab.arrow, twig);
-            focusCenterTwig(twigId, true, 0);
-          }
-          else {
-            console.log('focus, index invalid');
-            router.push(`/g/${path[2]}/0`);
+          const focusSelectedTwig = focusIdToTwig[focusSelectedTwigId];
+          if (path[3] !== (focusSelectedTwig?.i ?? -1).toString()) {
+            const twigId = focusIToTwigId[path[3] || (focusSelectedTwig?.i ?? -1)]
+            const twig = focusIdToTwig[twigId];
+            if (twig?.id && !twig?.deleteDate) {
+              console.log('focus, index select');
+              focusSelectTwig(tab.arrow, twig);
+              focusCenterTwig(twigId, true, 0);
+            }
+            else {
+              console.log('focus, index invalid');
+              router.push(`/g/${path[2]}/0`);
+            }
           }
         }
+        else {
+          updateTab(tab, false, true);
+        }
       }
-
+      else {
+        createTabByRouteName(path[2], null, false, true);
+      }
     }
   }, [router.routeInfo, idToTab, focusIdToPos])
 }
