@@ -1,8 +1,9 @@
+import { useReactiveVar } from '@apollo/client';
 import { IonCard, IonCardContent } from '@ionic/react';
 import { createContext, Dispatch, SetStateAction, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { AppContext } from '../../app/App';
 import { useAppDispatch, useAppSelector } from '../../app/store';
-import { focusSpaceElVar, frameSpaceElVar } from '../../cache';
+import { focusAdjustIdToPosVar, focusSpaceElVar, frameAdjustIdToPosVar, frameSpaceElVar } from '../../cache';
 import { CLOSED_LINK_TWIG_DIAMETER, MAX_Z_INDEX, TWIG_WIDTH, VIEW_RADIUS } from '../../constants';
 import { IdToType } from '../../types';
 import { checkPermit } from '../../utils';
@@ -60,6 +61,10 @@ const SpaceComponent = (props: SpaceComponentProps) => {
   const idToHeight = useAppSelector(selectIdToHeight(props.space));
   const idToTwig = useAppSelector(selectIdToTwig(props.space));
   const idToDescIdToTrue = useAppSelector(selectIdToDescIdToTrue(props.space))
+
+  const adjustIdToPosDetail = useReactiveVar(props.space === SpaceType.FRAME
+    ? frameAdjustIdToPosVar
+    : focusAdjustIdToPosVar)
 
   let role = null as Role | null;
   (abstract?.roles || []).some(role_i => {
@@ -204,6 +209,15 @@ const SpaceComponent = (props: SpaceComponentProps) => {
 
     setMoveEvent(null);
   }, [moveEvent]);
+
+  useEffect(() => {
+    if (Object.keys(adjustIdToPosDetail).length) {
+      dispatch(mergeIdToPos({
+        space: props.space,
+        idToPos: adjustIdToPosDetail,
+      }));
+    }
+  }, [adjustIdToPosDetail])
 
   const updateScroll = (left: number, top: number) => {
     dispatch(setScroll({
@@ -493,6 +507,16 @@ const SpaceComponent = (props: SpaceComponentProps) => {
       );
     }
   });
+
+  if (Object.keys(idToPos1).length) {
+    if (props.space === SpaceType.FRAME) {
+      frameAdjustIdToPosVar(idToPos1);
+    }
+    else {
+      focusAdjustIdToPosVar(idToPos1);
+    }
+  }
+
 
   return (
     <SpaceContext.Provider value={spaceContextValue}>
