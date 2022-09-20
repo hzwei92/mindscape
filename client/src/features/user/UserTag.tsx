@@ -66,14 +66,14 @@ export default function UserTag(props: UserTagProps) {
             </IonAvatar>
           : null
       }
-      <div color={props.user?.color} onClick={handleUserClick}
+      <span color={props.user?.color} onClick={handleUserClick}
         style={{
           color: props.user?.color,
           cursor: 'pointer'
         }}
       >
         {props.user?.name}
-      </div>
+      </span>
       {
         props.user?.id === props.user?.id
           ? null
