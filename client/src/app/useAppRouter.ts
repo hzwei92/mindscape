@@ -52,6 +52,8 @@ const useAppRouter = () => {
   const { updateTab } = useUpdateTab();
 
   useEffect(() => {
+    if (!user) return;
+    
     const path = router.routeInfo?.pathname.split('/') || [];
     console.log('path', path, router.routeInfo)
     if (path[1] === 'g') {
@@ -95,7 +97,7 @@ const useAppRouter = () => {
         createTabByRouteName(path[2], null, false, true);
       }
     }
-  }, [router.routeInfo, idToTab, focusIdToPos])
+  }, [user, router.routeInfo, idToTab, focusIdToPos])
 }
 
 export default useAppRouter;
