@@ -14,6 +14,7 @@ import { mergeArrows } from '../arrow/arrowSlice';
 import { useAppDispatch, useAppSelector } from '../../app/store';
 import { AppContext } from '../../app/App';
 import { applyRole } from '../role/applyRole';
+import { SpaceType } from '../space/space';
 
 const REPLY_TWIG = gql`
   mutation ReplyTwig(
@@ -92,6 +93,16 @@ export default function useReplyTwig() {
       dispatch(mergeTwigs({
         space,
         twigs: [link, target]
+      }));
+
+      dispatch(mergeIdToPos({
+        space,
+        idToPos: {
+          [link.id]: {
+            x: link.x,
+            y: link.y,
+          }
+        }
       }));
     }
   });
