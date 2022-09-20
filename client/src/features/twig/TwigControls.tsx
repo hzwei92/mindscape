@@ -41,6 +41,7 @@ function TwigControls(props: TwigControlsProps) {
   const arrow = useAppSelector(state => selectArrowById(state, props.twig.detailId));
   const sheaf = useAppSelector(state => selectSheafById(state, arrow?.sheafId));
 
+  const showOpen = !!arrow?.rootTwigId || user?.id === arrow?.userId;
   const frameTwig = null;
   const focusTwig = null;
 
@@ -423,7 +424,11 @@ function TwigControls(props: TwigControlsProps) {
       <IonButton routerLink='/search' onMouseDown={handleMouseDown} onClick={handleNextClick}>
         {arrow?.outCount} OUT
       </IonButton>
-      <div>
+      <div style={{
+        display: showOpen 
+          ? 'block'
+          : 'none',
+      }}>
         <IonButton
           onMouseDown={handleMouseDown}
           onClick={handleOpenClick}
