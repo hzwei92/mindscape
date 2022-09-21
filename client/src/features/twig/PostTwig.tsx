@@ -162,6 +162,7 @@ function PostTwig(props: PostTwigProps) {
           />
           <TwigControls
             twig={twig}
+            isPost={true}
           />
         </div>
       </IonCard>

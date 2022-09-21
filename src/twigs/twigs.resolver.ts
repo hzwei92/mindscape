@@ -112,6 +112,28 @@ export class TwigsResolver {
   }
 
   @UseGuards(GqlAuthGuard)
+  @Mutation(() => ReplyTwigResult, {name: 'pasteTwig'})
+  async pasteTwig(
+    @CurrentUser() user: UserEntity,
+    @Args('sessionId') sessionId: string,
+    @Args('parentTwigId') parentTwigId: string,
+    @Args('twigId') twigId: string,
+    @Args('postId') postId: string,
+    @Args('x', {type: () => Int}) x: number,
+    @Args('y', {type: () => Int}) y: number,
+  ) {
+    const result = await this.twigsService.pasteTwig(user, parentTwigId, twigId, postId, x, y);
+  
+    this.pubSub.publish('pasteTwig', {
+      sessionId,
+      abstractId: result.abstract.id,
+      pasteTwig: result,
+    });
+
+    return result;
+  }
+
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => LinkTwigsResult, {name: 'linkTwigs'})
   async linkTwigs(
     @CurrentUser() user: UserEntity,

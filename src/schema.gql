@@ -183,6 +183,7 @@ type Mutation {
   moveTab(groupTwigId: String!, parentTwigId: String, twigId: String!): MoveTabResult!
   moveTwig(sessionId: String!, twigId: String!, x: Int!, y: Int!): MoveTwigResult!
   openTwig(sessionId: String!, shouldOpen: Boolean!, twigId: String!): OpenTwigResult!
+  pasteTwig(parentTwigId: String!, postId: String!, sessionId: String!, twigId: String!, x: Int!, y: Int!): ReplyTwigResult!
   publishCursor(abstractId: String!, sessionId: String!, x: Int!, y: Int!): User!
   refreshToken: User!
   registerGoogleUser(token: String!): User!

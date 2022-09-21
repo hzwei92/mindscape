@@ -111,7 +111,7 @@ export default function SpaceNav() {
       position: 'absolute',
       marginLeft: -140,
       left: '50%',
-      bottom: 60,
+      bottom: 120,
       zIndex: MAX_Z_INDEX + 100,
     }}>
     <IonFab style={{

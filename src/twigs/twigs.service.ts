@@ -271,6 +271,104 @@ export class TwigsService {
     };
   }
 
+
+  async pasteTwig(user: User, parentTwigId: string, twigId: string, postId: string, x: number, y: number) {
+    if (!uuidRegexExp.test(twigId)) {
+      throw new BadRequestException('Twig ID must be valid uuid')
+    }
+    if (!uuidRegexExp.test(postId)) {
+      throw new BadRequestException('Post ID must be valid uuid')
+    }
+
+    const parentTwig = await this.twigsRepository.findOne({
+      where: {
+        id: parentTwigId,
+      },
+      relations: ['abstract', 'children', 'detail']
+    });
+    if (!parentTwig) {
+      throw new BadRequestException('This parent twig does not exist');
+    }
+
+    let role = await this.rolesService.getRoleByUserIdAndArrowId(user.id, parentTwig.abstractId);
+    let role1 = null;
+    if (checkPermit(parentTwig.abstract.canPost, role?.type)) {
+      if (!role) {
+        role = await this.rolesService.createRole(user, parentTwig.abstract, RoleType.OTHER);
+        role1 = role;
+      }
+    }
+    else {
+      throw new BadRequestException('Insufficient privileges');
+    }
+
+    const existingTwig = await this.getTwigById(twigId);
+    if (existingTwig) {
+      throw new BadRequestException('This Twig ID is already in use')
+    }
+    const existingArrow = await this.arrowsService.getArrowById(postId);
+
+    const postTwig = await this.createTwig({
+      user,
+      abstract: parentTwig.abstract,
+      detail: existingArrow,
+      parentTwig,
+      twigId,
+      sourceId: null, 
+      targetId: null,
+      i: parentTwig.abstract.twigN + 1,
+      x,
+      y,
+      z: parentTwig.abstract.twigZ + 1,
+      isOpen: true,
+    });
+
+    const linkSheaf = await this.sheafsService.createSheaf(parentTwig.detail.sheafId, existingArrow.sheafId, null);
+
+    const { arrow: link } = await this.arrowsService.createArrow({
+      user,
+      id: null,
+      sourceId: parentTwig.detailId,
+      targetId: existingArrow.id,
+      abstract: parentTwig.abstract,
+      sheaf: linkSheaf,
+      draft: null,
+      title: null,
+      url: null,
+      faviconUrl: null,
+      routeName: null,
+    });
+
+    const linkTwig = await this.createTwig({
+      user,
+      abstract: parentTwig.abstract,
+      detail: link,
+      parentTwig: null,
+      twigId: null,
+      sourceId: parentTwig.id,
+      targetId: postTwig.id,
+      i: parentTwig.abstract.twigN + 2,
+      x: Math.round((parentTwig.x + x) / 2),
+      y: Math.round((parentTwig.y + y) / 2),
+      z: parentTwig.abstract.twigZ + 2,
+      isOpen: false,
+    });
+
+    await this.arrowsService.incrementTwigN(parentTwig.abstractId, 2);
+    await this.arrowsService.incrementTwigZ(parentTwig.abstractId, 2);
+    const abstract = await this.arrowsService.getArrowById(parentTwig.abstractId);
+
+    const source = await this.arrowsService.getArrowById(parentTwig.detailId);
+
+    return {
+      abstract,
+      source,
+      link: linkTwig,
+      target: postTwig,
+      role: role1,
+    };
+  }
+
   async removeTwig(user: User, twigId: string, shouldRemoveDescs: boolean) {
     const twig = await this.twigsRepository.findOne({
       where: {

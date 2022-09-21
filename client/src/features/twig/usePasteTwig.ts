@@ -2,39 +2,35 @@ import { gql, useMutation } from '@apollo/client';
 import { v4 } from 'uuid';
 import { FULL_TWIG_FIELDS } from './twigFragments';
 import { FULL_ROLE_FIELDS } from '../role/roleFragments';
-import { Arrow, createArrow } from '../arrow/arrow';
+import { Arrow } from '../arrow/arrow';
 import { selectSessionId } from '../auth/authSlice';
 import { useContext } from 'react';
 import { createTwig, Twig } from './twig';
 import { mergeTwigs, setNewTwigId } from './twigSlice';
 import { SpaceContext } from '../space/SpaceComponent';
-import { getEmptyDraft } from '../../utils';
 import { mergeIdToPos, selectIdToPos } from '../space/spaceSlice';
-import { mergeArrows } from '../arrow/arrowSlice';
+import { mergeArrows, selectIdToArrow } from '../arrow/arrowSlice';
 import { useAppDispatch, useAppSelector } from '../../app/store';
 import { AppContext } from '../../app/App';
 import { applyRole } from '../role/applyRole';
-import { SpaceType } from '../space/space';
 import { useIonRouter, useIonToast } from '@ionic/react';
 
-const REPLY_TWIG = gql`
-  mutation ReplyTwig(
+const PASTE_TWIG = gql`
+  mutation PasteTwig(
     $sessionId: String!, 
     $parentTwigId: String!, 
     $twigId: String!, 
     $postId: String!, 
     $x: Int!, 
     $y: Int!, 
-    $draft: String!
   ) {
-    replyTwig(
+    pasteTwig(
       sessionId: $sessionId, 
       parentTwigId: $parentTwigId, 
       twigId: $twigId, 
       postId: $postId, 
       x: $x, 
       y: $y, 
-      draft: $draft
     ) {
       abstract {
         id
@@ -61,33 +57,36 @@ const REPLY_TWIG = gql`
   ${FULL_ROLE_FIELDS}
 `;
 
-export default function useReplyTwig() {
+export default function usePasteTwig() {
   const dispatch = useAppDispatch();
 
   const router = useIonRouter();
 
   const [present] = useIonToast();
 
-  const { user } = useContext(AppContext);
+  const { user, clipboardArrowIds } = useContext(AppContext);
+  
   const { 
     space, 
     abstract,
   } = useContext(SpaceContext);
 
+
+  const idToArrow = useAppSelector(selectIdToArrow)
   const idToPos = useAppSelector(selectIdToPos(space));
 
   const sessionId = useAppSelector(selectSessionId);
   
-  const [reply] = useMutation(REPLY_TWIG, {
+  const [paste] = useMutation(PASTE_TWIG, {
     onError: error => {
       console.error(error);
       present({
-        message: 'Error replying: ' + error.message,
+        message: 'Error pasting: ' + error.message,
         position: 'bottom',
       });
     },
-    update: (cache, {data: {replyTwig}}) => {
-      applyRole(cache, replyTwig.role);
+    update: (cache, {data: {pasteTwig}}) => {
+      applyRole(cache, pasteTwig.role);
     },
     onCompleted: data => {
       console.log(data);
@@ -96,7 +95,7 @@ export default function useReplyTwig() {
         source,
         link,
         target
-      } = data.replyTwig;
+      } = data.pasteTwig;
       dispatch(mergeArrows([source]));
       
       dispatch(mergeTwigs({
@@ -116,7 +115,7 @@ export default function useReplyTwig() {
     }
   });
 
-  const replyTwig = (parentTwig: Twig, parentArrow: Arrow) => {
+  const pasteTwig = (parentTwig: Twig, parentArrow: Arrow) => {
     if (!user || !abstract) return;
 
     const parentArrow1 = Object.assign({}, parentArrow, {
@@ -132,39 +131,25 @@ export default function useReplyTwig() {
     const dr = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
 
     console.log(dx, dy, dr);
-    const postId = v4();
     const twigId = v4();
     const x = Math.round((600 * dx / dr) + pos.x);
     const y = Math.round((600 * dy / dr) + pos.y);
 
     console.log(x, y)
 
-    const draft = getEmptyDraft();
+    const post = idToArrow[clipboardArrowIds[0]]
 
-    reply({
+    paste({
       variables: {
         sessionId,
         parentTwigId: parentTwig.id,
         twigId,
-        postId,
+        postId: post.id,
         x,
         y,
-        draft,
       },
     });
 
-    const post = createArrow({
-      id: postId,
-      user,
-      draft, 
-      title: null, 
-      url: null, 
-      faviconUrl: null,
-      abstract, 
-      sheaf: null,
-      source: null, 
-      target: null,
-    });
 
     const twig = createTwig({
       id: twigId,
@@ -208,5 +193,5 @@ export default function useReplyTwig() {
 
     router.push(`/g/${abstract.routeName}/${twig.i}`)
   }
-  return { replyTwig }
+  return { pasteTwig }
 }

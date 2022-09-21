@@ -5,6 +5,7 @@ import {
   IonLabel,
   IonMenu,
   IonRouterOutlet,
+  IonToast,
   setupIonicReact
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';

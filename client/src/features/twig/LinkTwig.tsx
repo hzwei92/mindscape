@@ -222,6 +222,7 @@ function LinkTwig(props: LinkTwigProps) {
                 />
                 <TwigControls
                   twig={twig}
+                  isPost={false}
                 />
               </div>
             </div>

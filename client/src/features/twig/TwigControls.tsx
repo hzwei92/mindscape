@@ -10,19 +10,23 @@ import { AppContext } from '../../app/App';
 import useReplyTwig from './useReplyTwig';
 import { addEntry } from '../entry/entrySlice';
 import { searchPushSlice } from '../search/searchSlice';
-import { IonButton, IonButtons, IonIcon, IonItem, IonMenu, IonPopover, useIonRouter } from '@ionic/react';
+import { IonButton, IonButtons, IonIcon, IonItem, IonMenu, IonPopover, useIonRouter, useIonToast } from '@ionic/react';
 import { create, ellipsisVertical, link, shieldCheckmarkOutline, closeOutline, notificationsCircleOutline, notificationsOutline} from 'ionicons/icons';
+import usePasteTwig from './usePasteTwig';
 //import useCenterTwig from './useCenterTwig';
 
 interface TwigControlsProps {
   twig: Twig;
+  isPost: boolean;
 }
 
 function TwigControls(props: TwigControlsProps) {
   const dispatch = useAppDispatch();
 
-
   const router = useIonRouter();
+
+  const [present] = useIonToast();
+
 
   const {
     user,
@@ -30,6 +34,8 @@ function TwigControls(props: TwigControlsProps) {
     setPendingLink,
     setIsCreatingGraph,
     setCreateGraphArrowId,
+    clipboardArrowIds,
+    setClipboardArrowIds,
   } = useContext(AppContext);
   
   const {
@@ -49,7 +55,8 @@ function TwigControls(props: TwigControlsProps) {
   const [isEditingRoute, setIsEditingRoute] = useState(false);
 
   const { replyTwig } = useReplyTwig();
-  
+  const { pasteTwig } = usePasteTwig();
+
   // const { sub } = useSubArrow(props.twig.post, () => {
   //   props.setIsLoading(false);
   // });
@@ -125,7 +132,22 @@ function TwigControls(props: TwigControlsProps) {
     setIsEditingRoute(!isEditingRoute);
   }
 
-  const handleCopyClick = (event: React.MouseEvent) => {
+  const handleCopyClick = () => {
+    setClipboardArrowIds([
+      props.twig.detailId,
+    ]);
+    present({
+      message: 'Arrow copied to clipboard',
+      duration: 2000,
+    })
+  }
+
+  const handlePasteClick = () => {
+    if (!arrow) return;
+
+    pasteTwig(props.twig, arrow);
+  }
+  const handleCopyURLClick = (event: React.MouseEvent) => {
     event.stopPropagation();
     navigator.clipboard.writeText(`https://mindscape.pub/g/${arrow?.routeName}`);
     handleMenuClose();
@@ -147,36 +169,6 @@ function TwigControls(props: TwigControlsProps) {
     event.stopPropagation();
     //unsub();
     handleMenuClose();
-  }
-
-  const handleFrameClick = (event: React.MouseEvent) => {
-    event.stopPropagation();
-    /*
-    if (frameTwig) {
-      if (frameTwig.postId === frameArrowId) {
-        centerFrameTwig(frameTwig, true, 0);
-      }
-      else {
-      }
-    }
-    else {
-      addFrameTwig(props.twig.post.id)
-    }*/
-  }
-
-  const handleFocusClick = (event: React.MouseEvent) => {
-    event.stopPropagation();
-    /*
-    if (focusTwig) {
-      if (focusTwig.postId === focusArrowId) {
-        centerFocusTwig(focusTwig, true, 0);
-      }
-      else {
-      }
-    }
-    else {
-      addFocusTwig(props.twig.post.id);
-    }*/
   }
 
   const handleCommitClick = (event: React.MouseEvent) => {
@@ -311,7 +303,7 @@ function TwigControls(props: TwigControlsProps) {
       </IonButton>
       <IonPopover trigger={'twigOptionsButton-' + props.twig.id} triggerAction='click'>
         <div style={{
-          padding: 5,
+          padding: 10,
           display: 'table',
           borderSpacing: 5,
         }}>
@@ -322,7 +314,7 @@ function TwigControls(props: TwigControlsProps) {
               display: 'table-cell',
               fontWeight: 'bold',
             }}>
-              routeName:&nbsp;
+              routeName
             </div>
             <div style={{
               display: 'table-cell',
@@ -338,12 +330,28 @@ function TwigControls(props: TwigControlsProps) {
               display: 'table-cell',
               fontWeight: 'bold',
             }}>
-              twigId:
+              twigID
             </div>
             <div style={{
               display: 'table-cell',
             }}>
               {props.twig.id}
+            </div>
+          </div>
+          <div style={{
+            display: 'table-row',
+          }}>
+            <div style={{
+              display: 'table-cell',
+              fontWeight: 'bold',
+            }}>
+              twigUser
+            </div>
+            <div style={{
+              display: 'table-cell',
+              color: props.twig.user.color,
+            }}>
+              {props.twig.user.name}
             </div>
           </div>
           <div style={{
@@ -354,7 +362,7 @@ function TwigControls(props: TwigControlsProps) {
               display: 'table-cell',
               fontWeight: 'bold',
             }}>
-              arrowId:
+              arrowID
             </div>
             <div style={{
               display: 'table-cell',
@@ -362,7 +370,38 @@ function TwigControls(props: TwigControlsProps) {
               {props.twig.detailId}
             </div>
           </div>
+          <div style={{
+            display: 'table-row',
+          }}>
+            <div style={{
+              display: 'table-cell',
+              fontWeight: 'bold',
+            }}>
+              arrowUser
+            </div>
+            <div style={{
+              display: 'table-cell',
+              color: arrow?.user.color
+            }}>
+              {arrow?.user.name}
+            </div>
+          </div>
         </div>
+        <IonButtons style={{
+          padding: 10,
+        }}>
+          <IonButton onClick={handleCopyClick}>
+            COPY
+          </IonButton>
+          {
+            clipboardArrowIds.length === 1
+              ? <IonButton onClick={handlePasteClick}>
+                  PASTE
+                </IonButton>
+              : null
+          }
+          
+        </IonButtons>
       </IonPopover>
       <IonMenu>
         {
