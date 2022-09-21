@@ -165,6 +165,7 @@ type Mutation {
   dragTwig(abstractId: String!, dx: Int!, dy: Int!, sessionId: String!, twigId: String!): Twig!
   followUser(userId: String!): Lead!
   getArrowByRouteName(routeName: String!): Arrow
+  getArrows(arrowIds: [String!]!): [Arrow!]!
   getCurrentUser: User!
   getCurrentUserLeads: [Lead!]!
   getIns(arrowId: String!, offset: Int!): [Arrow!]!

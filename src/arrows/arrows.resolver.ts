@@ -91,6 +91,16 @@ export class ArrowsResolver {
     return this.votesService.getVotesByArrowId(arrow.id);
   }
 
+
+  @UseGuards(GqlAuthGuard)
+  @Mutation(() => [Arrow], {name: 'getArrows'})
+  async getArrows(
+    @CurrentUser() user: UserEntity,
+    @Args('arrowIds', {type: () => [String]}) arrowIds: string[],
+  ) {
+    return this.arrowsService.getArrowsByIdWithPrivacy(user, arrowIds);
+  }
+
   @UseGuards(GqlAuthGuard)
   @Mutation(() => Arrow, {name: 'getArrowByRouteName', nullable: true })
   async getArrowByRouteName(

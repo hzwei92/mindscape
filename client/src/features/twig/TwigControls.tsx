@@ -186,6 +186,7 @@ function TwigControls(props: TwigControlsProps) {
   const handlePrevClick = (event: React.MouseEvent) => {
     event.stopPropagation();
 
+    console.log('prev', arrow);
     if (!arrow) return;
 
     const id = v4();
@@ -215,6 +216,7 @@ function TwigControls(props: TwigControlsProps) {
   const handleNextClick = (event: React.MouseEvent) => {
     event.stopPropagation();
 
+    console.log('next', arrow);
     if (!arrow) return;
 
     const id = v4();

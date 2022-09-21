@@ -82,6 +82,41 @@ export class ArrowsService {
     return arrow;
   }
 
+  async getArrowsByIdWithPrivacy(user: User, ids: string[]) {
+    const roles = await this.rolesService.getRolesByUserId(user.id);
+
+    const arrows = await this.arrowsRepository.find({
+      where: {
+        id: In(ids),
+      },
+      relations: ['abstract']
+    });
+
+    return arrows.map(arrow => {
+      if (arrow.abstract.canView !== RoleType.OTHER) {
+        let role;
+        roles.some(role_i=> {
+          if (role_i.arrowId === arrow.abstractId) {
+            role = role_i;
+            return true;
+          }
+          return false;
+        });
+        if (
+          !role ||
+          (arrow.abstract.canView === RoleType.MEMBER && role.type !== RoleType.ADMIN && role.type !== RoleType.MEMBER) ||
+          (arrow.abstract.canView === RoleType.ADMIN && role.type !== RoleType.ADMIN)
+        ) {
+          arrow.title = '';
+          arrow.text = '';
+          arrow.draft = PRIVATE_ARROW_DRAFT;
+          arrow.isOpaque = true;
+        }
+      }
+      return arrow;
+    });
+  }
+
   async getArrowByRouteName(routeName: string) {
     return this.arrowsRepository.findOne({
       where: {

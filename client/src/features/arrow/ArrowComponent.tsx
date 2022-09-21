@@ -63,6 +63,7 @@ export default function ArrowComponent(props: ArrowProps) {
   return (
     <div style={{
       paddingLeft: 30,
+      paddingBottom: 10,
     }}>
     <div style={{
       margin:1,
@@ -77,7 +78,7 @@ export default function ArrowComponent(props: ArrowProps) {
       </div>
       <div style={{
         fontSize: 14,
-        paddingBottom: '4px',
+        paddingBottom: 10,
         display: 'flex',
         flexDirection: 'row',
       }}>
@@ -102,6 +103,7 @@ export default function ArrowComponent(props: ArrowProps) {
                     : null
             }
         </span>
+        &nbsp;&nbsp;
         <UserTag user={arrowUser} />
         &nbsp;
         { ' ' }
@@ -129,29 +131,25 @@ export default function ArrowComponent(props: ArrowProps) {
       <div>
         {
           arrow.title 
-            ? <div style={{
-                paddingTop: '5px',
+            ? <IonLabel onClick={handleTitleClick} style={{
+                whiteSpace: 'pre-wrap',
+                wordWrap: 'break-word',
+                fontSize: 40,
+                fontWeight: 'bold',
+                cursor: 'pointer',
               }}>
-                <IonLabel onClick={handleTitleClick} style={{
-                  whiteSpace: 'pre-wrap',
-                  wordWrap: 'break-word',
-                  fontSize: 40,
-                  fontWeight: 'bold',
-                  cursor: 'pointer',
-                }}>
-                  {
-                    arrow.faviconUrl
-                      ? <img src={arrow.faviconUrl} style={{
-                          display: 'inline-block',
-                          width: 20,
-                          height: 20,
-                          marginRight: 1,
-                        }}/> 
-                      : null
-                  }
-                  {arrow.title}
-                </IonLabel>
-              </div>
+                {
+                  arrow.faviconUrl
+                    ? <img src={arrow.faviconUrl} style={{
+                        display: 'inline-block',
+                        width: 20,
+                        height: 20,
+                        marginRight: 1,
+                      }}/> 
+                    : null
+                }
+                {arrow.title}
+              </IonLabel>
             : null
         }
         <ArrowEditor

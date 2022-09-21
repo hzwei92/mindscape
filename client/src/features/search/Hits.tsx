@@ -6,6 +6,7 @@ import { searchRefresh, searchSpliceSlice, selectSearchSlice } from './searchSli
 import { Entry } from '../entry/entry';
 import { addEntry, selectIdToEntry } from '../entry/entrySlice';
 import { IdToType } from '../../types';
+import useGetArrows from '../arrow/useGetArrows';
 
 interface HitsProps {
   hits: any[];
@@ -15,11 +16,12 @@ function Hits(props: HitsProps) {
   const idToEntry = useAppSelector(selectIdToEntry)
   const dispatch = useAppDispatch();
 
-  // const { getPosts } = useGetPosts(() => {
-  //   dispatch(searchRefresh(true));
-  // });
+  const { getArrows } = useGetArrows(() => {
+    dispatch(searchRefresh(true));
+  });
 
   useEffect(() => {
+    console.log(props.hits);
     const idToEntry1: IdToType<Entry> = {};
     const entryIds: string[] = [];
     const userIds: string[] = [];
@@ -28,7 +30,7 @@ function Hits(props: HitsProps) {
         if (hit.__typename === 'User') {
           userIds.push(hit.id);
         }
-        else if (hit.__typename === 'Post') {
+        else if (hit.__typename === 'Arrow') {
           let entryId;
           slice.entryIds.some(id => {
             if (idToEntry[id].arrowId === hit.id) {
@@ -68,7 +70,7 @@ function Hits(props: HitsProps) {
       });
 
       if (arrowIds.length) {
-        //getPosts(arrowIds);
+        getArrows(arrowIds);
       }
     }
 

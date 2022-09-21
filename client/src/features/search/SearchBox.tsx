@@ -26,6 +26,7 @@ function SearchBox(props: SearchBoxProps) {
 
   const refineQuery = () => {
     const query = slice.query;
+    console.log('refineQuery', query);
     dispatch(searchPushSlice({
       originalQuery: query, 
       query, 
@@ -55,13 +56,13 @@ function SearchBox(props: SearchBoxProps) {
           width: 'calc(100%)',
         }}
         type={'text'}
-        placeholder={'Search'}
+        placeholder={'Search query...'}
         value={slice.query}
-        onChange={handleChange}
+        onIonChange={handleChange}
         onKeyPress={handleKeyPress}
       />
       <IonButtons>
-        <IonButton>
+        <IonButton onClick={() => refineQuery()}>
           <IonIcon icon={search} />
         </IonButton>
       </IonButtons>
