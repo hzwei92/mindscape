@@ -13,11 +13,11 @@ export const MAPBOX_ACCESS_TOKEN = 'pk.eyJ1IjoiamFtbnRjZyIsImEiOiJja3ZqMGk0bmRiZ
 
 export const DEFAULT_COLOR = '#9575cd';
 
-export const ALGOLIA_APP_ID = 'HOAE3WPXYN';
-export const ALGOLIA_APP_KEY = '19ba9cfd0f40e1d1abf77d51c472c4e3';
+export const ALGOLIA_APP_ID = 'DTKWUTA4VI';
+export const ALGOLIA_APP_KEY = '1160d150f2a313136f146c5107c129a6';
 export const ALGOLIA_INDEX_NAME = process.env.NODE_ENV === 'production'
-  ? 'prod_mindscape'
-  : 'dev_mindscape';
+  ? 'prod_JAMN'
+  : 'dev_JAMN';
 
 export const MOBILE_WIDTH = 420;
 
