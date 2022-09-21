@@ -16,8 +16,8 @@ import { create, ellipsisVertical, link, shieldCheckmarkOutline, closeOutline, n
 
 interface TwigControlsProps {
   twig: Twig;
-  isPost: boolean;
 }
+
 function TwigControls(props: TwigControlsProps) {
   const dispatch = useAppDispatch();
 
@@ -93,16 +93,20 @@ function TwigControls(props: TwigControlsProps) {
     event.stopPropagation();
     if (pendingLink.sourceArrowId === props.twig.detailId) {
       setPendingLink({
+        sourceAbstractId: '',
         sourceArrowId: '',
         sourceTwigId: '',
+        targetAbstractId: '',
         targetArrowId: '',
         targetTwigId: '',
       });
     }
     else {
       setPendingLink({
+        sourceAbstractId: props.twig.abstractId,
         sourceArrowId: props.twig.detailId,
         sourceTwigId: props.twig.id,
+        targetAbstractId: '',
         targetArrowId: '',
         targetTwigId: '',
       });

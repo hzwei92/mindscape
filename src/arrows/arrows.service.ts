@@ -345,7 +345,7 @@ export class ArrowsService {
     }
   }
 
-  async linkArrows(user: User, abstract: Arrow, sourceId: string, targetId: string) {
+  async linkArrows(user: User, abstract: Arrow | null, sourceId: string, targetId: string) {
     const source = await this.arrowsRepository.findOne({
       where: {
         id: sourceId,
@@ -416,6 +416,8 @@ export class ArrowsService {
       }));
     }
     return {
+      source, 
+      target,
       sheaf,
       arrow,
       vote,

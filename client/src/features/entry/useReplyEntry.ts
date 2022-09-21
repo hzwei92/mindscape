@@ -84,10 +84,6 @@ export default function useReplyEntry(entryId: string) {
   const replyEntry = () => {
     if (!user || newEntryId) return;
 
-    const abstract = frameTab?.arrow || focusTab?.arrow;
-
-    if (!abstract) return;
-
     const linkId = v4();
     const targetId = v4();
 
@@ -120,7 +116,6 @@ export default function useReplyEntry(entryId: string) {
     reply({
       variables: {
         sessionId: sessionDetail.id,
-        abstractId: abstract.id,
         sourceId: entry.arrowId,
         linkId,
         targetId,
@@ -136,7 +131,7 @@ export default function useReplyEntry(entryId: string) {
       title: null,
       url: null,
       faviconUrl: null,
-      abstract,
+      abstract: null,
       sheaf: null,
       source: null,
       target: null,
@@ -149,7 +144,7 @@ export default function useReplyEntry(entryId: string) {
       title: null,
       url: null,
       faviconUrl: null,
-      abstract,
+      abstract: null,
       sheaf: null,
       source: arrow,
       target,

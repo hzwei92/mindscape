@@ -32,7 +32,7 @@ export type Arrow = {
   outCount: number;
 
   abstractId: string;
-  abstract: Arrow;
+  abstract: Arrow | null;
 
   twigs: Arrow[];
   twigN: number;
@@ -79,7 +79,7 @@ export const createArrow = (params: {
   title: string | null,
   url: string | null,
   faviconUrl: string | null,
-  abstract: Arrow,
+  abstract: Arrow | null,
   sheaf: Sheaf | null,
   source: Arrow | null,
   target: Arrow | null,
@@ -124,8 +124,8 @@ export const createArrow = (params: {
     inCount: 0,
     outCount: 0,
 
-    abstractId: abstract.id,
-    abstract,
+    abstractId: abstract?.id || id,
+    abstract: null,
     twigs: [],
     twigN: 0,
     twigZ: 0,

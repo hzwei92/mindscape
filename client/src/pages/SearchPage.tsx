@@ -10,8 +10,8 @@ const SearchPage: React.FC = () => {
       backgroundColor: palette === 'dark'
         ? '#000000'
         : '#e0e0e0',
-      height: 'calc(100% - 44px)',
-      top: 44,
+      height: 'calc(100% - 56px)',
+      top: 56,
     }}>
       <SearchComponent />
     </IonPage>

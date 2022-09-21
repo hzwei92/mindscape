@@ -124,6 +124,12 @@ type Lead {
   leaderId: String!
 }
 
+type LinkArrowsResult {
+  link: Arrow!
+  source: Arrow!
+  target: Arrow!
+}
+
 type LinkTwigsResult {
   abstract: Arrow!
   role: Role
@@ -168,6 +174,7 @@ type Mutation {
   graftTwig(parentTwigId: String!, sessionId: String!, twigId: String!): GraftTwigResult!
   initUser(palette: String!): User!
   inviteRole(arrowId: String!, sessionId: String!, userName: String!): Role!
+  linkArrows(sessionId: String!, sourceId: String!, targetId: String!): LinkArrowsResult!
   linkTwigs(abstractId: String!, sessionId: String!, sourceId: String!, targetId: String!): LinkTwigsResult!
   loginGoogleUser(token: String!): User!
   loginUser(email: String!, pass: String!): User!

@@ -17,6 +17,7 @@ import { User as UserEntity } from 'src/users/user.entity';
 import { Sheaf } from 'src/sheafs/sheaf.model';
 import { SheafsService } from 'src/sheafs/sheafs.service';
 import { ReplyArrowResult } from './dto/reply-arrow-result.dto';
+import { LinkArrowsResult } from './dto/link-arrows-result.dto';
 
 @Resolver(() => Arrow)
 export class ArrowsResolver {
@@ -151,6 +152,32 @@ export class ArrowsResolver {
       source,
       link,
       target,
+    };
+  }
+
+  @UseGuards(GqlAuthGuard)
+  @Mutation(() => LinkArrowsResult, {name: 'linkArrows'})
+  async linkArrows(
+    @CurrentUser() user: UserEntity,
+    @Args('sessionId') sessionId: string,
+    @Args('sourceId') sourceId: string,
+    @Args('targetId') targetId: string,
+  ) {
+    const { arrow, source, target } = await this.arrowsService.linkArrows(user, null, sourceId, targetId);
+
+    this.pubSub.publish('linkArrows', {
+      sessionId,
+      linkArrows: {
+        source,
+        target,
+        link: arrow,
+      },
+    });
+
+    return {
+      source,
+      target,
+      link: arrow,
     };
   }
 

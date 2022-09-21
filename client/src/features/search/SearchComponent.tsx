@@ -62,20 +62,14 @@ export default function SearchComponent() {
 
   return (
     <div style={{
-      zIndex: MAX_Z_INDEX + 1000,
-      position: 'absolute',
-      top: 10,
-      height: 'calc(100% - 30px)',
+      height: 'calc(100% - 10px)',
       width: '100%',
     }}>
       <InstantSearch searchClient={searchClient} indexName={ALGOLIA_INDEX_NAME}>
         <IonCard style={{
           display: 'flex',
           flexDirection: 'row',
-          marginBottom: 0,
-          borderTopRightRadius: 0,
-          borderTopLeftRadius: 0,
-          wdith: '100%'
+          marginBottom: 5,
         }}>
           <IonButtons style={{ whiteSpace: 'nowrap', paddingRight: 1,}}>
             <IonButton

@@ -8,7 +8,7 @@ import { useAppDispatch, useAppSelector } from '../../app/store';
 import { AppContext } from '../../app/App';
 import useOpenTwig from './useOpenTwig';
 import useSelectTwig from './useSelectTwig';
-import useLinkTwigs from './useLinkTwigs';
+import useLinkArrows from '../arrow/useLinkArrows';
 import { IonButton, IonButtons, IonCard, IonIcon } from '@ionic/react';
 import { close, remove } from 'ionicons/icons';
 import ArrowComponent from '../arrow/ArrowComponent';
@@ -62,21 +62,23 @@ function LinkTwig(props: LinkTwigProps) {
 
   const { openTwig } = useOpenTwig();
   const { selectTwig } = useSelectTwig(space, canEdit);
-  const { linkTwigs } = useLinkTwigs();
+  const { linkArrows } = useLinkArrows();
 
   const handleClick = (event: React.MouseEvent) => {
     event.stopPropagation();
 
     if (pendingLink.sourceArrowId === twig.detailId) {
       setPendingLink({
+        sourceAbstractId: '',
         sourceArrowId: '',
         sourceTwigId: '',
+        targetAbstractId: '',
         targetArrowId: '',
         targetTwigId: '',
       });
     }
     if (pendingLink.sourceArrowId && pendingLink.targetArrowId === twig.detailId) {
-      linkTwigs(pendingLink);
+      linkArrows(pendingLink);
     }
   }
 
@@ -93,8 +95,8 @@ function LinkTwig(props: LinkTwigProps) {
   const handleMouseEnter = (event: React.MouseEvent) => {
     if (pendingLink.sourceArrowId && pendingLink.sourceArrowId !== twig.detailId) {
       setPendingLink({
-        sourceArrowId: pendingLink.sourceArrowId,
-        sourceTwigId: pendingLink.sourceTwigId,
+        ...pendingLink,
+        targetAbstractId: twig.abstractId,
         targetArrowId: twig.detailId,
         targetTwigId: twig.id,
       })
@@ -104,8 +106,8 @@ function LinkTwig(props: LinkTwigProps) {
   const handleMouseLeave = (event: React.MouseEvent) => {
     if (pendingLink.sourceArrowId && pendingLink.sourceArrowId !== twig.detailId) {
       setPendingLink({
-        sourceArrowId: pendingLink.sourceArrowId,
-        sourceTwigId: pendingLink.sourceTwigId,
+        ...pendingLink,
+        targetAbstractId: '',
         targetArrowId: '',
         targetTwigId: '',
       });
@@ -173,9 +175,7 @@ function LinkTwig(props: LinkTwigProps) {
             borderRadius: 20,
             borderTopLeftRadius: 0,
             backgroundColor: isLinking
-              ? palette === 'dark'
-                ? 'dimgrey'
-                : 'darkgrey'
+              ? twigUser?.color
               : null,
             cursor: pendingLink.sourceArrowId
               ? 'crosshair'
@@ -222,7 +222,6 @@ function LinkTwig(props: LinkTwigProps) {
                 />
                 <TwigControls
                   twig={twig}
-                  isPost={false}
                 />
               </div>
             </div>

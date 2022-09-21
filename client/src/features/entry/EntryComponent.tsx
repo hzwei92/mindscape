@@ -5,7 +5,7 @@ import { updateEntry } from './entrySlice';
 import { MOBILE_WIDTH } from '../../constants';
 import useCenterTwig from '../twig/useCenterTwig';
 import useSelectTwig from '../twig/useSelectTwig';
-import { selectIdToArrow } from '../arrow/arrowSlice';
+import { selectArrowById, selectIdToArrow } from '../arrow/arrowSlice';
 import { selectSelectedSpace, selectSelectedTwigId } from '../space/spaceSlice';
 import { selectIdToTwig } from '../twig/twigSlice';
 import ArrowComponent from '../arrow/ArrowComponent';
@@ -14,6 +14,9 @@ import useGetOuts from '../arrow/useGetOuts';
 import useGetIns from '../arrow/useGetIns';
 import { AppContext } from '../../app/App';
 import { IonCard } from '@ionic/react';
+import useLinkArrows from '../arrow/useLinkArrows';
+import { arrowUpCircleSharp } from 'ionicons/icons';
+import { selectUserById } from '../user/userSlice';
 
 interface EntryComponentProps {
   entry: Entry;
@@ -26,10 +29,11 @@ export default function EntryComponent(props: EntryComponentProps) {
   const {
     width,
     pendingLink,
+    setPendingLink,
   } = useContext(AppContext);
 
-  const idToArrow = useAppSelector(selectIdToArrow);
-  const arrow = idToArrow[props.entry.arrowId];
+  const arrow = useAppSelector(state => selectArrowById(state, props.entry.arrowId));
+  const arrowUser = useAppSelector(state => selectUserById(state, arrow?.userId));
 
   const selectedSpace = useAppSelector(selectSelectedSpace);
   const selectedTwigId = useAppSelector(selectSelectedTwigId(selectedSpace));
@@ -57,7 +61,8 @@ export default function EntryComponent(props: EntryComponentProps) {
 
   const { getIns } = useGetIns(props.entry.id, props.entry.arrowId);
   const { getOuts } = useGetOuts(props.entry.id, props.entry.arrowId);
-  // const { linkPosts } = useLinkPosts('FRAME', () => {});
+
+  const { linkArrows } = useLinkArrows();
 
   // const { centerTwig: centerFrameTwig } = useCenterTwig('FRAME');
   // const { centerTwig: centerFocusTwig } = useCenterTwig('FOCUS');
@@ -80,78 +85,60 @@ export default function EntryComponent(props: EntryComponentProps) {
   }, [props.entry.shouldGetLinks]);
 
   const handleClick = (event: React.MouseEvent) => {
-    // if (clickTimeout) {
-    //   clearTimeout(clickTimeout)
-    //   setClickTimeout(null);
-    //   if (frameTwig) {
-    //     if (framePostId === frameTwig.postId) {
-    //       centerFrameTwig(frameTwig, true, 0);
-    //     }
-    //     else {
-    //       if (space === 'FRAME') {
-    //         navigate(`/u/${user?.frame?.routeName}/${frameTwig.jamI}`);
-    //       }
-    //       else {
-    //         centerFrameTwig(frameTwig, true, 0);
-    //         selectFrameTwig(user?.frame as Jam, frameTwig, true);
-    //       }
-    //     }
-    //   }
-    //   if (focusTwig) {
-    //     if (focusPostId === focusTwig.postId) {
-    //       centerFocusTwig(focusTwig, true, 0);
-    //     }
-    //     else {
-    //       if (space === 'FOCUS') {
-    //         navigate(`/${user?.focus?.userId ? 'u' : 'j'}/${user?.focus?.routeName}/${focusTwig.jamI}`);
-    //       }
-    //       else {
-    //         centerFocusTwig(focusTwig, true, 0);
-    //         selectFocusTwig(user?.focus as Jam, focusTwig, true);
-    //       }
-    //     }
-    //   }
-    // }
-    // else {
-    //   const timeout = setTimeout(() => {
-    //     if (pendingLink.sourcePostId === props.entry.postId) {
-    //       dispatch(setNewLink({
-    //         sourcePostId: '',
-    //         targetPostId: '',
-    //       }));
-    //     }
-    //     else if (pendingLink.sourcePostId && pendingLink.targetPostId === props.entry.postId) {
-    //       linkPosts();
-    //     }
+    if (clickTimeout) {
+      clearTimeout(clickTimeout)
+      setClickTimeout(null);
+      // TODO center twig in focus?
+    }
+    else {
+      const timeout = setTimeout(() => {
+        if (pendingLink.sourceArrowId === props.entry.arrowId) {
+          setPendingLink({
+            sourceAbstractId: '',
+            sourceArrowId: '',
+            sourceTwigId: '',
+            targetAbstractId: '',
+            targetArrowId: '',
+            targetTwigId: '',
+          });
+        }
+        else if (pendingLink.sourceArrowId && pendingLink.targetArrowId === props.entry.arrowId) {
+          linkArrows(pendingLink);
+        }
 
-    //     setClickTimeout(null);
-    //   }, 400);
+        setClickTimeout(null);
+      }, 400);
 
-    //   setClickTimeout(timeout);
-    // }
+      setClickTimeout(timeout);
+    }
   }
 
   const handleMouseEnter = (event: React.MouseEvent) => {
-    // if (pendingLink.sourcePostId && pendingLink.sourcePostId !== props.entry.postId) {
-    //   dispatch(setNewLink({
-    //     sourcePostId: pendingLink.sourcePostId,
-    //     targetPostId: props.entry.postId,
-    //   }))
-    // }
+    if (pendingLink.sourceArrowId && pendingLink.sourceArrowId !== props.entry.arrowId) {
+      setPendingLink({
+        ...pendingLink,
+        targetAbstractId: '',
+        targetArrowId: props.entry.arrowId,
+        targetTwigId: '',
+      });
+    }
   }
 
   const handleMouseLeave = (event: React.MouseEvent) => {
-    // if (pendingLink.sourcePostId && pendingLink.sourcePostId !== props.entry.postId) {
-    //   dispatch(setNewLink({
-    //     sourcePostId: pendingLink.sourcePostId,
-    //     targetPostId: '',
-    //   }));
-    // }
+    if (pendingLink.sourceArrowId && pendingLink.sourceArrowId !== props.entry.arrowId) {
+      setPendingLink({
+        ...pendingLink,
+        targetAbstractId: '',
+        targetArrowId: '',
+        targetTwigId: '',
+      });
+    }
   }
 
   if (!arrow) return null;
 
-  const isLinking = false
+  const isLinking = pendingLink.sourceArrowId === arrow.id ||
+    pendingLink.targetArrowId === arrow.id;
 
   return (
     <IonCard
@@ -163,16 +150,12 @@ export default function EntryComponent(props: EntryComponentProps) {
         marginBottom: 0,
         width: 'calc(100% - 10px)',
         backgroundColor: isLinking
-          ? arrow.color
+          ? arrowUser?.color
           : null,
         cursor: pendingLink.sourceArrowId
           ? 'crosshair'
           : null, 
-        border: width < MOBILE_WIDTH
-          ? null
-          : arrow.id === selectedTwig.detailId
-            ? `2px solid ${arrow.user.color}`
-            : null,
+        border: null,
         padding: 5,
         minHeight: 100,
       }}

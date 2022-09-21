@@ -47,8 +47,10 @@ import CreateGraphModal from '../features/arrow/CreateGraphModal';
 setupIonicReact();
 
 export type PendingLinkType = {
+  sourceAbstractId: string;
   sourceArrowId: string;
   sourceTwigId: string;
+  targetAbstractId: string;
   targetArrowId: string;
   targetTwigId: string;
 }
@@ -86,8 +88,10 @@ const App: React.FC = () => {
   const [createGraphArrowId, setCreateGraphArrowId] = useState(null as string | null)
 
   const [pendingLink, setPendingLink] = useState({
+    sourceAbstractId: '',
     sourceArrowId: '',
     sourceTwigId: '',
+    targetAbstractId: '',
     targetArrowId: '',
     targetTwigId: '',
   });

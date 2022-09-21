@@ -1,15 +1,13 @@
 import React, { useContext, useEffect, useRef } from 'react';
-import type { Twig } from './twig';
 import TwigBar from './TwigBar';
 import TwigControls from './TwigControls';
 import useSelectTwig from './useSelectTwig';
 import { SpaceContext } from '../space/SpaceComponent';
 import { TWIG_WIDTH } from '../../constants';
-import useLinkTwigs from './useLinkTwigs';
+import useLinkArrows from '../arrow/useLinkArrows';
 import ArrowComponent from '../arrow/ArrowComponent';
 import { selectSelectedTwigId, setSelectedSpace, mergeIdToHeight, selectHeightByTwigId } from '../space/spaceSlice';
 import { selectUserById } from '../user/userSlice';
-import { SpaceType } from '../space/space';
 import { selectTwigById } from './twigSlice';
 import { useAppDispatch, useAppSelector } from '../../app/store';
 import { AppContext } from '../../app/App';
@@ -54,21 +52,23 @@ function PostTwig(props: PostTwigProps) {
   }, [cardEl.current?.clientHeight])
 
   const { selectTwig } = useSelectTwig(space, canEdit);
-  const { linkTwigs } = useLinkTwigs();
+  const { linkArrows } = useLinkArrows();
 
   const handleClick = (event: React.MouseEvent) => {
     event.stopPropagation();
 
     if (pendingLink.sourceArrowId === twig.detailId) {
       setPendingLink({
+        sourceAbstractId: '',
         sourceArrowId: '',
         sourceTwigId: '',
+        targetAbstractId: '',
         targetArrowId: '',
         targetTwigId: '',
       });
     }
     if (pendingLink.sourceArrowId && pendingLink.targetArrowId === twig.detailId) {
-      linkTwigs(pendingLink);
+      linkArrows(pendingLink);
     }
   }
 
@@ -87,8 +87,8 @@ function PostTwig(props: PostTwigProps) {
   const handleMouseEnter = (event: React.MouseEvent) => {
     if (pendingLink.sourceArrowId && pendingLink.sourceArrowId !== twig.detailId) {
       setPendingLink({
-        sourceArrowId: pendingLink.sourceArrowId,
-        sourceTwigId: pendingLink.sourceTwigId,
+        ...pendingLink,
+        targetAbstractId: twig.abstractId,
         targetArrowId: twig.detailId,
         targetTwigId: twig.id,
       });
@@ -98,8 +98,8 @@ function PostTwig(props: PostTwigProps) {
   const handleMouseLeave = (event: React.MouseEvent) => {
     if (pendingLink.sourceArrowId && pendingLink.sourceArrowId !== twig.detailId) {
       setPendingLink({
-        sourceArrowId: pendingLink.sourceArrowId,
-        sourceTwigId: pendingLink.sourceTwigId,
+        ...pendingLink,
+        targetAbstractId: '',
         targetArrowId: '',
         targetTwigId: '',
       });
@@ -161,7 +161,6 @@ function PostTwig(props: PostTwigProps) {
           />
           <TwigControls
             twig={twig}
-            isPost={true}
           />
         </div>
       </IonCard>

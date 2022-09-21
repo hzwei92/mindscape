@@ -3,13 +3,12 @@ import { Dispatch, SetStateAction, useContext, useState } from 'react';
 import { Entry } from './entry';
 import { useAppDispatch, useAppSelector } from '../../app/store';
 import { updateEntry } from './entrySlice';
-import { Twig } from '../twig/twig';
-import useCenterTwig from '../twig/useCenterTwig';
 import { Arrow } from '../arrow/arrow';
 import useReplyEntry from './useReplyEntry';
 import { AppContext } from '../../app/App';
 import { IonButton, IonButtons, IonIcon } from '@ionic/react';
 import { ellipsisVertical } from 'ionicons/icons';
+import { selectUserById } from '../user/userSlice';
 
 interface EntryControlsProps {
   entry: Entry;
@@ -22,9 +21,11 @@ export default function EntryControls(props: EntryControlsProps) {
   const dispatch = useAppDispatch();
 
   const {
-    user,
     pendingLink,
+    setPendingLink,
   } = useContext(AppContext);
+
+  const arrowUser = useAppSelector(state => selectUserById(state, props.arrow.userId));
 
   const [menuAnchorEl, setMenuAnchorEl] = useState(null as Element | null);
 
@@ -51,19 +52,27 @@ export default function EntryControls(props: EntryControlsProps) {
   }
 
   const handleLinkClick = (event: React.MouseEvent) => {
-  //   event.stopPropagation();
-  //   if (pendingLink.sourceId === props.entry.arrowId) {
-  //     dispatch(setNewLink({
-  //       sourcePostId: '',
-  //       targetPostId: '',
-  //     }));
-  //   }
-  //   else {
-  //     dispatch(setNewLink({
-  //       sourcePostId: props.entry.postId,
-  //       targetPostId: '', 
-  //     }));
-  //   }
+    event.stopPropagation();
+    if (pendingLink.sourceArrowId === props.entry.arrowId) {
+      setPendingLink({
+        sourceAbstractId: '',
+        sourceArrowId: '',
+        sourceTwigId: '',
+        targetAbstractId: '',
+        targetArrowId: '',
+        targetTwigId: '',
+      })
+    }
+    else {
+      setPendingLink({
+        sourceAbstractId: '',
+        sourceArrowId: props.entry.arrowId,
+        sourceTwigId: '',
+        targetAbstractId: '',
+        targetArrowId: '',
+        targetTwigId: '',
+      });
+    }
   }
 
   // const handleMenuOpenClick = (event: React.MouseEvent) => {
@@ -214,43 +223,43 @@ export default function EntryControls(props: EntryControlsProps) {
       marginLeft: 20,
       fontSize: 12,
     }}>
-        <IonButton onClick={handleReplyClick} style={{
+      <IonButton onClick={handleReplyClick} style={{
+        fontSize: 12,
+      }}>
+        REPLY
+      </IonButton>
+      <IonButton onClick={handleLinkClick} style={{
+        fontSize: 12,
+      }}>
+        LINK
+      </IonButton>
+      <IonButton size='small'>
+        <IonIcon icon={ellipsisVertical} size='small'/>
+      </IonButton>
+      &nbsp;&nbsp;
+      <span style={{
+        whiteSpace: 'nowrap',
+      }}>
+        <IonButton onClick={handlePrevClick} style={{
           fontSize: 12,
+          border: props.entry.showIns
+            ? `1px solid ${arrowUser?.color}`
+            : null,
+          borderRadius: 5,
         }}>
-          Reply
+          {props.arrow.inCount} IN
         </IonButton>
-        <IonButton onClick={handleLinkClick} style={{
+        &nbsp;
+        <IonButton onClick={handleNextClick} style={{
           fontSize: 12,
+          border: props.entry.showOuts
+            ? `1px solid ${arrowUser?.color}`
+            : null,
+          borderRadius: 5,
         }}>
-          Link
+          {props.arrow.outCount} OUT
         </IonButton>
-        <IonButton size='small'>
-          <IonIcon icon={ellipsisVertical} size='small'/>
-        </IonButton>
-        &nbsp;&nbsp;
-        <span style={{
-          whiteSpace: 'nowrap',
-        }}>
-          <IonButton onClick={handlePrevClick} style={{
-            fontSize: 12,
-            border: props.entry.showIns
-              ? `1px solid ${user?.color}`
-              : null,
-            borderRadius: 5,
-          }}>
-            {props.arrow.inCount} In
-          </IonButton>
-          &nbsp;
-          <IonButton onClick={handleNextClick} style={{
-            fontSize: 12,
-            border: props.entry.showOuts
-              ? `1px solid ${user?.color}`
-              : null,
-            borderRadius: 5,
-          }}>
-            {props.arrow.outCount} Out
-          </IonButton>
-        </span>
+      </span>
     </IonButtons>
   )
 }
