@@ -316,16 +316,7 @@ export class ArrowsService {
     return arrow1;
   }
 
-  async replyArrow(user: User, abstractId: string, sourceId: string, linkId: string, targetId: string, linkDraft: string, targetDraft: string) {
-    const abstract = await this.arrowsRepository.findOne({
-      where: {
-        id: abstractId,
-      },
-    });
-    if (!abstract) {
-      throw new BadRequestException('This abstract arrow does not exist');
-    }
-
+  async replyArrow(user: User, sourceId: string, linkId: string, targetId: string, linkDraft: string, targetDraft: string) {
     const source = await this.arrowsRepository.findOne({
       where: {
         id: sourceId,
@@ -344,7 +335,7 @@ export class ArrowsService {
       id: targetId,
       sourceId: null,
       targetId: null,
-      abstract,
+      abstract: null,
       sheaf: targetSheaf,
       draft: targetDraft,
       title: null,
@@ -358,7 +349,56 @@ export class ArrowsService {
       id: linkId,
       sourceId,
       targetId,
-      abstract,
+      abstract: null,
+      sheaf: linkSheaf,
+      draft: linkDraft,
+      title: null,
+      url: null,
+      faviconUrl: null,
+      routeName: null,
+    });
+
+    const source1 = await this.arrowsRepository.findOne({
+      where:{
+        id: sourceId,
+      }
+    });
+
+    return {
+      source: source1,
+      target,
+      link,
+    }
+  }
+
+
+  async pasteArrow(user: User, sourceId: string, linkId: string, targetId: string, linkDraft: string) {
+    const source = await this.arrowsRepository.findOne({
+      where: {
+        id: sourceId,
+      },
+    });
+    if (!source) {
+      throw new BadRequestException('This source arrow does not exist');
+    }
+
+    const target = await this.arrowsRepository.findOne({
+      where: {
+        id: targetId,
+      },
+    });
+    if (!target) {
+      throw new BadRequestException('This target arrow does not exist');
+    }
+
+    const linkSheaf = await this.sheafsService.createSheaf(source.sheafId, target.sheafId, null);
+
+    const { arrow: link } = await this.createArrow({
+      user,
+      id: linkId,
+      sourceId,
+      targetId,
+      abstract: null,
       sheaf: linkSheaf,
       draft: linkDraft,
       title: null,

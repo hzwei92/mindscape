@@ -40,7 +40,7 @@ export const START_POST_I = 1;
 
 export const SPACE_BAR_HEIGHT = 50;
 
-export const VIEW_RADIUS = 30000;
+export const VIEW_RADIUS = 500000;
 
 export const NOT_FOUND = 'NOT_FOUND';
 

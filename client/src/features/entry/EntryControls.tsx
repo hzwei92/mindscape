@@ -6,9 +6,10 @@ import { updateEntry } from './entrySlice';
 import { Arrow } from '../arrow/arrow';
 import useReplyEntry from './useReplyEntry';
 import { AppContext } from '../../app/App';
-import { IonButton, IonButtons, IonIcon } from '@ionic/react';
+import { IonButton, IonButtons, IonIcon, IonPopover } from '@ionic/react';
 import { ellipsisVertical } from 'ionicons/icons';
 import { selectUserById } from '../user/userSlice';
+import usePasteEntry from './usePasteEntry';
 
 interface EntryControlsProps {
   entry: Entry;
@@ -23,6 +24,8 @@ export default function EntryControls(props: EntryControlsProps) {
   const {
     pendingLink,
     setPendingLink,
+    clipboardArrowIds,
+    setClipboardArrowIds,
   } = useContext(AppContext);
 
   const arrowUser = useAppSelector(state => selectUserById(state, props.arrow.userId));
@@ -32,6 +35,7 @@ export default function EntryControls(props: EntryControlsProps) {
   const [isEditingRoute, setIsEditingRoute] = useState(false);
 
   const { replyEntry } = useReplyEntry(props.entry.id);
+  const { pasteEntry } = usePasteEntry(props.entry.id);
 
   // const { promoteEntry } = usePromoteEntry();
   // const { subPost } = useSubPost(props.post, () => {
@@ -215,6 +219,15 @@ export default function EntryControls(props: EntryControlsProps) {
     }
   }
 
+  const handleCopyClick = () => {
+    setClipboardArrowIds([props.arrow.id]);
+
+  }
+
+  const handlePasteClick = () => {
+    pasteEntry();
+  }
+
   return (
     <IonButtons style={{
       bottom: 0,
@@ -233,9 +246,80 @@ export default function EntryControls(props: EntryControlsProps) {
       }}>
         LINK
       </IonButton>
-      <IonButton size='small'>
-        <IonIcon icon={ellipsisVertical} size='small'/>
+      <IonButton id={'entryOptionsButton-' + props.entry.id}>
+        <IonIcon icon={ellipsisVertical} size='small' />
       </IonButton>
+      <IonPopover trigger={'entryOptionsButton-' + props.entry.id} triggerAction='click'>
+        <div style={{
+          padding: 10,
+          display: 'table',
+          borderSpacing: 5,
+        }}>
+          <div style={{
+            display: 'table-row'
+          }}>
+            <div style={{
+              display: 'table-cell',
+              fontWeight: 'bold',
+            }}>
+              routeName
+            </div>
+            <div style={{
+              display: 'table-cell',
+              whiteSpace: 'pre-wrap',
+            }}>
+              /g/{props.arrow.routeName}
+            </div>
+          </div>
+          <div style={{
+            display: 'table-row',
+            flexDirection: 'row',
+          }}>
+            <div style={{
+              display: 'table-cell',
+              fontWeight: 'bold',
+            }}>
+              arrowID
+            </div>
+            <div style={{
+              display: 'table-cell',
+            }}>
+              {props.arrow.id}
+            </div>
+          </div>
+          <div style={{
+            display: 'table-row',
+          }}>
+            <div style={{
+              display: 'table-cell',
+              fontWeight: 'bold',
+            }}>
+              arrowUser
+            </div>
+            <div style={{
+              display: 'table-cell',
+              color: props.arrow?.user.color
+            }}>
+              {props.arrow?.user.name}
+            </div>
+          </div>
+        </div>
+        <IonButtons style={{
+          padding: 10,
+        }}>
+          <IonButton onClick={handleCopyClick}>
+            COPY
+          </IonButton>
+          {
+            clipboardArrowIds.length === 1
+              ? <IonButton onClick={handlePasteClick}>
+                  PASTE
+                </IonButton>
+              : null
+          }
+          
+        </IonButtons>
+      </IonPopover>
       &nbsp;&nbsp;
       <span style={{
         whiteSpace: 'nowrap',

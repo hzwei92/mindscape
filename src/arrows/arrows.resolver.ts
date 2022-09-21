@@ -142,7 +142,6 @@ export class ArrowsResolver {
   async replyArrow(
     @CurrentUser() user: UserEntity,
     @Args('sessionId') sessionId: string,
-    @Args('abstractId') abstractId: string,
     @Args('sourceId') sourceId: string,
     @Args('linkId') linkId: string,
     @Args('targetId') targetId: string,
@@ -153,7 +152,33 @@ export class ArrowsResolver {
       source,
       link,
       target,
-    } = await this.arrowsService.replyArrow(user, abstractId, sourceId, linkId, targetId, linkDraft, targetDraft);
+    } = await this.arrowsService.replyArrow(user, sourceId, linkId, targetId, linkDraft, targetDraft);
+    this.pubSub.publish('linkArrows', {
+      sessionId,
+      linkArrows: link,
+    });
+    return {
+      source,
+      link,
+      target,
+    };
+  }
+
+  @UseGuards(GqlAuthGuard)
+  @Mutation(() => ReplyArrowResult, {name: 'pasteArrow'})
+  async pasteArrow(
+    @CurrentUser() user: UserEntity,
+    @Args('sessionId') sessionId: string,
+    @Args('sourceId') sourceId: string,
+    @Args('linkId') linkId: string,
+    @Args('targetId') targetId: string,
+    @Args('linkDraft') linkDraft: string,
+  ) {
+    const { 
+      source,
+      link,
+      target,
+    } = await this.arrowsService.pasteArrow(user, sourceId, linkId, targetId, linkDraft);
     this.pubSub.publish('linkArrows', {
       sessionId,
       linkArrows: link,

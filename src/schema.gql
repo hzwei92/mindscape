@@ -184,6 +184,7 @@ type Mutation {
   moveTab(groupTwigId: String!, parentTwigId: String, twigId: String!): MoveTabResult!
   moveTwig(sessionId: String!, twigId: String!, x: Int!, y: Int!): MoveTwigResult!
   openTwig(sessionId: String!, shouldOpen: Boolean!, twigId: String!): OpenTwigResult!
+  pasteArrow(linkDraft: String!, linkId: String!, sessionId: String!, sourceId: String!, targetId: String!): ReplyArrowResult!
   pasteTwig(parentTwigId: String!, postId: String!, sessionId: String!, twigId: String!, x: Int!, y: Int!): ReplyTwigResult!
   publishCursor(abstractId: String!, sessionId: String!, x: Int!, y: Int!): User!
   refreshToken: User!
@@ -195,7 +196,7 @@ type Mutation {
   removeTab(tabId: String!): RemoveTabResult!
   removeTwig(sessionId: String!, shouldRemoveDescs: Boolean!, twigId: String!): RemoveTwigResult!
   removeWindow(twigId: String!): TabResult!
-  replyArrow(abstractId: String!, linkDraft: String!, linkId: String!, sessionId: String!, sourceId: String!, targetDraft: String!, targetId: String!): ReplyArrowResult!
+  replyArrow(linkDraft: String!, linkId: String!, sessionId: String!, sourceId: String!, targetDraft: String!, targetId: String!): ReplyArrowResult!
   replyTwig(draft: String!, parentTwigId: String!, postId: String!, sessionId: String!, twigId: String!, x: Int!, y: Int!): ReplyTwigResult!
   requestRole(arrowId: String!, sessionId: String!): Role!
   resendUserVerification: User!
