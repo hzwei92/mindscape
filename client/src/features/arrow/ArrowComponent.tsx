@@ -1,5 +1,5 @@
 import { addInstance, removeInstance, selectArrowById, selectInstanceById } from './arrowSlice';
-import { useContext, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../app/store';
 import { getTimeString } from '../../utils';
 import { selectUserById } from '../user/userSlice';
@@ -126,6 +126,8 @@ export default function ArrowComponent(props: ArrowProps) {
                 <IonLabel style={{
                   whiteSpace: 'pre-wrap',
                   wordWrap: 'break-word',
+                  fontSize: 40,
+                  fontWeight: 'bold',
                 }}>
                   {
                     arrow.faviconUrl

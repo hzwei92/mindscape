@@ -15,6 +15,7 @@ import { useAppDispatch, useAppSelector } from '../../app/store';
 import { AppContext } from '../../app/App';
 import { applyRole } from '../role/applyRole';
 import { SpaceType } from '../space/space';
+import { useIonToast } from '@ionic/react';
 
 const REPLY_TWIG = gql`
   mutation ReplyTwig(
@@ -63,6 +64,8 @@ const REPLY_TWIG = gql`
 export default function useReplyTwig() {
   const dispatch = useAppDispatch();
 
+  const [present] = useIonToast();
+
   const { user } = useContext(AppContext);
   const { 
     space, 
@@ -76,6 +79,10 @@ export default function useReplyTwig() {
   const [reply] = useMutation(REPLY_TWIG, {
     onError: error => {
       console.error(error);
+      present({
+        message: 'Error replying: ' + error.message,
+        position: 'bottom',
+      });
     },
     update: (cache, {data: {replyTwig}}) => {
       applyRole(cache, replyTwig.role);

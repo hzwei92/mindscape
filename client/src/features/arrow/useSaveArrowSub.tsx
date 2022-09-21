@@ -4,6 +4,7 @@ import { sessionVar } from '../../cache';
 import { useAppDispatch, useAppSelector } from '../../app/store';
 import { mergeArrows, selectArrowIdToInstanceIds, selectIdToInstance, updateInstance } from './arrowSlice';
 import { AppContext } from '../../app/App';
+import { useIonToast } from '@ionic/react';
 
 const SAVE_ARROW = gql`
   subscription SaveArrow($sessionId: String!, $userId: String!, $arrowIds: [String!]!) {
@@ -20,6 +21,8 @@ export default function useSaveArrowSub() {
   const {
     user,
   } = useContext(AppContext);
+
+  const [present] = useIonToast();
 
   const sessionDetail = useReactiveVar(sessionVar);
 
@@ -46,6 +49,11 @@ export default function useSaveArrowSub() {
           shouldRefreshDraft: true,
         }))
       });
+      
+      present({
+        message: 'Saved',
+        position: 'bottom',
+      })
     },
   });
 }

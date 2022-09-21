@@ -1,4 +1,5 @@
 import { gql, useMutation, useReactiveVar } from '@apollo/client';
+import { useIonToast } from '@ionic/react';
 import { useAppDispatch, useAppSelector } from '../../app/store';
 import { sessionVar } from '../../cache';
 import { mergeArrows, selectArrowIdToInstanceIds, selectIdToInstance, updateInstance } from './arrowSlice';
@@ -18,12 +19,17 @@ export default function useSaveArrow(arrowId: string, instanceId: string) {
   const sessionDetail = useReactiveVar(sessionVar);
   const dispatch = useAppDispatch();
 
+  const [present] = useIonToast();
+
   const idToInstance = useAppSelector(selectIdToInstance);
   const arrowIdToInstanceIds = useAppSelector(selectArrowIdToInstanceIds);
 
   const [save] = useMutation(SAVE_ARROW, {
     onError: error => {
       console.error(error);
+      present({
+        message: 'Error saving arrow: ' + error.message,
+      })
     },
     onCompleted: data => {
       console.log(data);
