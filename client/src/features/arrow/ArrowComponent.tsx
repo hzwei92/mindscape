@@ -122,7 +122,7 @@ export default function ArrowComponent(props: ArrowProps) {
                 color: arrowAbstract?.color,
                 cursor: 'pointer'
               }}>
-                {arrowAbstract?.title}`
+                {arrowAbstract?.title}
               </span>
         }
       </div>
