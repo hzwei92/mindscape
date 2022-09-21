@@ -10,7 +10,7 @@ import { AppContext } from '../../app/App';
 import useReplyTwig from './useReplyTwig';
 import { addEntry } from '../entry/entrySlice';
 import { searchPushSlice } from '../search/searchSlice';
-import { IonButton, IonButtons, IonIcon, IonItem, IonMenu, useIonRouter } from '@ionic/react';
+import { IonButton, IonButtons, IonIcon, IonItem, IonMenu, IonPopover, useIonRouter } from '@ionic/react';
 import { create, ellipsisVertical, link, shieldCheckmarkOutline, closeOutline, notificationsCircleOutline, notificationsOutline} from 'ionicons/icons';
 //import useCenterTwig from './useCenterTwig';
 
@@ -306,9 +306,64 @@ function TwigControls(props: TwigControlsProps) {
       <IonButton disabled={!canView} onMouseDown={handleMouseDown} onClick={handleLinkClick}>
         LINK
       </IonButton>
-      <IonButton onMouseDown={handleMouseDown} onClick={handleMenuOpenClick}>
+      <IonButton id={'twigOptionsButton-' + props.twig.id} onMouseDown={handleMouseDown} onClick={handleMenuOpenClick}>
         <IonIcon icon={ellipsisVertical} size='small' />
       </IonButton>
+      <IonPopover trigger={'twigOptionsButton-' + props.twig.id} triggerAction='click'>
+        <div style={{
+          padding: 5,
+          display: 'table',
+          borderSpacing: 5,
+        }}>
+          <div style={{
+            display: 'table-row'
+          }}>
+            <div style={{
+              display: 'table-cell',
+              fontWeight: 'bold',
+            }}>
+              routeName:&nbsp;
+            </div>
+            <div style={{
+              display: 'table-cell',
+              whiteSpace: 'pre-wrap',
+            }}>
+              /g/{abstract?.routeName}/{props.twig.i}
+            </div>
+          </div>
+          <div style={{
+            display: 'table-row',
+          }}>
+            <div style={{
+              display: 'table-cell',
+              fontWeight: 'bold',
+            }}>
+              twigId:
+            </div>
+            <div style={{
+              display: 'table-cell',
+            }}>
+              {props.twig.id}
+            </div>
+          </div>
+          <div style={{
+            display: 'table-row',
+            flexDirection: 'row',
+          }}>
+            <div style={{
+              display: 'table-cell',
+              fontWeight: 'bold',
+            }}>
+              arrowId:
+            </div>
+            <div style={{
+              display: 'table-cell',
+            }}>
+              {props.twig.detailId}
+            </div>
+          </div>
+        </div>
+      </IonPopover>
       <IonMenu>
         {
           props.twig.user.id !== arrow?.user.id

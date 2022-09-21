@@ -67,6 +67,9 @@ export const AppContext = createContext({} as {
   pendingLink: PendingLinkType;
   setPendingLink: Dispatch<SetStateAction<PendingLinkType>>;
 
+  clipboardArrowIds: string[];
+  setClipboardArrowIds: Dispatch<SetStateAction<string[]>>;
+
   isCreatingGraph: boolean;
   setIsCreatingGraph: Dispatch<SetStateAction<boolean>>;
   createGraphArrowId: string | null;
@@ -95,6 +98,8 @@ const App: React.FC = () => {
     targetArrowId: '',
     targetTwigId: '',
   });
+
+  const [clipboardArrowIds, setClipboardArrowIds] = useState([] as string[]);
 
   useEffect(() => {
     if (user?.palette && user?.palette !== palette) {
@@ -131,7 +136,10 @@ const App: React.FC = () => {
       setIsCreatingGraph,
 
       createGraphArrowId,
-      setCreateGraphArrowId
+      setCreateGraphArrowId,
+
+      clipboardArrowIds,
+      setClipboardArrowIds,
     };
   }, [
     user, 
@@ -140,6 +148,7 @@ const App: React.FC = () => {
     pendingLink, 
     isCreatingGraph,
     createGraphArrowId,
+    clipboardArrowIds,
   ]);
 
   return (
@@ -187,15 +196,6 @@ const App: React.FC = () => {
               <Redirect to="/about" />
             </Route>
           </IonRouterOutlet>
-          <IonMenu menuId='userMenu' ref={userMenuRef} side='end' style={{
-            zIndex: MAX_Z_INDEX,
-          }}>
-            <IonContent>
-              <IonLabel>
-                {user?.name}
-              </IonLabel>
-            </IonContent>
-          </IonMenu>
           <CreateGraphModal />
         </IonReactRouter>
       </IonApp>

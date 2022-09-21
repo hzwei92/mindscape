@@ -39,6 +39,10 @@ const AboutPage: React.FC = () => {
             <p>
               Collect and share your favorite graphs.
             </p>
+            <br/>
+            <p>
+              The graphs you are viewing are numbered in the top right.
+            </p>
           </IonCard>
         </IonCardContent>
       </IonCard>

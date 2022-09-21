@@ -11,7 +11,7 @@ import { selectUserById } from '../user/userSlice';
 import { selectTwigById } from './twigSlice';
 import { useAppDispatch, useAppSelector } from '../../app/store';
 import { AppContext } from '../../app/App';
-import { IonCard } from '@ionic/react';
+import { IonCard, IonGrid, IonPopover } from '@ionic/react';
 
 interface PostTwigProps {
   twigId: string;
@@ -114,6 +114,7 @@ function PostTwig(props: PostTwigProps) {
   return (
     <div>
       <IonCard
+        id={'twig-' + twig.id}
         onMouseMove={handleMouseMove}
         onMouseDown={handleMouseDown}
         onClick={handleClick}

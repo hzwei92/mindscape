@@ -10,6 +10,7 @@ import { mergeArrows } from '../arrow/arrowSlice';
 import { AppContext } from '../../app/App';
 import { mergeIdToPos } from '../space/spaceSlice';
 import { SpaceType } from '../space/space';
+import { useIonToast } from '@ionic/react';
 
 const REPLY_TWIG = gql`
   subscription ReplyTwig($sessionId: String!, $abstractId: String!) {
@@ -41,6 +42,8 @@ const REPLY_TWIG = gql`
 
 export default function useReplyTwigSub() {
   const dispatch = useAppDispatch();
+
+  const [present] = useIonToast();
 
   const {
     user,
