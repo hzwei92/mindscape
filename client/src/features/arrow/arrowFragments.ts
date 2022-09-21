@@ -54,6 +54,11 @@ export const FULL_ARROW_FIELDS = gql`
     sheaf {
       ...SheafFields
     }
+    abstract {
+      id
+      title
+      color
+    }
     user {
       id
       name

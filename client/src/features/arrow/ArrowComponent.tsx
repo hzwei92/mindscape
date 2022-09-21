@@ -1,5 +1,5 @@
 import { addInstance, removeInstance, selectArrowById, selectInstanceById } from './arrowSlice';
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../app/store';
 import { getTimeString } from '../../utils';
 import { selectUserById } from '../user/userSlice';
@@ -8,6 +8,7 @@ import ArrowEditor from './ArrowEditor';
 import ArrowVoter from './ArrowVoter';
 import { reloadOutline, returnDownForwardOutline, returnUpBack } from 'ionicons/icons';
 import UserTag from '../user/UserTag';
+import { SpaceContext } from '../space/SpaceComponent';
 
 interface ArrowProps {
   arrowId: string;
@@ -24,10 +25,13 @@ interface ArrowProps {
 export default function ArrowComponent(props: ArrowProps) {
   const dispatch = useAppDispatch();
 
+  const { abstract } = useContext(SpaceContext);
+
   const router = useIonRouter();
 
   const arrow = useAppSelector(state => selectArrowById(state, props.arrowId));
   const arrowUser = useAppSelector(state => selectUserById(state, arrow?.userId));
+  const arrowAbstract = useAppSelector(state => selectArrowById(state, arrow?.abstractId));
 
   useAppSelector(state => selectInstanceById(state, props.instanceId)); // rerender on instance change
 
@@ -47,6 +51,10 @@ export default function ArrowComponent(props: ArrowProps) {
 
   const handleTitleClick = () => {
     router.push(`/g/${arrow.routeName}/0`)
+  }
+
+  const handleAbstractClick = () => {
+    router.push(`/g/${arrowAbstract?.routeName}/0`)
   }
 
   const time = new Date(arrow.removeDate || arrow.commitDate || arrow.saveDate || Date.now()).getTime();
@@ -105,22 +113,17 @@ export default function ArrowComponent(props: ArrowProps) {
               ? ' (committed)'
               : null
         }
+        &nbsp;
+        &nbsp;
         {
-          // arrow.ownerArrow.id === props.abstract?.id
-          //   ? null
-          //   : <div style={{
-          //       marginTop: 1,
-          //     }}>
-          //       &nbsp;&nbsp;
-          //       <Link color={arrow.ownerArrow.color} onMouseDown={handleMouseDown} onClick={handleJamClick}
-          //         style={{
-          //           color: arrow.ownerArrow.color,
-          //           cursor: 'pointer'
-          //         }}
-          //       >
-          //         {`m/${arrow.ownerArrow.routeName}`}
-          //       </Link>
-          //     </div>
+          arrowAbstract?.id === abstract?.id
+            ? null
+            : <span onClick={handleAbstractClick} style={{
+                color: arrowAbstract?.color,
+                cursor: 'pointer'
+              }}>
+                {arrowAbstract?.title}`
+              </span>
         }
       </div>
       <div>
