@@ -140,8 +140,8 @@ export default function SpaceControls(props: SpaceControlsProps) {
   return (
     <div style={{
       position: 'absolute',
-      right: 210,
-      top: 60,
+      right: 220,
+      top: 65,
     }}>
       <div style={{
         position: 'fixed',

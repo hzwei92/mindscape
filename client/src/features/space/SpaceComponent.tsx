@@ -159,8 +159,6 @@ const SpaceComponent = (props: SpaceComponentProps) => {
 
   const moveDrag = (dx: number, dy: number, targetTwigId?: string) => {
     if (drag.isScreen) {
-      if (!spaceEl?.current) return;
-      spaceEl.current.scrollBy(-1 * dx, -1 * dy)
       return;
     }
 
@@ -193,10 +191,8 @@ const SpaceComponent = (props: SpaceComponentProps) => {
     const dx = x - cursor.x;
     const dy = y - cursor.y;
 
-    if (dx !== 0 || dy !== 0){
-      moveDrag(dx, dy);
-    }
-
+    moveDrag(dx, dy);
+    
     dispatch(setCursor({
       space: props.space,
       cursor: {
@@ -330,6 +326,11 @@ const SpaceComponent = (props: SpaceComponentProps) => {
           targetTwigId: '',
         },
       }));
+    }
+    if (drag.isScreen) {
+      if (!spaceEl?.current) return;
+      spaceEl.current.scrollBy(-1 * event.movementX, -1 * event.movementY)
+      return;
     }
 
     if (!moveEvent) {
