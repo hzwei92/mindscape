@@ -7,6 +7,7 @@ import { selectSelectedTwigId } from './spaceSlice';
 import { useAppDispatch, useAppSelector } from '../../app/store';
 import { Arrow } from '../arrow/arrow';
 import useCenterTwig from '../twig/useCenterTwig';
+import { useIonLoading } from '@ionic/react';
 
 const GET_DETAILS = gql`
   mutation GetTwigs($abstractId: String!) {
@@ -19,6 +20,8 @@ const GET_DETAILS = gql`
 
 export default function useInitSpace(space: SpaceType, abstract: Arrow | null, setShouldLoadTwigPositions: Dispatch<SetStateAction<boolean>>) {
   const dispatch = useAppDispatch();
+
+  const [present, dismiss] = useIonLoading();
 
   const selectedTwigId = useAppSelector(selectSelectedTwigId(space));
 
@@ -38,12 +41,17 @@ export default function useInitSpace(space: SpaceType, abstract: Arrow | null, s
       setShouldLoadTwigPositions(true);
 
       centerTwig(selectedTwigId || '', true, 0);
+      
+      dismiss();
     },
   });
 
   useEffect(() => {
     if (!abstract?.id) return;
     console.log('init Space', space, abstract.id, abstract)
+    present({
+      message: 'Loading...',
+    });
     dispatch(resetTwigs(space));
 
     getTwigs({
