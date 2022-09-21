@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../app/store';
 import { getTimeString } from '../../utils';
 import { selectUserById } from '../user/userSlice';
-import { IonIcon, IonLabel } from '@ionic/react';
+import { IonIcon, IonLabel, useIonRouter } from '@ionic/react';
 import ArrowEditor from './ArrowEditor';
 import ArrowVoter from './ArrowVoter';
 import { reloadOutline, returnDownForwardOutline, returnUpBack } from 'ionicons/icons';
@@ -24,6 +24,8 @@ interface ArrowProps {
 export default function ArrowComponent(props: ArrowProps) {
   const dispatch = useAppDispatch();
 
+  const router = useIonRouter();
+
   const arrow = useAppSelector(state => selectArrowById(state, props.arrowId));
   const arrowUser = useAppSelector(state => selectUserById(state, arrow?.userId));
 
@@ -42,6 +44,10 @@ export default function ArrowComponent(props: ArrowProps) {
   }, []);
 
   if (!arrow) return null;
+
+  const handleTitleClick = () => {
+    router.push(`/g/${arrow.routeName}/0`)
+  }
 
   const time = new Date(arrow.removeDate || arrow.commitDate || arrow.saveDate || Date.now()).getTime();
   const timeString = getTimeString(time);
@@ -123,11 +129,12 @@ export default function ArrowComponent(props: ArrowProps) {
             ? <div style={{
                 paddingTop: '5px',
               }}>
-                <IonLabel style={{
+                <IonLabel onClick={handleTitleClick} style={{
                   whiteSpace: 'pre-wrap',
                   wordWrap: 'break-word',
                   fontSize: 40,
                   fontWeight: 'bold',
+                  cursor: 'pointer',
                 }}>
                   {
                     arrow.faviconUrl
