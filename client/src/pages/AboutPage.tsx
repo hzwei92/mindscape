@@ -41,7 +41,7 @@ const AboutPage: React.FC = () => {
             </p>
             <br/>
             <p>
-              The graphs thatyou are viewing are numbered in the top right.
+              The graphs that you are viewing are numbered in the top right.
             </p>
           </IonCard>
         </IonCardContent>

@@ -19,6 +19,7 @@ import { selectIdToDescIdToTrue, selectIdToTwig } from '../twig/twigSlice';
 import useGraftTwig from '../twig/useGraftTwig';
 import useMoveTwig from '../twig/useMoveTwig';
 import useTwigTree from '../twig/useTwigTree';
+import RemoveTwigModal from './RemoveTwigModal';
 import SettingsMenu from './SettingsMenu';
 import { PosType, SpaceType } from './space';
 import SpaceControls from './SpaceControls';
@@ -568,6 +569,7 @@ const SpaceComponent = (props: SpaceComponentProps) => {
       <SettingsMenu 
         settingsMenuRef={settingsMenuRef}
       />
+      <RemoveTwigModal />
     </SpaceContext.Provider>
   );
 };
