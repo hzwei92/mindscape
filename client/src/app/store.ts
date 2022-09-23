@@ -2,6 +2,7 @@ import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import arrowSlice from '../features/arrow/arrowSlice';
 import authSlice from '../features/auth/authSlice';
+import cursorSlice from '../features/cursor/cursorSlice';
 import entrySlice from '../features/entry/entrySlice';
 import searchSlice from '../features/search/searchSlice';
 import sheafSlice from '../features/sheaf/sheafSlice';
@@ -15,6 +16,7 @@ export const store = configureStore({
   reducer: {
     arrow: arrowSlice,
     auth: authSlice,
+    cursor: cursorSlice,
     entry: entrySlice,
     search: searchSlice,
     sheaf: sheafSlice,

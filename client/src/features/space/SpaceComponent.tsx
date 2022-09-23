@@ -1,5 +1,6 @@
 import { useReactiveVar } from '@apollo/client';
-import { IonCard, IonCardContent } from '@ionic/react';
+import { IonCard, IonCardContent, IonIcon } from '@ionic/react';
+import { navigateCircleOutline } from 'ionicons/icons';
 import { createContext, Dispatch, SetStateAction, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { AppContext } from '../../app/App';
 import { useAppDispatch, useAppSelector } from '../../app/store';
@@ -9,6 +10,9 @@ import { IdToType } from '../../types';
 import { checkPermit } from '../../utils';
 import { Arrow } from '../arrow/arrow';
 import { selectArrowById } from '../arrow/arrowSlice';
+import { selectIdToCursor } from '../cursor/cursorSlice';
+import usePublishCursor from '../cursor/usePublishCursor';
+import usePublishCursorSub from '../cursor/usePublishCursorSub';
 import { Role } from '../role/role';
 import { selectFocusTab } from '../tab/tabSlice';
 import LinkTwig from '../twig/LinkTwig';
@@ -44,6 +48,7 @@ interface SpaceComponentProps {
 
 const SpaceComponent = (props: SpaceComponentProps) => {
   const dispatch = useAppDispatch();
+
   const { moveTwig } = useMoveTwig(props.space);
   const { graftTwig } = useGraftTwig(props.space);
 
@@ -53,10 +58,16 @@ const SpaceComponent = (props: SpaceComponentProps) => {
 
   const abstract = useAppSelector(state => selectArrowById(state, focusTab?.arrowId));
  
+  const { publishCursor } = usePublishCursor(props.space, focusTab?.arrowId);
+
+  usePublishCursorSub(props.space, focusTab?.arrowId);
+
   const scale = useAppSelector(selectScale(props.space));
   const scroll = useAppSelector(selectScroll(props.space));
   const cursor = useAppSelector(selectCursor(props.space));
   const drag = useAppSelector(selectDrag(props.space));
+
+  const idToCursor = useAppSelector(selectIdToCursor(props.space));
 
   const idToPos = useAppSelector(selectIdToPos(props.space));
   const idToHeight = useAppSelector(selectIdToHeight(props.space));
@@ -202,7 +213,7 @@ const SpaceComponent = (props: SpaceComponentProps) => {
       },
     }));
 
-    //publishCursor(x, y); TODO
+    publishCursor(x, y);
 
     setMoveEvent(null);
   }, [moveEvent]);
@@ -541,6 +552,7 @@ const SpaceComponent = (props: SpaceComponentProps) => {
         cursor: drag.isScreen || drag.twigId
           ? 'grabbing'
           : 'grab',
+        position: 'relative',
       }}>
         <IonCardContent style={{
           width: VIEW_RADIUS * 2 * (scale < 1 ? scale : 1),
@@ -559,6 +571,26 @@ const SpaceComponent = (props: SpaceComponentProps) => {
           { twigs }
           { dropTargets }
         </IonCardContent>
+        {
+          Object.keys(idToCursor).map(id => {
+            const cursor = idToCursor[id];
+            console.log('curosr', cursor);
+            return (
+              <div key={`cursor-${id}`} style={{
+                position: 'absolute',
+                left: (cursor.x * scale) - 10,
+                top: (cursor.y * scale) - 60,
+                zIndex: MAX_Z_INDEX + 10000,
+                color: cursor.color,
+                display: 'flex',
+                fontSize: 20,
+              }}>
+                <IonIcon icon={navigateCircleOutline} size='large'/>
+                u/{cursor.name}
+              </div>
+            )
+          })
+        }
       </IonCard>
       <SpaceControls 
         settingsMenuRef={settingsMenuRef}
