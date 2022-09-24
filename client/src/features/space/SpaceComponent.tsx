@@ -22,6 +22,8 @@ import PostTwigMarker from '../twig/PostTwigMarker';
 import { selectIdToDescIdToTrue, selectIdToTwig } from '../twig/twigSlice';
 import useGraftTwig from '../twig/useGraftTwig';
 import useMoveTwig from '../twig/useMoveTwig';
+import useMoveTwigSub from '../twig/useMoveTwigSub';
+import useReplyTwigSub from '../twig/useReplyTwigSub';
 import useTwigTree from '../twig/useTwigTree';
 import RemoveTwigModal from './RemoveTwigModal';
 import SettingsMenu from './SettingsMenu';
@@ -52,6 +54,7 @@ const SpaceComponent = (props: SpaceComponentProps) => {
   const { moveTwig } = useMoveTwig(props.space);
   const { graftTwig } = useGraftTwig(props.space);
 
+
   const { user, palette } = useContext(AppContext);
 
   const focusTab = useAppSelector(selectFocusTab);
@@ -61,6 +64,9 @@ const SpaceComponent = (props: SpaceComponentProps) => {
   const { publishCursor } = usePublishCursor(props.space, focusTab?.arrowId);
 
   usePublishCursorSub(props.space, focusTab?.arrowId);
+
+  useReplyTwigSub(props.space, abstract);
+  useMoveTwigSub(props.space, abstract);
 
   const scale = useAppSelector(selectScale(props.space));
   const scroll = useAppSelector(selectScroll(props.space));
@@ -574,7 +580,6 @@ const SpaceComponent = (props: SpaceComponentProps) => {
         {
           Object.keys(idToCursor).map(id => {
             const cursor = idToCursor[id];
-            console.log('curosr', cursor);
             return (
               <div key={`cursor-${id}`} style={{
                 position: 'absolute',

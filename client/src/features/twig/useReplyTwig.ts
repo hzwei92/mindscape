@@ -14,7 +14,6 @@ import { mergeArrows } from '../arrow/arrowSlice';
 import { useAppDispatch, useAppSelector } from '../../app/store';
 import { AppContext } from '../../app/App';
 import { applyRole } from '../role/applyRole';
-import { SpaceType } from '../space/space';
 import { useIonRouter, useIonToast } from '@ionic/react';
 
 const REPLY_TWIG = gql`

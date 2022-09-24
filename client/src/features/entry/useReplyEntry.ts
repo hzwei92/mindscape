@@ -13,7 +13,6 @@ import { selectFocusTab, selectFrameTab } from '../tab/tabSlice';
 const REPLY_ARROW = gql`
   mutation ReplyArrow(
     $sessionId: String!, 
-    $abstractId: String!,
     $sourceId: String!, 
     $linkId: String! 
     $targetId: String!, 
@@ -22,7 +21,6 @@ const REPLY_ARROW = gql`
   ) {
     replyArrow(
       sessionId: $sessionId, 
-      abstractId: $abstractId,
       sourceId: $sourceId, 
       linkId: $linkId,
       targetId: $targetId, 

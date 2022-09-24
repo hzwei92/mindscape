@@ -49,11 +49,6 @@ export default function useSaveArrowSub() {
           shouldRefreshDraft: true,
         }))
       });
-      
-      present({
-        message: 'Saved',
-        position: 'bottom',
-      })
     },
   });
 }

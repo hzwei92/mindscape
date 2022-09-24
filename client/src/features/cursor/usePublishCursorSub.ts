@@ -28,7 +28,7 @@ export default function usePublishCursorSub(space: SpaceType, abstractId?: strin
       abstractId,
     },
     onSubscriptionData: ({subscriptionData: {data: {publishCursor}}}) => {
-      console.log(publishCursor)
+      //console.log(publishCursor)
       if (idToCursor[publishCursor.id]) {
         clearTimeout(idToCursor[publishCursor.id].timeout);
       }

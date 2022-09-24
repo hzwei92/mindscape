@@ -2,7 +2,6 @@ import { gql, useMutation, useReactiveVar } from '@apollo/client'
 import { useState } from 'react';
 import { useAppSelector } from '../../app/store';
 import { sessionVar } from '../../cache';
-import { VIEW_RADIUS } from '../../constants';
 import { SpaceType } from '../space/space';
 import { selectScale } from '../space/spaceSlice';
 
@@ -26,7 +25,7 @@ export default function usePublishCursor(space: SpaceType, abstractId?: string) 
       console.error(error);
     },
     onCompleted: data => {
-      console.log(data);
+      //console.log(data);
     }
   });
 

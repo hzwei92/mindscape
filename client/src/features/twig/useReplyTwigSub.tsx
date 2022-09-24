@@ -11,6 +11,7 @@ import { AppContext } from '../../app/App';
 import { mergeIdToPos } from '../space/spaceSlice';
 import { SpaceType } from '../space/space';
 import { useIonToast } from '@ionic/react';
+import { Arrow } from '../arrow/arrow';
 
 const REPLY_TWIG = gql`
   subscription ReplyTwig($sessionId: String!, $abstractId: String!) {
@@ -40,20 +41,10 @@ const REPLY_TWIG = gql`
   ${FULL_ROLE_FIELDS}
 `;
 
-export default function useReplyTwigSub() {
+export default function useReplyTwigSub(space: SpaceType, abstract: Arrow | null) {
   const dispatch = useAppDispatch();
 
   const [present] = useIonToast();
-
-  const {
-    user,
-    palette,
-  } = useContext(AppContext);
-
-  const {
-    space,
-    abstract,
-  } = useContext(SpaceContext);
 
   const sessionDetail = useReactiveVar(sessionVar);
 
@@ -78,17 +69,18 @@ export default function useReplyTwigSub() {
         twigs: [link, target]
       }));
 
-      dispatch(mergeArrows([abstract, source]));
-
       dispatch(mergeIdToPos({
-        space: SpaceType.FOCUS,
-        idToPos: {
-          [target.id]: {
-            x: target.x,
-            y: target.y,
-          }
-        },
+        space,
+        idToPos: [link, target].reduce((acc, twig) => {
+          acc[twig.id] = {
+            x: twig.x,
+            y: twig.y,
+          };
+          return acc;
+        }, {})
       }))
+
+      dispatch(mergeArrows([abstract, source]));
     }
   });
 }

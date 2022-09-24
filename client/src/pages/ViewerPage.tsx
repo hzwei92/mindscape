@@ -6,8 +6,6 @@ import useReplyTwigSub from '../features/twig/useReplyTwigSub';
 
 const VeiwerPage: React.FC = () => {
   useAppRouter();
-  useReplyTwigSub();
-  
   return (
     <IonPage>
       <SpaceComponent space={SpaceType.FOCUS} />

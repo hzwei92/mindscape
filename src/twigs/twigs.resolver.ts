@@ -223,6 +223,14 @@ export class TwigsResolver {
       role,
     } = await this.twigsService.moveTwig(user, twigId, x, y);
 
+    console.log('moveTwig', twigs, role);
+
+    this.pubSub.publish('moveTwig', {
+      sessionId,
+      abstractId: twigs[0].abstractId,
+      moveTwig: twigs,
+    })
+
     return {
       twigs, 
       role,
@@ -511,7 +519,7 @@ export class TwigsResolver {
     return this.pubSub.asyncIterator('dragTwig')
   }
 
-  @Subscription(() => Twig, {name: 'moveTwig',
+  @Subscription(() => [Twig], {name: 'moveTwig',
     filter: (payload, variables) => {
       if (payload.sessionId === variables.sessionId) {
         return false;
