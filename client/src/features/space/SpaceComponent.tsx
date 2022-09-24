@@ -23,6 +23,7 @@ import { selectIdToDescIdToTrue, selectIdToTwig } from '../twig/twigSlice';
 import useGraftTwig from '../twig/useGraftTwig';
 import useMoveTwig from '../twig/useMoveTwig';
 import useMoveTwigSub from '../twig/useMoveTwigSub';
+import useOpenTwigSub from '../twig/useOpenTwigSub';
 import useReplyTwigSub from '../twig/useReplyTwigSub';
 import useTwigTree from '../twig/useTwigTree';
 import RemoveTwigModal from './RemoveTwigModal';
@@ -67,6 +68,7 @@ const SpaceComponent = (props: SpaceComponentProps) => {
 
   useReplyTwigSub(props.space, abstract);
   useMoveTwigSub(props.space, abstract);
+  useOpenTwigSub(props.space, abstract);
 
   const scale = useAppSelector(selectScale(props.space));
   const scroll = useAppSelector(selectScroll(props.space));

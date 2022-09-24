@@ -1,7 +1,8 @@
-import { gql, useMutation } from '@apollo/client';
+import { gql, useMutation, useReactiveVar } from '@apollo/client';
 import { useContext } from 'react';
 import { v4 } from 'uuid';
 import { useAppDispatch, useAppSelector } from '../../app/store';
+import { sessionVar } from '../../cache';
 import { selectSessionId } from '../auth/authSlice';
 import { SpaceType } from '../space/space';
 import { SpaceContext } from '../space/SpaceComponent';
@@ -24,7 +25,7 @@ const useOpenTwig = () => {
 
   const { space } = useContext(SpaceContext);
 
-  const sessionId = useAppSelector(selectSessionId);
+  const sessionDetail = useReactiveVar(sessionVar);
 
   const [open] = useMutation(OPEN_TWIG, {
     onError: error => {
@@ -41,7 +42,7 @@ const useOpenTwig = () => {
   const openTwig = (twig: Twig, shouldOpen: boolean) => {
     open({
       variables: {
-        sessionId,
+        sessionId: sessionDetail.id,
         twigId: twig.id,
         shouldOpen,
       }

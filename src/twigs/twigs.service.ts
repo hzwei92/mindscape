@@ -831,7 +831,7 @@ export class TwigsService {
   }
 
   async openTwig(user: User, twigId: string, shouldOpen: boolean) {
-    const twig = await this.getTwigById(twigId);
+    let twig = await this.getTwigById(twigId);
     if (!twig) {
       throw new BadRequestException('This twig does not exist');
     }
@@ -852,10 +852,8 @@ export class TwigsService {
       throw new BadRequestException('Insufficient privileges');
     }
 
-    const twig0 = new Twig();
-    twig0.id = twig.id;
-    twig0.isOpen = shouldOpen;
-    const twig1 = await this.twigsRepository.save(twig0);
+    twig.isOpen = shouldOpen;
+    const twig1 = await this.twigsRepository.save(twig);
 
     return {
       twig: twig1,

@@ -322,6 +322,7 @@ type Subscription {
   dragTwig(abstractId: String!, sessionId: String!): DragTwigResult!
   graftTwig(abstractId: String!, sessionId: String!): Twig!
   moveTwig(abstractId: String!, sessionId: String!): [Twig!]!
+  openTwig(abstractId: String!, sessionId: String!): Twig!
   publishCursor(abstractId: String!, sessionId: String!): UserCursor!
   removeTwig(abstractId: String!, sessionId: String!): RemoveTwigResult!
   replyTwig(abstractId: String!, sessionId: String!): ReplyTwigResult!

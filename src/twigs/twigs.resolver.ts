@@ -223,8 +223,6 @@ export class TwigsResolver {
       role,
     } = await this.twigsService.moveTwig(user, twigId, x, y);
 
-    console.log('moveTwig', twigs, role);
-
     this.pubSub.publish('moveTwig', {
       sessionId,
       abstractId: twigs[0].abstractId,
@@ -270,6 +268,12 @@ export class TwigsResolver {
       twig,
       role
     } = await this.twigsService.openTwig(user, twigId, shouldOpen);
+
+    this.pubSub.publish('openTwig', {
+      sessionId,
+      abstractId: twig.abstractId,
+      openTwig: twig,
+    });
 
     return {
       twig,
@@ -346,7 +350,6 @@ export class TwigsResolver {
     @Args('groupTwigId') groupTwigId: string,
     @Args('parentTwigId', {nullable: true}) parentTwigId: string,
   ) {
-    console.log('moveTwig', twigId, groupTwigId, parentTwigId);
     return this.twigsService.moveTab(user, twigId, groupTwigId, parentTwigId);
   }
 
@@ -549,5 +552,21 @@ export class TwigsResolver {
   ) {
     console.log('graftTwigSub');
     return this.pubSub.asyncIterator('graftTwig')
+  }
+
+  @Subscription(() => Twig, {name: 'openTwig',
+    filter: (payload, variables) => {
+      if (payload.sessionId === variables.sessionId) {
+        return false;
+      }
+      return payload.abstractId === variables.abstractId;
+    },
+  })
+  openTwigSub(
+    @Args('sessionId') sessionId: string,
+    @Args('abstractId') abstractId: string,
+  ) {
+    console.log('openTwigSub');
+    return this.pubSub.asyncIterator('openTwig')
   }
 }
