@@ -9,9 +9,11 @@ import { selectFocusTab, selectIdToTab } from "../features/tab/tabSlice";
 import useSetUserPalette from "../features/user/useSetUserPalette";
 import { AppContext } from "./App";
 import { useAppSelector } from "./store";
+import useAppRouter from "./useAppRouter";
 
 
 const AppBar = () => {
+  useAppRouter();
   useSaveArrowSub();
 
   const { setUserPalette } = useSetUserPalette();

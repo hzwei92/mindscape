@@ -39,7 +39,6 @@ import { User } from '../features/user/user';
 import { useAppSelector } from './store';
 import { selectCurrentUser, selectIdToUser } from '../features/user/userSlice';
 import VeiwerPage from '../pages/ViewerPage';
-import { MAX_Z_INDEX } from '../constants';
 import AccountPage from '../pages/AccountPage';
 import LoginPage from '../pages/LoginPage';
 import LogoutPage from '../pages/LogoutPage';

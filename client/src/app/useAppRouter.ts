@@ -97,7 +97,7 @@ const useAppRouter = () => {
         createTabByRouteName(path[2], null, false, true);
       }
     }
-  }, [user, router.routeInfo, idToTab, focusIdToPos])
+  }, [user, router.routeInfo, idToTab])
 }
 
 export default useAppRouter;
