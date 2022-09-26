@@ -33,6 +33,12 @@ export class ArrowsService {
     private readonly searchService: SearchService,
   ) {}
 
+  async indexArrows() {
+    const arrows = await this.arrowsRepository.find();
+    this.searchService.saveArrows(arrows);
+    return arrows;
+  }
+  
   async getArrowById(id: string) {
     return this.arrowsRepository.findOne({
       where: {

@@ -1,7 +1,6 @@
 import { gql, useReactiveVar, useSubscription } from '@apollo/client';
 import { sessionVar } from '../../cache';
 import { useAppDispatch } from '../../app/store';
-import { FULL_TWIG_FIELDS } from './twigFragments';
 import { FULL_ROLE_FIELDS } from '../role/roleFragments';
 import { mergeTwigs } from './twigSlice';
 import { SpaceType } from '../space/space';

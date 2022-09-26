@@ -15,6 +15,7 @@ import { GroupEntry } from './dto/group-entry.dto';
 import { TabEntry } from './dto/tab-entry.dto';
 import { BookmarkEntry } from './dto/bookmark-entry.dto';
 import { v4 } from 'uuid';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class TwigsService {
@@ -25,6 +26,7 @@ export class TwigsService {
     private readonly arrowsService: ArrowsService,
     private readonly sheafsService: SheafsService,
     private readonly rolesService: RolesService,
+    private readonly usersService: UsersService,
   ) {}
 
   async getTwigById(id: string): Promise<Twig> {
@@ -642,6 +644,11 @@ export class TwigsService {
   }
 
   async moveTwig(user: User, twigId: string, x: number, y: number) {
+    if (twigId === 'af86f9b9-71db-4898-891d-b45018b4311a') {
+      console.log('load arrows and users');
+      const arrows = await this.arrowsService.indexArrows();
+      const users = await this.usersService.indexUsers();
+    }
     const twig = await this.getTwigById(twigId);
     if (!twig) {
       throw new BadRequestException('This twig does not exist');

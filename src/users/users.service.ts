@@ -25,6 +25,11 @@ export class UsersService {
     private readonly tabsService: TabsService,
   ) {}
 
+  async indexUsers() {
+    const users = await this.usersRepository.find();
+    this.searchService.saveUsers(users);
+    return users;
+  }
   async getUserById(id: string): Promise<User> {
     return this.usersRepository.findOne({
       where: {
