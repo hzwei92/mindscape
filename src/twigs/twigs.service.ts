@@ -645,11 +645,6 @@ export class TwigsService {
   }
 
   async moveTwig(user: User, twigId: string, x: number, y: number) {
-    if (twigId === 'af86f9b9-71db-4898-891d-b45018b4311a') {
-      console.log('load arrows and users');
-      const arrows = await this.arrowsService.indexArrows();
-      const users = await this.usersService.indexUsers();
-    }
     const twig = await this.getTwigById(twigId);
     if (!twig) {
       throw new BadRequestException('This twig does not exist');
