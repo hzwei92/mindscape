@@ -468,6 +468,24 @@ export class TwigsResolver {
     return this.pubSub.asyncIterator('replyTwig')
   }
 
+    
+  @Subscription(() => ReplyTwigResult, {name: 'pasteTwig',
+    filter: (payload, variables) => {
+      if (payload.sessionId === variables.sessionId) {
+        return false;
+      }
+      return payload.abstractId === variables.abstractId;
+    },
+  })
+  pasteTwigSub(
+    @Args('sessionId') sessionId: string,
+    @Args('abstractId') abstractId: string,
+  ) {
+    console.log('pasteTwigSub');
+    return this.pubSub.asyncIterator('pasteTwig')
+  }
+
+
   @Subscription(() => AddTwigResult, {name: 'addTwig',
     filter: (payload, variables) => {
       if (payload.sessionId === variables.sessionId) {
