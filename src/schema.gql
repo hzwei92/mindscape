@@ -98,9 +98,7 @@ type DragTwigResult {
 
 type GraftTwigResult {
   descs: [Twig!]!
-  prevSibs: [Twig!]!
   role: Role
-  sibs: [Twig!]!
   twig: Twig!
 }
 
@@ -172,7 +170,7 @@ type Mutation {
   getOuts(arrowId: String!, offset: Int!): [Arrow!]!
   getTwigs(abstractId: String!): [Twig!]!
   getUser(userId: String!): User!
-  graftTwig(parentTwigId: String!, sessionId: String!, twigId: String!): GraftTwigResult!
+  graftTwig(parentTwigId: String!, sessionId: String!, twigId: String!, x: Int!, y: Int!): GraftTwigResult!
   initUser(palette: String!): User!
   inviteRole(arrowId: String!, sessionId: String!, userName: String!): Role!
   linkArrows(sessionId: String!, sourceId: String!, targetId: String!): LinkArrowsResult!
@@ -320,7 +318,7 @@ type Subscription {
   addTwig(abstractId: String!, sessionId: String!): AddTwigResult!
   arrowRole(arrowId: String!, sessionId: String!): Role!
   dragTwig(abstractId: String!, sessionId: String!): DragTwigResult!
-  graftTwig(abstractId: String!, sessionId: String!): Twig!
+  graftTwig(abstractId: String!, sessionId: String!): GraftTwigResult!
   moveTwig(abstractId: String!, sessionId: String!): [Twig!]!
   openTwig(abstractId: String!, sessionId: String!): Twig!
   publishCursor(abstractId: String!, sessionId: String!): UserCursor!

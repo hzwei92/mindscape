@@ -1,6 +1,6 @@
-import { MAX_Z_INDEX, MOBILE_WIDTH, VIEW_RADIUS } from '../../constants';
+import { MAX_Z_INDEX } from '../../constants';
 import { scaleDown, scaleUp } from '../../utils';
-import { Dispatch, SetStateAction, useContext } from 'react';
+import { useContext } from 'react';
 import { SpaceContext } from './SpaceComponent';
 import { useAppDispatch, useAppSelector } from '../../app/store';
 import { selectScale, selectSelectedTwigId, setScale } from './spaceSlice';
@@ -8,9 +8,7 @@ import { useReactiveVar } from '@apollo/client';
 import { SpaceType } from './space';
 import { focusSpaceElVar, frameSpaceElVar } from '../../cache';
 import { selectIdToTwig } from '../twig/twigSlice';
-import useInitSpace from './useInitSpace';
 import { selectFocusTab, selectFrameTab, selectIdToTab } from '../tab/tabSlice';
-import { AppContext } from '../../app/App';
 import useUpdateTab from '../tab/useUpdateTab';
 import useRemoveTab from '../tab/useRemoveTab';
 import { IonButton, IonButtons, IonCard, IonFab, IonFabButton, IonIcon } from '@ionic/react';
@@ -18,18 +16,15 @@ import { add, close, people, remove, settingsOutline, sync } from 'ionicons/icon
 
 interface SpaceControlsProps {
   settingsMenuRef: React.RefObject<HTMLIonMenuElement>;
-  showRoles: boolean;
-  setShowRoles: Dispatch<SetStateAction<boolean>>;
+  rolesMenuRef: React.RefObject<HTMLIonMenuElement>;
 }
 export default function SpaceControls(props: SpaceControlsProps) {
   const dispatch = useAppDispatch();
-  const { user, width, palette } = useContext(AppContext);
   const { space } = useContext(SpaceContext);
 
   const frameTab = useAppSelector(selectFrameTab);
   const focusTab = useAppSelector(selectFocusTab);
 
-  const idToTab = useAppSelector(selectIdToTab)
   const frameSelectedTwigId = useAppSelector(selectSelectedTwigId(SpaceType.FRAME));
   const frameIdToTwig = useAppSelector(selectIdToTwig(SpaceType.FRAME));
   const focusSelectedTwigId = useAppSelector(selectSelectedTwigId(SpaceType.FOCUS));
@@ -43,7 +38,6 @@ export default function SpaceControls(props: SpaceControlsProps) {
 
   const isSynced = true;
 
-  const { updateTab } = useUpdateTab();
   const { removeTab } = useRemoveTab();
 
   const handleScaleDownClick = (event: React.MouseEvent) => {
@@ -129,7 +123,7 @@ export default function SpaceControls(props: SpaceControlsProps) {
   };
 
   const handleRolesClick = () => {
-    props.setShowRoles(show => !show)
+    props.rolesMenuRef.current?.open();
   }
 
   const handleSyncClick = () => {

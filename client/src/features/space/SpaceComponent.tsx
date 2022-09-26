@@ -21,12 +21,14 @@ import PostTwig from '../twig/PostTwig';
 import PostTwigMarker from '../twig/PostTwigMarker';
 import { selectIdToDescIdToTrue, selectIdToTwig } from '../twig/twigSlice';
 import useGraftTwig from '../twig/useGraftTwig';
+import useGraftTwigSub from '../twig/useGraftTwigSub';
 import useMoveTwig from '../twig/useMoveTwig';
 import useMoveTwigSub from '../twig/useMoveTwigSub';
 import useOpenTwigSub from '../twig/useOpenTwigSub';
 import useReplyTwigSub from '../twig/useReplyTwigSub';
 import useTwigTree from '../twig/useTwigTree';
 import RemoveTwigModal from './RemoveTwigModal';
+import RolesMenu from './RolesMenu';
 import SettingsMenu from './SettingsMenu';
 import { PosType, SpaceType } from './space';
 import SpaceControls from './SpaceControls';
@@ -69,6 +71,7 @@ const SpaceComponent = (props: SpaceComponentProps) => {
   useReplyTwigSub(props.space, abstract);
   useMoveTwigSub(props.space, abstract);
   useOpenTwigSub(props.space, abstract);
+  useGraftTwigSub(props.space, abstract);
 
   const scale = useAppSelector(selectScale(props.space));
   const scroll = useAppSelector(selectScroll(props.space));
@@ -100,8 +103,7 @@ const SpaceComponent = (props: SpaceComponentProps) => {
   const canView = checkPermit(abstract?.canView, role?.type)
 
   const settingsMenuRef = useRef<HTMLIonMenuElement>(null);
-
-  const [showRoles, setShowRoles] = useState(false);
+  const rolesMenuRef = useRef<HTMLIonMenuElement>(null);
 
   const [moveEvent, setMoveEvent] = useState(null as React.MouseEvent | null);
 
@@ -317,11 +319,11 @@ const SpaceComponent = (props: SpaceComponentProps) => {
     if (!drag.twigId) return;
 
     if (canEdit) {
+      const pos = idToPos[drag.twigId]
       if (drag.targetTwigId) {
-        graftTwig(drag.twigId, drag.targetTwigId);
+        graftTwig(drag.twigId, drag.targetTwigId, pos.x, pos.y);
       }
       else {
-        const pos = idToPos[drag.twigId]
         moveTwig(drag.twigId, pos.x, pos.y);
       }
     }
@@ -433,8 +435,8 @@ const SpaceComponent = (props: SpaceComponentProps) => {
           onMouseMove={handleTargetMouseMove(twig.id)} 
           style={{
             position: 'absolute',
-            left: pos.x + VIEW_RADIUS,
-            top: pos.y + VIEW_RADIUS,
+            left: pos.x + VIEW_RADIUS + 10,
+            top: pos.y + VIEW_RADIUS + 10,
             zIndex: MAX_Z_INDEX + twig.z,
             width: twig.isOpen
               ? TWIG_WIDTH
@@ -444,9 +446,9 @@ const SpaceComponent = (props: SpaceComponentProps) => {
               : CLOSED_LINK_TWIG_DIAMETER,
             backgroundColor: twig.user?.color,
             opacity: drag.targetTwigId === twig.id
-              ? 0.4
+              ? 0.5
               : 0,
-            borderRadius: 2,
+            borderRadius: 10,
             border: `2px solid ${twig.user.color}`,
           }}
         />
@@ -593,7 +595,7 @@ const SpaceComponent = (props: SpaceComponentProps) => {
                 fontSize: 20,
               }}>
                 <IonIcon icon={navigateCircleOutline} size='large'/>
-                u/{cursor.name}
+                {cursor.name}
               </div>
             )
           })
@@ -601,12 +603,14 @@ const SpaceComponent = (props: SpaceComponentProps) => {
       </IonCard>
       <SpaceControls 
         settingsMenuRef={settingsMenuRef}
-        showRoles={showRoles}
-        setShowRoles={setShowRoles}
+        rolesMenuRef={rolesMenuRef}
       />
       <SpaceNav />
       <SettingsMenu 
         settingsMenuRef={settingsMenuRef}
+      />
+      <RolesMenu
+        rolesMenuRef={rolesMenuRef}
       />
       <RemoveTwigModal />
     </SpaceContext.Provider>

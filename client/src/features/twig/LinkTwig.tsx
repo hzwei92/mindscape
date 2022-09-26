@@ -47,7 +47,7 @@ function LinkTwig(props: LinkTwigProps) {
   const selectedTwigId = useAppSelector(selectSelectedTwigId(space));
   const isSelected = twig.id === selectedTwigId;
 
-  const cardEl = useRef<HTMLDivElement | undefined>();
+  const cardEl = useRef<HTMLIonCardElement>(null);
 
   useEffect(() => {
     if (cardEl.current?.clientHeight && cardEl.current.clientHeight !== height) {
@@ -129,7 +129,7 @@ function LinkTwig(props: LinkTwigProps) {
 
   return (
     <div>
-      <IonCard onClick={handleOpenClick} style={{
+      <IonCard ref={cardEl} onClick={handleOpenClick} style={{
         width: CLOSED_LINK_TWIG_DIAMETER,
         height: CLOSED_LINK_TWIG_DIAMETER,
         outline: isSelected

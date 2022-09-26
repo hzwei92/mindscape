@@ -6,13 +6,7 @@ import { Twig } from "../twig.model";
 export class GraftTwigResult {
   @Field(() => Twig)
   twig: Twig;
-
-  @Field(() => [Twig])
-  prevSibs: Twig[];
-
-  @Field(() => [Twig])
-  sibs: Twig[];
-
+  
   @Field(() => [Twig])
   descs: Twig[];
 

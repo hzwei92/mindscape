@@ -79,10 +79,9 @@ export default function SettingsMenu(props: SettingsMenuProps) {
       zIndex: MAX_Z_INDEX,
     }}>
       <IonCard style={{
-        overflowY: 'scroll',
-        marginTop: `${SPACE_BAR_HEIGHT}px`,
-        height: `calc(100% - ${SPACE_BAR_HEIGHT}px - 20px)`,
-        width: ROLES_MENU_WIDTH,
+        marginTop: SPACE_BAR_HEIGHT + 10,
+        padding: 10,
+        height: `calc(100% - ${SPACE_BAR_HEIGHT + 10}px)`,
       }}>
         <IonCard style={{
           margin: 1,

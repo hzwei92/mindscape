@@ -38,7 +38,7 @@ function PostTwig(props: PostTwigProps) {
   const selectedTwigId = useAppSelector(selectSelectedTwigId(space));
   const isSelected = twig.id === selectedTwigId;
 
-  const cardEl = useRef<HTMLElement>();
+  const cardEl = useRef<HTMLIonCardElement>(null);
 
   useEffect(() => {
     if (cardEl.current?.clientHeight && cardEl.current.clientHeight !== height) {
@@ -114,6 +114,7 @@ function PostTwig(props: PostTwigProps) {
   return (
     <div>
       <IonCard
+        ref={cardEl}
         id={'twig-' + twig.id}
         onMouseMove={handleMouseMove}
         onMouseDown={handleMouseDown}

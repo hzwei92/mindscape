@@ -242,8 +242,18 @@ export class TwigsResolver {
     @Args('sessionId') sessionId: string,
     @Args('parentTwigId') parentTwigId: string,
     @Args('twigId') twigId: string,
+    @Args('x', {type: () => Int}) x: number,
+    @Args('y', {type: () => Int}) y: number,
   ) {
-    return this.twigsService.graftTwig(user, twigId, parentTwigId);
+    const result = await this.twigsService.graftTwig(user, twigId, parentTwigId, x, y);
+
+    this.pubSub.publish('graftTwig', {
+      sessionId,
+      abstractId: result.twig.abstractId,
+      graftTwig: result,
+    });
+
+    return result;
   }
 
   @UseGuards(GqlAuthGuard)
@@ -538,7 +548,7 @@ export class TwigsResolver {
     return this.pubSub.asyncIterator('moveTwig')
   }
 
-  @Subscription(() => Twig, {name: 'graftTwig',
+  @Subscription(() => GraftTwigResult, {name: 'graftTwig',
     filter: (payload, variables) => {
       if (payload.sessionId === variables.sessionId) {
         return false;

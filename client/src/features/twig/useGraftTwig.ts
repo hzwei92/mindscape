@@ -6,13 +6,20 @@ import { SpaceType } from '../space/space';
 import { mergeTwigs, selectIdToTwig } from './twigSlice';
 
 const GRAFT = gql`
-  mutation GraftTwig($sessionId: String!, $twigId: String!, $parentTwigId: String!) {
-    graftTwig(sessionId: $sessionId, twigId: $twigId, parentTwigId: $parentTwigId) {
+  mutation GraftTwig($sessionId: String!, $twigId: String!, $parentTwigId: String!, $x: Int!, $y: Int!) {
+    graftTwig(sessionId: $sessionId, twigId: $twigId, parentTwigId: $parentTwigId, x: $x, y: $y) {
       twig {
         id
+        x
+        y
         parent {
           id
         }
+      }
+      descs {
+        id
+        x
+        y
       }
       role {
         ...FullRoleFields
@@ -36,12 +43,12 @@ export default function useGraftTwig(space: SpaceType) {
       console.log(data);
       dispatch(mergeTwigs({
         space,
-        twigs: [data.graftTwig.twig]
+        twigs: [data.graftTwig.twig, ...data.graftTwig.descs],
       }));
     },
   });
 
-  const graftTwig = (twigId: string, parentTwigId: string) => {
+  const graftTwig = (twigId: string, parentTwigId: string, x: number, y: number) => {
     const twig = idToTwig[twigId];
 
     if (twig.parent.id === parentTwigId) return;
@@ -51,6 +58,8 @@ export default function useGraftTwig(space: SpaceType) {
         sessionId: sessionDetail.id,
         twigId,
         parentTwigId,
+        x,
+        y,
       }
     });
 

@@ -686,7 +686,7 @@ export class TwigsService {
     }
   }
 
-  async graftTwig(user: User, twigId: string, parentTwigId: string) {
+  async graftTwig(user: User, twigId: string, parentTwigId: string, x: number, y: number) {
     let twig = await this.twigsRepository.findOne({
       where: {
         id: twigId
@@ -728,17 +728,31 @@ export class TwigsService {
       throw new BadRequestException('Insufficient privileges');
     }
 
-    twig.id = twigId;
     twig.parent = parentTwig;
-
-    if (twig.tabId && parentTwig.groupId) {
-      twig.groupId = parentTwig.groupId;
-    }
-    
     twig = await this.twigsRepository.save(twig);
+
+
+    const dx = x - twig.x;
+    const dy = y - twig.y;
+
+    let descs = await this.twigsRepository.manager.getTreeRepository(Twig).findDescendants(twig);
+
+    descs = descs.map(desc => {
+      if (desc.id === twigId) {
+        desc.x = x;
+        desc.y = y;
+      }
+      else {
+        desc.x += dx;
+        desc.y += dy;
+      }
+      return desc
+    })
+    descs = await this.twigsRepository.save(descs);
 
     return {
       twig,
+      descs,
       role: role1,
     }
   }
