@@ -22,11 +22,12 @@ export class TwigsService {
   constructor (
     @InjectRepository(Twig) 
     private readonly twigsRepository: Repository<Twig>,
+    @Inject(forwardRef(() => UsersService))
+    private readonly usersService: UsersService,
     @Inject(forwardRef(() => ArrowsService))
     private readonly arrowsService: ArrowsService,
     private readonly sheafsService: SheafsService,
     private readonly rolesService: RolesService,
-    private readonly usersService: UsersService,
   ) {}
 
   async getTwigById(id: string): Promise<Twig> {
