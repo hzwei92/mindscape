@@ -422,7 +422,7 @@ export class TwigsService {
       twigs = await this.twigsRepository.save(twigs);
 
       return {
-        //abstract: abstract1,
+        abstract,
         parentTwig: twig.parent,
         twigs,
         role: role1,

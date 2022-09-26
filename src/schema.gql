@@ -242,8 +242,6 @@ type RemoveTabResult1 {
 }
 
 type RemoveTwigResult {
-  abstract: Arrow!
-  parent: Twig!
   role: Role
   twigs: [Twig!]!
 }

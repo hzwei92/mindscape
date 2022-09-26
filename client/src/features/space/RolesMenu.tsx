@@ -2,7 +2,7 @@
 import { Dispatch, SetStateAction, useContext, useState } from 'react';
 import { Role, RoleType } from '../role/role';
 import { SpaceContext } from './SpaceComponent';
-import { ROLES_MENU_WIDTH, SPACE_BAR_HEIGHT } from '../../constants';
+import { MAX_Z_INDEX, ROLES_MENU_WIDTH, SPACE_BAR_HEIGHT } from '../../constants';
 import { AppContext } from '../../app/App';
 import { IonBackdrop, IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonMenu } from '@ionic/react';
 import { IonContent } from '@ionic/core/components';
@@ -67,7 +67,9 @@ export default function RolesMenu(props: RolesMenuProps) {
   if (!abstract) return null;
 
   return (
-    <IonMenu ref={props.rolesMenuRef}>
+    <IonMenu ref={props.rolesMenuRef} style={{
+      zIndex: MAX_Z_INDEX,
+    }}>
       <div style={{
         marginTop: SPACE_BAR_HEIGHT + 10,
         padding: 10,

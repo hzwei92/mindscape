@@ -5,12 +5,6 @@ import { Twig } from "../twig.model";
 
 @ObjectType()
 export class RemoveTwigResult {
-  @Field(() => Arrow)
-  abstract: Arrow;
-
-  @Field(() => Twig)
-  parent: Twig;
-
   @Field(() => [Twig])
   twigs: Twig[];
 

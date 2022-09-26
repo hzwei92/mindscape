@@ -26,6 +26,7 @@ import useMoveTwig from '../twig/useMoveTwig';
 import useMoveTwigSub from '../twig/useMoveTwigSub';
 import useOpenTwigSub from '../twig/useOpenTwigSub';
 import usePasteTwigSub from '../twig/usePasteTwigSub';
+import useRemoveTwigSub from '../twig/useRemoveTwigSub';
 import useReplyTwigSub from '../twig/useReplyTwigSub';
 import useTwigTree from '../twig/useTwigTree';
 import RemoveTwigModal from './RemoveTwigModal';
@@ -76,6 +77,8 @@ const SpaceComponent = (props: SpaceComponentProps) => {
   useGraftTwigSub(props.space, abstract);
 
   useOpenTwigSub(props.space, abstract);
+
+  useRemoveTwigSub(props.space, abstract);
 
   const scale = useAppSelector(selectScale(props.space));
   const scroll = useAppSelector(selectScroll(props.space));

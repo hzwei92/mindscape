@@ -163,7 +163,15 @@ export class TwigsResolver {
     @Args('twigId') twigId: string,
     @Args('shouldRemoveDescs') shouldRemoveDescs: boolean,
   ) {
-    return this.twigsService.removeTwig(user, twigId, shouldRemoveDescs);
+    const result = await this.twigsService.removeTwig(user, twigId, shouldRemoveDescs);
+    
+    this.pubSub.publish('removeTwig', {
+      sessionId,
+      abstractId: result.abstract.id,
+      removeTwig: result,
+    });
+
+    return result;
   }
 
   @UseGuards(GqlAuthGuard)
