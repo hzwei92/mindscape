@@ -1,5 +1,6 @@
-import { IonButton, IonButtons, IonContent, IonHeader, IonIcon, IonItem, IonLabel, IonList, IonMenu, IonModal, IonPopover, IonToolbar, useIonRouter } from "@ionic/react";
+import { IonAvatar, IonButton, IonButtons, IonContent, IonHeader, IonIcon, IonImg, IonItem, IonLabel, IonList, IonMenu, IonModal, IonPopover, IonToolbar, useIonRouter } from "@ionic/react";
 import { add, menu, moon, personCircle, sunny } from "ionicons/icons";
+import md5 from "md5";
 import { useContext, useRef } from "react";
 import { MAX_Z_INDEX } from "../constants";
 import { selectIdToArrow } from "../features/arrow/arrowSlice";
@@ -101,9 +102,24 @@ const AppBar = () => {
             <IonIcon icon={add} size='small'/>
           </IonButton>
           <IonButton id='userMenuButton'>
-            <IonIcon icon={personCircle} style={{
-              color: user?.color
-            }}/>
+            {
+              user?.verifyEmailDate
+                ? <IonAvatar
+                    style={{
+                      display: 'inline-block',
+                      marginBottom: '-2px',
+                      marginRight: '4px',
+                      width: 17,
+                      height: 17,
+                      border: `1px solid ${user.color}`
+                    }}
+                  >
+                    <IonImg src={`https://www.gravatar.com/avatar/${md5(user.email)}?d=retro`}/>
+                  </IonAvatar>
+                : <IonIcon icon={personCircle} style={{
+                    color: user?.color
+                  }}/>
+            }
           </IonButton>
         </IonButtons>
         <IonPopover trigger='userMenuButton' triggerAction='click' dismissOnSelect={true}>
