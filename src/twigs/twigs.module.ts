@@ -10,6 +10,7 @@ import { PubSubModule } from 'src/pub-sub/pub-sub.module';
 import { RolesModule } from 'src/roles/roles.module';
 import { SubsModule } from 'src/subs/subs.module';
 import { SheafsModule } from 'src/sheafs/sheafs.module';
+import { TransfersModule } from 'src/transfers/transfers.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { SheafsModule } from 'src/sheafs/sheafs.module';
     forwardRef(() => UsersModule),
     forwardRef(() => ArrowsModule),
     forwardRef(() => RolesModule),
+    TransfersModule,
     SheafsModule,
     VotesModule,
     PubSubModule,

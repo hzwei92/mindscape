@@ -14,6 +14,7 @@ import { useAppDispatch, useAppSelector } from '../../app/store';
 import { AppContext } from '../../app/App';
 import { applyRole } from '../role/applyRole';
 import { useIonRouter, useIonToast } from '@ionic/react';
+import { mergeUsers } from '../user/userSlice';
 
 const PASTE_TWIG = gql`
   mutation PasteTwig(
@@ -32,6 +33,10 @@ const PASTE_TWIG = gql`
       x: $x, 
       y: $y, 
     ) {
+      user {
+        id
+        balance
+      }
       abstract {
         id
         twigZ
@@ -92,10 +97,14 @@ export default function usePasteTwig() {
       console.log(data);
 
       const {
+        user,
         source,
         link,
         target
       } = data.pasteTwig;
+
+      dispatch(mergeUsers([user]));
+      
       dispatch(mergeArrows([source]));
       
       dispatch(mergeTwigs({

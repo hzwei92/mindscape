@@ -32,8 +32,6 @@ export const ARROW_FIELDS = gql`
     city
     state
     country
-    clicks
-    tokens
     weight
     isOpaque
     saveDate

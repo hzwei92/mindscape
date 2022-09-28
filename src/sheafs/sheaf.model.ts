@@ -44,12 +44,6 @@ export class Sheaf {
 
 
   @Field(() => Int)
-  clicks: number;
-
-  @Field(() => Float)
-  tokens: number;
-
-  @Field(() => Float)
   weight: number;
 
 

@@ -10,6 +10,7 @@ import {
 } from 'typeorm';
 import { User } from 'src/users/user.entity';
 import { Vote } from 'src/votes/vote.entity';
+import { Arrow } from 'src/arrows/arrow.entity';
 
 @Entity()
 export class Transfer {
@@ -31,7 +32,7 @@ export class Transfer {
   receiver: User;
   
   @Column()
-  credits: number;
+  points: number;
 
   @Column()
   reason: string;
@@ -42,6 +43,13 @@ export class Transfer {
   @ManyToOne(() => Vote)
   @JoinColumn({ referencedColumnName: 'id' })
   vote: Vote;
+
+  @Column()
+  arrowId: string;
+
+  @ManyToOne(() => Arrow)
+  @JoinColumn({ referencedColumnName: 'id' })
+  arrow: Arrow;
 
   @CreateDateColumn()
   createDate: Date;

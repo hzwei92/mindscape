@@ -55,8 +55,6 @@ export type Arrow = {
   state: string | null;
   country: string | null;
 
-  clicks: number;
-  tokens: number;
   weight: number;
 
   isOpaque: boolean;
@@ -147,8 +145,6 @@ export const createArrow = (params: {
     state: null,
     country: null,
 
-    clicks: 1,
-    tokens: 0,
     weight: 1,
 
     isOpaque: false,

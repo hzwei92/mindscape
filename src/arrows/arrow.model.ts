@@ -138,14 +138,7 @@ export class Arrow {
   country: string;
 
 
-
   @Field(() => Int)
-  clicks: number;
-
-  @Field(() => Float)
-  tokens: number;
-
-  @Field(() => Float)
   weight: number;
 
 

@@ -123,11 +123,19 @@ const AppBar = () => {
           </IonButton>
         </IonButtons>
         <IonPopover trigger='userMenuButton' triggerAction='click' dismissOnSelect={true}>
-          <IonHeader style={{
-            padding: 10,
-            color: user?.color
-          }}>
-            { user?.name }
+          <IonHeader>
+            <div style={{
+              padding: 10,
+              color: user?.color
+            }}>
+
+              { user?.name }
+            </div>
+            <div style={{
+              padding: 10,
+            }}>
+              { user?.balance } points
+            </div>
           </IonHeader>
           <IonList>
             <IonItem routerLink='/account'>

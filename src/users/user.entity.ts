@@ -6,8 +6,6 @@ import {
   DeleteDateColumn,
   Index,
   PrimaryGeneratedColumn,
-  ManyToOne,
-  JoinColumn,
 } from 'typeorm';
 
 import { Exclude } from 'class-transformer';
@@ -37,12 +35,16 @@ export class User {
   @Column()
   color: string;
 
+
   @Column({
     type: 'enum',
     enum: PaletteMode,
     default: PaletteMode.DARK,
   })
   palette: PaletteMode;
+
+  @Column('double precision', { default: 0})
+  balance: number;
   
   @Column('double precision', { nullable: true })
   mapLng: number;
@@ -73,6 +75,9 @@ export class User {
 
   @Column({default: false})
   isAdmin: boolean;
+
+  @Column({ default: false })
+  isReserve: boolean;
 
   @Column({default: 'NOW()'})
   activeDate: Date;

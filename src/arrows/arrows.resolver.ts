@@ -18,6 +18,7 @@ import { Sheaf } from 'src/sheafs/sheaf.model';
 import { SheafsService } from 'src/sheafs/sheafs.service';
 import { ReplyArrowResult } from './dto/reply-arrow-result.dto';
 import { LinkArrowsResult } from './dto/link-arrows-result.dto';
+import { TransfersService } from 'src/transfers/transfers.service';
 
 @Resolver(() => Arrow)
 export class ArrowsResolver {
@@ -28,6 +29,7 @@ export class ArrowsResolver {
     private readonly subsService: SubsService,
     private readonly votesService: VotesService,
     private readonly sheafsService: SheafsService,
+    private readonly transfersService: TransfersService,
     @Inject(PUB_SUB)
     private readonly pubSub: RedisPubSub,
   ) {}
@@ -148,16 +150,22 @@ export class ArrowsResolver {
     @Args('linkDraft') linkDraft: string,
     @Args('targetDraft') targetDraft: string,
   ) {
-    const { 
+    const {
       source,
       link,
+      linkVote,
       target,
+      targetVote,
     } = await this.arrowsService.replyArrow(user, sourceId, linkId, targetId, linkDraft, targetDraft);
+
+    const user1 = await this.transfersService.replyTransfer(user, targetVote, linkVote, source, target);
+
     this.pubSub.publish('linkArrows', {
       sessionId,
       linkArrows: link,
     });
     return {
+      user: user1,
       source,
       link,
       target,
@@ -177,13 +185,19 @@ export class ArrowsResolver {
     const { 
       source,
       link,
+      linkVote,
       target,
     } = await this.arrowsService.pasteArrow(user, sourceId, linkId, targetId, linkDraft);
+
+    const user1 = await this.transfersService.linkTransfer(user, linkVote, link, source);
+
     this.pubSub.publish('linkArrows', {
       sessionId,
       linkArrows: link,
     });
+
     return {
+      user: user1,
       source,
       link,
       target,
@@ -198,7 +212,9 @@ export class ArrowsResolver {
     @Args('sourceId') sourceId: string,
     @Args('targetId') targetId: string,
   ) {
-    const { arrow, source, target } = await this.arrowsService.linkArrows(user, null, sourceId, targetId);
+    const { arrow, vote, source, target } = await this.arrowsService.linkArrows(user, null, sourceId, targetId);
+
+    const user1 = await this.transfersService.linkTransfer(user, vote, arrow, source);
 
     this.pubSub.publish('linkArrows', {
       sessionId,
@@ -210,6 +226,7 @@ export class ArrowsResolver {
     });
 
     return {
+      user: user1,
       source,
       target,
       link: arrow,

@@ -33,6 +33,7 @@ import { RemoveBookmarkResult } from './dto/remove-bookmark-result.dto';
 import { CreateTabResult } from './dto/create-tab-result.dto';
 import { GraftTwigResult } from './dto/graft-twig-result.dto';
 import { CopyTwigResult } from './dto/copy-twig-result.dto';
+import { TransfersService } from 'src/transfers/transfers.service';
 
 @Resolver(() => Twig)
 export class TwigsResolver {
@@ -40,7 +41,7 @@ export class TwigsResolver {
     private readonly twigsService: TwigsService,
     private readonly usersService: UsersService,
     private readonly arrowsService: ArrowsService,
-    private readonly sheafsService: SheafsService,
+    private readonly transfersService: TransfersService,
     @Inject(PUB_SUB)
     private readonly pubSub: RedisPubSub
   ) {}
@@ -102,13 +103,18 @@ export class TwigsResolver {
   ) {
     const result = await this.twigsService.replyTwig(user, parentTwigId, twigId, postId, x, y, draft);
   
+    const user1 = await this.transfersService.replyTransfer(user, result.targetVote, result.linkVote, result.source, result.targetArrow);
+    
     this.pubSub.publish('replyTwig', {
       sessionId,
       abstractId: result.abstract.id,
       replyTwig: result,
     });
 
-    return result;
+    return {
+      ...result,
+      user: user1,
+    };
   }
 
   @UseGuards(GqlAuthGuard)
@@ -123,6 +129,8 @@ export class TwigsResolver {
     @Args('y', {type: () => Int}) y: number,
   ) {
     const result = await this.twigsService.pasteTwig(user, parentTwigId, twigId, postId, x, y);
+
+    const user1 = await this.transfersService.linkTransfer(user, result.linkVote, result.linkArrow, result.source);
   
     this.pubSub.publish('pasteTwig', {
       sessionId,
@@ -130,7 +138,10 @@ export class TwigsResolver {
       pasteTwig: result,
     });
 
-    return result;
+    return {
+      ...result,
+      user: user1,
+    };
   }
 
   @UseGuards(GqlAuthGuard)
@@ -142,7 +153,16 @@ export class TwigsResolver {
     @Args('sourceId') sourceId: string,
     @Args('targetId') targetId: string,
   ) {
-    return this.twigsService.linkTwigs(user, abstractId, sourceId, targetId);
+    const result = await this.twigsService.linkTwigs(user, abstractId, sourceId, targetId);
+
+    const user1 = await this.transfersService.linkTransfer(user, result.vote, result.arrow, result.source);
+    
+    // TODO subscribe
+
+    return {
+      ...result,
+      user: user1
+    };
   }
   @UseGuards(GqlAuthGuard)
   @Mutation(() => AddTwigResult, {name: 'addTwig'})

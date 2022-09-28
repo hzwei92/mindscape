@@ -6,12 +6,14 @@ import { VotesResolver } from './votes.resolver';
 import { UsersModule } from 'src/users/users.module';
 import { ArrowsService } from 'src/arrows/arrows.service';
 import { ArrowsModule } from 'src/arrows/arrows.module';
+import { TransfersModule } from 'src/transfers/transfers.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Vote]),
     forwardRef(() => UsersModule),
     forwardRef(() => ArrowsModule),
+    TransfersModule,
   ],
   providers: [VotesService, VotesResolver],
   exports: [VotesService],

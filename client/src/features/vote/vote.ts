@@ -7,8 +7,6 @@ export type Vote = {
   user: User;
   arrowId: string;
   arrow: Arrow;
-  clicks: number;
-  tokens: number;
   weight: number;
   createDate: Date;
   deleteDate: Date | null;

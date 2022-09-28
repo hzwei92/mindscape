@@ -16,9 +16,7 @@ export type Sheaf  = {
   outCount: number;
   
   arrows: Arrow[];
-
-  clicks: number;
-  tokens: number;
+  
   weight: number;
   
   createDate: Date | null;

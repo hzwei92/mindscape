@@ -9,8 +9,6 @@ export const SHEAF_FIELDS = gql`
     targetId
     inCount
     outCount
-    clicks
-    tokens
     weight
     createDate
     updateDate

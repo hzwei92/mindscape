@@ -16,6 +16,7 @@ export type User = {
   description: string;
   color: string;
   palette: string;
+  balance: number;
   lng: number | null;
   lat: number | null;
   mapLng: number | null;

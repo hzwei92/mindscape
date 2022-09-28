@@ -31,14 +31,8 @@ export class Vote {
   arrow: Arrow;
   
   @Column({ default: 1 })
-  clicks: number;
-
-  @Column({ default: 0 })
-  tokens: number;
-
-  @Column({ default: 1 })
   weight: number;
-  
+
   @CreateDateColumn()
   createDate: Date;
 

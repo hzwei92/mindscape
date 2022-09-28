@@ -54,13 +54,11 @@ export class VotesService {
     return this.votesRepository.save(votes0);
   }
   
-  async createVote(user: User, arrow: Arrow, clicks: number, tokens: number): Promise<Vote> {
+  async createVote(user: User, arrow: Arrow, weight: number): Promise<Vote> {
     const vote0 = new Vote();
     vote0.userId = user.id;
     vote0.arrowId = arrow.id;
-    vote0.clicks = clicks;
-    vote0.tokens = tokens;
-    vote0.weight = findDefaultWeight(clicks, tokens);
+    vote0.weight = weight;
     return this.votesRepository.save(vote0);
   }
 
@@ -76,7 +74,7 @@ export class VotesService {
     await this.votesRepository.softDelete({id: voteId});
   }
 
-  async voteArrow(user: User, arrowId: string, clicks: number) {
+  async voteArrow(user: User, arrowId: string, weight: number) {
     let arrow = await this.arrowsService.getArrowById(arrowId);
     if (!arrow) {
       throw new BadRequestException('This arrow does not exist');
@@ -84,23 +82,25 @@ export class VotesService {
 
     let vote = await this.getVoteByUserIdAndArrowId(user.id, arrowId);
     if (vote) {
+      if (Math.abs(vote.weight - weight) > 1) {
+        throw new BadRequestException('You can only change your vote by 1');
+      }
       vote.deleteDate = new Date();
       vote = await this.votesRepository.save(vote);
     }
 
-    clicks = clicks > 10 
-      ? 10
-      : clicks < -10
-        ? -10
-        : clicks;
-
-    const newVote = await this.createVote(user, arrow, clicks, 0);
+    const newVote = await this.createVote(user, arrow, weight);
+    const votes = [newVote];
     
-    arrow = await this.arrowsService.incrementWeight(arrowId, clicks - vote.clicks, 0);
+    if (vote) {
+      votes.push(vote);
+    }
+    
+    arrow = await this.arrowsService.incrementWeight(arrowId, weight - (vote?.weight ?? 0));
 
     return {
       arrow,
-      votes: [newVote, vote]
+      votes,
     };
   }
 }

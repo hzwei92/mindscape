@@ -15,6 +15,7 @@ import { useAppDispatch, useAppSelector } from '../../app/store';
 import { AppContext } from '../../app/App';
 import { applyRole } from '../role/applyRole';
 import { useIonRouter, useIonToast } from '@ionic/react';
+import { mergeUsers } from '../user/userSlice';
 
 const REPLY_TWIG = gql`
   mutation ReplyTwig(
@@ -35,6 +36,10 @@ const REPLY_TWIG = gql`
       y: $y, 
       draft: $draft
     ) {
+      user {
+        id
+        balance
+      }
       abstract {
         id
         twigZ
@@ -92,11 +97,16 @@ export default function useReplyTwig() {
       console.log(data);
 
       const {
+        user,
+        abstract,
         source,
         link,
         target
       } = data.replyTwig;
-      dispatch(mergeArrows([source]));
+
+      dispatch(mergeUsers([user]));
+
+      dispatch(mergeArrows([source, abstract]));
       
       dispatch(mergeTwigs({
         space,

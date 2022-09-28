@@ -199,14 +199,17 @@ export class TwigsService {
 
     const postSheaf = await this.sheafsService.createSheaf(null, null, null);
 
-    const { arrow: post } = await this.arrowsService.createArrow({
+    const { 
+      arrow: post, 
+      vote: postVote,
+    } = await this.arrowsService.createArrow({
       user,
       id: postId,
       sourceId: null,
       targetId: null,
       abstract: parentTwig.abstract,
       sheaf: postSheaf,
-      draft: null,
+      draft,
       title: null,
       url: null,
       faviconUrl: null,
@@ -230,7 +233,10 @@ export class TwigsService {
 
     const linkSheaf = await this.sheafsService.createSheaf(parentTwig.detail.sheafId, post.sheafId, null);
 
-    const { arrow: link } = await this.arrowsService.createArrow({
+    const { 
+      arrow: link,
+      vote: linkVote,
+    } = await this.arrowsService.createArrow({
       user,
       id: null,
       sourceId: parentTwig.detailId,
@@ -265,11 +271,15 @@ export class TwigsService {
 
     const source = await this.arrowsService.getArrowById(parentTwig.detailId);
 
+
     return {
       abstract,
       source,
       link: linkTwig,
+      linkVote,
       target: postTwig,
+      targetArrow: post,
+      targetVote: postVote,
       role: role1,
     };
   }
@@ -328,7 +338,10 @@ export class TwigsService {
 
     const linkSheaf = await this.sheafsService.createSheaf(parentTwig.detail.sheafId, existingArrow.sheafId, null);
 
-    const { arrow: link } = await this.arrowsService.createArrow({
+    const { 
+      arrow: link,
+      vote: linkVote,
+    } = await this.arrowsService.createArrow({
       user,
       id: null,
       sourceId: parentTwig.detailId,
@@ -367,6 +380,8 @@ export class TwigsService {
       abstract,
       source,
       link: linkTwig,
+      linkArrow: link,
+      linkVote,
       target: postTwig,
       role: role1,
     };
@@ -555,12 +570,12 @@ export class TwigsService {
 
     let sheaf = await this.sheafsService.getSheafBySourceIdAndTargetId(source.sheafId, target.sheafId);
     if (sheaf) {
-      sheaf = await this.sheafsService.incrementWeight(sheaf, 1, 0);
+      sheaf = await this.sheafsService.incrementWeight(sheaf, 1);
     }
     else {
       sheaf = await this.sheafsService.createSheaf(source.sheafId, target.sheafId, null);
     }
-    const { arrow } = await this.arrowsService.createArrow({
+    const { arrow, vote } = await this.arrowsService.createArrow({
       user, 
       id: null, 
       sourceId, 
@@ -638,6 +653,8 @@ export class TwigsService {
     return {
       abstract: abstract1,
       twigs,
+      arrow, 
+      vote,
       source: source1,
       target: target1,
       role: role1,

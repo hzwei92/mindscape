@@ -56,14 +56,7 @@ export class Sheaf {
   @OneToMany(() => Arrow, arrow => arrow.sheaf)
   arrows: Arrow[];
 
-  
   @Column({ default: 1 })
-  clicks: number;
-
-  @Column({ default: 0 })
-  tokens: number;
-
-  @Column({ default: findDefaultWeight(1, 0) })
   weight: number;
 
 

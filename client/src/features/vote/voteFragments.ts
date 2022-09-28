@@ -5,8 +5,6 @@ export const VOTE_FIELDS = gql`
     id
     userId
     arrowId
-    clicks
-    tokens
     weight
     createDate
     deleteDate

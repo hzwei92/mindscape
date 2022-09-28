@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from '../../app/store';
 import { addEntry, selectIdToEntry, selectNewEntryId, updateEntry } from './entrySlice';
 import { Entry } from './entry';
 import { FULL_ARROW_FIELDS } from '../arrow/arrowFragments';
-import { selectCurrentUser } from '../user/userSlice';
+import { mergeUsers, selectCurrentUser } from '../user/userSlice';
 import { createArrow } from '../arrow/arrow';
 import { mergeArrows, selectArrowById } from '../arrow/arrowSlice';
 import { useContext } from 'react';
@@ -26,6 +26,10 @@ const PASTE_ARROW = gql`
       targetId: $targetId, 
       linkDraft: $linkDraft,
     ) {
+      user {
+        id
+        balance
+      }
       source {
         id
         outCount
@@ -67,10 +71,13 @@ export default function usePasteEntry(entryId: string) {
       console.log(data);
 
       const {
+        user,
         source,
         link,
         target,
       } = data.pasteArrow;
+
+      dispatch(mergeUsers([user]));
 
       dispatch(mergeArrows([
         source,

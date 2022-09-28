@@ -65,10 +65,8 @@ export class SheafsService {
     return this.sheafsRepository.save(sheafs);
   }
 
-  async incrementWeight(sheaf: Sheaf, clicks: number, tokens: number) {
-    sheaf.clicks = sheaf.clicks + clicks;
-    sheaf.tokens = sheaf.tokens + tokens;
-    sheaf.weight = findDefaultWeight(sheaf.clicks, sheaf.tokens);
+  async incrementWeight(sheaf: Sheaf, weight: number) {
+    sheaf.weight = sheaf.weight + weight;
 
     return this.sheafsRepository.save(sheaf);
   }

@@ -16,6 +16,7 @@ export const USER_FIELDS = gql`
     color
     palette
     verifyEmailDate
+    balance
     mapLng
     mapLat
     mapZoom

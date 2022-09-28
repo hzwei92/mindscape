@@ -48,14 +48,8 @@ export class Arrow {
   @Column({ default: '#000000' })
   color: string;
 
-
+  
   @Column({ default: 1 })
-  clicks: number;
-
-  @Column({ default: 0 })
-  tokens: number;
-
-  @Column({ default: findDefaultWeight(1, 0) })
   weight: number;
 
 

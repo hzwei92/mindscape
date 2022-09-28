@@ -39,6 +39,9 @@ export class User {
   @Field()
   palette: string;
 
+  @Field(() => Float)
+  balance: number;
+
   @Field(() => Float, { nullable: true })
   mapLng: number;
 
@@ -56,6 +59,9 @@ export class User {
 
   @Field()
   isAdmin: boolean;
+  
+  @Field()
+  isReserve: boolean;
   
   @Field()
   activeDate: Date;

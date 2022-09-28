@@ -1,5 +1,6 @@
 
 import { ObjectType, Field } from '@nestjs/graphql';
+import { Arrow } from 'src/arrows/arrow.model';
 import { User } from 'src/users/user.model';
 import { Vote } from 'src/votes/vote.model';
 @ObjectType()
@@ -20,7 +21,7 @@ export class Transfer {
   receiver: User;
   
   @Field()
-  credits: number;
+  points: number;
 
   @Field()
   reason: string;
@@ -30,6 +31,13 @@ export class Transfer {
 
   @Field(() => Vote)
   vote: Vote;
+  
+  @Field()
+  arrowId: string;
+
+
+  @Field(() => Arrow)
+  arrow: Arrow;
 
   @Field()
   createDate: Date;

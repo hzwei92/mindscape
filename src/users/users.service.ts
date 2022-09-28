@@ -30,6 +30,15 @@ export class UsersService {
     this.searchService.saveUsers(users);
     return users;
   }
+
+  async getReserveUser(): Promise<User> {
+    return this.usersRepository.findOne({
+      where: {
+        isReserve: true,
+      },
+    });
+  }
+
   async getUserById(id: string): Promise<User> {
     return this.usersRepository.findOne({
       where: {
@@ -220,5 +229,11 @@ export class UsersService {
     user0.activeDate = date;
     await this.usersRepository.save(user0);
     return this.getUserById(user.id);
+  }
+
+  async incrementUserBalance(user: User, amount: number) {
+    await this.usersRepository.increment({
+      id: user.id,
+    }, 'balance', amount);
   }
 }

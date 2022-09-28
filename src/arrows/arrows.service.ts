@@ -38,7 +38,7 @@ export class ArrowsService {
     this.searchService.saveArrows(arrows);
     return arrows;
   }
-  
+
   async getArrowById(id: string) {
     return this.arrowsRepository.findOne({
       where: {
@@ -336,7 +336,10 @@ export class ArrowsService {
 
     const linkSheaf = await this.sheafsService.createSheaf(source.sheafId, targetSheaf.id, null);
 
-    const { arrow: target } = await this.createArrow({
+    const { 
+      arrow: target,
+      vote: targetVote,
+    } = await this.createArrow({
       user, 
       id: targetId,
       sourceId: null,
@@ -350,7 +353,10 @@ export class ArrowsService {
       routeName: null,
     });
 
-    const { arrow: link } = await this.createArrow({
+    const { 
+      arrow: link,
+      vote: linkVote,
+    } = await this.createArrow({
       user,
       id: linkId,
       sourceId,
@@ -373,7 +379,9 @@ export class ArrowsService {
     return {
       source: source1,
       target,
+      targetVote,
       link,
+      linkVote,
     }
   }
 
@@ -399,7 +407,10 @@ export class ArrowsService {
 
     const linkSheaf = await this.sheafsService.createSheaf(source.sheafId, target.sheafId, null);
 
-    const { arrow: link } = await this.createArrow({
+    const { 
+      arrow: link,
+      vote: linkVote,
+    } = await this.createArrow({
       user,
       id: linkId,
       sourceId,
@@ -423,6 +434,7 @@ export class ArrowsService {
       source: source1,
       target,
       link,
+      linkVote,
     }
   }
 
@@ -460,23 +472,22 @@ export class ArrowsService {
       isPreexisting = true;
 
       if (sheaf) {
-        sheaf = await this.sheafsService.incrementWeight(sheaf, 1, 0);
+        sheaf = await this.sheafsService.incrementWeight(sheaf, 1);
       }
       else {
         sheaf = await this.sheafsService.createSheaf(source.sheafId, target.sheafId, null);
       }
       
-      arrow.clicks += 1;
-      arrow.weight = findDefaultWeight(arrow.clicks, arrow.tokens);
+      arrow.weight += 1;
       arrow = await this.arrowsRepository.save(arrow);
 
-      vote = await this.votesService.createVote(user, arrow, 1, 0);
+      vote = await this.votesService.createVote(user, arrow, 1);
     }
     else {
       isPreexisting = false;
 
       if (sheaf) {
-        sheaf = await this.sheafsService.incrementWeight(sheaf, 1, 0);
+        sheaf = await this.sheafsService.incrementWeight(sheaf, 1);
       }
       else {
         sheaf = await this.sheafsService.createSheaf(source.sheafId, target.sheafId, null);
@@ -693,19 +704,11 @@ export class ArrowsService {
     await this.arrowsRepository.increment({ id }, 'twigZ', value);
   }
 
-  async incrementWeight(id: string, clicks: number, tokens: number) {
-    if (clicks !== 0) {
-      await this.arrowsRepository.increment({ id }, 'clicks', clicks);
-    }
-    if (tokens !== 0) {
-      await this.arrowsRepository.increment({ id }, 'tokens', tokens)
+  async incrementWeight(id: string, weight: number) {
+    if (weight !== 0) {
+      await this.arrowsRepository.increment({ id }, 'weight', weight)
     }
     const arrow = await this.getArrowById(id);
-    const weight = findDefaultWeight(arrow.clicks, arrow.tokens);
-    if (arrow.weight !== weight) {
-      arrow.weight = weight;
-      return this.arrowsRepository.save(arrow);
-    }
     return arrow;
   }
 }

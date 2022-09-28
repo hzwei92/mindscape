@@ -20,12 +20,6 @@ export class Vote {
   arrow: Arrow;
 
   @Field(() => Int)
-  clicks: number;
-
-  @Field(() => Int)
-  tokens: number;
-
-  @Field(() => Int)
   weight: number;
   
   @Field()

@@ -13,10 +13,15 @@ import { mergeIdToPos } from '../space/spaceSlice';
 import { IdToType } from '../../types';
 import { PosType } from '../space/space';
 import { Twig } from '../twig/twig';
+import { mergeUsers } from '../user/userSlice';
 
 const LINK_TWIGS = gql`
   mutation LinkTwigs($sessionId: String!, $abstractId: String!, $sourceId: String!, $targetId: String!) {
     linkTwigs(sessionId: $sessionId, abstractId: $abstractId, sourceId: $sourceId, targetId: $targetId) {
+      user {
+        id
+        balance
+      }
       abstract {
         id
         twigN
@@ -53,6 +58,10 @@ const LINK_TWIGS = gql`
 const LINK_ARROWS = gql`
   mutation LinkArrows($sessionId: String!, $sourceId: String!, $targetId: String!) {
     linkArrows(sessionId: $sessionId, sourceId: $sourceId, targetId: $targetId) {
+      user {
+        id
+        balance
+      }
       source {
         id
         outCount
@@ -105,7 +114,8 @@ export default function useLinkArrows() {
         targetTwigId: '',
       });
 
-      const { source, target, link } = data.linkArrows;
+      const { user, source, target, link } = data.linkArrows;
+      dispatch(mergeUsers([user]));
       dispatch(mergeArrows([source, target, link]));
     },
   });
@@ -126,6 +136,8 @@ export default function useLinkArrows() {
         targetTwigId: '',
       });
 
+      dispatch(mergeUsers([data.linkTwigs.user]));
+      
       dispatch(mergeTwigs({
         space,
         twigs: data.linkTwigs.twigs
