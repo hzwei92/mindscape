@@ -127,6 +127,14 @@ export default function useLinkArrows() {
     onCompleted: data => {
       console.log(data);
 
+      const {
+        user,
+        twigs,
+        source,
+        target,
+        abstract,
+      } = data.linkTwigs;
+
       setPendingLink({
         sourceAbstractId: '',
         sourceArrowId: '',
@@ -136,16 +144,18 @@ export default function useLinkArrows() {
         targetTwigId: '',
       });
 
-      dispatch(mergeUsers([data.linkTwigs.user]));
+      dispatch(mergeUsers([user]));
       
       dispatch(mergeTwigs({
         space,
-        twigs: data.linkTwigs.twigs
+        twigs,
       }));
+
+      dispatch(mergeArrows([abstract, source, target]));
 
       dispatch(mergeIdToPos({
         space,
-        idToPos: data.linkTwigs.twigs.reduce((acc: IdToType<PosType>, twig: Twig) => {
+        idToPos: twigs.reduce((acc: IdToType<PosType>, twig: Twig) => {
           acc[twig.id] = {
             x: twig.x,
             y: twig.y,

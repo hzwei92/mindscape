@@ -15,5 +15,4 @@ export class LinkArrowsResult {
 
   @Field(() => Arrow)
   link: Arrow;
-
 }

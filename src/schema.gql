@@ -2,12 +2,6 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type AddTwigResult {
-  abstract: Arrow!
-  role: Role
-  twig: Twig!
-}
-
 type Arrow {
   abstract: Arrow!
   abstractId: String!
@@ -149,7 +143,6 @@ type MoveTwigResult {
 }
 
 type Mutation {
-  addTwig(arrowId: String!, parentTwigId: String!, sessionId: String!): AddTwigResult!
   changeBookmark(bookmarkId: String!, title: String!, url: String): Twig!
   copyToBookmark(entries: [BookmarkEntry!]!): [Twig!]!
   copyToTab(entries: [TabEntry!]!, groupEntry: GroupEntry): [Twig!]!
@@ -313,10 +306,11 @@ type Sub {
 }
 
 type Subscription {
-  addTwig(abstractId: String!, sessionId: String!): AddTwigResult!
   arrowRole(arrowId: String!, sessionId: String!): Role!
   dragTwig(abstractId: String!, sessionId: String!): DragTwigResult!
   graftTwig(abstractId: String!, sessionId: String!): GraftTwigResult!
+  linkArrows(arrowIds: [String!]!, sessionId: String!): LinkArrowsResult!
+  linkTwigs(abstractId: String!, sessionId: String!): LinkTwigsResult!
   moveTwig(abstractId: String!, sessionId: String!): [Twig!]!
   openTwig(abstractId: String!, sessionId: String!): Twig!
   pasteTwig(abstractId: String!, sessionId: String!): ReplyTwigResult!

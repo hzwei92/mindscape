@@ -22,6 +22,7 @@ import PostTwigMarker from '../twig/PostTwigMarker';
 import { selectIdToDescIdToTrue, selectIdToTwig } from '../twig/twigSlice';
 import useGraftTwig from '../twig/useGraftTwig';
 import useGraftTwigSub from '../twig/useGraftTwigSub';
+import useLinkTwigSub from '../twig/useLinkTwigSub';
 import useMoveTwig from '../twig/useMoveTwig';
 import useMoveTwigSub from '../twig/useMoveTwigSub';
 import useOpenTwigSub from '../twig/useOpenTwigSub';
@@ -72,6 +73,8 @@ const SpaceComponent = (props: SpaceComponentProps) => {
 
   useReplyTwigSub(props.space, abstract);
   usePasteTwigSub(props.space, abstract);
+
+  useLinkTwigSub(props.space, abstract);
 
   useMoveTwigSub(props.space, abstract);
   useGraftTwigSub(props.space, abstract);

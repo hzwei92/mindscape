@@ -157,22 +157,19 @@ export class TwigsResolver {
 
     const user1 = await this.transfersService.linkTransfer(user, result.vote, result.arrow, result.source);
     
-    // TODO subscribe
+    this.pubSub.publish('linkTwigs', {
+      sessionId,
+      abstractId,
+      linkTwigs: {
+        ...result,
+        user: user1,
+      },
+    });
 
     return {
       ...result,
       user: user1
     };
-  }
-  @UseGuards(GqlAuthGuard)
-  @Mutation(() => AddTwigResult, {name: 'addTwig'})
-  async addTwig(
-    @CurrentUser() user: UserEntity,
-    @Args('sessionId') sessionId: string,
-    @Args('parentTwigId') parentTwigId: string,
-    @Args('arrowId') arrowId: string,
-  ) {
-    throw new Error('Not yet implemented')
   }
 
   @UseGuards(GqlAuthGuard)
@@ -514,7 +511,7 @@ export class TwigsResolver {
   }
 
 
-  @Subscription(() => AddTwigResult, {name: 'addTwig',
+  @Subscription(() => LinkTwigsResult, {name: 'linkTwigs',
     filter: (payload, variables) => {
       if (payload.sessionId === variables.sessionId) {
         return false;
@@ -522,12 +519,12 @@ export class TwigsResolver {
       return payload.abstractId === variables.abstractId;
     },
   })
-  addTwigSub(
+  linkTwigsSub(
     @Args('sessionId') sessionId: string,
     @Args('abstractId') abstractId: string,
   ) {
-    console.log('addTwigSub');
-    return this.pubSub.asyncIterator('addTwig')
+    console.log('linkTwigsSub');
+    return this.pubSub.asyncIterator('linkTwigs')
   }
 
   @Subscription(() => SelectTwigResult, {name: 'selectTwig',

@@ -5,6 +5,7 @@ import { useContext, useRef } from "react";
 import { MAX_Z_INDEX } from "../constants";
 import { selectIdToArrow } from "../features/arrow/arrowSlice";
 import CreateGraphModal from "../features/arrow/CreateGraphModal";
+import useLinkArrowsSub from "../features/arrow/useLinkArrowsSub";
 import useSaveArrowSub from "../features/arrow/useSaveArrowSub";
 import { selectFocusTab, selectIdToTab } from "../features/tab/tabSlice";
 import useSetUserPalette from "../features/user/useSetUserPalette";
@@ -16,6 +17,7 @@ import useAppRouter from "./useAppRouter";
 const AppBar = () => {
   useAppRouter();
   useSaveArrowSub();
+  useLinkArrowsSub();
 
   const { setUserPalette } = useSetUserPalette();
 

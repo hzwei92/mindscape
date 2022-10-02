@@ -162,7 +162,12 @@ export class ArrowsResolver {
 
     this.pubSub.publish('linkArrows', {
       sessionId,
-      linkArrows: link,
+      linkArrows: {
+        source,
+        link,
+        target,
+        votes: [linkVote, targetVote],
+      },
     });
     return {
       user: user1,
@@ -193,7 +198,12 @@ export class ArrowsResolver {
 
     this.pubSub.publish('linkArrows', {
       sessionId,
-      linkArrows: link,
+      linkArrows: {
+        source,
+        link,
+        target,
+        votes: [linkVote],
+      },
     });
 
     return {
@@ -222,6 +232,7 @@ export class ArrowsResolver {
         source,
         target,
         link: arrow,
+        votes: [vote],
       },
     });
 
@@ -271,4 +282,21 @@ export class ArrowsResolver {
     return this.pubSub.asyncIterator('saveArrow');
   }
 
+  @Subscription(() => LinkArrowsResult, {name: 'linkArrows',
+    filter: (payload, variables) => {
+      return variables.arrowIds.some(id => {
+        return (
+          id === payload.linkArrows.source.id ||
+          id === payload.linkArrows.target.id
+        )
+      });
+    }
+  })
+  linkArrowsSub(
+    @Args('sessionId') sessionId: string,
+    @Args('arrowIds', {type: () => [String]}) arrowIds: string[]
+  ) {
+    console.log('linkArrowsSub');
+    return this.pubSub.asyncIterator('linkArrows')
+  }
 }
