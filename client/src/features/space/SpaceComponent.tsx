@@ -1,7 +1,7 @@
 import { useReactiveVar } from '@apollo/client';
 import { IonCard, IonCardContent, IonIcon } from '@ionic/react';
 import { navigateCircleOutline } from 'ionicons/icons';
-import { createContext, Dispatch, SetStateAction, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import React, { createContext, Dispatch, MouseEvent, SetStateAction, TouchList, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { AppContext } from '../../app/App';
 import { useAppDispatch, useAppSelector } from '../../app/store';
 import { focusAdjustIdToPosVar, focusSpaceElVar, frameAdjustIdToPosVar, frameSpaceElVar } from '../../cache';
@@ -48,6 +48,8 @@ export const SpaceContext = createContext({} as {
   canEdit: boolean;
   removalTwigId: string;
   setRemovalTwigId: Dispatch<SetStateAction<string>>;
+  touches: TouchList | null;
+  setTouches: Dispatch<SetStateAction<TouchList | null>>;
 });
 
 interface SpaceComponentProps {
@@ -112,14 +114,16 @@ const SpaceComponent = (props: SpaceComponentProps) => {
   const canPost = checkPermit(abstract?.canPost, role?.type)
   const canView = checkPermit(abstract?.canView, role?.type)
 
+  const spaceEl = useRef<HTMLIonCardElement>(null);
   const settingsMenuRef = useRef<HTMLIonMenuElement>(null);
   const rolesMenuRef = useRef<HTMLIonMenuElement>(null);
 
-  const [moveEvent, setMoveEvent] = useState(null as React.MouseEvent | null);
+  const [touches, setTouches] = useState<TouchList | null>(null);
+
+  const [moveEvent, setMoveEvent] = useState(null as MouseEvent | null);
 
   const [isScaling, setIsScaling] = useState(false);
 
-  const spaceEl = useRef<HTMLIonCardElement>(null);
 
   const [shouldLoadTwigPositions, setShouldLoadTwigPositions] = useState(false);
 
@@ -186,15 +190,19 @@ const SpaceComponent = (props: SpaceComponentProps) => {
       canEdit,
       removalTwigId, 
       setRemovalTwigId,
+      touches,
+      setTouches,
     };
   }, [abstract, role, props.space, canView, canPost, canEdit, removalTwigId]);
 
-  const moveDrag = (dx: number, dy: number, targetTwigId?: string) => {
+  const moveDrag = (dx: number, dy: number) => {
     if (drag.isScreen) {
       return;
     }
 
     if (!drag.twigId) return;
+
+    console.log('moveDrag', dx, dy)
 
     const dx1 = dx / scale;
     const dy1 = dy / scale;
@@ -394,6 +402,118 @@ const SpaceComponent = (props: SpaceComponentProps) => {
   }
 
  
+  const handleTouchMove = (event: React.TouchEvent) => {
+    console.log('touchMove');
+    setTouches(event.touches);
+
+    if (!touches) return;
+
+    if (event.touches.length > 1 && touches.length > 1 && false) {
+      /* TODO mobile touch zoom
+      event.preventDefault();
+      event.stopPropagation();
+
+      if (!spaceEl.current) return;
+    
+      const dx1 = event.touches.item(0).clientX - event.touches.item(1).clientX;
+      const dy1 = event.touches.item(0).clientY - event.touches.item(1).clientY;
+      const currDiff = Math.sqrt(Math.pow(dx1, 2) + Math.pow(dy1, 2));
+
+      const dx0 = touches.item(0).clientX - touches.item(1).clientX;
+      const dy0 = touches.item(0).clientY - touches.item(1).clientY;
+      const prevDiff = Math.sqrt(Math.pow(dx0, 2) + Math.pow(dy0, 2));
+
+      const clientX = (event.touches.item(0).clientX + event.touches.item(1).clientX) / 2;
+      const clientY = (event.touches.item(0).clientY + event.touches.item(1).clientY) / 2;
+      const x = props.space === 'FRAME'
+        ? clientX + scroll.left - getAppbarWidth(width) - surveyorWidth1 - focusWidth1
+        : clientX + scroll.left - getAppbarWidth(width) - surveyorWidth1;
+      const y = clientY + scroll.top - SPACE_BAR_HEIGHT;
+
+      if (Math.abs(currDiff - prevDiff) < 10) return;
+
+      const scalar = currDiff < prevDiff
+        ? 1
+        : -1;
+        
+      const center = {
+        x: x / scale,
+        y: y / scale,
+      };
+
+      const scale1 = Math.min(Math.max(.03125, scale + scalar * -0.08), 4)
+
+      const left = props.space === 'FRAME'
+        ? (center.x * scale1) - (clientX - getAppbarWidth(width) - surveyorWidth1 - focusWidth1)
+        : (center.x * scale1) - (clientX - getAppbarWidth(width) - surveyorWidth1);
+      const top = center.y * scale1 - (clientY - SPACE_BAR_HEIGHT);
+      
+      spaceEl.current.scrollTo({
+        left,
+        top,
+      });
+
+      setIsScaling(true);
+      updateScroll(left, top)
+      dispatch(setScale(scale1));*/
+    }
+    else if (drag.twigId) {
+      const current = event.touches.item(0);
+      const dx = Math.round(current.clientX - touches.item(0).clientX);
+      const dy = Math.round(current.clientY - touches.item(0).clientY);
+
+      const pos = idToPos[drag.twigId];
+
+      let targetTwigId = '';
+      Object.keys(idToTwig).some(twigId => {
+        const targetTwig = idToTwig[twigId];
+        const targetPos = idToPos[twigId];
+        const targetHeight = idToHeight[twigId];
+
+        if (
+          !targetTwig.deleteDate &&
+          pos.x > targetPos.x &&
+          pos.y > targetPos.y &&
+          pos.x < targetPos.x + TWIG_WIDTH &&
+          pos.y < targetPos.y + targetHeight
+        ) {
+          targetTwigId = twigId
+        }
+        return !!targetTwigId;
+      })
+
+      if (targetTwigId !== drag.targetTwigId) {
+        if (targetTwigId) {
+          dispatch(setDrag({
+            space: props.space,
+            drag: {
+              ...drag,
+              targetTwigId,
+            },
+          }));
+        }
+        else {
+          dispatch(setDrag({
+            space: props.space,
+            drag: {
+              ...drag,
+              targetTwigId: '',
+            },
+          }));
+        }
+      }
+
+      moveDrag(dx, dy)
+    }
+
+   
+  }
+
+  const handleTouchEnd = (event: React.TouchEvent) => {
+    console.log('touchEnd');
+    endDrag();
+  }
+
 
   const twigMarkers: JSX.Element[] = [];
   const twigs: JSX.Element[] = [];
@@ -554,26 +674,29 @@ const SpaceComponent = (props: SpaceComponentProps) => {
   return (
     <SpaceContext.Provider value={spaceContextValue}>
       <IonCard ref={spaceEl} 
-      onMouseDown={handleMouseDown}
-      onMouseUp={handleMouseUp}
-      onMouseMove={handleMouseMove}
-      onWheel={handleWheel}
-      onScroll={handleScroll}
-      style={{
-        margin: 0,
-        top: 44,
-        width: '100%',
-        height: 'calc(100% - 44px)',
-        overflow:'scroll',
-        backgroundColor: palette === 'dark'
-          ? '#000000'
-          : '#e0e0e0',
-        borderRadius: 0,
-        cursor: drag.isScreen || drag.twigId
-          ? 'grabbing'
-          : 'grab',
-        position: 'relative',
-      }}>
+        onMouseDown={handleMouseDown}
+        onMouseUp={handleMouseUp}
+        onMouseMove={handleMouseMove}
+        onWheel={handleWheel}
+        onScroll={handleScroll}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+        style={{
+          margin: 0,
+          top: 44,
+          width: '100%',
+          height: 'calc(100% - 44px)',
+          overflow:'scroll',
+          backgroundColor: palette === 'dark'
+            ? '#000000'
+            : '#e0e0e0',
+          borderRadius: 0,
+          cursor: drag.isScreen || drag.twigId
+            ? 'grabbing'
+            : 'grab',
+          position: 'relative',
+        }}
+      >
         <IonCardContent style={{
           width: VIEW_RADIUS * 2 * (scale < 1 ? scale : 1),
           height: VIEW_RADIUS * 2 * (scale < 1 ? scale : 1),

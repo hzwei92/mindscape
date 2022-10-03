@@ -28,6 +28,7 @@ function TwigBar(props: TwigBarProps) {
     abstract, 
     canEdit,
     setRemovalTwigId,
+    setTouches,
   } = useContext(SpaceContext);
   
   const drag = useAppSelector(selectDrag(space));
@@ -39,8 +40,8 @@ function TwigBar(props: TwigBarProps) {
     : 'white';
 
   const beginDrag = () => {
-    if (!props.twig.parent) return;
     console.log('begin drag');
+    if (!props.twig.parent) return;
     dispatch(setDrag({
       space,
       drag: {
@@ -71,10 +72,17 @@ function TwigBar(props: TwigBarProps) {
     beginDrag();
   }
 
+  const handleTouchStart = (event: React.TouchEvent) => {
+    event.stopPropagation();
+    setTouches(event.touches);
+    beginDrag();
+  }
+
   return (
     <div
       title={props.twig.id}
       onMouseDown={handleMouseDown}
+      onTouchStart={handleTouchStart}
       style={{
         backgroundColor: props.twigUser?.color,
         textAlign: 'left',
