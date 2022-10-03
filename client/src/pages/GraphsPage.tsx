@@ -1,6 +1,4 @@
-import { IonButton, IonCard, IonContent, IonFab, IonFabButton, IonHeader, IonIcon, IonLabel, IonPage, IonTitle, IonToolbar } from '@ionic/react';
-import { personCircle, moon, sunny } from 'ionicons/icons';
-
+import { IonButton, IonButtons, IonCard, IonLabel, IonPage } from '@ionic/react';
 import React, { useContext, useState } from 'react';
 import { AppContext } from '../app/App';
 import { useAppSelector } from '../app/store';
@@ -11,7 +9,10 @@ import useCreateTab from '../features/tab/useCreateTab';
 
 const GraphsPage: React.FC = () => {
   const { 
+    palette,
     user,
+    setIsCreatingGraph,
+    setCreateGraphArrowId,
   } = useContext(AppContext);
   
   const focusTab = useAppSelector(selectFocusTab);
@@ -63,52 +64,46 @@ const GraphsPage: React.FC = () => {
   }
 
   const handleStartClick = () => {
-    // setCreateGraphArrowId(null);
-    // setIsCreatingGraph(true);
+    setCreateGraphArrowId(null);
+    setIsCreatingGraph(true);
   }
 
   const handleClose = () => {
   };
 
   return (
-    <div style={{
-      position: 'fixed',
-      height: `calc(100% - ${APP_BAR_HEIGHT}px)`,
-      marginTop: `${APP_BAR_HEIGHT}px`,
-      display: 'flex',
-      flexDirection: 'row',
-      zIndex: MAX_Z_INDEX + 1000,
-    }}>
+    <IonPage>
       <IonCard style={{
-        height: '100%',
-        width: 'calc(100% - 4px)',
+        backgroundColor: palette === 'dark'
+          ? '#000000'
+          : '#e0e0e0',
+        height: 'calc(100% - 56px)',
+        top: 56,
+        margin: 0,
+        paddingTop: 10,
+        borderRadius: 0,
       }}>
         <div style={{
           height: '100%',
         }}>
-          <IonCard style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            padding: 1,
-          }}>
-            <IonButton onClick={handleStartClick} style={{
-              whiteSpace: 'nowrap',
-            }}>
-              Create a graph
-            </IonButton>
-          </IonCard>
           <div style={{
             height: '100%',
             width: '100%',
             overflowY: 'scroll',
           }}>
+            <IonButton onClick={handleStartClick} style={{
+              whiteSpace: 'nowrap',
+              marginLeft: 10,
+            }}>
+              CREATE A GRAPH
+            </IonButton>
           {
               tabs.map(tab => {
                 const { arrow } = tab;
                 return (
                   <IonCard key={`tab-${tab.id}`} style={{
-                    margin: 1,
-                    padding: 1,
+                    margin: 10,
+                    padding: 10,
                     fontSize: 16,
                     display: 'flex',
                     flexDirection: 'row',
@@ -116,9 +111,7 @@ const GraphsPage: React.FC = () => {
                   }}>
                     <div>
                       <div>
-                        {tab.i + 1}
-                      </div>
-                      <div>
+                        {tab.i + 1}&nbsp;&nbsp;
                         <IonLabel color={arrow.color} onClick={handleArrowClick(arrow.id)} style={{
                           color: arrow.color,
                           cursor: arrow.userId === user?.id
@@ -165,7 +158,7 @@ const GraphsPage: React.FC = () => {
           </div>
         </div>
       </IonCard>
-    </div>
+    </IonPage>
   );
 }
 

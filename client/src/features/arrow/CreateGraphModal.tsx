@@ -1,6 +1,5 @@
-import React, { Dispatch, SetStateAction, useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useAppDispatch } from "../../app/store";
-import { SpaceType } from "../space/space";
 import { gql, useMutation } from "@apollo/client";
 import { FULL_TAB_FIELDS } from "../tab/tabFragments";
 import { mergeTabs } from "../tab/tabSlice";
