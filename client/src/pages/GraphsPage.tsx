@@ -129,25 +129,19 @@ const GraphsPage: React.FC = () => {
                 const { arrow } = role;
                 return (
                   <IonCard key={`role-${role.id}`} style={{
-                    margin: 1,
-                    padding: 1,
+                    margin: 10,
+                    padding: 10,
                     fontSize: 16,
                     display: 'flex',
                     flexDirection: 'row',
                     justifyContent: 'space-between'
                   }}>
-                    <div>
-                      <div>
-                        <IonLabel color={arrow.color} onClick={handleArrowClick(arrow.id)} style={{
-                          color: arrow.color,
-                          cursor: arrow.userId === user?.id
-                            ? 'default'
-                            : 'pointer',
-                        }}>
-                          {arrow.title}
-                        </IonLabel>
-                      </div>
-                    </div>
+                    <IonLabel color={arrow.color} onClick={handleArrowClick(arrow.id)} style={{
+                      color: arrow.color,
+                      cursor: 'pointer',
+                    }}>
+                      {arrow.title}
+                    </IonLabel>
                   </IonCard>
                 );
               })

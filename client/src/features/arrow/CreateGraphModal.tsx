@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { useAppDispatch } from "../../app/store";
-import { gql, useLazyQuery, useMutation, useQuery } from "@apollo/client";
+import { gql, useMutation } from "@apollo/client";
 import { FULL_TAB_FIELDS } from "../tab/tabFragments";
 import { mergeTabs } from "../tab/tabSlice";
 import { AppContext } from "../../app/App";
