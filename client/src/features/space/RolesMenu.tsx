@@ -67,7 +67,7 @@ export default function RolesMenu(props: RolesMenuProps) {
   if (!abstract) return null;
 
   return (
-    <IonMenu ref={props.rolesMenuRef} style={{
+    <IonMenu ref={props.rolesMenuRef} contentId={'router-outlet'} style={{
       zIndex: MAX_Z_INDEX,
     }}>
       <div style={{

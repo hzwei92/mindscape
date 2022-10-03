@@ -62,7 +62,6 @@ const SpaceComponent = (props: SpaceComponentProps) => {
   const { moveTwig } = useMoveTwig(props.space);
   const { graftTwig } = useGraftTwig(props.space);
 
-
   const { user, palette } = useContext(AppContext);
 
   const focusTab = useAppSelector(selectFocusTab);
@@ -193,7 +192,7 @@ const SpaceComponent = (props: SpaceComponentProps) => {
       touches,
       setTouches,
     };
-  }, [abstract, role, props.space, canView, canPost, canEdit, removalTwigId]);
+  }, [abstract, role, props.space, canView, canPost, canEdit, removalTwigId, touches]);
 
   const moveDrag = (dx: number, dy: number) => {
     if (drag.isScreen) {
@@ -222,7 +221,7 @@ const SpaceComponent = (props: SpaceComponentProps) => {
 
   useEffect(() => {
     if (!moveEvent || !spaceEl?.current) return;
-
+    console.log('handle moveEvent')
     const x = spaceEl.current.scrollLeft + moveEvent.clientX;
     const y = spaceEl.current.scrollTop + moveEvent.clientY;
 
@@ -246,6 +245,7 @@ const SpaceComponent = (props: SpaceComponentProps) => {
 
   useEffect(() => {
     if (Object.keys(adjustIdToPosDetail).length) {
+      console.log('merge adjusted pos', adjustIdToPosDetail)
       dispatch(mergeIdToPos({
         space: props.space,
         idToPos: adjustIdToPosDetail,

@@ -60,7 +60,7 @@ export default function CreateGraphModal() {
       console.error(err);
     },
     onCompleted: data => {
-      if (data.getArrowByRouteName.id) {
+      if (data.getArrowByRouteName?.id) {
         setRouteError('Route name already in use');
       } 
       else {

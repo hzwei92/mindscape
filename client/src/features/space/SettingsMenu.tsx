@@ -75,7 +75,7 @@ export default function SettingsMenu(props: SettingsMenuProps) {
   if (!abstract) return null;
 
   return (
-    <IonMenu ref={props.settingsMenuRef} side='end' menuId='settingsMenu' contentId='content' style={{
+    <IonMenu ref={props.settingsMenuRef} side='end' menuId='settingsMenu' contentId='router-outlet' style={{
       zIndex: MAX_Z_INDEX,
     }}>
       <IonCard style={{
