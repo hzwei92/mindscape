@@ -41,21 +41,24 @@ export class TabsResolver {
       return this.tabsService.appendTab(user, arrow, false, true);
     }
     else {
-      const sheaf = await this.sheafsService.createSheaf(null, null, null);
-      let { arrow } = await this.arrowsService.createArrow({
-        user,
-        title: name,
-        routeName,
-        id: null,
-        sourceId: null,
-        targetId: null,
-        sheaf,
-        abstract: null,
-        draft: null,
-        url: null,
-        faviconUrl: null,
-      });
-      ({ arrow } = await this.arrowsService.openArrow(user, arrow, name, routeName));
+      let arrow = await this.arrowsService.getArrowByRouteName(routeName);
+      if (!arrow) {
+        const sheaf = await this.sheafsService.createSheaf(null, null, null);
+        ({ arrow } = await this.arrowsService.createArrow({
+          user,
+          title: name,
+          routeName,
+          id: null,
+          sourceId: null,
+          targetId: null,
+          sheaf,
+          abstract: null,
+          draft: null,
+          url: null,
+          faviconUrl: null,
+        }));
+        ({ arrow } = await this.arrowsService.openArrow(user, arrow, name, routeName));
+      }
       return this.tabsService.appendTab(user, arrow, false, true);
     }
 

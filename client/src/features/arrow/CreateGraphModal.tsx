@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { useAppDispatch } from "../../app/store";
-import { gql, useMutation } from "@apollo/client";
+import { gql, useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { FULL_TAB_FIELDS } from "../tab/tabFragments";
 import { mergeTabs } from "../tab/tabSlice";
 import { AppContext } from "../../app/App";
@@ -13,6 +13,14 @@ const CREATE_GRAPH = gql`
     } 
   }
   ${FULL_TAB_FIELDS}
+`;
+
+const GET_ARROW_BY_ROUTENAME = gql`
+  mutation GetArrowByRouteName($routeName: String!) {
+    getArrowByRouteName(routeName: $routeName) {
+      id
+    }
+  }
 `;
 
 export default function CreateGraphModal() {
@@ -31,6 +39,9 @@ export default function CreateGraphModal() {
   const [name, setName] = useState('');
   const [routeName, setRouteName] = useState('');
   const [routeError, setRouteError] = useState('');
+  const [routeTimeout, setRouteTimeout] = useState(null as ReturnType<typeof setTimeout> | null);
+
+  const [isReady, setIsReady] = useState(false);
 
   const [create] = useMutation(CREATE_GRAPH, {
     onError: err => {
@@ -44,12 +55,41 @@ export default function CreateGraphModal() {
     }
   });
 
+  const [getArrowByRouteName] = useMutation(GET_ARROW_BY_ROUTENAME, {
+    onError: err => {
+      console.error(err);
+    },
+    onCompleted: data => {
+      if (data.getArrowByRouteName.id) {
+        setRouteError('Route name already in use');
+      } 
+      else {
+        setRouteError('');
+      }
+      setIsReady(true);
+    },
+  });
 
   useEffect(() => {
     const route = routeName.toLowerCase().replace(/[^a-z0-9]/g, '-');
     if (route !== routeName) {
       setRouteName(route)
     }
+    if (routeTimeout) {
+      clearTimeout(routeTimeout);
+    }
+    const t = setTimeout(() => {
+      getArrowByRouteName({
+        variables: {
+          routeName: route,
+        }
+      });
+      setRouteTimeout(null);
+    }, 500);
+
+    setRouteTimeout(t); 
+    setRouteError('');
+    setIsReady(false);
   }, [routeName]);
 
   const handleNameChange = (e: any) => {
@@ -84,7 +124,7 @@ export default function CreateGraphModal() {
           Create a graph
         </IonCardHeader>
         <IonCardContent>
-        <IonInput
+          <IonInput
             placeholder='Name'
             value={name}
             onIonChange={handleNameChange}
@@ -94,17 +134,18 @@ export default function CreateGraphModal() {
             value={routeName}
             onIonChange={handleRouteNameChange}
           />
-        <IonButtons style={{
-          marginTop: 2,
-        }}>
-          <IonButton onClick={handleSubmitClick}>
-            CREATE
-          </IonButton>
-          &nbsp;&nbsp;
-          <IonButton onClick={handleClose}>
-            CANCEL
-          </IonButton>
-        </IonButtons>
+          {routeError && <div>{routeError}</div>}
+          <IonButtons style={{
+            marginTop: 2,
+          }}>
+            <IonButton disabled={!!routeError || isReady} onClick={handleSubmitClick}>
+              CREATE
+            </IonButton>
+            &nbsp;&nbsp;
+            <IonButton onClick={handleClose}>
+              CANCEL
+            </IonButton>
+          </IonButtons>
         </IonCardContent>
       </IonCard>
     </IonModal>

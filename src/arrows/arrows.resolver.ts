@@ -93,7 +93,6 @@ export class ArrowsResolver {
     return this.votesService.getVotesByArrowId(arrow.id);
   }
 
-
   @UseGuards(GqlAuthGuard)
   @Mutation(() => [Arrow], {name: 'getArrows'})
   async getArrows(

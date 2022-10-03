@@ -114,9 +114,6 @@ const GraphsPage: React.FC = () => {
                         {tab.i + 1}&nbsp;&nbsp;
                         <IonLabel color={arrow.color} onClick={handleArrowClick(arrow.id)} style={{
                           color: arrow.color,
-                          cursor: arrow.userId === user?.id
-                            ? 'default'
-                            : 'pointer',
                         }}>
                           {arrow.title}
                         </IonLabel>
