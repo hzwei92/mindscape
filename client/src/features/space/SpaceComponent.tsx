@@ -202,8 +202,6 @@ const SpaceComponent = (props: SpaceComponentProps) => {
 
     if (!drag.twigId) return;
 
-    console.log('moveDrag', dx, dy)
-
     const dx1 = dx / scale;
     const dy1 = dy / scale;
 
@@ -244,7 +242,7 @@ const SpaceComponent = (props: SpaceComponentProps) => {
     publishCursor(x, y);
 
     setMoveEvent(null);
-  }, [moveEvent]);
+  }, [moveEvent, cursor]);
 
   useEffect(() => {
     if (Object.keys(adjustIdToPosDetail).length) {

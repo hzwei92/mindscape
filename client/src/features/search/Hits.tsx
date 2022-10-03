@@ -72,13 +72,14 @@ function Hits(props: HitsProps) {
       if (arrowIds.length) {
         getArrows(arrowIds);
       }
+      
+      dispatch(searchSpliceSlice({
+        ...slice,
+        entryIds,
+        userIds,
+      }));
     }
 
-    dispatch(searchSpliceSlice({
-      ...slice,
-      entryIds,
-      userIds,
-    }));
   }, [props.hits])
 
   return null;

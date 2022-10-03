@@ -6,6 +6,8 @@ import {
   DeleteDateColumn,
   Index,
   PrimaryGeneratedColumn,
+  ManyToOne,
+  JoinColumn,
 } from 'typeorm';
 
 import { Exclude } from 'class-transformer';
@@ -35,6 +37,12 @@ export class User {
   @Column()
   color: string;
 
+  @Column({ nullable: true})
+  focusId: string;
+
+  @ManyToOne(() => Arrow, { nullable: true })
+  @JoinColumn({ referencedColumnName: 'id'})
+  focus: Arrow;
 
   @Column({
     type: 'enum',
