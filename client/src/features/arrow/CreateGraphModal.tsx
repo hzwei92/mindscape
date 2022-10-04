@@ -60,6 +60,7 @@ export default function CreateGraphModal() {
       console.error(err);
     },
     onCompleted: data => {
+      console.log(data);
       if (data.getArrowByRouteName?.id) {
         setRouteError('Route name already in use');
       } 
@@ -138,7 +139,7 @@ export default function CreateGraphModal() {
           <IonButtons style={{
             marginTop: 2,
           }}>
-            <IonButton disabled={!!routeError || isReady} onClick={handleSubmitClick}>
+            <IonButton disabled={!!routeError || !isReady} onClick={handleSubmitClick}>
               CREATE
             </IonButton>
             &nbsp;&nbsp;

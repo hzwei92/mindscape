@@ -4,11 +4,11 @@ import { selectIdToArrow } from "../features/arrow/arrowSlice";
 import { Tab } from "../features/tab/tab";
 import { selectFocusTab, selectIdToTab } from "../features/tab/tabSlice";
 import useUpdateTab from "../features/tab/useUpdateTab";
-import { useAppSelector } from "./store";
+import { useAppDispatch, useAppSelector } from "./store";
 import { Arrow } from '../features/arrow/arrow';
-import { selectIdToPos, selectSelectedTwigId } from "../features/space/spaceSlice";
+import { selectIdToPos, selectSelectedTwigId, setSelectedTwigId } from "../features/space/spaceSlice";
 import { SpaceType } from "../features/space/space";
-import { selectIdToTwig, selectIToTwigId } from "../features/twig/twigSlice";
+import { selectIdToTwig, selectIToTwigId, selectNewTwigId } from "../features/twig/twigSlice";
 import useCenterTwig from "../features/twig/useCenterTwig";
 import useSelectTwig from "../features/twig/useSelectTwig";
 import { checkPermit } from "../utils";
@@ -17,6 +17,8 @@ import { AppContext } from "./App";
 import useCreateTab from "../features/tab/useCreateTab";
 
 const useAppRouter = () => {
+  const dispatch  = useAppDispatch();
+
   const router = useIonRouter();
 
   const { user } = useContext(AppContext);
@@ -43,6 +45,8 @@ const useAppRouter = () => {
   const focusIdToTwig = useAppSelector(selectIdToTwig(SpaceType.FOCUS));
   const focusIToTwigId = useAppSelector(selectIToTwigId(SpaceType.FOCUS));
   const focusIdToPos = useAppSelector(selectIdToPos(SpaceType.FOCUS));
+
+  const newTwigId = useAppSelector(selectNewTwigId);
 
   const canEditFocus = checkPermit(focusTab?.arrow.canEdit, focusRole?.type);
 
@@ -79,9 +83,20 @@ const useAppRouter = () => {
             const twigId = focusIToTwigId[path[3] || (focusSelectedTwig?.i ?? -1)]
             const twig = focusIdToTwig[twigId];
             if (twig?.id && !twig?.deleteDate) {
-              console.log('focus, index select');
-              focusSelectTwig(tab.arrow, twig);
-              focusCenterTwig(twigId, true, 0);
+              if (twig.id === newTwigId) {
+                console.log('focus, select new')
+                dispatch(setSelectedTwigId({
+                  space: SpaceType.FOCUS,
+                  selectedTwigId: twig.id,
+                }));
+                focusCenterTwig(twigId, true, 0);
+
+              }
+              else {
+                console.log('focus, index select');
+                focusSelectTwig(tab.arrow, twig);
+                focusCenterTwig(twigId, true, 0);
+              }
             }
             else {
               console.log('focus, index invalid');

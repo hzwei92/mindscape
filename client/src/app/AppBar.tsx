@@ -1,10 +1,8 @@
-import { IonAvatar, IonButton, IonButtons, IonContent, IonHeader, IonIcon, IonImg, IonItem, IonLabel, IonList, IonMenu, IonModal, IonPopover, IonToolbar, useIonRouter } from "@ionic/react";
+import { IonAvatar, IonButton, IonButtons, IonHeader, IonIcon, IonImg, IonItem, IonList, IonPopover, IonToolbar, useIonRouter, isPlatform, getPlatforms } from "@ionic/react";
 import { add, menu, moon, personCircle, sunny } from "ionicons/icons";
 import md5 from "md5";
-import { useContext, useRef } from "react";
-import { MAX_Z_INDEX } from "../constants";
+import { useContext } from "react";
 import { selectIdToArrow } from "../features/arrow/arrowSlice";
-import CreateGraphModal from "../features/arrow/CreateGraphModal";
 import useLinkArrowsSub from "../features/arrow/useLinkArrowsSub";
 import useSaveArrowSub from "../features/arrow/useSaveArrowSub";
 import { selectFocusTab, selectIdToTab } from "../features/tab/tabSlice";
@@ -15,6 +13,7 @@ import useAppRouter from "./useAppRouter";
 
 
 const AppBar = () => {
+  console.log('appbar', getPlatforms());
   useAppRouter();
   useSaveArrowSub();
   useLinkArrowsSub();
@@ -40,7 +39,9 @@ const AppBar = () => {
   }
 
   return (
-    <div>
+    <div style={{
+      marginTop: isPlatform('ios') && !isPlatform('mobileweb') ? 20 : 0
+    }}>
       <IonToolbar mode='md'>
         <IonButtons id='mainMenuButton' slot='start'>
           <IonButton id='mainMenuButton'>

@@ -221,7 +221,6 @@ const SpaceComponent = (props: SpaceComponentProps) => {
 
   useEffect(() => {
     if (!moveEvent || !spaceEl?.current) return;
-    console.log('handle moveEvent')
     const x = spaceEl.current.scrollLeft + moveEvent.clientX;
     const y = spaceEl.current.scrollTop + moveEvent.clientY;
 
