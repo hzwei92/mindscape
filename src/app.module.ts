@@ -88,20 +88,18 @@ import { TransfersModule } from './transfers/transfers.module';
           }
         },
         context: ({req, res, connection, extra}) => ({req, res, connection, extra}),
-        cors: configServce.get('NODE_ENV') === 'production'
-          ?  false
-          : {
-              origin: [
-                'capacitor://localhost',
-                'http://localhost',
-                'http://localhost:8100',
-                'http://localhost:8081',
-                'http://localhost:3000',
-                'chrome-extension://dfgclbhmaeilnpimjliggfdiidoaccgc',
-                'chrome-extension://ilcoblgjlneeglihjhkpdhbgbjmcmcej'
-              ],
-              credentials: true,
-            }
+        cors: {
+          origin: [
+            'capacitor://localhost',
+            'http://localhost',
+            'http://localhost:8100',
+            'http://localhost:8081',
+            'http://localhost:3000',
+            'chrome-extension://dfgclbhmaeilnpimjliggfdiidoaccgc',
+            'chrome-extension://ilcoblgjlneeglihjhkpdhbgbjmcmcej'
+          ],
+          credentials: true,
+        }
       })
     }),
     ArrowsModule,
