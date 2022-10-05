@@ -8,15 +8,20 @@ import { store } from './app/store';
 import { defineCustomElements } from '@ionic/pwa-elements/loader';
 import { createRestartableClient } from './app/graphql';
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
-import { DEV_SERVER_URI, DEV_WS_SERVER_URI } from './constants';
+import { DEV_SERVER_URI, DEV_WS_SERVER_URI, PROD_SERVER_URI, PROD_WS_SERVER_URI } from './constants';
 import { ApolloClient, ApolloProvider, createHttpLink, InMemoryCache, split } from '@apollo/client';
 import { getMainDefinition } from '@apollo/client/utilities';
+import { isPlatform } from '@ionic/react';
 
 defineCustomElements(window);
 
+console.log(process.env.NODE_ENV, isPlatform('ios') || isPlatform('android'));
+
 const wsClient = createRestartableClient({
   url: process.env.NODE_ENV === 'production'
-    ? window.location.origin.replace(/^http/, 'ws') + '/graphql'
+    ? isPlatform('ios') || isPlatform('android')
+      ? `${PROD_WS_SERVER_URI}/graphql`
+      : window.location.origin.replace(/^http/, 'ws') + '/graphql'
     : `${DEV_WS_SERVER_URI}/graphql`,
   connectionParams: () => {
     const cookies = document.cookie.split('; ');
@@ -38,10 +43,14 @@ const wsLink = new GraphQLWsLink(wsClient);
 
 const httpLink = createHttpLink({
   uri: process.env.NODE_ENV === 'production'
-    ? '/graphql'
+    ? isPlatform('ios') || isPlatform('android')
+      ? `${PROD_SERVER_URI}/graphql`
+      : '/graphql'
     : `${DEV_SERVER_URI}/graphql`,
   credentials: process.env.NODE_ENV === 'production'
-    ? 'same-origin'
+    ? isPlatform('ios') || isPlatform('android')
+      ? 'include'
+      : 'same-origin'
     : 'include'
 });
 

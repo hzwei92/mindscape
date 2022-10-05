@@ -139,7 +139,7 @@ export default function CreateGraphModal() {
           <IonButtons style={{
             marginTop: 2,
           }}>
-            <IonButton disabled={!!routeError || !isReady} onClick={handleSubmitClick}>
+            <IonButton disabled={!!routeError || !isReady || routeName.length === 0} onClick={handleSubmitClick}>
               CREATE
             </IonButton>
             &nbsp;&nbsp;

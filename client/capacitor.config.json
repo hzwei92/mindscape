@@ -1,6 +1,6 @@
 {
-	"appId": "pub.mindscape",
-	"appName": "mindscape",
-	"webDir": "build",
-	"bundledWebRuntime": false
+  "appId": "pub.mindscape",
+  "appName": "mindscape",
+  "webDir": "build",
+  "bundledWebRuntime": false
 }

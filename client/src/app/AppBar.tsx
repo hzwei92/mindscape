@@ -13,7 +13,7 @@ import useAppRouter from "./useAppRouter";
 
 
 const AppBar = () => {
-  console.log('appbar', getPlatforms());
+  //console.log('appbar', getPlatforms());
   useAppRouter();
   useSaveArrowSub();
   useLinkArrowsSub();
