@@ -92,6 +92,8 @@ import { TransfersModule } from './transfers/transfers.module';
           ?  false
           : {
               origin: [
+                'capacitor://localhost',
+                'http://localhost',
                 'http://localhost:8100',
                 'http://localhost:8081',
                 'http://localhost:3000',

@@ -1,5 +1,5 @@
-export const DEV_SERVER_URI = 'http://localhost:9000';
-export const DEV_WS_SERVER_URI = 'ws://localhost:9000';
+export const DEV_SERVER_URI = 'https://www.mindscape.pub';
+export const DEV_WS_SERVER_URI = 'ws://www.mindscape.pub';
 
 export const PROD_SERVER_URI = 'https://www.mindscape.pub';
 export const PROD_WS_SERVER_URI = 'ws://www.mindscape.pub';
