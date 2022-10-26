@@ -47,12 +47,14 @@ export default function useInitSpace(space: SpaceType, abstract: Arrow | null, s
   });
 
   useEffect(() => {
+    console.log('init Space', space, abstract?.id, abstract);
     if (!abstract?.id) return;
-    console.log('init Space', space, abstract.id, abstract)
+
+    dispatch(resetTwigs(space));
+    
     present({
       message: 'Loading...',
     });
-    dispatch(resetTwigs(space));
 
     getTwigs({
       variables: {

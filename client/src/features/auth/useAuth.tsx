@@ -1,10 +1,12 @@
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import useToken from './useToken';
 import { FULL_USER_FIELDS } from '../user/userFragments';
 import { gql, useMutation } from '@apollo/client';
 import { useAppDispatch, useAppSelector } from '../../app/store';
 import { setCurrentUser } from '../user/userSlice';
-import { selectAuthIsValid, selectAuthIsInit } from './authSlice';
+import { selectAuthIsValid, selectAuthIsInit, selectAuthIsComplete } from './authSlice';
+import { Preferences } from '@capacitor/preferences';
+import { REFRESH_TOKEN } from '../../constants';
 
 const INIT_USER = gql`
   mutation InitUser($palette: String!) {
@@ -29,6 +31,7 @@ export default function useAuth(palette: 'dark' | 'light') {
 
   const isInit = useAppSelector(selectAuthIsInit);
   const isValid = useAppSelector(selectAuthIsValid);
+  const isComplete = useAppSelector(selectAuthIsComplete);
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -55,9 +58,25 @@ export default function useAuth(palette: 'dark' | 'light') {
     onError: error => {
       console.error(error);
     },
-    onCompleted: data => {
+    onCompleted: async data => {
       console.log(data);
-      
+
+      const cookies = document.cookie.split('; ');
+      console.log('cookies', cookies);
+      let refreshCookie;
+      cookies.some(cookie => {
+        refreshCookie = cookie.match(/^Refresh=.*$/);
+        return !!refreshCookie;
+      });
+      if (refreshCookie && refreshCookie[0]) {
+        console.log(refreshCookie[0]);
+
+        await Preferences.set({
+          key: REFRESH_TOKEN,
+          value: refreshCookie[0],
+        });
+      }
+
       setIsLoading(false);
 
       refreshTokenInterval();
@@ -72,6 +91,8 @@ export default function useAuth(palette: 'dark' | 'light') {
 
   useEffect(() => {
     if (!isInit) return;
+    if (isComplete) return;
+    
     if (isValid) {
       setIsLoading(true);
       getUser();

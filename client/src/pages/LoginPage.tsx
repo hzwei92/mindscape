@@ -7,6 +7,8 @@ import { FULL_USER_FIELDS } from '../features/user/userFragments';
 import { setLogin } from '../features/auth/authSlice';
 import { useAppDispatch } from '../app/store';
 import { AppContext } from '../app/App';
+import { Preferences } from '@capacitor/preferences';
+import { REFRESH_TOKEN } from '../constants';
 
 const LOGIN_USER = gql`
   mutation LoginUser($email: String!, $pass: String!) {
@@ -23,7 +25,6 @@ const LoginPage: React.FC = () => {
 
   const { palette } = useContext(AppContext);
 
-
   const [message, setMessage] = useState('');
 
   const [loginUser] = useMutation(LOGIN_USER, {
@@ -33,6 +34,22 @@ const LoginPage: React.FC = () => {
     },
     onCompleted: data => {
       console.log(data);
+
+      const cookies = document.cookie.split('; ');
+      console.log('cookies', cookies);
+      let refreshCookie;
+      cookies.some(cookie => {
+        refreshCookie = cookie.match(/^Refresh=.*$/);
+        return !!refreshCookie;
+      });
+      if (refreshCookie && refreshCookie[0]) {
+        console.log(refreshCookie[0]);
+
+        Preferences.set({
+          key: REFRESH_TOKEN,
+          value: refreshCookie[0],
+        });
+      }
 
       client.clearStore();
       client.writeQuery({
@@ -46,6 +63,7 @@ const LoginPage: React.FC = () => {
       });
 
       dispatch(setLogin(data.loginUser));
+      
     }
   });
 

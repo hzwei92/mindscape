@@ -26,6 +26,8 @@ export class AuthResolver {
       refreshTokenCookie,
     } = await this.authService.initUser(palette);
 
+    console.log(refreshTokenCookie);
+
     context.res.cookie(accessTokenCookie.name, accessTokenCookie.value, accessTokenCookie.options);
     context.res.cookie(refreshTokenCookie.name, refreshTokenCookie.value, refreshTokenCookie.options);
     return user;

@@ -89,7 +89,7 @@ const AppBar = () => {
               const isFocus = focusTab?.id === tab.id && path[1] === 'g' && path[2] === arrow?.routeName;
               
               return  (
-                <IonButton key={'tab-'+tab.id} routerLink={isFocus ? '/about' : `/g/${arrow.routeName}`} style={{
+                <IonButton key={'tab-'+tab.id} routerLink={`/g/${arrow.routeName}/0`} style={{
                   border: isFocus
                     ? `1px solid ${arrow.color}`
                     : 'none',

@@ -1275,7 +1275,7 @@
 
 "@capacitor/preferences@^4.0.1":
   version "4.0.1"
-  resolved "https://registry.npmjs.org/@capacitor/preferences/-/preferences-4.0.1.tgz"
+  resolved "https://registry.yarnpkg.com/@capacitor/preferences/-/preferences-4.0.1.tgz#fd56f24fe2cde1222cf5c3057d52cd55fd033e7b"
   integrity sha512-FffJjKS4XcodUj/rtFtWizQ9q/oYDSn5opZ+JYwj/EkjiMWMhY/Pk9lN3vwQfp+VJrTt3hjr+bwKXjhTbYBqKw==
 
 "@capacitor/status-bar@4.0.1":

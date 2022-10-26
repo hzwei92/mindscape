@@ -1,5 +1,5 @@
-export const DEV_SERVER_URI = 'https://www.mindscape.pub';
-export const DEV_WS_SERVER_URI = 'ws://www.mindscape.pub';
+export const DEV_SERVER_URI = 'http://localhost:9000';
+export const DEV_WS_SERVER_URI = 'ws://localhost:9000';
 
 export const PROD_SERVER_URI = 'https://www.mindscape.pub';
 export const PROD_WS_SERVER_URI = 'ws://www.mindscape.pub';
@@ -50,3 +50,6 @@ export const CLOSED_LINK_TWIG_DIAMETER = 40;
 export const ROLES_MENU_WIDTH = 300;
 
 export const APP_BAR_HEIGHT = 48;
+
+
+export const REFRESH_TOKEN = 'REFRESH_TOKEN'

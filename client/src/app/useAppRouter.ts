@@ -59,7 +59,7 @@ const useAppRouter = () => {
     if (!user) return;
     
     const path = router.routeInfo?.pathname.split('/') || [];
-    console.log('path', path, router.routeInfo)
+    console.log('path', path, router.routeInfo, idToTab, Object.keys(focusIdToPos).length)
     if (path[1] === 'g') {
       let tab = null as Tab | null;
       let arrow = null as Arrow | null;
@@ -77,6 +77,8 @@ const useAppRouter = () => {
       if (tab && arrow) {
         if (tab.isFocus) {
           document.title = arrow.title || ''
+
+          console.log('selectedTwigId', focusSelectedTwigId);
 
           const focusSelectedTwig = focusIdToTwig[focusSelectedTwigId];
           if (path[3] !== (focusSelectedTwig?.i ?? -1).toString()) {
@@ -100,7 +102,7 @@ const useAppRouter = () => {
             }
             else {
               console.log('focus, index invalid');
-              router.push(`/g/${path[2]}/0`);
+              router.push(`/g/${path[2]}/0`, );
             }
           }
         }
@@ -112,7 +114,7 @@ const useAppRouter = () => {
         createTabByRouteName(path[2], null, false, true);
       }
     }
-  }, [user, router.routeInfo, idToTab, Object.keys(focusIdToPos).length])
+  }, [user, router.routeInfo, Object.keys(focusIdToPos).length])
 }
 
 export default useAppRouter;

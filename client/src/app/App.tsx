@@ -38,7 +38,7 @@ import { createContext, Dispatch, SetStateAction, useEffect, useMemo, useRef, us
 import { User } from '../features/user/user';
 import { useAppSelector } from './store';
 import { selectCurrentUser, selectIdToUser } from '../features/user/userSlice';
-import VeiwerPage from '../pages/ViewerPage';
+import ViewerPage from '../pages/ViewerPage';
 import AccountPage from '../pages/AccountPage';
 import LoginPage from '../pages/LoginPage';
 import LogoutPage from '../pages/LogoutPage';
@@ -77,7 +77,7 @@ export const AppContext = createContext({} as {
 });
 
 const App: React.FC = () => {
-  console.log('app');
+  //console.log('app');
   const user = useAppSelector(selectCurrentUser);
 
   const idToUser = useAppSelector(selectIdToUser);
@@ -191,7 +191,7 @@ const App: React.FC = () => {
             <Route exact path="/login" component={LoginPage} />
             <Route exact path="/logout" component={LogoutPage} />
             <Route exact path="/search" component={SearchPage} />
-            <Route path='/g/:id' component={VeiwerPage}/>
+            <Route exact path='/g/:routeName/:i' component={ViewerPage}/>
             <Route exact path="/">
               <Redirect to="/about" />
             </Route>

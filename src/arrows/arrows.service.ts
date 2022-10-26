@@ -4,7 +4,7 @@ import { User } from 'src/users/user.entity';
 import { In, Repository } from 'typeorm';
 import { Arrow } from './arrow.entity';
 import { v4 } from 'uuid'; 
-import { findDefaultWeight, getEmptyDraft, IdToType } from 'src/utils';
+import { getEmptyDraft, IdToType } from 'src/utils';
 import { SearchService } from 'src/search/search.service';
 import { SubsService } from 'src/subs/subs.service';
 import { RoleType } from 'src/enums';

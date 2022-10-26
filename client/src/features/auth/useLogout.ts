@@ -1,6 +1,8 @@
 import { gql, useApolloClient, useMutation } from '@apollo/client';
 import { useAppDispatch } from '../../app/store';
 import { setLogout } from './authSlice';
+import { Preferences } from '@capacitor/preferences';
+import { REFRESH_TOKEN } from '../../constants';
 
 const LOGOUT_USER = gql`
   mutation LogoutUser {
@@ -25,6 +27,7 @@ export default function useLogout() {
   const logoutUser = async () => {
     logout();
     dispatch(setLogout());
+    await Preferences.remove({ key: REFRESH_TOKEN })
   }
 
   return { logoutUser };
