@@ -11,6 +11,7 @@ import { TabsService } from 'src/tabs/tabs.service';
 import { PaletteMode } from 'src/enums';
 import { getEmptyDraft } from 'src/utils';
 import { Arrow } from 'src/arrows/arrow.entity';
+import { START_ARROW_1_ID, START_ARROW_2_ID } from 'src/constants';
 
 const numbers = NumberDictionary.generate({ min: 100, max: 999 });
 
@@ -101,6 +102,16 @@ export class UsersService {
     }
 
     const tab = await this.tabsService.appendTab(user1, startArrow, false, true);
+
+    const startArrow1 = await this.arrowsService.getArrowById(START_ARROW_1_ID);
+    if (!startArrow1) {
+      const tab1 = await this.tabsService.appendTab(user1, startArrow1, false, false);
+    }
+
+    const startArrow2 = await this.arrowsService.getArrowById(START_ARROW_2_ID);
+    if (!startArrow2) {
+      const tab2 = await this.tabsService.appendTab(user1, startArrow2, false, false);
+    }
 
     await this.usersRepository.save(user1);
     const user2 = await this.getUserById(user1.id);

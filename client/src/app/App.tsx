@@ -191,7 +191,7 @@ const App: React.FC = () => {
             <Route exact path="/login" component={LoginPage} />
             <Route exact path="/logout" component={LogoutPage} />
             <Route exact path="/search" component={SearchPage} />
-            <Route exact path='/g/:routeName/:i' component={ViewerPage}/>
+            <Route path='/g/:routeName' component={ViewerPage}/>
             <Route exact path="/">
               <Redirect to="/about" />
             </Route>

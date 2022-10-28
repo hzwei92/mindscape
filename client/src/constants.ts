@@ -37,8 +37,6 @@ export const MENU_MIN_WIDTH = 400;
 export const FRAME_WIDTH = 500;
 export const FRAME_MIN_WIDTH = 400;
 
-export const START_POST_I = 1;
-
 export const SPACE_BAR_HEIGHT = 56;
 
 export const VIEW_RADIUS = 500000;
