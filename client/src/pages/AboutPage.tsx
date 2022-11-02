@@ -26,114 +26,104 @@ const AboutPage: React.FC = () => {
             margin: 0,
           }}>
             <h1>
-              Intro
+              Quickstart
             </h1>
-            <p>
-              You know how we browse the Web one page at a time?
+            <ul>
+              <li>
+              Keep tabs on graphs using the numbers in the top right.
+              Click a number there to open the corrsponding graph.
+              </li>
+              <li>
+              A pseudonymous account has been automatically generated for you.
+              Register an email to secure access to this account.
+              </li>
+            </ul>
+            <br/>
+            <h1>
+              Introduction
+            </h1>
+            <ul>
+              <li>
+                You know how we browse the Web one page at a time?
 
-              Imagine zooming out to see the pages and links of the Web
-              displayed as a directed graph (i.e. a flowchart). 
-
-              Suppose you could vote on the links of the graph 
-              to prioritize them for browsing,
-              thus helping to direct the flow of attention through the Web.
-              
-              What if you could filter these votes by various demographics
-              (e.g. Millenial aged people, citizens of the United States, 
-              people who participate in a particular graph, and/or people you follow)?
-             
-              Mindscape.pub is a prototype of a Web browser that does just that.
-            </p>
+                Imagine zooming out to see the pages and links of the Web
+                displayed as a directed graph (i.e. a flowchart). 
+              </li>
+              <li>
+                Suppose you could vote on the links of the graph 
+                to prioritize them for browsing,
+                thus helping to direct the flow of attention through the Web.
+              </li>
+              <li>
+                What if you could filter these votes by various demographics
+                (e.g. Millenial aged people, citizens of the United States, 
+                people who participate in a particular graph, and/or the people you follow)?
+              </li>
+              <li>
+              Mindscape.pub is a prototype of a Web browser that does just that!
+              </li>
+            </ul>
             <br/>
             <h1>
               Motivation
             </h1>
-            <p>
-              The potential of using a weighted directed graph 
-              to structure information has not been fully
-              explored in the context of the Web.
-              
-              Suppose Alice writes a blog post.
+            <ul>
+              <li>
+              It is important for us to upgrade to this mode of browsing and extending the Web
+              because doing so would unlock two new ways to 
+              express oneself in the organization of posts.
+              </li>
+              <li>
+              Firstly, this type of interface materializes posts as objects 
+              that can be moved around in space.
 
-              Bob reads it and responds with his own blog post.
+              Thus, one can position posts in a way that uses distance and direction to convey information
+              regarding the relationship between posts.
+              </li>
+              <li>
+                Secondly, it provides a new way to link posts: the arrow. 
 
-              How are Alice's readers to know that Bob's response exists?
+                An arrow differs from a hyperlink in that the arrow exists alongside the posts,
+                while the hyperlink exists embedded within one of the posts.
 
-              Bob can easily link from his post to Alice's,
-              but hyperlinks can only be detected and traversed in the forward direction,
-              so this doesn't help Alice's readers to find Bob's post.
+                This results in their having significantly different properties.
 
-              The Web2.0 solution would be for Bob to comment on Alice's post 
-              with a hyperlink back to his own post.
-              However, Alice might not have comments enabled on her blog. Or Alice might choose to 
-              censor Bob's comment.
+                (For instance, an arrow can be traversed in either direction,
+                while a hyperlink can only be traversed in one direction.)
 
-              So, the Web doesn't provide a reliable way to reply to one
-              post with another.
+                By connecting posts with arrows, we place the posts into a graph,
+                i.e. an abstract space of arbitrary dimensionality.
 
+                In this kind of space, distance and direction remain meaningful concepts for 
+                expressing relationships between posts.
 
-              The problem with Twitter is that (1) they don't implement web structure,
-              and (2) they are too reliant on timeline structure and/or feeds where
-              adjacency of posts carries no meaning. There is no sense of place, its just 
-              a stream of vectors pointing in random directions.
+                (For instance, the distance between two posts is defined by the paths between them.
+                And every arrow points in its own direction, though we can also maintain a global sense of 
+                how far upstream or downstream a post is.)
+              </li>
 
-            </p>
-            <p>
-              In some sense, expressing oneself on the Web is very easy;
-              there are many ways to post content to the Web.
+              <li>
+                We have long been able to compose symbols within posts.
+                Now, given these two modes of defining relationships between posts,
+                we are also able to compose the posts themselves to form graphs, i.e. megasymbols.
 
-              The difficulty lies in organizing these posts.
-              
-              Organization is meta-expression; 
-              to organize a collection of things is to express oneself in terms of those things.
+                The composition of posts allows people to
+                express themselves in terms of preexisting posts.
 
+                This means a reduction in redundant posts
+                as people come to rely on common references.
 
+                It also means that one's posts are very easily cited by others,
+                facilitating the weaving of posts into conversation.
+              </li>
 
-              <br/>
-              Within a post, we use spatial positioning to order and group symbols,
-              from characters to words to sentences to paragraphs, etc.
+              <li>
 
-              But what about the posts themselves? Are they not just symbols?
-              The ability to compose symbols should not be limited at some arbitrary granularity.
-              
+              So we can all be citizen journalists.
 
-              <br/>
-              We aim to promote grassroots science and democracy 
-              by empowering citizen journalists.
-
-              
-            </p>
-              
-              <br/>
-              individual vs collective organizational schemes
-
-
-              Words refer to definitions, are like URLs to pages.
-
-              How to connect things in higher dimensional spaces?
-
-              Use links
-
-            <p>
-
-
-              organization is key, 
-              because of the fundamental concept in computer science that
-              sorting facilitates search.
-
-              Search is critical because the Web is so vast. Finding particular posts
-              is a necessary step in .
-
-              The more organized something is, the easier it is to organize further.
-            Known unknowns and unknown unknowns
-            </p>
-            <p>
-              We hope to make the Web that more 
-              expressive, organized, democratic, and transparent
-              by enabling the 
-              creation, visualization, traversal, promotion, and filtration 
-              of links.
-            </p>
+              For grassroots science and democracy.
+              </li>
+            </ul>
             <br/>
             <h1>
               Theory
@@ -177,6 +167,26 @@ const AboutPage: React.FC = () => {
               The links of a mindscape graph differ from the hyperlinks of the Web
               (i.e. embedded URLs) in that links exist alongside nodes while
               hyperlinks exist embedded within them.
+            </p>
+            <p>
+              Suppose Alice writes a blog post.
+
+              Bob reads it and responds with his own blog post.
+
+              How are Alice's readers to find and read Bob's response?
+
+              Bob can easily link from his post to Alice's,
+              but hyperlinks can only be detected and traversed in the forward direction,
+              so this doesn't help Alice's readers find Bob's post.
+
+              The Web2.0 solution would be for Bob to comment on Alice's post 
+              with a hyperlink back to his own post.
+              However, Alice might not have comments enabled on her blog. Or Alice might choose to 
+              censor Bob's comment.
+
+              So, the Web doesn't provide a reliable way to reply to one
+              post with another.
+
             </p>
             <br/>
             <h1>
