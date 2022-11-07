@@ -96,24 +96,23 @@ export class UsersService {
       : PaletteMode.LIGHT;
     const user1 = await this.usersRepository.save(user0);
 
+    const startArrow1 = await this.arrowsService.getArrowById(START_ARROW_1_ID);
+    if (startArrow1) {
+      const tab1 = await this.tabsService.appendTab(user1, startArrow1, false, false);
+    }
+
+    const startArrow2 = await this.arrowsService.getArrowById(START_ARROW_2_ID);
+    if (startArrow2) {
+      const tab2 = await this.tabsService.appendTab(user1, startArrow2, false, false);
+    }
+
     let startArrow = await this.arrowsService.getStartArrow();
     if (!startArrow) {
       startArrow = await this.arrowsService.createStartArrow(user1);
     }
 
-    const tab = await this.tabsService.appendTab(user1, startArrow, false, true);
+    const tab = await this.tabsService.appendTab(user1, startArrow, false, false);
 
-    const startArrow1 = await this.arrowsService.getArrowById(START_ARROW_1_ID);
-    if (!startArrow1) {
-      const tab1 = await this.tabsService.appendTab(user1, startArrow1, false, false);
-    }
-
-    const startArrow2 = await this.arrowsService.getArrowById(START_ARROW_2_ID);
-    if (!startArrow2) {
-      const tab2 = await this.tabsService.appendTab(user1, startArrow2, false, false);
-    }
-
-    await this.usersRepository.save(user1);
     const user2 = await this.getUserById(user1.id);
 
     this.searchService.saveUsers([user2]);

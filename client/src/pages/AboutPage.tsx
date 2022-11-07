@@ -90,6 +90,10 @@ const AboutPage: React.FC = () => {
                 for replying to one post with another.
               </li>
               <li>
+                The underlying cause of this and other issues is the 
+                lack of a way to properly apply structure to the posts of the Web.
+              </li>
+              <li>
                 We are developing this new mode of browsing and extending the Web
                 in order to give users the ability to organize posts into nested graphs
                 in space.
@@ -124,8 +128,8 @@ const AboutPage: React.FC = () => {
                 give the user some material intuition for how 
                 a directory tree is structured.)
 
-                This has inspired us to use a model of nested graphs in space, in which 
-                posts are composed in two key ways: 
+                This has inspired us to use a model of nested graphs in space, which 
+                allows the user to compose posts in two key ways: 
               </li>
               <li>
                 Firstly, this type of interface materializes posts as objects 
@@ -192,14 +196,19 @@ const AboutPage: React.FC = () => {
             </h1>
             <ul>
               <li>
-                Mindscape structures its data as a nested weighted directed graph in space.
-                Imagine each graph to be contained within its root node.
-                Each graph is a tree of posts, where the posts can be connected by arrows.
-                The branches of this tree are indicated by the solid lines between posts.
-                Move a post and the subtree will move with it.
+                Mindscape uses a single data type, the arrow, to represent
+                both the nodes and the edges of a graph.
+
+                (We can think of each node as an arrow that starts and ends at itself, 
+                like identity arrows in category theory.)
+
+                This is significant because it means that each edge has a text fields
+                that can be used to label the edge.
+
+                Also, each arrow can be said to connect two arrows. This means
+                that we can have arrows between all 3: node and node, node and edge, edge and edge
               </li>
               <li>
-
               </li>
             </ul>
           </IonCard>
