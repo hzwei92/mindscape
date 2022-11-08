@@ -104,6 +104,12 @@ input GroupEntry {
   windowId: Int!
 }
 
+type InitUserResult {
+  auth: String!
+  refresh: String!
+  user: User!
+}
+
 type Lead {
   createDate: DateTime!
   deleteDate: DateTime
@@ -164,7 +170,7 @@ type Mutation {
   getTwigs(abstractId: String!): [Twig!]!
   getUser(userId: String!): User!
   graftTwig(parentTwigId: String!, sessionId: String!, twigId: String!, x: Int!, y: Int!): GraftTwigResult!
-  initUser(palette: String!): User!
+  initUser(palette: String!): InitUserResult!
   inviteRole(arrowId: String!, sessionId: String!, userName: String!): Role!
   linkArrows(sessionId: String!, sourceId: String!, targetId: String!): LinkArrowsResult!
   linkTwigs(abstractId: String!, sessionId: String!, sourceId: String!, targetId: String!): LinkTwigsResult!

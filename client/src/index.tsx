@@ -15,7 +15,7 @@ import { isPlatform } from '@ionic/react';
 
 defineCustomElements(window);
 
-console.log(process.env.NODE_ENV, isPlatform('ios') || isPlatform('android'));
+console.log(process.env.NODE_ENV, isPlatform('ios') || isPlatform('android'), document.location, document.cookie)
 
 const wsClient = createRestartableClient({
   url: process.env.NODE_ENV === 'production'

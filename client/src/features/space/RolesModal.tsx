@@ -174,7 +174,7 @@ export default function RolesModal(props: RolesModalProps) {
           padding: 10,
         }}>
           <IonCardHeader>
-            Editors
+            Members
           </IonCardHeader>
           <IonCardContent>          
             {

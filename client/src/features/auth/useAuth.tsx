@@ -11,7 +11,11 @@ import { REFRESH_TOKEN } from '../../constants';
 const INIT_USER = gql`
   mutation InitUser($palette: String!) {
     initUser(palette: $palette) {
-      ...FullUserFields
+      user {
+        ...FullUserFields
+      }
+      auth
+      refresh
     }
   }
   ${FULL_USER_FIELDS}
@@ -59,7 +63,7 @@ export default function useAuth(palette: 'dark' | 'light') {
       console.error(error);
     },
     onCompleted: async data => {
-      console.log(data);
+      //console.log(data);
 
       const cookies = document.cookie.split('; ');
       console.log('cookies', cookies);
@@ -81,7 +85,9 @@ export default function useAuth(palette: 'dark' | 'light') {
 
       refreshTokenInterval();
 
-      dispatch(setCurrentUser(data.initUser));
+      dispatch(setCurrentUser(data.initUser.user));
+
+      console.log('auth, refresh', data.initUser.auth, data.initUser.refresh);
     }
   });
 

@@ -6,6 +6,7 @@ import { AuthService } from './auth.service';
 import { CurrentUser, GqlAuthGuard } from './gql-auth.guard';
 import { GqlRefreshGuard } from './gql-refresh.guard';
 import { RedisPubSub } from 'graphql-redis-subscriptions';
+import { InitUserResult } from './dto/init-user-result.dto';
 
 @Resolver()
 export class AuthResolver {
@@ -15,7 +16,7 @@ export class AuthResolver {
     private readonly pubSub: RedisPubSub,
   ) {}
 
-  @Mutation(() => User, {name: 'initUser'})
+  @Mutation(() => InitUserResult, {name: 'initUser'})
   async initUser(
     @Context() context: any,
     @Args('palette') palette: string,
@@ -26,11 +27,13 @@ export class AuthResolver {
       refreshTokenCookie,
     } = await this.authService.initUser(palette);
 
-    console.log(refreshTokenCookie);
-
     context.res.cookie(accessTokenCookie.name, accessTokenCookie.value, accessTokenCookie.options);
     context.res.cookie(refreshTokenCookie.name, refreshTokenCookie.value, refreshTokenCookie.options);
-    return user;
+    return {
+      user,
+      auth: accessTokenCookie.value,
+      refresh: refreshTokenCookie.value,
+    };
   }
 
   @UseGuards(GqlAuthGuard)

@@ -5,6 +5,7 @@ import { selectCurrentUser } from '../user/userSlice';
 import { setAuthIsInit, setAuthIsValid, setTokenInterval } from './authSlice';
 import { Preferences } from '@capacitor/preferences';
 import { REFRESH_TOKEN as REFRESH_TOKEN_KEY } from '../../constants';
+
 const REFRESH_TOKEN = gql`
   mutation RefreshToken {
     refreshToken {

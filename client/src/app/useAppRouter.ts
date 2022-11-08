@@ -59,7 +59,7 @@ const useAppRouter = () => {
     if (!user) return;
     
     const path = router.routeInfo?.pathname.split('/') || [];
-    console.log('path', path, router.routeInfo, idToTab, Object.keys(focusIdToPos).length)
+    console.log('path', path, router.routeInfo, Object.keys(focusIdToPos).length)
     if (path[1] === 'g') {
       let tab = null as Tab | null;
       let arrow = null as Arrow | null;

@@ -61,7 +61,8 @@ const AboutPage: React.FC = () => {
                 to see the information digest of a particular slice of the population?
               </li>
               <li>
-                Mindscape.pub is a prototype of a Web browser that does just that!
+                Mindscape.pub is a prototype of a Web browser that explores these ideas 
+                and more!
               </li>
             </ul>
             <br/>
