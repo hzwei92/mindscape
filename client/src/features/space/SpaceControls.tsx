@@ -1,6 +1,6 @@
 import { MAX_Z_INDEX } from '../../constants';
 import { scaleDown, scaleUp } from '../../utils';
-import { useContext } from 'react';
+import { Dispatch, SetStateAction, useContext } from 'react';
 import { SpaceContext } from './SpaceComponent';
 import { useAppDispatch, useAppSelector } from '../../app/store';
 import { selectScale, selectSelectedTwigId, setScale } from './spaceSlice';
@@ -8,15 +8,14 @@ import { useReactiveVar } from '@apollo/client';
 import { SpaceType } from './space';
 import { focusSpaceElVar, frameSpaceElVar } from '../../cache';
 import { selectIdToTwig } from '../twig/twigSlice';
-import { selectFocusTab, selectFrameTab, selectIdToTab } from '../tab/tabSlice';
-import useUpdateTab from '../tab/useUpdateTab';
+import { selectFocusTab, selectFrameTab } from '../tab/tabSlice';
 import useRemoveTab from '../tab/useRemoveTab';
 import { IonButton, IonButtons, IonCard, IonFab, IonFabButton, IonIcon } from '@ionic/react';
 import { add, close, people, remove, settingsOutline, sync } from 'ionicons/icons';
 
 interface SpaceControlsProps {
-  settingsMenuRef: React.RefObject<HTMLIonMenuElement>;
-  rolesMenuRef: React.RefObject<HTMLIonMenuElement>;
+  setShowSettings: Dispatch<SetStateAction<boolean>>;
+  setShowRoles: Dispatch<SetStateAction<boolean>>;
 }
 export default function SpaceControls(props: SpaceControlsProps) {
   const dispatch = useAppDispatch();
@@ -119,11 +118,11 @@ export default function SpaceControls(props: SpaceControlsProps) {
   };
 
   const handleSettingsClick = () => {
-    props.settingsMenuRef.current?.open();
+    props.setShowSettings(val => !val);
   };
 
   const handleRolesClick = () => {
-    props.rolesMenuRef.current?.open();
+    props.setShowRoles(val => !val);
   }
 
   const handleSyncClick = () => {

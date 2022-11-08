@@ -58,7 +58,9 @@ export default function RemoveTwigModal() {
 
   return (
     <IonModal ref={modalRef} onWillDismiss={handleClose}>
-      <IonCard>
+      <IonCard style={{
+        padding: 10,
+      }}>
         <IonCardHeader>
           Remove
         </IonCardHeader>

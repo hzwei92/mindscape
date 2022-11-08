@@ -1,16 +1,17 @@
 
-import { Dispatch, SetStateAction, useContext, useState } from 'react';
+import { Dispatch, SetStateAction, useContext, useEffect, useRef, useState } from 'react';
 import { Role, RoleType } from '../role/role';
 import { SpaceContext } from './SpaceComponent';
-import { MAX_Z_INDEX, ROLES_MENU_WIDTH, SPACE_BAR_HEIGHT } from '../../constants';
+import { SPACE_BAR_HEIGHT } from '../../constants';
 import { AppContext } from '../../app/App';
-import { IonBackdrop, IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonMenu } from '@ionic/react';
-import { IonContent } from '@ionic/core/components';
+import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonModal } from '@ionic/react';
 
-interface RolesMenuProps {
-  rolesMenuRef: React.RefObject<HTMLIonMenuElement>;
+
+interface RolesModalProps {
+  showRoles: boolean;
+  setShowRoles: Dispatch<SetStateAction<boolean>>;
 }
-export default function RolesMenu(props: RolesMenuProps) {
+export default function RolesModal(props: RolesModalProps) {
   const { 
     user,
   } = useContext(AppContext);
@@ -40,8 +41,19 @@ export default function RolesMenu(props: RolesMenuProps) {
       }
     });
 
+  const modalRef = useRef<HTMLIonModalElement>(null);
+
   const [isInviting, setIsInviting] = useState(false);
   const canInvite = role && (role.type === 'ADMIN' || role.type === 'MEMBER')
+
+  useEffect(() => {
+    if (props.showRoles) {
+      modalRef.current?.present();
+    }
+    else {
+      modalRef.current?.dismiss();
+    }
+  })
 
   // const { requestRole } = useRequestRole();
   // const { inviteRole } = useInviteRole(props.jam.id, () => {});
@@ -64,16 +76,16 @@ export default function RolesMenu(props: RolesMenuProps) {
 
   }
 
+  const handleClose = () => {
+    props.setShowRoles(false);
+  };
+
   if (!abstract) return null;
 
   return (
-    <IonMenu ref={props.rolesMenuRef} contentId={'router-outlet'} style={{
-      zIndex: MAX_Z_INDEX,
-    }}>
+    <IonModal ref={modalRef} onWillDismiss={handleClose}>
       <div style={{
-        marginTop: SPACE_BAR_HEIGHT + 10,
         padding: 10,
-        height: `calc(100% - ${SPACE_BAR_HEIGHT + 10}px)`,
       }}>
         <IonCard style={{
           margin: 10,
@@ -210,6 +222,6 @@ export default function RolesMenu(props: RolesMenuProps) {
           </IonCardContent>
         </IonCard>
       </div>
-    </IonMenu>
+    </IonModal>
   )
 }

@@ -31,8 +31,8 @@ import useRemoveTwigSub from '../twig/useRemoveTwigSub';
 import useReplyTwigSub from '../twig/useReplyTwigSub';
 import useTwigTree from '../twig/useTwigTree';
 import RemoveTwigModal from './RemoveTwigModal';
-import RolesMenu from './RolesMenu';
-import SettingsMenu from './SettingsMenu';
+import RolesModal from './RolesModal';
+import SettingsModal from './SettingsModal';
 import { PosType, SpaceType } from './space';
 import SpaceControls from './SpaceControls';
 import SpaceNav from './SpaceNav';
@@ -114,8 +114,9 @@ const SpaceComponent = (props: SpaceComponentProps) => {
   const canView = checkPermit(abstract?.canView, role?.type)
 
   const spaceEl = useRef<HTMLIonCardElement>(null);
-  const settingsMenuRef = useRef<HTMLIonMenuElement>(null);
-  const rolesMenuRef = useRef<HTMLIonMenuElement>(null);
+  
+  const [showSettings, setShowSettings] = useState(false);
+  const [showRoles, setShowRoles] = useState(false);
 
   const [touches, setTouches] = useState<TouchList | null>(null);
 
@@ -732,15 +733,17 @@ const SpaceComponent = (props: SpaceComponentProps) => {
         }
       </IonCard>
       <SpaceControls 
-        settingsMenuRef={settingsMenuRef}
-        rolesMenuRef={rolesMenuRef}
+        setShowRoles={setShowRoles}
+        setShowSettings={setShowSettings}
       />
       <SpaceNav />
-      <SettingsMenu 
-        settingsMenuRef={settingsMenuRef}
+      <SettingsModal 
+        showSettings={showSettings}
+        setShowSettings={setShowSettings}
       />
-      <RolesMenu
-        rolesMenuRef={rolesMenuRef}
+      <RolesModal
+        showRoles={showRoles}
+        setShowRoles={setShowRoles}
       />
       <RemoveTwigModal />
     </SpaceContext.Provider>
