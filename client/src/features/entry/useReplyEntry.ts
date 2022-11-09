@@ -1,5 +1,4 @@
 import { gql, useMutation, useReactiveVar } from '@apollo/client';
-import { sessionVar } from '../../cache';
 import { v4 } from 'uuid';
 import { useAppDispatch, useAppSelector } from '../../app/store';
 import { addEntry, selectIdToEntry, selectNewEntryId, updateEntry } from './entrySlice';
@@ -9,6 +8,7 @@ import { mergeUsers, selectCurrentUser } from '../user/userSlice';
 import { createArrow } from '../arrow/arrow';
 import { mergeArrows, selectArrowById } from '../arrow/arrowSlice';
 import { selectFocusTab, selectFrameTab } from '../tab/tabSlice';
+import { selectSessionId } from '../auth/authSlice';
 
 const REPLY_ARROW = gql`
   mutation ReplyArrow(
@@ -49,7 +49,7 @@ const REPLY_ARROW = gql`
 export default function useReplyEntry(entryId: string) {
   const dispatch = useAppDispatch();
 
-  const sessionDetail = useReactiveVar(sessionVar);
+  const sessionId = useAppSelector(selectSessionId);
 
   const user = useAppSelector(selectCurrentUser);
   const frameTab = useAppSelector(selectFrameTab);
@@ -120,7 +120,7 @@ export default function useReplyEntry(entryId: string) {
 
     reply({
       variables: {
-        sessionId: sessionDetail.id,
+        sessionId,
         sourceId: entry.arrowId,
         linkId,
         targetId,

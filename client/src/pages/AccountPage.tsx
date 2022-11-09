@@ -4,16 +4,16 @@ import { createOutline, send } from "ionicons/icons";
 import { useContext, useEffect, useState } from "react";
 import { ChromePicker } from "react-color";
 import { AppContext } from "../app/App";
-import { useAppDispatch } from "../app/store";
-import { sessionVar } from "../cache";
+import { useAppDispatch, useAppSelector } from "../app/store";
+import { selectAccessToken, selectSessionId } from "../features/auth/authSlice";
 import Register from "../features/auth/Register";
 import Verify from "../features/auth/Verify";
 import { mergeUsers } from "../features/user/userSlice";
 import useSetUserColor from "../features/user/useSetUserColor";
 
 const SET_USER_NAME = gql`
-  mutation SetUserName($sessionId: String!, $name: String!) {
-    setUserName(sessionId: $sessionId, name: $name) {
+  mutation SetUserName($accessToken: String!, $sessionId: String!, $name: String!) {
+    setUserName(accessToken: $accessToken, sessionId: $sessionId, name: $name) {
       id
       name
       lowercaseName
@@ -23,8 +23,8 @@ const SET_USER_NAME = gql`
 `;
 
 const GET_USER_BY_NAME = gql`
-  query GetUserByName($name: String!) {
-    getUserByName(name: $name) {
+  query GetUserByName($accessToken: String!, $name: String!) {
+    getUserByName(accessToken: $accessToken, name: $name) {
       id
       name
     }
@@ -36,8 +36,8 @@ const AccountPage: React.FC = () => {
 
   const { user, palette } = useContext(AppContext);
   
-  const sessionDetail = useReactiveVar(sessionVar);
-
+  const accessToken = useAppSelector(selectAccessToken);
+  const sessionId = useAppSelector(selectSessionId);
 
   const [isEditingName, setIsEditingName] = useState(false);
   const [name, setName] = useState(user?.name);
@@ -48,7 +48,6 @@ const AccountPage: React.FC = () => {
   const [colorTimeout, setColorTimeout] = useState(null as ReturnType<typeof setTimeout> | null);
   
   const { setUserColor } = useSetUserColor();
-
    
   const [getUserByName] = useLazyQuery(GET_USER_BY_NAME, {
     onError: error => {
@@ -108,7 +107,7 @@ const AccountPage: React.FC = () => {
     setUserName({
       variables: {
         name,
-        sessionId: sessionDetail.id,
+        sessionId: sessionId,
       }
     })
     setIsEditingName(false);
@@ -130,6 +129,7 @@ const AccountPage: React.FC = () => {
 
     setColorTimeout(timeout);
   };
+  
   return (
     <IonPage>
       <IonCard style={{

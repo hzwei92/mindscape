@@ -1,15 +1,15 @@
 import { gql, useMutation } from '@apollo/client';
 import { useContext } from 'react';
 import { useAppDispatch, useAppSelector } from '../../app/store';
-import { selectSessionId } from '../auth/authSlice';
+import { selectAccessToken, selectSessionId } from '../auth/authSlice';
 import { FULL_ROLE_FIELDS } from '../role/roleFragments';
 import { SpaceContext } from '../space/SpaceComponent';
 import type { Twig } from './twig';
 import { mergeTwigs, selectIdToChildIdToTrue, selectIdToDescIdToTrue, selectIdToTwig } from './twigSlice';
 
 const REMOVE_TWIG = gql`
-  mutation RemoveTwig($sessionId: String!, $twigId: String!, $shouldRemoveDescs: Boolean!) {
-    removeTwig(sessionId: $sessionId, twigId: $twigId, shouldRemoveDescs: $shouldRemoveDescs) {
+  mutation RemoveTwig($accessToken: String!, $sessionId: String!, $twigId: String!, $shouldRemoveDescs: Boolean!) {
+    removeTwig(accessToken: $accessToken, sessionId: $sessionId, twigId: $twigId, shouldRemoveDescs: $shouldRemoveDescs) {
       twigs {
         id
         deleteDate
@@ -27,7 +27,9 @@ export default function useRemoveTwig() {
 
   const { space, canEdit } = useContext(SpaceContext);
 
+  const accessToken = useAppSelector(selectAccessToken);
   const sessionId = useAppSelector(selectSessionId);
+  
   const idToTwig = useAppSelector(selectIdToTwig(space));
   const idToDescIdToTrue = useAppSelector(selectIdToDescIdToTrue(space));
   const idToChildIdToTrue = useAppSelector(selectIdToChildIdToTrue(space));
@@ -45,6 +47,7 @@ export default function useRemoveTwig() {
     if (canEdit) {
       remove({
         variables: {
+          accessToken,
           sessionId,
           twigId: twig.id,
           shouldRemoveDescs,

@@ -2,6 +2,7 @@ import { gql, useMutation } from '@apollo/client';
 import { v4 } from 'uuid';
 import { useAppDispatch, useAppSelector } from '../../app/store';
 import { IdToType } from '../../types';
+import { selectAccessToken } from '../auth/authSlice';
 import { Entry } from '../entry/entry';
 import { mergeEntries, selectIdToEntry } from '../entry/entrySlice';
 import { VOTE_FIELDS } from '../vote/voteFragments';
@@ -10,8 +11,8 @@ import { FULL_ARROW_FIELDS } from './arrowFragments';
 import { mergeArrows } from './arrowSlice';
 
 const GET_OUTS = gql`
-  mutation GetOuts($arrowId: String!, $offset: Int!) {
-    getOuts(arrowId: $arrowId, offset: $offset) {
+  mutation GetOuts($accessToken: String!, $arrowId: String!, $offset: Int!) {
+    getOuts(accessToken: $accessToken, arrowId: $arrowId, offset: $offset) {
       ...FullArrowFields
       source {
         id
@@ -30,8 +31,10 @@ const GET_OUTS = gql`
 `;
 
 export default function useGetOuts(entryId: string, arrowId: string) {
-  const idToEntry = useAppSelector(selectIdToEntry);
   const dispatch = useAppDispatch();
+
+  const accessToken = useAppSelector(selectAccessToken);
+  const idToEntry = useAppSelector(selectIdToEntry);
 
   const [getOutArrows] = useMutation(GET_OUTS, {
     onError: error => {
@@ -118,6 +121,7 @@ export default function useGetOuts(entryId: string, arrowId: string) {
   const getOuts = (offset: number) => {
     getOutArrows({
       variables: {
+        accessToken,
         arrowId,
         offset,
       }

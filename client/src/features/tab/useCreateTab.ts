@@ -1,12 +1,13 @@
 import { gql, useMutation } from "@apollo/client";
-import { useAppDispatch } from "../../app/store";
+import { useAppDispatch, useAppSelector } from "../../app/store";
+import { selectAccessToken } from "../auth/authSlice";
 import { FULL_TAB_FIELDS } from "./tabFragments";
 import { mergeTabs } from "./tabSlice";
 
 
 const CREATE_TAB = gql`
-  mutation CreateTab($arrowId: String!, $i: Int, $isFrame: Boolean!, $isFocus: Boolean!) {
-    createTab(arrowId: $arrowId, i: $i, isFrame: $isFrame, isFocus: $isFocus) {
+  mutation CreateTab($accessToken: String!, $arrowId: String!, $i: Int, $isFrame: Boolean!, $isFocus: Boolean!) {
+    createTab(accessToken: $accessToken, arrowId: $arrowId, i: $i, isFrame: $isFrame, isFocus: $isFocus) {
       ...FullTabFields
     }
   }
@@ -14,8 +15,8 @@ const CREATE_TAB = gql`
 `;
 
 const CREATE_TAB_BY_ROUTENAME = gql`
-  mutation CreateTabByRouteName($routeName: String!, $i: Int, $isFrame: Boolean!, $isFocus: Boolean!) {
-    createTabByRouteName(routeName: $routeName, i: $i, isFrame: $isFrame, isFocus: $isFocus) {
+  mutation CreateTabByRouteName($accessToken: String!, $routeName: String!, $i: Int, $isFrame: Boolean!, $isFocus: Boolean!) {
+    createTabByRouteName(accessToken: $accessToken, routeName: $routeName, i: $i, isFrame: $isFrame, isFocus: $isFocus) {
       ...FullTabFields
     }
   }
@@ -24,6 +25,8 @@ const CREATE_TAB_BY_ROUTENAME = gql`
 
 export default function useCreateTab() {
   const dispatch = useAppDispatch();
+
+  const accessToken = useAppSelector(selectAccessToken);
 
   const [createByRouteName] = useMutation(CREATE_TAB_BY_ROUTENAME, {
     onError: err => {
@@ -48,6 +51,7 @@ export default function useCreateTab() {
   const createTabByRouteName = (routeName: string, i: number | null, isFrame: boolean, isFocus: boolean) => {
     createByRouteName({
       variables: {
+        accessToken,
         routeName,
         i,
         isFrame,
@@ -59,6 +63,7 @@ export default function useCreateTab() {
   const createTab = (arrowId: string, i: number | null, isFrame: boolean, isFocus: boolean) => {
     create({
       variables: {
+        accessToken,
         arrowId,
         i,
         isFrame, 

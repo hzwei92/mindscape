@@ -1,6 +1,6 @@
 import { gql, useReactiveVar, useSubscription } from '@apollo/client'
 import { useAppDispatch, useAppSelector } from '../../app/store';
-import { sessionVar } from '../../cache';
+import { selectSessionId } from '../auth/authSlice';
 import { SpaceType } from '../space/space';
 import { addCursor, removeCursor, selectIdToCursor } from './cursorSlice';
 
@@ -17,14 +17,15 @@ const PUBLISH_CURSOR = gql`
 `;
 
 export default function usePublishCursorSub(space: SpaceType, abstractId?: string) {
-  const sessionDetail = useReactiveVar(sessionVar);
+  const dispatch = useAppDispatch();
+
+  const sessionId = useAppSelector(selectSessionId);
 
   const idToCursor = useAppSelector(selectIdToCursor(space));
 
-  const dispatch = useAppDispatch();
   useSubscription(PUBLISH_CURSOR, {
     variables: {
-      sessionId: sessionDetail.id,
+      sessionId,
       abstractId,
     },
     onSubscriptionData: ({subscriptionData: {data: {publishCursor}}}) => {

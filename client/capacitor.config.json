@@ -3,9 +3,14 @@
   "appName": "mindscape",
   "webDir": "build",
   "bundledWebRuntime": false,
+  "server": {
+    "iosScheme": "https",
+    "androidScheme": "https"
+  },
   "plugins": {
     "CapacitorCookies": {
       "enabled": true
     }
-  }
+  },
+  "limitsNavigationsToAppBoundDomains": true
 }

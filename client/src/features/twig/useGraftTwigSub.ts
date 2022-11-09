@@ -1,8 +1,8 @@
 import { gql, useReactiveVar, useSubscription } from '@apollo/client';
-import { useAppDispatch } from '../../app/store';
-import { sessionVar } from '../../cache';
+import { useAppDispatch, useAppSelector } from '../../app/store';
 import { IdToType } from '../../types';
 import { Arrow } from '../arrow/arrow';
+import { selectSessionId } from '../auth/authSlice';
 import { PosType, SpaceType } from '../space/space';
 import { mergeIdToPos } from '../space/spaceSlice';
 import { mergeTwigs } from './twigSlice';
@@ -30,12 +30,11 @@ const GRAFT_TWIG_SUB = gql`
 export default function useGraftTwigSub(space: SpaceType, abstract: Arrow | null) {
   const dispatch = useAppDispatch();
 
-  const sessionDetail = useReactiveVar(sessionVar);
-
+  const sessionId = useAppSelector(selectSessionId);
 
   useSubscription(GRAFT_TWIG_SUB, {
     variables: {
-      sessionId: sessionDetail.id,
+      sessionId,
       abstractId: abstract?.id,
     },
     onSubscriptionData: ({subscriptionData: {data: {graftTwig}}}) => {

@@ -1,9 +1,9 @@
-import { gql, useReactiveVar, useSubscription } from "@apollo/client";
-import { useAppDispatch } from "../../app/store";
-import { sessionVar } from "../../cache";
+import { gql, useSubscription } from "@apollo/client";
+import { useAppDispatch, useAppSelector } from "../../app/store";
 import { IdToType } from "../../types";
 import { Arrow } from "../arrow/arrow";
 import { mergeArrows } from "../arrow/arrowSlice";
+import { selectSessionId } from "../auth/authSlice";
 import { ROLE_FIELDS } from "../role/roleFragments";
 import { PosType, SpaceType } from "../space/space";
 import { mergeIdToPos } from "../space/spaceSlice";
@@ -56,11 +56,11 @@ const LINK_TWIGS = gql`
 export default function useLinkTwigSub(space: SpaceType, abstract: Arrow | null) {
   const dispatch = useAppDispatch();
 
-  const sessionDetail = useReactiveVar(sessionVar);
+  const sessionId = useAppSelector(selectSessionId);
 
   useSubscription(LINK_TWIGS, {
     variables: {
-      sessionId: sessionDetail.id,
+      sessionId,
       abstractId: abstract?.id,
     },
     shouldResubscribe: true,

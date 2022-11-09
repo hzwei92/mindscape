@@ -1,14 +1,14 @@
 import { gql, useMutation } from '@apollo/client';
 import { FULL_ROLE_FIELDS } from '../role/roleFragments';
 import { applyRole } from '../role/applyRole';
-import { selectSessionId } from '../auth/authSlice';
+import { selectAccessToken, selectSessionId } from '../auth/authSlice';
 import { mergeTwigs } from './twigSlice';
 import { SpaceType } from '../space/space';
 import { useAppDispatch, useAppSelector } from '../../app/store';
 
 const MOVE_TWIG = gql`
-  mutation MoveTwig($sessionId: String!, $twigId: String!, $x: Int!, $y: Int!) {
-    moveTwig(sessionId: $sessionId, twigId: $twigId, x: $x, y: $y) {
+  mutation MoveTwig($accessToken: String!, $sessionId: String!, $twigId: String!, $x: Int!, $y: Int!) {
+    moveTwig(accessToken: $accessToken, sessionId: $sessionId, twigId: $twigId, x: $x, y: $y) {
       twigs {
         id
         x
@@ -25,6 +25,7 @@ const MOVE_TWIG = gql`
 export default function useMoveTwig(space: SpaceType) {
   const dispatch = useAppDispatch();
 
+  const accessToken = useAppSelector(selectAccessToken);
   const sessionId = useAppSelector(selectSessionId);
   
   const [move] = useMutation(MOVE_TWIG, {
@@ -46,7 +47,8 @@ export default function useMoveTwig(space: SpaceType) {
   const moveTwig = (twigId: string, x: number, y: number) => {
     move({
       variables: {
-        sessionId: sessionId,
+        accessToken, 
+        sessionId,
         twigId,
         x,
         y,

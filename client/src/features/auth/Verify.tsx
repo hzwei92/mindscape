@@ -1,11 +1,13 @@
 import { gql, useMutation } from '@apollo/client';
 import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonHeader, IonInput } from '@ionic/react';
 import React, { useState } from 'react';
-import { useAppDispatch } from '../../app/store';
+import { useAppDispatch, useAppSelector } from '../../app/store';
 import { mergeUsers } from '../user/userSlice';
+import { selectAccessToken } from './authSlice';
+
 const VERIFY_USER = gql`
-  mutation VerifyUser($code: String!) {
-    verifyUser(code: $code) {
+  mutation VerifyUser($accessToken: String!, $code: String!) {
+    verifyUser(accessToken: $accessToken, code: $code) {
       id
       verifyEmailDate
     }
@@ -13,8 +15,8 @@ const VERIFY_USER = gql`
 `;
 
 const RESEND_USER_VERIFICATION = gql`
-  mutation ResendUserVerifcation {
-    resendUserVerification {
+  mutation ResendUserVerifcation($accessToken: String!) {
+    resendUserVerification(accessToken: $accessToken) {
       id
     }
   }
@@ -22,6 +24,8 @@ const RESEND_USER_VERIFICATION = gql`
 
 export default function Verify() {
   const dispatch = useAppDispatch();
+
+  const accessToken = useAppSelector(selectAccessToken);
 
   const [code, setCode] = useState('');
   const [message, setMessage] = useState('');
@@ -53,13 +57,18 @@ export default function Verify() {
   const handleSubmitClick = (event: React.MouseEvent) => {
     verifyUser({
       variables: {
+        accessToken,
         code,
       },
     });
   }
 
   const handleResendClick = (event: React.MouseEvent) => {
-    resendUserVerification();
+    resendUserVerification({
+      variables: {
+        accessToken,
+      }
+    });
   }
 
   return (

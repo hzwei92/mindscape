@@ -1,7 +1,7 @@
 import { gql, useMutation, useReactiveVar } from '@apollo/client';
-import { useAppDispatch } from '../../app/store';
-import { sessionVar } from '../../cache';
+import { useAppDispatch, useAppSelector } from '../../app/store';
 import { mergeArrows } from '../arrow/arrowSlice';
+import { selectSessionId } from '../auth/authSlice';
 import { mergeUsers } from '../user/userSlice';
 import { VOTE_FIELDS } from './voteFragments';
 import { mergeVotes } from './voteSlice';
@@ -28,7 +28,7 @@ const VOTE_POSTS = gql`
 export default function useVoteArrow(onCompleted: any) {
   const dispatch = useAppDispatch();
 
-  const sessionDetail = useReactiveVar(sessionVar);
+  const sessionId = useAppSelector(selectSessionId);
 
   const [vote] = useMutation(VOTE_POSTS, {
     onError: error => {
@@ -55,7 +55,7 @@ export default function useVoteArrow(onCompleted: any) {
   const voteArrow = (arrowId: string, weight: number) => {
     vote({
       variables: {
-        sessionId: sessionDetail.id,
+        sessionId,
         arrowId,
         weight,
       },

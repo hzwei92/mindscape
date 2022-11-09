@@ -1,10 +1,10 @@
 import { gql, useReactiveVar, useSubscription } from '@apollo/client';
 import { useContext } from 'react';
-import { sessionVar } from '../../cache';
 import { useAppDispatch, useAppSelector } from '../../app/store';
 import { mergeArrows, selectArrowIdToInstanceIds, selectIdToInstance, updateInstance } from './arrowSlice';
 import { AppContext } from '../../app/App';
 import { useIonToast } from '@ionic/react';
+import { selectSessionId } from '../auth/authSlice';
 
 const SAVE_ARROW = gql`
   subscription SaveArrow($sessionId: String!, $userId: String!, $arrowIds: [String!]!) {
@@ -24,15 +24,15 @@ export default function useSaveArrowSub() {
 
   const [present] = useIonToast();
 
-  const sessionDetail = useReactiveVar(sessionVar);
-
+  const sessionId = useAppSelector(selectSessionId);
+  
   const arrowIdToInstanceIds = useAppSelector(selectArrowIdToInstanceIds);
   const idToInstance = useAppSelector(selectIdToInstance);
 
   useSubscription(SAVE_ARROW, {
     shouldResubscribe: true,
     variables: {
-      sessionId: sessionDetail.id,
+      sessionId,
       userId: user?.id,
       arrowIds: Object.keys(arrowIdToInstanceIds),
     },

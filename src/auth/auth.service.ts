@@ -6,6 +6,7 @@ import { UsersService } from 'src/users/users.service';
 import TokenPayload from './tokenPayload.interface';
 import { google, Auth } from 'googleapis';
 import * as bcrypt from 'bcrypt';
+import { User } from 'src/users/user.entity';
 
 @Injectable()
 export class AuthService {
@@ -23,31 +24,43 @@ export class AuthService {
   
   oauthClient: Auth.OAuth2Client;
 
+  async refreshToken(token: string) {
+    const payload = await this.jwtService.verifyAsync(token, {
+      secret: this.configService.get('JWT_REFRESH_TOKEN_SECRET'),
+    });
+    const user = await this.usersService.getUserIfRefreshTokenMatches(payload.userId, token);
+    if (!user) {
+      throw new BadRequestException('Invalid refreshToken');
+    }
+    return this.getAccessToken(user.id);
+  }
+
   async initUser(palette: string) {
     const user = await this.usersService.initUser(palette);
-    const accessTokenCookie = this.getAccessTokenCookie(user.id);
-    const refreshTokenCookie = await this.getRefreshTokenCookie(user.id, false);
+    const accessToken = this.getAccessToken(user.id);
+    const refreshToken = await this.getRefreshToken(user.id, false);
     return {
       user,
-      accessTokenCookie,
-      refreshTokenCookie,
+      accessToken,
+      refreshToken,
     }
   }
 
   async registerUser(userId: string, email: string, pass: string) {
     const user = await this.usersService.registerUser(userId, email, pass, false);
-    await this.sendVerificationEmail(user.id, user.email);
-    const accessTokenCookie = this.getAccessTokenCookie(user.id);
-    const refreshTokenCookie = await this.getRefreshTokenCookie(user.id, true);
+    await this.sendVerificationEmail(user, user.email);
+    const accessToken = this.getAccessToken(user.id);
+    const refreshToken = await this.getRefreshToken(user.id, true);
     return {
       user,
-      accessTokenCookie,
-      refreshTokenCookie,
+      accessToken,
+      refreshToken,
     }
   }
 
-  async loginUser(prevUserId: string, email: string, pass: string) {
-    this.logoutUser(prevUserId);
+  async loginUser(prevUser: User, email: string, pass: string) {
+    await this.logoutUser(prevUser);
+
     const user = await this.usersService.getUserByEmail(email);
     if (!user || !user.hashedPassword) {
       throw new BadRequestException('Invalid credentials');
@@ -56,73 +69,54 @@ export class AuthService {
     if (!isMatching) {
       throw new BadRequestException('Invalid credentials');
     }
-    const accessTokenCookie = this.getAccessTokenCookie(user.id);
-    const refreshTokenCookie = await this.getRefreshTokenCookie(user.id, true);
+
+    const accessToken = this.getAccessToken(user.id);
+    const refreshToken = await this.getRefreshToken(user.id, true);
     return {
       user,
-      accessTokenCookie,
-      refreshTokenCookie,
+      accessToken,
+      refreshToken,
     };
   }
 
-  async registerGoogleUser(userId: string, token: string) {
+  async registerGoogleUser(user: User, token: string) {
     const email = await this.googleAuthenticate(token);
-    const user = await this.usersService.registerUser(userId, email, null, true);
-    const accessTokenCookie = this.getAccessTokenCookie(user.id);
-    const refreshTokenCookie = await this.getRefreshTokenCookie(user.id, true);
+    const user1 = await this.usersService.registerUser(user.id, email, null, true);
+    const accessToken = this.getAccessToken(user.id);
+    const refreshToken = await this.getRefreshToken(user.id, true);
     return {
-      user,
-      accessTokenCookie,
-      refreshTokenCookie,
+      user: user1,
+      accessToken,
+      refreshToken,
     }
   }
 
-  async loginGoogleUser(prevUserId: string | null, token: string) {
-    if (prevUserId) {
-      this.logoutUser(prevUserId);
+  async loginGoogleUser(prevUser: User, token: string) {
+    if (prevUser) {
+      this.logoutUser(prevUser);
     }
     const email = await this.googleAuthenticate(token);
     let user = await this.usersService.getUserByEmail(email);
     if (!user) {
       throw new BadRequestException('This user does not exist');
     }
-    const accessTokenCookie = this.getAccessTokenCookie(user.id);
-    const refreshTokenCookie = await this.getRefreshTokenCookie(user.id, true);
+    const accessToken = this.getAccessToken(user.id);
+    const refreshToken = await this.getRefreshToken(user.id, true);
     return {
       user,
-      accessTokenCookie,
-      refreshTokenCookie,
+      accessToken,
+      refreshToken,
     }
   }
 
-  async logoutUser(userId: string) {
-    await this.usersService.removeRefreshToken(userId);
-    const accessTokenCookie = {
-      name: 'Authentication',
-      value: '',
-      options: {
-        httpOnly: false,
-        path: '/',
-        maxAge: 0,
-      }
-    };
-    const refreshTokenCookie = {
-      name: 'Refresh',
-      value: '',
-      options: {
-        httpOnly: false,
-        path: '/',
-        maxAge: 0,
-      }
-    };
-    return { accessTokenCookie, refreshTokenCookie};
+  async logoutUser(user: User) {
+    await this.usersService.removeRefreshToken(user.id);
   }
 
-  async verifyUser(userId: string, code: string) {
+  async verifyUser(user: User, code: string) {
     if (code.length !== 6) {
       throw new BadRequestException('Invalid verifcation code');
     }
-    const user = await this.usersService.getUserById(userId);
     if (user.verifyEmailDate) {
       throw new BadRequestException('User email is already verified');
     }
@@ -130,16 +124,7 @@ export class AuthService {
     if (!isMatching) {
       throw new BadRequestException('Invalid verifcation code');
     }
-    return this.usersService.verifyUser(userId);
-  }
-
-  async resendUserVerification(userId: string) {
-    const user = await this.usersService.getUserById(userId);
-    if (user.verifyEmailDate) {
-      throw new BadRequestException('User email is already verified');
-    }
-    await this.sendVerificationEmail(userId, user.email);
-    return user;
+    return this.usersService.verifyUser(user.id);
   }
 
   async googleAuthenticate(token: string) {
@@ -156,25 +141,18 @@ export class AuthService {
     return email;
 	}
 
-  getAccessTokenCookie(userId: string) {
+  getAccessToken(userId: string) {
     const payload: TokenPayload = { userId };
 		const expirationTime = this.configService.get('JWT_ACCESS_TOKEN_EXPIRATION_TIME')
     const token = this.jwtService.sign(payload, {
       secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET'),
       expiresIn: `${expirationTime}s`
     });
-    return {
-      name: 'Authentication',
-      value: token,
-      options: {
-        httpOnly: false,
-        path: '/',
-        maxAge: parseInt(expirationTime) * 1000,
-      }
-    };
+
+    return token;
   }
 
-  async getRefreshTokenCookie(userId: string, shouldTokenExpire: boolean) {
+  async getRefreshToken(userId: string, shouldTokenExpire: boolean) {
     const payload: TokenPayload = { userId };
 		const expirationTime = this.configService.get('JWT_REFRESH_TOKEN_EXPIRATION_TIME')
     const token = this.jwtService.sign(payload, {
@@ -184,22 +162,13 @@ export class AuthService {
         : '9999 years',
     });
     await this.usersService.setRefreshToken(userId, token);
-    return {
-      name: 'Refresh',
-      value: token,
-      options: {
-        httpOnly: false,
-        path: '/',
-        maxAge: shouldTokenExpire
-          ? parseInt(expirationTime) * 1000
-          : 253402300000000,
-      }
-    }
+
+    return token;
   }
  
-  async sendVerificationEmail(userId: string, userEmail: string) {
+  async sendVerificationEmail(user: User, userEmail: string) {
     const code = Math.floor(Math.random() * 1000000).toString().padStart(6, '0');
-    await this.usersService.setEmailVerificationCode(userId, code);
+    await this.usersService.setEmailVerificationCode(user.id, code);
     console.log(code)
     return this.emailService.sendMail({
       from: 'Mindscape.pub <verify@mindscape.pub>',
@@ -207,5 +176,13 @@ export class AuthService {
       subject: `Email verification code: ${code}`,
       text: `Welcome to Mindscape.pub! Use this code to verify your email: ${code}`
     });
+  }
+
+  async resendUserVerification(user: User) {
+    if (user.verifyEmailDate) {
+      throw new BadRequestException('User email is already verified');
+    }
+    await this.sendVerificationEmail(user, user.email);
+    return user;
   }
 }

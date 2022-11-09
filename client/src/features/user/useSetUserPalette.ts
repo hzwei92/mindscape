@@ -1,13 +1,13 @@
 import { gql, useMutation, useReactiveVar } from '@apollo/client';
 import { mergeUsers } from "./userSlice";
 import { useContext } from "react";
-import { useAppDispatch } from '../../app/store';
+import { useAppDispatch, useAppSelector } from '../../app/store';
 import { AppContext } from '../../app/App';
-import { sessionVar } from '../../cache';
+import { selectAccessToken, selectSessionId } from '../auth/authSlice';
 
 const SET_PALETTE = gql`
-  mutation SetUserPalette($sessionId: String!, $palette: String!) {
-    setUserPalette(sessionId: $sessionId, palette: $palette) {
+  mutation SetUserPalette($accessToken: String!, $sessionId: String!, $palette: String!) {
+    setUserPalette(accessToken: $accessToken, sessionId: $sessionId, palette: $palette) {
       id
       palette
     }
@@ -19,7 +19,8 @@ export default function useSetUserPalette() {
 
   const { setPalette } = useContext(AppContext);
 
-  const sessionDetail = useReactiveVar(sessionVar);
+  const accessToken = useAppSelector(selectAccessToken);
+  const sessionId = useAppSelector(selectSessionId);
 
   const [setPaletteMode] = useMutation(SET_PALETTE, {
     onError: error => {
@@ -39,7 +40,8 @@ export default function useSetUserPalette() {
 
     setPaletteMode({
       variables: {
-        sessionId: sessionDetail.id,
+        accessToken,
+        sessionId,
         palette,
       },
     });

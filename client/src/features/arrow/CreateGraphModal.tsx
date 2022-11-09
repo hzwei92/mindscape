@@ -1,14 +1,15 @@
 import { useContext, useEffect, useState } from "react";
-import { useAppDispatch } from "../../app/store";
+import { useAppDispatch, useAppSelector } from "../../app/store";
 import { gql, useMutation } from "@apollo/client";
 import { FULL_TAB_FIELDS } from "../tab/tabFragments";
 import { mergeTabs } from "../tab/tabSlice";
 import { AppContext } from "../../app/App";
 import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonInput, IonModal, useIonRouter } from "@ionic/react";
+import { selectAccessToken } from "../auth/authSlice";
 
 const CREATE_GRAPH = gql`
-  mutation CreateGraphTab($name: String!, $routeName: String!, $arrowId: String) {
-    createGraphTab(name: $name, routeName: $routeName, arrowId: $arrowId) {
+  mutation CreateGraphTab($accessToken: String!, $name: String!, $routeName: String!, $arrowId: String) {
+    createGraphTab(accessToken: $accessToken, name: $name, routeName: $routeName, arrowId: $arrowId) {
       ...FullTabFields
     } 
   }
@@ -16,8 +17,8 @@ const CREATE_GRAPH = gql`
 `;
 
 const GET_ARROW_BY_ROUTENAME = gql`
-  mutation GetArrowByRouteName($routeName: String!) {
-    getArrowByRouteName(routeName: $routeName) {
+  mutation GetArrowByRouteName($accessToken: String!, $routeName: String!) {
+    getArrowByRouteName(accessToken: $accessToken, routeName: $routeName) {
       id
     }
   }
@@ -35,6 +36,8 @@ export default function CreateGraphModal() {
     createGraphArrowId,
     setCreateGraphArrowId,
   } = useContext(AppContext);
+
+  const accessToken = useAppSelector(selectAccessToken);
 
   const [name, setName] = useState('');
   const [routeName, setRouteName] = useState('');
@@ -72,9 +75,11 @@ export default function CreateGraphModal() {
   });
 
   useEffect(() => {
+    if (!routeName) return; 
     const route = routeName.toLowerCase().replace(/[^a-z0-9]/g, '-');
     if (route !== routeName) {
-      setRouteName(route)
+      setRouteName(route);
+      return;
     }
     if (routeTimeout) {
       clearTimeout(routeTimeout);
@@ -82,6 +87,7 @@ export default function CreateGraphModal() {
     const t = setTimeout(() => {
       getArrowByRouteName({
         variables: {
+          accessToken,
           routeName: route,
         }
       });
@@ -110,6 +116,7 @@ export default function CreateGraphModal() {
   const handleSubmitClick = () => {
     create({
       variables: {
+        accessToken,
         name,
         routeName,
         arrowId: createGraphArrowId,

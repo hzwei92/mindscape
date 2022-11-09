@@ -1,5 +1,4 @@
 import { gql, useMutation, useReactiveVar } from '@apollo/client';
-import { sessionVar } from '../../cache';
 import { v4 } from 'uuid';
 import { useAppDispatch, useAppSelector } from '../../app/store';
 import { addEntry, selectIdToEntry, selectNewEntryId, updateEntry } from './entrySlice';
@@ -10,6 +9,7 @@ import { createArrow } from '../arrow/arrow';
 import { mergeArrows, selectArrowById } from '../arrow/arrowSlice';
 import { useContext } from 'react';
 import { AppContext } from '../../app/App';
+import { selectSessionId } from '../auth/authSlice';
 
 const PASTE_ARROW = gql`
   mutation PasteArrow(
@@ -48,7 +48,7 @@ const PASTE_ARROW = gql`
 export default function usePasteEntry(entryId: string) {
   const dispatch = useAppDispatch();
 
-  const sessionDetail = useReactiveVar(sessionVar);
+  const sessionId = useAppSelector(selectSessionId);
 
   const { clipboardArrowIds } = useContext(AppContext);
 
@@ -110,7 +110,7 @@ export default function usePasteEntry(entryId: string) {
 
     paste({
       variables: {
-        sessionId: sessionDetail.id,
+        sessionId,
         sourceId: entry.arrowId,
         linkId,
         targetId: target?.id,

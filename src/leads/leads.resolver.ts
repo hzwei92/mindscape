@@ -1,7 +1,8 @@
-import { Inject, UseGuards } from '@nestjs/common';
+import { BadRequestException, Inject } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { Args, Mutation, Parent, ResolveField, Resolver, Subscription } from '@nestjs/graphql';
+import { JwtService } from '@nestjs/jwt';
 import { RedisPubSub } from 'graphql-redis-subscriptions';
-import { CurrentUser, GqlAuthGuard } from 'src/auth/gql-auth.guard';
 import { PUB_SUB } from 'src/pub-sub/pub-sub.module';
 import { User } from 'src/users/user.model';
 import { UsersService } from 'src/users/users.service';
@@ -11,6 +12,8 @@ import { LeadsService } from './leads.service';
 @Resolver(() => Lead)
 export class LeadsResolver {
   constructor(
+    private readonly configService: ConfigService,
+    private readonly jwtService: JwtService,
     private readonly leadsService: LeadsService,
     private readonly usersService: UsersService,
     @Inject(PUB_SUB)
@@ -31,20 +34,33 @@ export class LeadsResolver {
     return this.usersService.getUserById(lead.followerId);
   }
 
-  @UseGuards(GqlAuthGuard)
   @Mutation(() => [Lead], {name: 'getCurrentUserLeads'})
   async getCurrentUserSubs(
-    @CurrentUser() user: User,
+    @Args('accessToken') accessToken: string,
   ) {
+    const payload = this.jwtService.verify(accessToken, {
+      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET')
+    });
+    const user = await this.usersService.getUserById(payload.userId);
+    if (!user) {
+      throw new BadRequestException('Invalid accessToken');
+    }
     return this.leadsService.getLeadsByFollowerId(user.id);
   }
   
-  @UseGuards(GqlAuthGuard)
   @Mutation(() => Lead, {name: 'followUser'})
   async followUser(
-    @CurrentUser() user: User,
+    @Args('accessToken') accessToken: string,
     @Args('userId') userId: string,
   ) {
+    const payload = this.jwtService.verify(accessToken, {
+      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET')
+    });
+    const user = await this.usersService.getUserById(payload.userId);
+    if (!user) {
+      throw new BadRequestException('Invalid accessToken');
+    }
+
     const lead = await this.leadsService.followUser(user.id, userId);
     this.pubSub.publish('userLead', {
       leaderId: lead.leaderId,
@@ -53,12 +69,18 @@ export class LeadsResolver {
     return lead;
   }
 
-  @UseGuards(GqlAuthGuard)
   @Mutation(() => Lead, {name: 'unfollowUser'})
   async unfollowUser(
-    @CurrentUser() user: User,
+    @Args('accessToken') accessToken: string,
     @Args('userId') userId: string,
   ) {
+    const payload = this.jwtService.verify(accessToken, {
+      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET')
+    });
+    const user = await this.usersService.getUserById(payload.userId);
+    if (!user) {
+      throw new BadRequestException('Invalid accessToken');
+    }
     const lead = await this.leadsService.unfollowUser(user.id, userId);
     this.pubSub.publish('userLead', {
       leaderId: lead.leaderId,

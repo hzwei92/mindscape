@@ -1,11 +1,11 @@
 import { gql, useMutation, useReactiveVar } from '@apollo/client';
-import { useAppDispatch } from '../../app/store';
-import { sessionVar } from '../../cache';
+import { useAppDispatch, useAppSelector } from '../../app/store';
+import { selectAccessToken, selectSessionId } from '../auth/authSlice';
 import { mergeUsers } from './userSlice';
 
 const SET_USER_COLOR = gql`
-  mutation SetUserColor($sessionId: String!, $color: String!) {
-    setUserColor(sessionId: $sessionId, color: $color) {
+  mutation SetUserColor($accessToken: String!, $sessionId: String!, $color: String!) {
+    setUserColor(accessToken: $accessToken, sessionId: $sessionId, color: $color) {
       id
       color
     }
@@ -15,7 +15,8 @@ const SET_USER_COLOR = gql`
 export default function useSetUserColor() {
   const dispatch = useAppDispatch();
 
-  const sessionDetail = useReactiveVar(sessionVar);
+  const accessToken = useAppSelector(selectAccessToken);
+  const sessionId = useAppSelector(selectSessionId);
 
   const [setColor] = useMutation(SET_USER_COLOR, {
     onError: error => {
@@ -30,7 +31,8 @@ export default function useSetUserColor() {
   const setUserColor = (color: string) => {
     setColor({
       variables: {
-        sessionId: sessionDetail.id,
+        accessToken,
+        sessionId,
         color,
       }
     });

@@ -1,10 +1,12 @@
 import { gql, useMutation } from "@apollo/client";
 import { useDispatch } from "react-redux";
+import { useAppSelector } from "../../app/store";
+import { selectAccessToken } from "../auth/authSlice";
 import { mergeTabs } from "./tabSlice";
 
 const REMOVE_TAB = gql`
-  mutation RemoveTab($tabId: String!) {
-    removeTab(tabId: $tabId) {
+  mutation RemoveTab($accessToken: String!, $tabId: String!) {
+    removeTab(accessToken: $accessToken, tabId: $tabId) {
       tab {
         id
         deleteDate
@@ -19,6 +21,9 @@ const REMOVE_TAB = gql`
 
 export default function useRemoveTab() {
   const dispatch = useDispatch();
+
+  const accessToken = useAppSelector(selectAccessToken);
+
   const [remove] = useMutation(REMOVE_TAB, {
     onError: err => {
       console.error(err);
@@ -34,6 +39,7 @@ export default function useRemoveTab() {
 
     remove({
       variables: {
+        accessToken,
         tabId,
       }
     });

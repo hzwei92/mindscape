@@ -1,162 +1,146 @@
-import { Inject, UseGuards } from '@nestjs/common';
-import { Args, Context, Mutation, Resolver } from '@nestjs/graphql';
+import { BadRequestException, Inject } from '@nestjs/common';
+import { Args, Mutation, Resolver } from '@nestjs/graphql';
 import { PUB_SUB } from 'src/pub-sub/pub-sub.module';
 import { User } from 'src/users/user.model';
 import { AuthService } from './auth.service';
-import { CurrentUser, GqlAuthGuard } from './gql-auth.guard';
-import { GqlRefreshGuard } from './gql-refresh.guard';
 import { RedisPubSub } from 'graphql-redis-subscriptions';
-import { InitUserResult } from './dto/init-user-result.dto';
+import { UserWithTokens } from './dto/init-user-result.dto';
+import { ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
+import { UsersService } from 'src/users/users.service';
 
 @Resolver()
 export class AuthResolver {
   constructor(
+    private readonly configService: ConfigService,
+    private readonly jwtService: JwtService,
     private readonly authService: AuthService,
+    private readonly usersService: UsersService,
     @Inject(PUB_SUB)
     private readonly pubSub: RedisPubSub,
   ) {}
 
-  @Mutation(() => InitUserResult, {name: 'initUser'})
+  @Mutation(() => String, {name: 'refreshToken'})
+  async refreshToken(
+    @Args('refreshToken') refreshToken: string,
+  ) {
+    return this.authService.refreshToken(refreshToken);
+  }
+
+  @Mutation(() => UserWithTokens, {name: 'initUser'})
   async initUser(
-    @Context() context: any,
     @Args('palette') palette: string,
   ) {
-    const {
-      user,
-      accessTokenCookie,
-      refreshTokenCookie,
-    } = await this.authService.initUser(palette);
-
-    context.res.cookie(accessTokenCookie.name, accessTokenCookie.value, accessTokenCookie.options);
-    context.res.cookie(refreshTokenCookie.name, refreshTokenCookie.value, refreshTokenCookie.options);
-    return {
-      user,
-      auth: accessTokenCookie.value,
-      refresh: refreshTokenCookie.value,
-    };
+    return this.authService.initUser(palette);
   }
 
-  @UseGuards(GqlAuthGuard)
-  @Mutation(() => User, {name: 'registerUser'})
+  @Mutation(() => UserWithTokens, {name: 'registerUser'})
   async registerUser(
-    @Context() context: any,
-    @CurrentUser() user: User,
+    @Args('accessToken') accessToken: string,
     @Args('email') email: string,
     @Args('pass') pass: string,
   ) {
-    const {
-      user: user1,
-      accessTokenCookie,
-      refreshTokenCookie,
-    } = await this.authService.registerUser(user.id, email, pass);
-
-    context.res.cookie(accessTokenCookie.name, accessTokenCookie.value, accessTokenCookie.options);
-    context.res.cookie(refreshTokenCookie.name, refreshTokenCookie.value, refreshTokenCookie.options);
-
-    return user1;
+    const payload = this.jwtService.verify(accessToken, {
+      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET')
+    });
+    const user = await this.usersService.getUserById(payload.userId);
+    if (!user) {
+      throw new BadRequestException('Invalid accessToken');
+    }
+    return this.authService.registerUser(user.id, email, pass);
   }
 
-  @UseGuards(GqlAuthGuard)
-  @Mutation(() => User, {name: 'loginUser'})
+  @Mutation(() => UserWithTokens, {name: 'loginUser'})
   async loginUser(
-    @Context() context: any,
-    @CurrentUser() user: User,
+    @Args('accessToken') accessToken: string,
     @Args('email') email: string,
     @Args('pass') pass: string,
   ) {
-    console.log(email, pass);
-    const {
-      user: user1,
-      accessTokenCookie,
-      refreshTokenCookie,
-    } = await this.authService.loginUser(user.id, email, pass);
+    const payload = this.jwtService.verify(accessToken, {
+      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET')
+    });
+    const user = await this.usersService.getUserById(payload.userId);
+    if (!user) {
+      throw new BadRequestException('Invalid accessToken');
+    }
 
-    context.res.cookie(accessTokenCookie.name, accessTokenCookie.value, accessTokenCookie.options);
-    context.res.cookie(refreshTokenCookie.name, refreshTokenCookie.value, refreshTokenCookie.options);
-    
-    return user1;
+    return this.authService.loginUser(user, email, pass);
   }
 
-  @UseGuards(GqlAuthGuard)
   @Mutation(() => User, {name: 'registerGoogleUser'})
   async registerGoogleUser(
-    @Context() context: any,
-    @CurrentUser() user: User,
+    @Args('accessToken') accessToken: string,
     @Args('token') token: string,
   ) {
-    const {
-      user: user1,
-      accessTokenCookie,
-      refreshTokenCookie,
-    } = await this.authService.registerGoogleUser(user.id, token);
-
-    context.res.cookie(accessTokenCookie.name, accessTokenCookie.value, accessTokenCookie.options);
-    context.res.cookie(refreshTokenCookie.name, refreshTokenCookie.value, refreshTokenCookie.options);
-
-    return user1;
+    const payload = this.jwtService.verify(accessToken, {
+      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET')
+    });
+    const user = await this.usersService.getUserById(payload.userId);
+    if (!user) {
+      throw new BadRequestException('Invalid accessToken');
+    }
+    return this.authService.registerGoogleUser(user, token);
   }
-
-  @UseGuards(GqlAuthGuard)
-  @Mutation(() => User, {name: 'loginGoogleUser'})
+  @Mutation(() => UserWithTokens, {name: 'loginGoogleUser'})
   async loginGoogleUser(
-    @CurrentUser() user: User,
-    @Context() context: any,
+    @Args('accessToken') accessToken: string,
     @Args('token') token: string,
   ) {
-    const {
-      user: user1,
-      accessTokenCookie,
-      refreshTokenCookie,
-    } = await this.authService.loginGoogleUser(user.id, token);
+    const payload = this.jwtService.verify(accessToken, {
+      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET')
+    });
+    const user = await this.usersService.getUserById(payload.userId);
+    if (!user) {
+      throw new BadRequestException('Invalid accessToken');
+    }
 
-    context.res.cookie(accessTokenCookie.name, accessTokenCookie.value, accessTokenCookie.options);
-    context.res.cookie(refreshTokenCookie.name, refreshTokenCookie.value, refreshTokenCookie.options);
-
-    return user1;
+    return this.authService.loginGoogleUser(user, token);
   }
 
-  @UseGuards(GqlRefreshGuard)
-  @Mutation(() => User, {name: 'refreshToken'})
-  async refreshToken(
-    @Context() context: any,
-    @CurrentUser() user: User,
-  ) {
-    const { name, value, options } = this.authService.getAccessTokenCookie(user.id);
-    context.res.cookie(name, value, options);
-    return user;
-  }
 
-  @UseGuards(GqlAuthGuard)
   @Mutation(() => User, {name: 'logoutUser'})
   async logoutUser (
-    @Context() context: any,
-    @CurrentUser() user: User,
+    @Args('accessToken') accessToken: string,
   ) {
-    const {
-      accessTokenCookie,
-      refreshTokenCookie,
-    } = await this.authService.logoutUser(user.id);
-    
-    context.res.cookie(accessTokenCookie.name, accessTokenCookie.value, accessTokenCookie.options);
-    context.res.cookie(refreshTokenCookie.name, refreshTokenCookie.value, refreshTokenCookie.options);
+    const payload = this.jwtService.verify(accessToken, {
+      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET')
+    });
+    const user = await this.usersService.getUserById(payload.userId);
+    if (!user) {
+      throw new BadRequestException('Invalid accessToken');
+    }
+
+    await this.authService.logoutUser(user);
 
     return user;
   }
 
-  @UseGuards(GqlAuthGuard)
   @Mutation(() => User, {name: 'verifyUser'})
   async verifyUser (
-    @CurrentUser() user: User,
+    @Args('accessToken') accessToken: string,
     @Args('code') code: string,
   ) {
-    return this.authService.verifyUser(user.id, code)
+    const payload = this.jwtService.verify(accessToken, {
+      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET')
+    });
+    const user = await this.usersService.getUserById(payload.userId);
+    if (!user) {
+      throw new BadRequestException('Invalid accessToken');
+    }
+    return this.authService.verifyUser(user, code)
   }
 
-  @UseGuards(GqlAuthGuard)
   @Mutation(() => User, {name: 'resendUserVerification'})
   async resendUserVerification (
-    @CurrentUser() user: User,
+    @Args('accessToken') accessToken: string,
   ) {
-    return this.authService.resendUserVerification(user.id);
+    const payload = this.jwtService.verify(accessToken, {
+      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET')
+    });
+    const user = await this.usersService.getUserById(payload.userId);
+    if (!user) {
+      throw new BadRequestException('Invalid accessToken');
+    }
+    return this.authService.resendUserVerification(user);
   }
 }

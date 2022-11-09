@@ -1,6 +1,5 @@
-import { Inject, UseGuards } from '@nestjs/common';
+import { BadRequestException, Inject } from '@nestjs/common';
 import { Args, Float, Int, Mutation, Parent, Query, ResolveField, Resolver, Subscription } from '@nestjs/graphql';
-import { CurrentUser, GqlAuthGuard } from 'src/auth/gql-auth.guard';
 import { PUB_SUB } from 'src/pub-sub/pub-sub.module';
 import { User, UserCursor } from './user.model';
 import { RedisPubSub } from 'graphql-redis-subscriptions';
@@ -12,13 +11,16 @@ import { Role } from 'src/roles/role.model';
 import { Lead } from 'src/leads/lead.model';
 import { RolesService } from 'src/roles/roles.service';
 import { LeadsService } from 'src/leads/leads.service';
-import { User as UserEntity } from 'src/users/user.entity';
 import { TabsService } from 'src/tabs/tabs.service';
 import { Tab } from 'src/tabs/tab.model';
+import { ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
 
 @Resolver(() => User)
 export class UsersResolver {
   constructor(
+    private readonly configService: ConfigService,
+    private readonly jwtService: JwtService,
     private readonly usersService: UsersService,
     private readonly arrowsService: ArrowsService,
     private readonly rolesService: RolesService,
@@ -72,45 +74,80 @@ export class UsersResolver {
     return this.tabsService.getTabsByUserId(user.id);
   }
 
-  @UseGuards(GqlAuthGuard)
   @Mutation(() => User, {name: 'getCurrentUser'})
   async getCurrentUser(
-    @CurrentUser() user: User,
+    @Args('accessToken') accessToken: string,
   ) {
+    const payload = this.jwtService.verify(accessToken, {
+      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET')
+    });
+    const user = await this.usersService.getUserById(payload.userId);
+    if (!user) {
+      throw new BadRequestException('Invalid accessToken');
+    }
     return user;
   }
 
-  @UseGuards(GqlAuthGuard)
   @Mutation(() => User, {name: 'getUser'})
   async getUser(
+    @Args('accessToken') accessToken: string,
     @Args('userId') userId: string,
   ) {
+    const payload = this.jwtService.verify(accessToken, {
+      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET')
+    });
+    const user = await this.usersService.getUserById(payload.userId);
+    if (!user) {
+      throw new BadRequestException('Invalid accessToken');
+    }
     return this.usersService.getUserById(userId);
   }
 
   @Query(() => User, {name: 'getUserByEmail', nullable: true})
   async getUserByEmail(
+    @Args('accessToken') accessToken: string,
     @Args('email') email: string,
   ) {
+    const payload = this.jwtService.verify(accessToken, {
+      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET')
+    });
+    const user = await this.usersService.getUserById(payload.userId);
+    if (!user) {
+      throw new BadRequestException('Invalid accessToken');
+    }
     return this.usersService.getUserByEmail(email);
   }
 
   @Query(() => User, {name: 'getUserByName', nullable: true})
   async getUserByName(
+    @Args('accessToken') accessToken: string,
     @Args('name') name: string,
   ) {
+    const payload = this.jwtService.verify(accessToken, {
+      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET')
+    });
+    const user = await this.usersService.getUserById(payload.userId);
+    if (!user) {
+      throw new BadRequestException('Invalid accessToken');
+    }
     return this.usersService.getUserByName(name);
   }
   
-  @UseGuards(GqlAuthGuard)
   @Mutation(() => User, {name: 'publishCursor'})
   async publishCursor(
-    @CurrentUser() user: UserEntity,
+    @Args('accessToken') accessToken: string,
     @Args('sessionId') sessionId: string,
     @Args('abstractId') abstractId: string,
     @Args('x', {type: () => Int}) x: number,
     @Args('y', {type: () => Int}) y: number,
   ) {
+    const payload = this.jwtService.verify(accessToken, {
+      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET')
+    });
+    const user = await this.usersService.getUserById(payload.userId);
+    if (!user) {
+      throw new BadRequestException('Invalid accessToken');
+    }
     this.pubSub.publish('publishCursor', {
       sessionId,
       abstractId,
@@ -135,24 +172,36 @@ export class UsersResolver {
     return user;
   }
 
-  @UseGuards(GqlAuthGuard)
   @Mutation(() => User, {name: 'setUserMap'})
   async updateUserMap(
-    @CurrentUser() user: UserEntity,
+    @Args('accessToken') accessToken: string,
     @Args('lng',{type: () => Float}) lng: number,
     @Args('lat',{type: () => Float}) lat: number,
     @Args('zoom',{type: () => Float}) zoom: number,
   ) {
+    const payload = this.jwtService.verify(accessToken, {
+      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET')
+    });
+    const user = await this.usersService.getUserById(payload.userId);
+    if (!user) {
+      throw new BadRequestException('Invalid accessToken');
+    }
     return this.usersService.setUserMap(user, lng, lat, zoom);
   }
 
-  @UseGuards(GqlAuthGuard)
   @Mutation(() => User, {name: 'setUserColor'})
   async setUserColor(
-    @CurrentUser() user: UserEntity,
+    @Args('accessToken') accessToken: string,
     @Args('sessionId') sessionId: string,
     @Args('color') color: string,
   ) {
+    const payload = this.jwtService.verify(accessToken, {
+      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET')
+    });
+    const user = await this.usersService.getUserById(payload.userId);
+    if (!user) {
+      throw new BadRequestException('Invalid accessToken');
+    }
     const user1 = await this.usersService.setUserColor(user, color);
     this.pubSub.publish('updateUser', {
       sessionId,
@@ -162,13 +211,19 @@ export class UsersResolver {
     return user1;
   }
 
-  @UseGuards(GqlAuthGuard)
   @Mutation(() => User, {name: 'setUserPalette'})
   async setUserPalette(
-    @CurrentUser() user: UserEntity,
+    @Args('accessToken') accessToken: string,
     @Args('sessionId') sessionId: string,
     @Args('palette') palette: string,
   ) {
+    const payload = this.jwtService.verify(accessToken, {
+      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET')
+    });
+    const user = await this.usersService.getUserById(payload.userId);
+    if (!user) {
+      throw new BadRequestException('Invalid accessToken');
+    }
     const user1 = await this.usersService.setUserPalette(user, palette);
     this.pubSub.publish('updateUser', {
       sessionId,
@@ -178,13 +233,19 @@ export class UsersResolver {
     return user1;
   }
 
-  @UseGuards(GqlAuthGuard)
   @Mutation(() => User, {name: 'setUserName'})
   async setUserName(
-    @CurrentUser() user: UserEntity,
+    @Args('accessToken') accessToken: string,
     @Args('sessionId') sessionId: string,
     @Args('name') name: string,
   ) {
+    const payload = this.jwtService.verify(accessToken, {
+      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET')
+    });
+    const user = await this.usersService.getUserById(payload.userId);
+    if (!user) {
+      throw new BadRequestException('Invalid accessToken');
+    }
     const user1 = await this.usersService.setUserName(user, name);
     this.pubSub.publish('updateUser', {
       sessionId,

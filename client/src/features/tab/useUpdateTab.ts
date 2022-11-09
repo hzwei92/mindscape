@@ -1,13 +1,14 @@
 import { gql, useMutation } from "@apollo/client";
 import { useAppDispatch, useAppSelector } from "../../app/store";
+import { selectAccessToken } from "../auth/authSlice";
 import { Tab } from "./tab";
 import { FULL_TAB_FIELDS } from "./tabFragments";
 import { mergeTabs, selectFocusTab, selectFrameTab } from "./tabSlice";
 
 
 const UPDATE_TAB = gql`
-  mutation UpdateTab($tabId: String!, $i: Int!, $isFrame: Boolean!, $isFocus: Boolean!) {
-    updateTab(tabId: $tabId, i: $i, isFrame: $isFrame, isFocus: $isFocus) {
+  mutation UpdateTab($accessToken: String!, $tabId: String!, $i: Int!, $isFrame: Boolean!, $isFocus: Boolean!) {
+    updateTab(accessToken: $accessToken, tabId: $tabId, i: $i, isFrame: $isFrame, isFocus: $isFocus) {
       ...FullTabFields
     }
   }
@@ -16,6 +17,8 @@ const UPDATE_TAB = gql`
 
 export default function useUpdateTab() {
   const dispatch = useAppDispatch();
+
+  const accessToken = useAppSelector(selectAccessToken);
 
   const focusTab = useAppSelector(selectFocusTab);
   const frameTab = useAppSelector(selectFrameTab);
@@ -35,6 +38,7 @@ export default function useUpdateTab() {
 
     update({
       variables: {
+        accessToken,
         tabId: tab.id,
         i: tab.i,
         isFrame,

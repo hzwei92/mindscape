@@ -1,11 +1,11 @@
 import { gql, useReactiveVar, useSubscription } from '@apollo/client';
-import { sessionVar } from '../../cache';
-import { useAppDispatch } from '../../app/store';
+import { useAppDispatch, useAppSelector } from '../../app/store';
 import { FULL_ROLE_FIELDS } from '../role/roleFragments';
 import { mergeTwigs } from './twigSlice';
 import { SpaceType } from '../space/space';
 import { useIonToast } from '@ionic/react';
 import { Arrow } from '../arrow/arrow';
+import { selectSessionId } from '../auth/authSlice';
 
 const REMOVE_TWIG = gql`
   subscription RemoveTwig($sessionId: String!, $abstractId: String!) {
@@ -27,11 +27,11 @@ export default function useRemoveTwigSub(space: SpaceType, abstract: Arrow | nul
 
   const [present] = useIonToast();
 
-  const sessionDetail = useReactiveVar(sessionVar);
+  const sessionId = useAppSelector(selectSessionId);
 
   useSubscription(REMOVE_TWIG, {
     variables: {
-      sessionId: sessionDetail.id,
+      sessionId,
       abstractId: abstract?.id,
     },
     onSubscriptionData: ({subscriptionData: {data: {removeTwig}}}) => {

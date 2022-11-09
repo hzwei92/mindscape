@@ -11,9 +11,13 @@ import { RolesModule } from 'src/roles/roles.module';
 import { SubsModule } from 'src/subs/subs.module';
 import { SheafsModule } from 'src/sheafs/sheafs.module';
 import { TransfersModule } from 'src/transfers/transfers.module';
+import { ConfigModule } from '@nestjs/config';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
+    ConfigModule,
+    JwtModule.register({}),
     TypeOrmModule.forFeature([Twig]),
     forwardRef(() => UsersModule),
     forwardRef(() => ArrowsModule),

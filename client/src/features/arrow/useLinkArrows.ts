@@ -4,7 +4,7 @@ import { FULL_TWIG_FIELDS } from '../twig/twigFragments';
 import { ROLE_FIELDS } from '../role/roleFragments';
 import { mergeTwigs } from '../twig/twigSlice';
 import { useAppDispatch, useAppSelector } from '../../app/store';
-import { selectSessionId } from '../auth/authSlice';
+import { selectAccessToken, selectSessionId } from '../auth/authSlice';
 import { SpaceContext } from '../space/SpaceComponent';
 import { AppContext, PendingLinkType } from '../../app/App';
 import { FULL_ARROW_FIELDS } from './arrowFragments';
@@ -16,8 +16,8 @@ import { Twig } from '../twig/twig';
 import { mergeUsers } from '../user/userSlice';
 
 const LINK_TWIGS = gql`
-  mutation LinkTwigs($sessionId: String!, $abstractId: String!, $sourceId: String!, $targetId: String!) {
-    linkTwigs(sessionId: $sessionId, abstractId: $abstractId, sourceId: $sourceId, targetId: $targetId) {
+  mutation LinkTwigs($accessToken: String!, $sessionId: String!, $abstractId: String!, $sourceId: String!, $targetId: String!) {
+    linkTwigs(accessToken: $accessToken, sessionId: $sessionId, abstractId: $abstractId, sourceId: $sourceId, targetId: $targetId) {
       user {
         id
         balance
@@ -56,8 +56,8 @@ const LINK_TWIGS = gql`
 `;
 
 const LINK_ARROWS = gql`
-  mutation LinkArrows($sessionId: String!, $sourceId: String!, $targetId: String!) {
-    linkArrows(sessionId: $sessionId, sourceId: $sourceId, targetId: $targetId) {
+  mutation LinkArrows($accessToken: String!, $sessionId: String!, $sourceId: String!, $targetId: String!) {
+    linkArrows(accessToken: $accessToken, sessionId: $sessionId, sourceId: $sourceId, targetId: $targetId) {
       user {
         id
         balance
@@ -87,6 +87,8 @@ const LINK_ARROWS = gql`
 `
 export default function useLinkArrows() {
   const dispatch = useAppDispatch();
+
+  const accessToken = useAppSelector(selectAccessToken);
   const sessionId = useAppSelector(selectSessionId);
 
   const {
@@ -170,6 +172,7 @@ export default function useLinkArrows() {
     if (abstract?.id === pendingLink.sourceAbstractId && abstract?.id === pendingLink.targetAbstractId) {
       linkTwig({
         variables: {
+          accessToken,
           sessionId,
           abstractId: abstract.id,
           sourceId: pendingLink.sourceArrowId,
@@ -180,6 +183,7 @@ export default function useLinkArrows() {
     else {
       linkArrow({
         variables: {
+          accessToken,
           sessionId,
           sourceId: pendingLink.sourceArrowId,
           targetId: pendingLink.targetArrowId,

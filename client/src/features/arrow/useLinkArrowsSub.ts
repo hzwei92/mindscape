@@ -1,8 +1,8 @@
 import { gql, useReactiveVar, useSubscription } from '@apollo/client';
 import { v4 } from 'uuid';
 import { useAppDispatch, useAppSelector } from '../../app/store';
-import { sessionVar } from '../../cache';
 import { IdToType } from '../../types';
+import { selectSessionId } from '../auth/authSlice';
 import { Entry } from '../entry/entry';
 import { mergeEntries, removeEntries, selectIdToEntry } from '../entry/entrySlice';
 import { mergeUsers } from '../user/userSlice';
@@ -30,7 +30,7 @@ const LINK_ARROWS = gql`
 export default function useLinkArrowsSub() {
   const dispatch = useAppDispatch();
 
-  const sessionDetail = useReactiveVar(sessionVar);
+  const sessionId = useAppSelector(selectSessionId);
 
   const arrowIdToInstanceIds = useAppSelector(selectArrowIdToInstanceIds);
   const idToEntry = useAppSelector(selectIdToEntry);
@@ -38,7 +38,7 @@ export default function useLinkArrowsSub() {
   useSubscription(LINK_ARROWS, {
     shouldResubscribe: true,
     variables: {
-      sessionId: sessionDetail.id,
+      sessionId,
       arrowIds: Object.keys(arrowIdToInstanceIds),
     },
     onSubscriptionData: ({subscriptionData: {data: {linkArrows}}}) => {

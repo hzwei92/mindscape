@@ -1,6 +1,5 @@
-import { Inject, UseGuards } from '@nestjs/common';
+import { BadRequestException, Inject } from '@nestjs/common';
 import { Args, Int, Mutation, Parent, ResolveField, Resolver, Subscription } from '@nestjs/graphql';
-import { CurrentUser, GqlAuthGuard } from 'src/auth/gql-auth.guard';
 import { Arrow } from 'src/arrows/arrow.model';
 import { ArrowsService } from 'src/arrows/arrows.service';
 import { PUB_SUB } from 'src/pub-sub/pub-sub.module';
@@ -9,35 +8,24 @@ import { Twig } from './twig.model';
 import { TwigsService } from './twigs.service';
 import { RedisPubSub } from 'graphql-redis-subscriptions';
 import { User } from 'src/users/user.model';
-import { User as UserEntity } from 'src/users/user.entity';
-import { SheafsService } from 'src/sheafs/sheafs.service';
 import { ReplyTwigResult } from './dto/reply-twig-result.dto';
 import { LinkTwigsResult } from './dto/link-twigs-result.dto';
-import { AddTwigResult } from './dto/add-twig-result.dto';
 import { SelectTwigResult } from './dto/select-twig-result.dto';
 import { MoveTwigResult } from './dto/move-twig-result.dto';
 import { OpenTwigResult } from './dto/open-twig-result.dto';
-import { SyncTabStateResult } from './dto/sync-tab-state-result.dto';
-import { WindowEntry } from './dto/window-entry.dto';
-import { GroupEntry } from './dto/group-entry.dto';
-import { TabEntry } from './dto/tab-entry.dto';
-import { TabResult } from './dto/tab-result.dto';
-import { UpdateTabResult } from './dto/udpate-tab-result.dto';
-import { MoveTabResult } from './dto/move-tab-result.dto';
 import { RemoveTwigResult } from './dto/remove-twig-result.dto';
-import { RemoveTabResult1 } from './dto/remove-tab-result.dto';
-import { BookmarkEntry } from './dto/bookmark-entry.dto';
 import { DragTwigResult } from './dto/drag-twig-result.dto';
-import { SyncBookmarksResult } from './dto/sync-bookmarks-result.dto';
-import { RemoveBookmarkResult } from './dto/remove-bookmark-result.dto';
-import { CreateTabResult } from './dto/create-tab-result.dto';
 import { GraftTwigResult } from './dto/graft-twig-result.dto';
 import { CopyTwigResult } from './dto/copy-twig-result.dto';
 import { TransfersService } from 'src/transfers/transfers.service';
+import { ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
 
 @Resolver(() => Twig)
 export class TwigsResolver {
   constructor(
+    private readonly configService: ConfigService,
+    private readonly jwtService: JwtService,
     private readonly twigsService: TwigsService,
     private readonly usersService: UsersService,
     private readonly arrowsService: ArrowsService,
@@ -67,11 +55,10 @@ export class TwigsResolver {
 
   @ResolveField(() => Arrow, {name: 'detail', nullable: true})
   async getTwigDetail(
-    @CurrentUser() user: UserEntity,
     @Parent() twig: Twig,
   ) {
     if (!twig.detailId) return null;
-    return this.arrowsService.getArrowByIdWithPrivacy(user, twig.detailId);
+    return this.arrowsService.getArrowById(twig.detailId);
   }
 
   @ResolveField(() => Arrow, {name: 'abstract'})
@@ -81,18 +68,24 @@ export class TwigsResolver {
     return this.arrowsService.getArrowById(twig.abstractId);
   }
 
-  @UseGuards(GqlAuthGuard)
   @Mutation(() => [Twig], {name: 'getTwigs'})
   async getTwigs(
+    @Args('accessToken') accessToken: string,
     @Args('abstractId') abstractId: string,
   ) {
+    const payload = this.jwtService.verify(accessToken, {
+      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET')
+    });
+    const user = await this.usersService.getUserById(payload.userId);
+    if (!user) {
+      throw new BadRequestException('Invalid accessToken');
+    }
     return this.twigsService.getTwigsByAbstractId(abstractId);
   }
 
-  @UseGuards(GqlAuthGuard)
   @Mutation(() => ReplyTwigResult, {name: 'replyTwig'})
   async replyTwig(
-    @CurrentUser() user: UserEntity,
+    @Args('accessToken') accessToken: string,
     @Args('sessionId') sessionId: string,
     @Args('parentTwigId') parentTwigId: string,
     @Args('twigId') twigId: string,
@@ -101,6 +94,14 @@ export class TwigsResolver {
     @Args('y', {type: () => Int}) y: number,
     @Args('draft') draft: string,
   ) {
+    const payload = this.jwtService.verify(accessToken, {
+      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET')
+    });
+    const user = await this.usersService.getUserById(payload.userId);
+    if (!user) {
+      throw new BadRequestException('Invalid accessToken');
+    }
+
     const result = await this.twigsService.replyTwig(user, parentTwigId, twigId, postId, x, y, draft);
   
     const user1 = await this.transfersService.replyTransfer(user, result.targetVote, result.linkVote, result.source, result.targetArrow);
@@ -117,10 +118,9 @@ export class TwigsResolver {
     };
   }
 
-  @UseGuards(GqlAuthGuard)
   @Mutation(() => ReplyTwigResult, {name: 'pasteTwig'})
   async pasteTwig(
-    @CurrentUser() user: UserEntity,
+    @Args('accessToken') accessToken: string,
     @Args('sessionId') sessionId: string,
     @Args('parentTwigId') parentTwigId: string,
     @Args('twigId') twigId: string,
@@ -128,6 +128,14 @@ export class TwigsResolver {
     @Args('x', {type: () => Int}) x: number,
     @Args('y', {type: () => Int}) y: number,
   ) {
+    const payload = this.jwtService.verify(accessToken, {
+      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET')
+    });
+    const user = await this.usersService.getUserById(payload.userId);
+    if (!user) {
+      throw new BadRequestException('Invalid accessToken');
+    }
+
     const result = await this.twigsService.pasteTwig(user, parentTwigId, twigId, postId, x, y);
 
     const user1 = await this.transfersService.linkTransfer(user, result.linkVote, result.linkArrow, result.source);
@@ -144,15 +152,22 @@ export class TwigsResolver {
     };
   }
 
-  @UseGuards(GqlAuthGuard)
   @Mutation(() => LinkTwigsResult, {name: 'linkTwigs'})
   async linkTwigs(
-    @CurrentUser() user: UserEntity,
+    @Args('accessToken') accessToken: string,
     @Args('sessionId') sessionId: string,
     @Args('abstractId') abstractId: string,
     @Args('sourceId') sourceId: string,
     @Args('targetId') targetId: string,
   ) {
+    const payload = this.jwtService.verify(accessToken, {
+      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET')
+    });
+    const user = await this.usersService.getUserById(payload.userId);
+    if (!user) {
+      throw new BadRequestException('Invalid accessToken');
+    }
+
     const result = await this.twigsService.linkTwigs(user, abstractId, sourceId, targetId);
 
     const user1 = await this.transfersService.linkTransfer(user, result.vote, result.arrow, result.source);
@@ -172,14 +187,21 @@ export class TwigsResolver {
     };
   }
 
-  @UseGuards(GqlAuthGuard)
   @Mutation(() => RemoveTwigResult, {name: 'removeTwig'})
   async removeTwig(
-    @CurrentUser() user: UserEntity,
+    @Args('accessToken') accessToken: string,
     @Args('sessionId') sessionId: string,
     @Args('twigId') twigId: string,
     @Args('shouldRemoveDescs') shouldRemoveDescs: boolean,
   ) {
+    const payload = this.jwtService.verify(accessToken, {
+      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET')
+    });
+    const user = await this.usersService.getUserById(payload.userId);
+    if (!user) {
+      throw new BadRequestException('Invalid accessToken');
+    }
+
     const result = await this.twigsService.removeTwig(user, twigId, shouldRemoveDescs);
     
     this.pubSub.publish('removeTwig', {
@@ -191,13 +213,20 @@ export class TwigsResolver {
     return result;
   }
 
-  @UseGuards(GqlAuthGuard)
   @Mutation(() => SelectTwigResult, {name: 'selectTwig'})
   async selectTwig(
-    @CurrentUser() user: UserEntity,
+    @Args('accessToken') accessToken: string,
     @Args('sessionId') sessionId: string,
     @Args('twigId') twigId: string,
   ) {
+    const payload = this.jwtService.verify(accessToken, {
+      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET')
+    });
+    const user = await this.usersService.getUserById(payload.userId);
+    if (!user) {
+      throw new BadRequestException('Invalid accessToken');
+    }
+
     const {
       abstract,
       twigs,
@@ -210,16 +239,23 @@ export class TwigsResolver {
       role
     }
   }
-
-  @UseGuards(GqlAuthGuard)
   @Mutation(() => Twig, {name: 'dragTwig'})
   async dragTwig(
+    @Args('accessToken') accessToken: string,
     @Args('sessionId') sessionId: string,
     @Args('abstractId') abstractId: string,
     @Args('twigId') twigId: string,
     @Args('dx', {type: () => Int}) dx: number,
     @Args('dy', {type: () => Int}) dy: number,
   ) {
+    const payload = this.jwtService.verify(accessToken, {
+      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET')
+    });
+    const user = await this.usersService.getUserById(payload.userId);
+    if (!user) {
+      throw new BadRequestException('Invalid accessToken');
+    }
+
     this.pubSub.publish('dragTwig', {
       sessionId,
       abstractId,
@@ -234,15 +270,22 @@ export class TwigsResolver {
     };
   }
 
-  @UseGuards(GqlAuthGuard)
   @Mutation(() => MoveTwigResult, {name: 'moveTwig'})
   async moveTwig(
-    @CurrentUser() user: UserEntity,
+    @Args('accessToken') accessToken: string,
     @Args('sessionId') sessionId: string,
     @Args('twigId') twigId: string,
     @Args('x', {type: () => Int}) x: number,
     @Args('y', {type: () => Int}) y: number,
   ) {
+    const payload = this.jwtService.verify(accessToken, {
+      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET')
+    });
+    const user = await this.usersService.getUserById(payload.userId);
+    if (!user) {
+      throw new BadRequestException('Invalid accessToken');
+    }
+
     const {
       twigs, 
       role,
@@ -260,16 +303,23 @@ export class TwigsResolver {
     };
   }
 
-  @UseGuards(GqlAuthGuard)
   @Mutation(() => GraftTwigResult, {name: 'graftTwig'})
   async graftTwig(
-    @CurrentUser() user: UserEntity,
+    @Args('accessToken') accessToken: string,
     @Args('sessionId') sessionId: string,
     @Args('parentTwigId') parentTwigId: string,
     @Args('twigId') twigId: string,
     @Args('x', {type: () => Int}) x: number,
     @Args('y', {type: () => Int}) y: number,
   ) {
+    const payload = this.jwtService.verify(accessToken, {
+      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET')
+    });
+    const user = await this.usersService.getUserById(payload.userId);
+    if (!user) {
+      throw new BadRequestException('Invalid accessToken');
+    }
+
     const result = await this.twigsService.graftTwig(user, twigId, parentTwigId, x, y);
 
     this.pubSub.publish('graftTwig', {
@@ -281,24 +331,37 @@ export class TwigsResolver {
     return result;
   }
 
-  @UseGuards(GqlAuthGuard)
   @Mutation(() => CopyTwigResult, {name: 'copyTwig'})
   async copyTwig(
-    @CurrentUser() user: UserEntity,
+    @Args('accessToken') accessToken: string,
     @Args('parentTwigId') parentTwigId: string,
     @Args('twigId') twigId: string,
   ) {
+    const payload = this.jwtService.verify(accessToken, {
+      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET')
+    });
+    const user = await this.usersService.getUserById(payload.userId);
+    if (!user) {
+      throw new BadRequestException('Invalid accessToken');
+    }
     return this.twigsService.copyTwig(user, twigId, parentTwigId);
   }
 
-  @UseGuards(GqlAuthGuard)
   @Mutation(() => OpenTwigResult, {name: 'openTwig'})
   async openTwig(
-    @CurrentUser() user: UserEntity,
+    @Args('accessToken') accessToken: string,
     @Args('sessionId') sessionId: string,
     @Args('twigId') twigId: string,
     @Args('shouldOpen') shouldOpen: boolean,
   ) {
+    const payload = this.jwtService.verify(accessToken, {
+      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET')
+    });
+    const user = await this.usersService.getUserById(payload.userId);
+    if (!user) {
+      throw new BadRequestException('Invalid accessToken');
+    }
+
     const { 
       twig,
       role
@@ -315,166 +378,6 @@ export class TwigsResolver {
       role,
     };
   }
-
-  @UseGuards(GqlAuthGuard)
-  @Mutation(() => SyncTabStateResult, {name: 'syncTabState'})
-  async syncTabState(
-    @CurrentUser() user: UserEntity,
-    @Args('twigId') twigId: string,
-    @Args('windows', {type: () => [WindowEntry]}) windows: WindowEntry[],
-    @Args('groups', {type: () => [GroupEntry]}) groups: GroupEntry[],
-    @Args('tabs', {type: () => [TabEntry]}) tabs: TabEntry[],
-  ) {
-    return this.twigsService.syncTabState(user, twigId, windows, groups, tabs);
-  }
-
-  @UseGuards(GqlAuthGuard)
-  @Mutation(() => TabResult, {name: 'createWindow'})
-  async createWindow(
-    @CurrentUser() user: UserEntity,
-    @Args('windowEntry', {type: () => WindowEntry}) windowEntry: WindowEntry,
-  ) {
-    return this.twigsService.createWindow(user, windowEntry);
-  }
-
-  @UseGuards(GqlAuthGuard)
-  @Mutation(() => TabResult, {name: 'createGroup'})
-  async createGroup(
-    @CurrentUser() user: UserEntity,
-    @Args('groupEntry', {type: () => GroupEntry}) groupEntry: GroupEntry,
-  ) {
-    return this.twigsService.createGroup(user, groupEntry);
-  }
-
-  @UseGuards(GqlAuthGuard)
-  @Mutation(() => CreateTabResult, {name: 'createTab'})
-  async createTab(
-    @CurrentUser() user: UserEntity,
-    @Args('tabEntry', {type: () => TabEntry}) tabEntry: TabEntry,
-  ) {
-    return this.twigsService.createTab(user, tabEntry);
-  }
-
-  @UseGuards(GqlAuthGuard)
-  @Mutation(() => [Twig], {name: 'copyToTab'})
-  async copyToTab(
-    @CurrentUser() user: UserEntity,
-    @Args('entries', {type: () => [TabEntry]}) entries: TabEntry[],
-    @Args('groupEntry', {type: () => GroupEntry, nullable: true}) groupEntry: GroupEntry,
-  ) {
-    return this.twigsService.copyToTab(user, entries, groupEntry);
-  }
-  
-  @UseGuards(GqlAuthGuard)
-  @Mutation(() => UpdateTabResult, {name: 'updateTab'})
-  async updateTab(
-    @CurrentUser() user: UserEntity,
-    @Args('twigId') twigId: string,
-    @Args('title') title: string,
-    @Args('url') url: string,
-    @Args('faviconUrl', {nullable: true}) faviconUrl: string,
-  ) {
-    return this.twigsService.updateTab(user, twigId, title, url, faviconUrl);
-  }
-
-  @UseGuards(GqlAuthGuard)
-  @Mutation(() => MoveTabResult, {name: 'moveTab'})
-  async moveTab(
-    @CurrentUser() user: UserEntity,
-    @Args('twigId') twigId: string,
-    @Args('groupTwigId') groupTwigId: string,
-    @Args('parentTwigId', {nullable: true}) parentTwigId: string,
-  ) {
-    return this.twigsService.moveTab(user, twigId, groupTwigId, parentTwigId);
-  }
-
-
-  @UseGuards(GqlAuthGuard)
-  @Mutation(() => RemoveTabResult1, {name: 'removeTab'})
-  async removeTab(
-    @CurrentUser() user: UserEntity,
-    @Args('twigId') twigId: string,
-  ) {
-    return this.twigsService.removeTab(user, twigId);
-  }
-
-  @UseGuards(GqlAuthGuard)
-  @Mutation(() => TabResult, {name: 'removeGroup'})
-  async removeGroup(
-    @CurrentUser() user: UserEntity,
-    @Args('twigId') twigId: string,
-  ) {
-    return this.twigsService.removeGroup(user, twigId);
-  }
-
-  @UseGuards(GqlAuthGuard)
-  @Mutation(() => TabResult, {name: 'removeWindow'})
-  async removeWindow(
-    @CurrentUser() user: UserEntity,
-    @Args('twigId') twigId: string,
-  ) {
-    return this.twigsService.removeWindow(user, twigId);
-  }
-
-  @UseGuards(GqlAuthGuard)
-  @Mutation(() => SyncBookmarksResult, {name: 'syncBookmarks'})
-  async syncBookmarks(
-    @CurrentUser() user: UserEntity,
-    @Args('twigId') twigId: string,
-    @Args('bookmarks', {type: () => [BookmarkEntry]}) bookmarks: BookmarkEntry[],
-  ) {
-    return this.twigsService.syncBookmarks(user, twigId, bookmarks);
-  }
-
-  @UseGuards(GqlAuthGuard)
-  @Mutation(() => TabResult, {name: 'createBookmark'})
-  async createBookmark(
-    @CurrentUser() user: UserEntity,
-    @Args('bookmark', {type: () => BookmarkEntry, nullable: true}) bookmark: BookmarkEntry,
-  ) {
-    return this.twigsService.createBookmark(user, bookmark);
-  }
-
-  @UseGuards(GqlAuthGuard)
-  @Mutation(() => Twig, {name: 'changeBookmark'})
-  async changeBookmark(
-    @CurrentUser() user: UserEntity,
-    @Args('bookmarkId') bookmarkId: string,
-    @Args('title') title: string,
-    @Args('url', {nullable: true}) url: string,
-  ) {
-    return this.twigsService.changeBookmark(user, bookmarkId, title, url);
-  }
-
-  @UseGuards(GqlAuthGuard)
-  @Mutation(() => MoveTabResult, {name: 'moveBookmark'})
-  async moveBookmark(
-    @CurrentUser() user: UserEntity,
-    @Args('bookmarkId') bookmarkId: string,
-    @Args('parentBookmarkId') parentBookmarkId: string,
-  ) {
-    return this.twigsService.moveBookmark(user, bookmarkId, parentBookmarkId);
-  }
-
-  @UseGuards(GqlAuthGuard)
-  @Mutation(() => [Twig], {name: 'copyToBookmark'})
-  async copyToBookmark(
-    @CurrentUser() user: UserEntity,
-    @Args('entries', {type: () => [BookmarkEntry]}) entries: BookmarkEntry[],
-  ) {
-    return this.twigsService.copyToBookmark(user, entries);
-  }
-
-  @UseGuards(GqlAuthGuard)
-  @Mutation(() => RemoveBookmarkResult, {name: 'removeBookmark'})
-  async removeBookmark(
-    @CurrentUser() user: UserEntity,
-    @Args('bookmarkId') bookmarkId: string,
-  ) {
-    return this.twigsService.removeBookmark(user, bookmarkId);
-  }
-
-
 
   
   @Subscription(() => ReplyTwigResult, {name: 'replyTwig',

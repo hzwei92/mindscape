@@ -1,6 +1,5 @@
 import { gql, useReactiveVar, useSubscription } from '@apollo/client';
-import { sessionVar } from '../../cache';
-import { useAppDispatch } from '../../app/store';
+import { useAppDispatch, useAppSelector } from '../../app/store';
 import { FULL_TWIG_FIELDS } from './twigFragments';
 import { FULL_ROLE_FIELDS } from '../role/roleFragments';
 import { mergeTwigs } from './twigSlice';
@@ -9,6 +8,7 @@ import { mergeIdToPos } from '../space/spaceSlice';
 import { SpaceType } from '../space/space';
 import { useIonToast } from '@ionic/react';
 import { Arrow } from '../arrow/arrow';
+import { selectSessionId } from '../auth/authSlice';
 
 const PASTE_TWIG = gql`
   subscription PasteTwig($sessionId: String!, $abstractId: String!) {
@@ -43,11 +43,11 @@ export default function usePasteTwigSub(space: SpaceType, abstract: Arrow | null
 
   const [present] = useIonToast();
 
-  const sessionDetail = useReactiveVar(sessionVar);
-
+  const sessionId = useAppSelector(selectSessionId);
+  
   useSubscription(PASTE_TWIG, {
     variables: {
-      sessionId: sessionDetail.id,
+      sessionId,
       abstractId: abstract?.id,
     },
     onSubscriptionData: ({subscriptionData: {data: {pasteTwig}}}) => {

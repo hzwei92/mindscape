@@ -4,7 +4,7 @@ import { FULL_USER_FIELDS } from '../user/userFragments';
 import { gql, useMutation } from '@apollo/client';
 import { useAppDispatch, useAppSelector } from '../../app/store';
 import { setCurrentUser } from '../user/userSlice';
-import { selectAuthIsValid, selectAuthIsInit, selectAuthIsComplete } from './authSlice';
+import { selectAuthIsValid, selectAuthIsInit, selectAuthIsComplete, setAccessToken, selectAccessToken } from './authSlice';
 import { Preferences } from '@capacitor/preferences';
 import { REFRESH_TOKEN } from '../../constants';
 
@@ -14,16 +14,16 @@ const INIT_USER = gql`
       user {
         ...FullUserFields
       }
-      auth
-      refresh
+      accessToken
+      refreshToken
     }
   }
   ${FULL_USER_FIELDS}
 `;
 
 const GET_CURRENT_USER = gql`
-  mutation GetCurrentUser {
-    getCurrentUser {
+  mutation GetCurrentUser($accessToken: String!) {
+    getCurrentUser(accessToken: $accessToken) {
       ...FullUserFields
     }
   }
@@ -32,6 +32,8 @@ const GET_CURRENT_USER = gql`
 
 export default function useAuth(palette: 'dark' | 'light') {
   const dispatch = useAppDispatch();
+
+  const accessToken = useAppSelector(selectAccessToken);
 
   const isInit = useAppSelector(selectAuthIsInit);
   const isValid = useAppSelector(selectAuthIsValid);
@@ -63,31 +65,17 @@ export default function useAuth(palette: 'dark' | 'light') {
       console.error(error);
     },
     onCompleted: async data => {
-      //console.log(data);
+      console.log(data);
 
-      const cookies = document.cookie.split('; ');
-      console.log('cookies', cookies);
-      let refreshCookie;
-      cookies.some(cookie => {
-        refreshCookie = cookie.match(/^Refresh=.*$/);
-        return !!refreshCookie;
-      });
-      if (refreshCookie && refreshCookie[0]) {
-        console.log(refreshCookie[0]);
+      dispatch(setAccessToken(data.initUser.accessToken));
 
-        await Preferences.set({
-          key: REFRESH_TOKEN,
-          value: refreshCookie[0],
-        });
-      }
+      await Preferences.set({ key: REFRESH_TOKEN, value: data.initUser.refreshToken });
 
       setIsLoading(false);
 
       refreshTokenInterval();
 
       dispatch(setCurrentUser(data.initUser.user));
-
-      console.log('auth, refresh', data.initUser.auth, data.initUser.refresh);
     }
   });
 
@@ -101,7 +89,11 @@ export default function useAuth(palette: 'dark' | 'light') {
     
     if (isValid) {
       setIsLoading(true);
-      getUser();
+      getUser({
+        variables: {
+          accessToken,
+        },
+      });
     }
     else {
       setIsLoading(true)
