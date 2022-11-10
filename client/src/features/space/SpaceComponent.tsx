@@ -698,8 +698,9 @@ const SpaceComponent = (props: SpaceComponentProps) => {
         <IonCardContent style={{
           width: VIEW_RADIUS * 2 * (scale < 1 ? scale : 1),
           height: VIEW_RADIUS * 2 * (scale < 1 ? scale : 1),
-          transform: `scale(${scale})`,
-          transformOrigin: '0 0'
+          //zoom: scale,
+          WebkitTransform: `scale(${scale})`,
+          WebkitTransformOrigin: '0 0'
         }}>
           <svg viewBox={`0 0 ${VIEW_RADIUS * 2} ${VIEW_RADIUS * 2}`} style={{
             width: VIEW_RADIUS * 2,

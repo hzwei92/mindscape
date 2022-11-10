@@ -62,7 +62,7 @@ export default function useToken() {
       const refreshToken = await Preferences.get({ key: REFRESH_TOKEN_KEY });
       refresh({
         variables: {
-          refreshToken: refreshToken.value,
+          refreshToken: refreshToken.value || '',
         }
       });
     }, REFRESH_ACCESS_TOKEN_TIME);
