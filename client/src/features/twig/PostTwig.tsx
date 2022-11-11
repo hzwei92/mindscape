@@ -166,7 +166,7 @@ function PostTwig(props: PostTwigProps) {
             isTab={!!twig.tabId}
             isGroup={!twig.tabId && !!twig.groupId}
             isWindow={!twig.tabId && !twig.groupId && !!twig.windowId}
-            fontSize={twig.isOpen ? 60 : 20}
+            fontSize={twig.isOpen ? 80 : 20}
           />
           <TwigControls
             twig={twig}
