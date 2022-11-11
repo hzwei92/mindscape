@@ -57,7 +57,6 @@ function LinkTwigMarker(props: LinkTwigMarkerProps) {
     }
   }
 
-  return null;
   const rating = 1;
   return (
     <g onClick={handleClick} onMouseDown={handleMouseDown} style={{
