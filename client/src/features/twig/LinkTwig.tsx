@@ -144,6 +144,7 @@ function LinkTwig(props: LinkTwigProps) {
         cursor: 'pointer',
         pointerEvents: 'auto',
         opacity: .9,
+        margin: 0,
       }}>
         <div style={{
           display: 'flex',
@@ -181,6 +182,7 @@ function LinkTwig(props: LinkTwigProps) {
               ? 'crosshair'
               : 'default', 
             pointerEvents: 'auto',
+            margin: 0,
           }}
         >
           <div style={{
@@ -218,7 +220,7 @@ function LinkTwig(props: LinkTwigProps) {
                   isTab={!!twig.tabId}
                   isGroup={!twig.tabId && !!twig.groupId}
                   isWindow={!twig.tabId && !twig.groupId && !!twig.windowId}
-                  fontSize={twig.isOpen ? 60 : 20}
+                  fontSize={20}
                 />
                 <TwigControls
                   twig={twig}

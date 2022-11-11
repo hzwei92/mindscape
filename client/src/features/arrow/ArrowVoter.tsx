@@ -49,11 +49,11 @@ export default function ArrowVoter(props: ArrowVoterProps) {
       paddingTop: '7px',
       marginLeft: '-4px',
     }}>
-        <IonButtons style={{
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-        }}>
+      <IonButtons style={{
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+      }}>
         <IonButton
           disabled={isVoting || userVote?.weight === 10}
           size='small' 
@@ -75,19 +75,19 @@ export default function ArrowVoter(props: ArrowVoterProps) {
               : <IonIcon icon={chevronUpOutline} size='small' />
           }
         </IonButton>
-      <IonButton
-        disabled={isVoting}
-        onMouseDown={handleButtonMouseDown}
-        color='inherit'
-        size='small'
-        title={`${(userVote?.weight || 0) > 0 ? '+' : ''}${userVote?.weight || 0}`}
-        style={{
-          minWidth: '40px',
-          fontSize: 14,
-        }}
-      >
-        { props.arrow.weight }
-      </IonButton>
+        <IonButton
+          disabled={isVoting}
+          onMouseDown={handleButtonMouseDown}
+          color='inherit'
+          size='small'
+          title={`${(userVote?.weight || 0) > 0 ? '+' : ''}${userVote?.weight || 0}`}
+          style={{
+            minWidth: '40px',
+            fontSize: 14,
+          }}
+        >
+          { props.arrow.weight }
+        </IonButton>
         <IonButton
           onMouseDown={handleButtonMouseDown}
           disabled={isVoting || userVote?.weight === -10}

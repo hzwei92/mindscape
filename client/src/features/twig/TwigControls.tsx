@@ -291,16 +291,27 @@ function TwigControls(props: TwigControlsProps) {
       flexDirection: 'row',
     }}>
       <IonButton
+        size='small'
         disabled={!canPost}
         onMouseDown={handleMouseDown} 
         onClick={handleReplyClick}
       >
         REPLY
       </IonButton>
-      <IonButton disabled={!canView} onMouseDown={handleMouseDown} onClick={handleLinkClick}>
+      <IonButton 
+        size='small'
+        disabled={!canView} 
+        onMouseDown={handleMouseDown} 
+        onClick={handleLinkClick}
+      >
         LINK
       </IonButton>
-      <IonButton id={'twigOptionsButton-' + props.twig.id} onMouseDown={handleMouseDown} onClick={handleMenuOpenClick}>
+      <IonButton 
+        id={'twigOptionsButton-' + props.twig.id} 
+        size='small'
+        onMouseDown={handleMouseDown} 
+        onClick={handleMenuOpenClick}
+      >
         <IonIcon icon={ellipsisVertical} size='small' />
       </IonButton>
       <IonPopover trigger={'twigOptionsButton-' + props.twig.id} triggerAction='click'>
@@ -417,6 +428,7 @@ function TwigControls(props: TwigControlsProps) {
           : 'none',
       }}>
         <IonButton
+          size='small'
           onMouseDown={handleMouseDown}
           onClick={handleOpenClick}
         >

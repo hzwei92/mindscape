@@ -50,21 +50,36 @@ export default function useToken() {
 
   const refreshToken = async () => {
     const refreshToken = await Preferences.get({ key: REFRESH_TOKEN_KEY });
-    refresh({
-      variables: {
-        refreshToken: refreshToken.value,
-      }
-    });
+
+    if (refreshToken.value) {
+      refresh({
+        variables: {
+          refreshToken: refreshToken.value,
+        }
+      });
+    }
+    else {
+      dispatch(setAuthIsValid(false));
+      dispatch(setTokenInterval(null));
+      dispatch(setAuthIsInit(true));
+    }
   }
 
   const refreshTokenInterval = () => {
     const interval = setInterval(async () => {
       const refreshToken = await Preferences.get({ key: REFRESH_TOKEN_KEY });
-      refresh({
-        variables: {
-          refreshToken: refreshToken.value || '',
-        }
-      });
+      if (refreshToken.value) {
+        refresh({
+          variables: {
+            refreshToken: refreshToken.value || '',
+          }
+        });
+      }
+      else {
+        dispatch(setAuthIsValid(false));
+        dispatch(setTokenInterval(null));
+        dispatch(setAuthIsInit(true));
+      }
     }, REFRESH_ACCESS_TOKEN_TIME);
 
     dispatch(setAuthIsInit(true));

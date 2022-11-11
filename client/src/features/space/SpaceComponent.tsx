@@ -1,5 +1,5 @@
 import { useReactiveVar } from '@apollo/client';
-import { IonCard, IonCardContent, IonIcon } from '@ionic/react';
+import { IonCard, IonCardContent, IonContent, IonIcon } from '@ionic/react';
 import { navigateCircleOutline } from 'ionicons/icons';
 import React, { createContext, Dispatch, MouseEvent, SetStateAction, TouchList, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { AppContext } from '../../app/App';
@@ -245,7 +245,6 @@ const SpaceComponent = (props: SpaceComponentProps) => {
 
   useEffect(() => {
     if (Object.keys(adjustIdToPosDetail).length) {
-      console.log('merge adjusted pos', adjustIdToPosDetail)
       dispatch(mergeIdToPos({
         space: props.space,
         idToPos: adjustIdToPosDetail,
@@ -695,12 +694,12 @@ const SpaceComponent = (props: SpaceComponentProps) => {
           position: 'relative',
         }}
       >
-        <IonCardContent style={{
+        <div style={{
           width: VIEW_RADIUS * 2 * (scale < 1 ? scale : 1),
           height: VIEW_RADIUS * 2 * (scale < 1 ? scale : 1),
           //zoom: scale,
-          WebkitTransform: `scale(${scale})`,
-          WebkitTransformOrigin: '0 0'
+          transform: `scale(${scale})`,
+          transformOrigin: '0 0',
         }}>
           <svg viewBox={`0 0 ${VIEW_RADIUS * 2} ${VIEW_RADIUS * 2}`} style={{
             width: VIEW_RADIUS * 2,
@@ -712,7 +711,7 @@ const SpaceComponent = (props: SpaceComponentProps) => {
           </svg>
           { twigs }
           { dropTargets }
-        </IonCardContent>
+        </div>
         {
           Object.keys(idToCursor).map(id => {
             const cursor = idToCursor[id];

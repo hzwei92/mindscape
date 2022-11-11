@@ -73,7 +73,7 @@ export const AppContext = createContext({} as {
 });
 
 const App: React.FC = () => {
-  //console.log('app');
+  console.log('app');
   const user = useAppSelector(selectCurrentUser);
 
   const idToUser = useAppSelector(selectIdToUser);

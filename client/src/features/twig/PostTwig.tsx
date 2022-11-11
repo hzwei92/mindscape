@@ -6,12 +6,12 @@ import { SpaceContext } from '../space/SpaceComponent';
 import { TWIG_WIDTH } from '../../constants';
 import useLinkArrows from '../arrow/useLinkArrows';
 import ArrowComponent from '../arrow/ArrowComponent';
-import { selectSelectedTwigId, setSelectedSpace, mergeIdToHeight, selectHeightByTwigId } from '../space/spaceSlice';
+import { selectSelectedTwigId, setSelectedSpace, mergeIdToHeight, selectHeightByTwigId, selectScale } from '../space/spaceSlice';
 import { selectUserById } from '../user/userSlice';
 import { selectTwigById } from './twigSlice';
 import { useAppDispatch, useAppSelector } from '../../app/store';
 import { AppContext } from '../../app/App';
-import { IonCard, IonGrid, IonPopover } from '@ionic/react';
+import { IonCard, IonGrid, IonPopover, isPlatform } from '@ionic/react';
 
 interface PostTwigProps {
   twigId: string;
@@ -30,6 +30,8 @@ function PostTwig(props: PostTwigProps) {
     canEdit,
   } = useContext(SpaceContext);
 
+  const scale = useAppSelector(selectScale(space));
+  
   const twig = useAppSelector(state => selectTwigById(state, space, props.twigId));
   const twigUser = useAppSelector(state => selectUserById(state, twig.userId));
 
@@ -112,7 +114,11 @@ function PostTwig(props: PostTwigProps) {
   );
 
   return (
-    <div>
+    <div style={{
+      display: scale <= .25 && (isPlatform('ios') || isPlatform('android'))
+        ? 'none'
+        : 'flex',
+    }}>
       <IonCard
         ref={cardEl}
         id={'twig-' + twig.id}
@@ -126,6 +132,7 @@ function PostTwig(props: PostTwigProps) {
           flexDirection: 'column',
           width: TWIG_WIDTH,
           opacity: .9,
+          margin: 0,
           outline: isSelected
             ? `10px solid ${twigUser?.color}`
             : `1px solid ${twigUser?.color}`,
@@ -159,7 +166,7 @@ function PostTwig(props: PostTwigProps) {
             isTab={!!twig.tabId}
             isGroup={!twig.tabId && !!twig.groupId}
             isWindow={!twig.tabId && !twig.groupId && !!twig.windowId}
-            fontSize={twig.isOpen ? 80 : 20}
+            fontSize={twig.isOpen ? 60 : 20}
           />
           <TwigControls
             twig={twig}

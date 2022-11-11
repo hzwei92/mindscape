@@ -77,7 +77,7 @@ export default function ArrowComponent(props: ArrowProps) {
         <ArrowVoter arrow={arrow} />
       </div>
       <div style={{
-        fontSize: 14,
+        fontSize: 20,
         paddingBottom: 10,
         display: 'flex',
         flexDirection: 'row',
@@ -103,7 +103,6 @@ export default function ArrowComponent(props: ArrowProps) {
                     : null
             }
         </span>
-        &nbsp;&nbsp;
         <UserTag user={arrowUser} />
         &nbsp;
         { ' ' }
