@@ -1,13 +1,14 @@
-import { IonButton, IonButtons, IonCard, IonCardHeader, IonLabel, IonPage } from '@ionic/react';
+import { IonButton, IonCard, IonCardHeader, IonIcon, IonLabel, IonPage } from '@ionic/react';
 import React, { useContext, useState } from 'react';
 import { AppContext } from '../app/App';
 import { useAppSelector } from '../app/store';
-import { APP_BAR_HEIGHT, MAX_Z_INDEX } from '../constants';
 import { selectIdToArrow } from '../features/arrow/arrowSlice';
 import { Tab } from '../features/tab/tab';
 import { selectFocusTab, selectIdToTab } from '../features/tab/tabSlice';
 import useCreateTab from '../features/tab/useCreateTab';
 import { useHistory } from 'react-router';
+import { close } from 'ionicons/icons';
+import useRemoveTab from '../features/tab/useRemoveTab';
 
 const GraphsPage: React.FC = () => {
   const history = useHistory();
@@ -37,6 +38,7 @@ const GraphsPage: React.FC = () => {
   // const { removeRole } = useRemoveRole();
 
   const { createTab } = useCreateTab();
+  const { removeTab } = useRemoveTab();
 
   const handleJoinClick = (jamId: string) => (event: React.MouseEvent) => {
     //requestRole(jamId);
@@ -78,6 +80,10 @@ const GraphsPage: React.FC = () => {
     else {
       createTab(arrowId, null, false, true);
     }
+  }
+
+  const handleRemoveTabClick = (tabId: string) => () => {
+    removeTab(tabId);
   }
 
   const handleStartClick = () => {
@@ -124,18 +130,29 @@ const GraphsPage: React.FC = () => {
                     flexDirection: 'row',
                     justifyContent: 'space-between'
                   }}>
-                    <IonCardHeader>
+                    <IonCardHeader style={{
+                      display: 'flex',
+                    }}>
+                      <IonButton size='small' onClick={handleRemoveTabClick(tab.id)}>
+                        <IonIcon icon={close} />
+                      </IonButton>
+                      &nbsp;&nbsp;
                       <IonLabel onClick={handleArrowClick(arrow.id)} style={{
                         cursor: 'pointer',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'center',
                       }}>
-                        {tab.i + 1}&nbsp;&nbsp;&nbsp;
-                        <span style={{
-                          color: arrow.color,  
-                        }}>
-                          {arrow.title || '...'}
-                        </span>
-                        &nbsp;&nbsp;
-                        /g/{arrow.routeName}
+                        <div>
+                          {tab.i + 1}&nbsp;&nbsp;&nbsp;
+                          <span style={{
+                            color: arrow.color,  
+                          }}>
+                            {arrow.title || '...'}
+                          </span>
+                          &nbsp;&nbsp;
+                          /g/{arrow.routeName}
+                        </div>
                       </IonLabel>
                     </IonCardHeader>
                   </IonCard>
