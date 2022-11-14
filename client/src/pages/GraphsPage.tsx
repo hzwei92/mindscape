@@ -1,11 +1,11 @@
-import { IonButton, IonButtons, IonCard, IonLabel, IonPage } from '@ionic/react';
+import { IonButton, IonButtons, IonCard, IonCardHeader, IonLabel, IonPage } from '@ionic/react';
 import React, { useContext, useState } from 'react';
 import { AppContext } from '../app/App';
 import { useAppSelector } from '../app/store';
 import { APP_BAR_HEIGHT, MAX_Z_INDEX } from '../constants';
 import { selectIdToArrow } from '../features/arrow/arrowSlice';
 import { Tab } from '../features/tab/tab';
-import { selectFocusTab } from '../features/tab/tabSlice';
+import { selectFocusTab, selectIdToTab } from '../features/tab/tabSlice';
 import useCreateTab from '../features/tab/useCreateTab';
 import { useHistory } from 'react-router';
 
@@ -19,6 +19,7 @@ const GraphsPage: React.FC = () => {
     setCreateGraphArrowId,
   } = useContext(AppContext);
   
+  const idToTab = useAppSelector(selectIdToTab);
   const focusTab = useAppSelector(selectFocusTab);
 
   const roles = [...(user?.roles || [])]
@@ -62,12 +63,15 @@ const GraphsPage: React.FC = () => {
 
   const handleArrowClick = (arrowId: string) => () => {
     let arrowTab = null as Tab | null;
-    (user?.tabs || []).some(tab => {
-      if (tab.arrowId === arrowId) {
-        arrowTab = tab;
-      }
-      return !!arrowTab;
-    });
+    Object.values(idToTab)
+      .filter(tab => !tab.deleteDate)
+      .sort((a, b) => a.i - b.i)
+      .map(tab => {
+        if (tab.arrowId === arrowId) {
+          arrowTab = tab;
+        }
+        return !!arrowTab;
+      });
     if (arrowTab) {
       history.push(`/g/${arrowTab?.arrow.routeName}/0`);
     }
@@ -80,9 +84,6 @@ const GraphsPage: React.FC = () => {
     setCreateGraphArrowId(null);
     setIsCreatingGraph(true);
   }
-
-  const handleClose = () => {
-  };
 
   return (
     <IonPage>
@@ -111,29 +112,32 @@ const GraphsPage: React.FC = () => {
               CREATE A GRAPH
             </IonButton>
           {
-              tabs.map(tab => {
+            Object.values(idToTab)
+              .filter(tab => !tab.deleteDate)
+              .sort((a, b) => a.i - b.i)
+              .map(tab => {
                 const { arrow } = tab;
                 return (
                   <IonCard key={`tab-${tab.id}`} style={{
-                    margin: 10,
-                    padding: 10,
                     fontSize: 16,
                     display: 'flex',
                     flexDirection: 'row',
                     justifyContent: 'space-between'
                   }}>
-                    <div>
-                      <div>
-                        {tab.i + 1}&nbsp;&nbsp;
-                        <IonLabel color={arrow.color} onClick={handleArrowClick(arrow.id)} style={{
-                          color: arrow.color,
-                          cursor: 'pointer',
+                    <IonCardHeader>
+                      <IonLabel onClick={handleArrowClick(arrow.id)} style={{
+                        cursor: 'pointer',
+                      }}>
+                        {tab.i + 1}&nbsp;&nbsp;&nbsp;
+                        <span style={{
+                          color: arrow.color,  
                         }}>
                           {arrow.title || '...'}
-                        </IonLabel>
-                        &nbsp;
-                      </div>
-                    </div>
+                        </span>
+                        &nbsp;&nbsp;
+                        /g/{arrow.routeName}
+                      </IonLabel>
+                    </IonCardHeader>
                   </IonCard>
                 )
               })
@@ -143,19 +147,25 @@ const GraphsPage: React.FC = () => {
                 const { arrow } = role;
                 return (
                   <IonCard key={`role-${role.id}`} style={{
-                    margin: 10,
-                    padding: 10,
                     fontSize: 16,
                     display: 'flex',
                     flexDirection: 'row',
                     justifyContent: 'space-between'
                   }}>
-                    <IonLabel color={arrow.color} onClick={handleArrowClick(arrow.id)} style={{
-                      color: arrow.color,
-                      cursor: 'pointer',
-                    }}>
-                      {arrow.title || '...'}
-                    </IonLabel>
+                    <IonCardHeader>
+                      &nbsp;&nbsp;&nbsp;&nbsp;
+                      <IonLabel onClick={handleArrowClick(arrow.id)} style={{
+                        cursor: 'pointer',
+                      }}>
+                        <span style={{
+                          color: arrow.color,
+                        }}>
+                          {arrow.title || '...'}
+                        </span>
+                        &nbsp;&nbsp;
+                        /g/{arrow.routeName}
+                      </IonLabel>
+                    </IonCardHeader>
                   </IonCard>
                 );
               })
