@@ -48,16 +48,18 @@ export default function UserTag(props: UserTagProps) {
           ? <IonAvatar
               style={{
                 display: 'inline-block',
-                marginBottom: '-2px',
                 marginRight: '4px',
                 width: 17,
                 height: 17,
-                border: `1px solid ${props.user.color}`
+                border: `1px solid ${props.user.color}`,
+                position: 'relative',
               }}
-            >
+            > 
               <img 
                 src={`https://www.gravatar.com/avatar/${md5(props.user.email)}?d=retro`}
                 style={{
+                  position: 'absolute',
+                  top: 0,
                   width: 17,
                   height: 17,
                 }}
