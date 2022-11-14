@@ -39,6 +39,7 @@ import AccountPage from '../pages/AccountPage';
 import LoginPage from '../pages/LoginPage';
 import LogoutPage from '../pages/LogoutPage';
 import CreateGraphModal from '../features/arrow/CreateGraphModal';
+import UserModal from '../features/user/UserModal';
 
 setupIonicReact();
 
@@ -70,6 +71,9 @@ export const AppContext = createContext({} as {
   setIsCreatingGraph: Dispatch<SetStateAction<boolean>>;
   createGraphArrowId: string | null;
   setCreateGraphArrowId: Dispatch<SetStateAction<string | null>>;
+
+  selectedUserId: string;
+  setSelectedUserId: Dispatch<SetStateAction<string>>;
 });
 
 const App: React.FC = () => {
@@ -96,6 +100,8 @@ const App: React.FC = () => {
   });
 
   const [clipboardArrowIds, setClipboardArrowIds] = useState([] as string[]);
+
+  const [selectedUserId, setSelectedUserId] = useState('');
 
   useEffect(() => {
     if (user?.palette && user?.palette !== palette) {
@@ -136,6 +142,9 @@ const App: React.FC = () => {
 
       clipboardArrowIds,
       setClipboardArrowIds,
+
+      selectedUserId,
+      setSelectedUserId,
     };
   }, [
     user, 
@@ -145,6 +154,7 @@ const App: React.FC = () => {
     isCreatingGraph,
     createGraphArrowId,
     clipboardArrowIds,
+    selectedUserId,
   ]);
 
   return (
@@ -193,6 +203,7 @@ const App: React.FC = () => {
             </Route>
           </IonRouterOutlet>
           <CreateGraphModal />
+          <UserModal />
         </IonReactRouter>
       </IonApp>
     </AppContext.Provider>

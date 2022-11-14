@@ -9,7 +9,7 @@ interface UserTagProps {
   user: User | null;
 }
 export default function UserTag(props: UserTagProps) {
-  const { user }  = useContext(AppContext);
+  const { user, setSelectedUserId }  = useContext(AppContext);
   const isFollowing = false //(props.user?.leaders || [])
     // .some(lead => !lead.deleteDate && lead.leaderId === props.user.id);
 
@@ -29,16 +29,9 @@ export default function UserTag(props: UserTagProps) {
 
   const handleUserClick = (event: React.MouseEvent) => {
     event.stopPropagation();
-    if (props.user?.id !== user?.id) {
-      /*
-      dispatch(setFocusRouteName(`/u/${props.user.routeName}`))
-
-      dispatch(setSpace('FOCUS'));
-
-      if (width < MOBILE_WIDTH) {
-        dispatch(setSurveyorMode(''));
-      }
-      */
+  
+    if (props.user) {
+      setSelectedUserId(props.user.id);
     }
   }
 
@@ -62,7 +55,13 @@ export default function UserTag(props: UserTagProps) {
                 border: `1px solid ${props.user.color}`
               }}
             >
-              <img src={`https://www.gravatar.com/avatar/${md5(props.user.email)}?d=retro`}/>
+              <img 
+                src={`https://www.gravatar.com/avatar/${md5(props.user.email)}?d=retro`}
+                style={{
+                  width: 17,
+                  height: 17,
+                }}
+              />
             </IonAvatar>
           : null
       }
