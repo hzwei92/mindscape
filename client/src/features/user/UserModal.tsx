@@ -115,7 +115,7 @@ export default function UserModal() {
           {user1?.name}
         </IonCardHeader>
         <IonCardContent style={{
-          height: '100%',
+          height: 'calc(100% - 55px)',
           overflowY: 'scroll',
         }}>
           {
