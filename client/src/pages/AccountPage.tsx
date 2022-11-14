@@ -97,6 +97,7 @@ const AccountPage: React.FC = () => {
     const timeout = setTimeout(() => {
       getUserByName({
         variables: {
+          accessToken,
           name: e.target.value,
         },
       });
@@ -106,6 +107,7 @@ const AccountPage: React.FC = () => {
   const handleNameSubmitClick = () => {
     setUserName({
       variables: {
+        accessToken,
         name,
         sessionId: sessionId,
       }
