@@ -129,7 +129,7 @@ const GraphsPage: React.FC = () => {
                           color: arrow.color,
                           cursor: 'pointer',
                         }}>
-                          {arrow.title}
+                          {arrow.title || '...'}
                         </IonLabel>
                         &nbsp;
                       </div>
@@ -154,7 +154,7 @@ const GraphsPage: React.FC = () => {
                       color: arrow.color,
                       cursor: 'pointer',
                     }}>
-                      {arrow.title}
+                      {arrow.title || '...'}
                     </IonLabel>
                   </IonCard>
                 );
