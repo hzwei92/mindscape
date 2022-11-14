@@ -4,10 +4,14 @@ import { AppContext } from '../app/App';
 import { useAppSelector } from '../app/store';
 import { APP_BAR_HEIGHT, MAX_Z_INDEX } from '../constants';
 import { selectIdToArrow } from '../features/arrow/arrowSlice';
+import { Tab } from '../features/tab/tab';
 import { selectFocusTab } from '../features/tab/tabSlice';
 import useCreateTab from '../features/tab/useCreateTab';
+import { useHistory } from 'react-router';
 
 const GraphsPage: React.FC = () => {
+  const history = useHistory();
+
   const { 
     palette,
     user,
@@ -57,8 +61,17 @@ const GraphsPage: React.FC = () => {
   // }
 
   const handleArrowClick = (arrowId: string) => () => {
-    const hasTab = (user?.tabs || []).some(tab => tab.arrowId === arrowId);
-    if (!hasTab) {
+    let arrowTab = null as Tab | null;
+    (user?.tabs || []).some(tab => {
+      if (tab.arrowId === arrowId) {
+        arrowTab = tab;
+      }
+      return !!arrowTab;
+    });
+    if (arrowTab) {
+      history.push(`/g/${arrowTab?.arrow.routeName}/0`);
+    }
+    else {
       createTab(arrowId, null, false, true);
     }
   }
@@ -114,6 +127,7 @@ const GraphsPage: React.FC = () => {
                         {tab.i + 1}&nbsp;&nbsp;
                         <IonLabel color={arrow.color} onClick={handleArrowClick(arrow.id)} style={{
                           color: arrow.color,
+                          cursor: 'pointer',
                         }}>
                           {arrow.title}
                         </IonLabel>
