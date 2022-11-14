@@ -22,9 +22,18 @@ export const PUB_SUB = 'PUB_SUB';
           }
           return value;
         };
+
         return new RedisPubSub({
-          publisher: new Redis(configService.get('REDIS_URL')),
-          subscriber: new Redis(configService.get('REDIS_URL')),
+          publisher: new Redis(configService.get('REDIS_URL'), {
+            tls: {
+              rejectUnauthorized: false,
+            }
+          }),
+          subscriber: new Redis(configService.get('REDIS_URL'), {
+            tls: {
+              rejectUnauthorized: false,
+            }
+          }),
           reviver: dateReviver,
         });
       },
