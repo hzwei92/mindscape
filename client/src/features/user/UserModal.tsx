@@ -119,26 +119,28 @@ export default function UserModal() {
           overflowY: 'scroll',
         }}>
           {
-            (user1?.tabs || []).map((tab, i) => {
-              return (
-                <IonCard key={tab.id}>
-                  <IonCardHeader >
-                    <IonLabel onClick={handleArrowClick(tab.arrowId)} style={{
-                      cursor: 'pointer',
-                    }}>
-                      {i + 1}&nbsp;&nbsp;&nbsp;
-                      <span style={{
-                        color: tab.arrow.color,
+            (user1?.tabs || [])
+              .sort((a, b) => a.i - b.i)
+              .map((tab, i) => {
+                return (
+                  <IonCard key={tab.id}>
+                    <IonCardHeader >
+                      <IonLabel onClick={handleArrowClick(tab.arrowId)} style={{
+                        cursor: 'pointer',
                       }}>
-                        {tab.arrow.title}
-                      </span>
-                      &nbsp;&nbsp;
-                      /g/{tab.arrow.routeName}
-                    </IonLabel>
-                  </IonCardHeader>
-                </IonCard>
-              );
-            })
+                        {i + 1}&nbsp;&nbsp;&nbsp;
+                        <span style={{
+                          color: tab.arrow.color,
+                        }}>
+                          {tab.arrow.title}
+                        </span>
+                        &nbsp;&nbsp;
+                        /g/{tab.arrow.routeName}
+                      </IonLabel>
+                    </IonCardHeader>
+                  </IonCard>
+                );
+              })
             
           }
           
