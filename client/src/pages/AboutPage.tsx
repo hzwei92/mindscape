@@ -107,7 +107,7 @@ const AboutPage: React.FC = () => {
                 sorted by the votes of a particular demographic.
               </li>
               <li>
-                To harmonize our voices.
+                To organize our voices.
 
                 So we can all contribute as citizen journalists.
 
