@@ -114,7 +114,10 @@ export default function UserModal() {
           }
           {user1?.name}
         </IonCardHeader>
-        <IonCardContent>
+        <IonCardContent style={{
+          height: '100%',
+          overflowY: 'scroll',
+        }}>
           {
             (user1?.tabs || []).map((tab, i) => {
               return (
