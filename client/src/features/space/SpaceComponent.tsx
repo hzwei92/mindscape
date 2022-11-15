@@ -109,9 +109,9 @@ const SpaceComponent = (props: SpaceComponentProps) => {
     return false;
   });
 
-  const canEdit = checkPermit(abstract?.canEdit, role?.type)
-  const canPost = checkPermit(abstract?.canPost, role?.type)
-  const canView = checkPermit(abstract?.canView, role?.type)
+  const canEdit = abstract?.userId === user?.id || checkPermit(abstract?.canEdit, role?.type)
+  const canPost = abstract?.userId === user?.id || checkPermit(abstract?.canPost, role?.type)
+  const canView = abstract?.userId === user?.id || checkPermit(abstract?.canView, role?.type)
 
   const spaceEl = useRef<HTMLIonCardElement>(null);
   
