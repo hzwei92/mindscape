@@ -10,6 +10,9 @@ import { IonButton, IonButtons, IonIcon, IonPopover } from '@ionic/react';
 import { ellipsisVertical } from 'ionicons/icons';
 import { selectUserById } from '../user/userSlice';
 import usePasteEntry from './usePasteEntry';
+import { selectRoleByUserIdAndArrowId } from '../role/roleSlice';
+import { RoleType } from '../role/role';
+import useRequestRole from '../role/useRequestRole';
 
 interface EntryControlsProps {
   entry: Entry;
@@ -22,6 +25,7 @@ export default function EntryControls(props: EntryControlsProps) {
   const dispatch = useAppDispatch();
 
   const {
+    user,
     pendingLink,
     setPendingLink,
     clipboardArrowIds,
@@ -29,6 +33,12 @@ export default function EntryControls(props: EntryControlsProps) {
   } = useContext(AppContext);
 
   const arrowUser = useAppSelector(state => selectUserById(state, props.arrow.userId));
+  const role = useAppSelector(state => selectRoleByUserIdAndArrowId(state, user?.id, props.arrow.id));
+
+  const isSubbed = (
+    !!user && arrowUser?.id === user.id || 
+    !!role && role.type !== RoleType.OTHER
+  );
 
   const [menuAnchorEl, setMenuAnchorEl] = useState(null as Element | null);
 
@@ -36,19 +46,9 @@ export default function EntryControls(props: EntryControlsProps) {
 
   const { replyEntry } = useReplyEntry(props.entry.id);
   const { pasteEntry } = usePasteEntry(props.entry.id);
+  const { requestRole } = useRequestRole();
 
   // const { promoteEntry } = usePromoteEntry();
-  // const { subPost } = useSubPost(props.post, () => {
-  //   props.setIsLoading(false);
-  // });
-  // const { unsubPost } = useUnsubPost(props.post, () => {
-  //   props.setIsLoading(false);
-  // });
-  // const { addTwig: addFrameTwig } = useAddTwig('FRAME');
-  // const { addTwig: addFocusTwig } = useAddTwig('FOCUS');
-
-  // const { centerTwig: centerFrameTwig } = useCenterTwig('FRAME');
-  // const { centerTwig: centerFocusTwig } = useCenterTwig('FOCUS');
 
   const handleReplyClick = (event: React.MouseEvent) => {
     event.stopPropagation();
@@ -78,110 +78,6 @@ export default function EntryControls(props: EntryControlsProps) {
       });
     }
   }
-
-  // const handleMenuOpenClick = (event: React.MouseEvent) => {
-  //   event.stopPropagation();
-  //   setMenuAnchorEl(event.currentTarget);
-  // }
-  // const handleMenuClose = () => {
-  //   setIsEditingRoute(false);
-  //   setMenuAnchorEl(null)
-  // }
-
-  // const handleRouteClick = (event: React.MouseEvent) => {
-  //   setIsEditingRoute(!isEditingRoute);
-  // }
-
-  // const handleCopyClick = (event: React.MouseEvent) => {
-  //   event.stopPropagation();
-  //   navigator.clipboard.writeText(`https://granum.io/p/${props.post.routeName || props.post.id}`);
-  //   enqueueSnackbar('URL copied');
-  //   const handleDismissClick = (event: React.MouseEvent) => {
-  //     closeSnackbar(props.entry.id);
-  //   }
-  //   enqueueSnackbar('URL copied', {
-  //     key: props.entry.id,
-  //     action: () => {
-  //       return (
-  //         <div>
-  //           <IconIonButton onClick={handleDismissClick} style={{
-  //             color: getColor(paletteMode, true)
-  //           }}>
-  //             <CloseIcon style={{
-  //               fontSize: 14,
-  //             }}/>
-  //           </IconIonButton>
-  //         </div>
-  //       );
-  //     }
-  //   })
-  //   handleMenuClose();
-  // }
-
-  // const handleSubClick = (event: React.MouseEvent) => {
-  //   event.stopPropagation();
-  //   subPost();
-  //   props.setIsLoading(true);
-  //   handleMenuClose();
-  // }
-  
-  // const handleUnsubClick = (event: React.MouseEvent) => {
-  //   event.stopPropagation();
-  //   unsubPost();
-  //   props.setIsLoading(true);
-  //   handleMenuClose();
-  // }
-
-
-  // const handlePromoteClick = (event: React.MouseEvent) => { 
-  //   event.stopPropagation();
-  //   promoteEntry(props.entry);
-  // }
-
-  // const handleFrameClick = (event: React.MouseEvent) => {
-  //   event.stopPropagation();
-  //   if (props.frameTwig) {
-  //     if (props.frameTwig.postId === framePostId) {
-  //       centerFrameTwig(props.frameTwig, true, 0);
-  //     }
-  //     else {
-  //       navigate(`/u/${user?.frame?.routeName}/${props.frameTwig.jamI}`);
-  //     }
-  //   }
-  //   else {
-  //     addFrameTwig(props.post.id)
-  //   }
-  // }
-
-  // const handleFocusClick = (event: React.MouseEvent) => {
-  //   event.stopPropagation();
-  //   if (props.focusTwig) {
-  //     if (props.focusTwig.postId === focusPostId) {
-  //       centerFocusTwig(props.focusTwig, true, 0);
-  //     }
-  //     else {
-  //       navigate(`/${user?.focus?.userId ? 'u' : 'j'}/${user?.focus?.routeName}/${props.focusTwig.jamI}`);
-  //     }
-  //   }
-  //   else {
-  //     addFocusTwig(props.post.id);
-  //   }
-  // }
-
-  // const handleCommitClick = (event: React.MouseEvent) => {
-  //   event.stopPropagation();
-  //   commitVar({
-  //     postId: props.post.id
-  //   });
-  //   handleMenuClose();
-  // }
-  // const handleRemoveClick =  (event: React.MouseEvent) => {
-  //   event.stopPropagation();
-  //   removeVar({
-  //     postId: props.post.id
-  //   });
-  //   handleMenuClose();
-  // }
 
   const handlePrevClick = (event: React.MouseEvent) => {
     event.stopPropagation();
@@ -228,6 +124,19 @@ export default function EntryControls(props: EntryControlsProps) {
     pasteEntry();
   }
 
+  const handleSubscribeClick = (event: React.MouseEvent) => {
+    event.stopPropagation();
+    requestRole(props.arrow.id, RoleType.SUBSCRIBER);
+  }
+  
+  const handleUnsubscribeClick = (event: React.MouseEvent) => {
+    event.stopPropagation();
+    if (role?.type === RoleType.SUBSCRIBER) {
+      requestRole(props.arrow.id, RoleType.OTHER);
+    }
+  }
+
+
   return (
     <IonButtons style={{
       bottom: 0,
@@ -236,41 +145,59 @@ export default function EntryControls(props: EntryControlsProps) {
       marginLeft: 20,
       fontSize: 12,
     }}>
-      <IonButton onClick={handleReplyClick} style={{
-        fontSize: 12,
-      }}>
+      <IonButton size='small' onClick={handleReplyClick}>
         REPLY
       </IonButton>
-      <IonButton onClick={handleLinkClick} style={{
-        fontSize: 12,
+      <IonButton size='small' onClick={handleLinkClick} style={{
       }}>
         LINK
       </IonButton>
-      <IonButton id={'entryOptionsButton-' + props.entry.id}>
+      <IonButton id={'entryOptionsButton-' + props.entry.id} style={{
+        color: isSubbed
+          ? user?.color
+          : null,
+      }}>
         <IonIcon icon={ellipsisVertical} size='small' />
       </IonButton>
       <IonPopover trigger={'entryOptionsButton-' + props.entry.id} triggerAction='click'>
         <div style={{
+          margin: 10,
+          borderBottom: '1px solid',
+          paddingTop: 5,
+          paddingBottom: 10,
+        }}>
+          <IonButtons>
+            {
+              isSubbed
+                ? <IonButton 
+                    disabled={
+                      props.arrow.userId === user?.id || 
+                      role?.type === RoleType.ADMIN || 
+                      role?.type === RoleType.MEMBER
+                    } 
+                    onClick={handleUnsubscribeClick}
+                  >
+                    UNSUBSCRIBE
+                  </IonButton>
+                : <IonButton onClick={handleSubscribeClick}>
+                    SUBSCRIBE
+                  </IonButton>
+            }
+          </IonButtons>
+          <IonButtons>
+            <IonButton onClick={handleCopyClick}>
+              COPY
+            </IonButton>
+            <IonButton disabled={clipboardArrowIds.length !== 1} onClick={handlePasteClick}>
+              PASTE
+            </IonButton>
+          </IonButtons>
+        </div>
+        <div style={{
           padding: 10,
           display: 'table',
-          borderSpacing: 5,
+          borderSpacing: 10,
         }}>
-          <div style={{
-            display: 'table-row'
-          }}>
-            <div style={{
-              display: 'table-cell',
-              fontWeight: 'bold',
-            }}>
-              routeName
-            </div>
-            <div style={{
-              display: 'table-cell',
-              whiteSpace: 'pre-wrap',
-            }}>
-              /g/{props.arrow.routeName}
-            </div>
-          </div>
           <div style={{
             display: 'table-row',
             flexDirection: 'row',
@@ -303,29 +230,29 @@ export default function EntryControls(props: EntryControlsProps) {
               {props.arrow?.user.name}
             </div>
           </div>
+          <div style={{
+            display: 'table-row'
+          }}>
+            <div style={{
+              display: 'table-cell',
+              fontWeight: 'bold',
+            }}>
+              routeName
+            </div>
+            <div style={{
+              display: 'table-cell',
+              whiteSpace: 'pre-wrap',
+            }}>
+              /g/{props.arrow.routeName}
+            </div>
+          </div>
         </div>
-        <IonButtons style={{
-          padding: 10,
-        }}>
-          <IonButton onClick={handleCopyClick}>
-            COPY
-          </IonButton>
-          {
-            clipboardArrowIds.length === 1
-              ? <IonButton onClick={handlePasteClick}>
-                  PASTE
-                </IonButton>
-              : null
-          }
-          
-        </IonButtons>
       </IonPopover>
       &nbsp;&nbsp;
       <span style={{
         whiteSpace: 'nowrap',
       }}>
         <IonButton onClick={handlePrevClick} style={{
-          fontSize: 12,
           border: props.entry.showIns
             ? `1px solid ${arrowUser?.color}`
             : null,
@@ -335,7 +262,6 @@ export default function EntryControls(props: EntryControlsProps) {
         </IonButton>
         &nbsp;
         <IonButton onClick={handleNextClick} style={{
-          fontSize: 12,
           border: props.entry.showOuts
             ? `1px solid ${arrowUser?.color}`
             : null,

@@ -7,8 +7,9 @@ export enum PostPrivacy {
 export enum RoleType {
   ADMIN = 'ADMIN',
   MEMBER = 'MEMBER',
-  OTHER = 'OTHER'
-}
+  SUBSCRIBER = 'SUBSCRIBER',
+  OTHER = 'OTHER',
+};
 
 export enum PaletteMode {
   LIGHT = 'light',

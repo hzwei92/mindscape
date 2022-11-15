@@ -7,6 +7,7 @@ import { UsersService } from 'src/users/users.service';
 import { User } from 'src/users/user.entity';
 import { ArrowsService } from 'src/arrows/arrows.service';
 import { Arrow } from 'src/arrows/arrow.entity';
+import e from 'express';
 
 @Injectable()
 export class RolesService {
@@ -116,48 +117,49 @@ export class RolesService {
     return this.getRoleByUserIdAndArrowId(invitedUser.id, arrowId);
   }
 
-  async requestRole(userId: string, arrowId: string): Promise<Role> {
-    const role = await this.getRoleByUserIdAndArrowId(userId, arrowId);
+  async requestRole(user: User, arrowId: string, type: string): Promise<Role> {
+    let role = await this.getRoleByUserIdAndArrowId(user.id, arrowId);
     if (role) {
-      if (role.isRequested) {
-        if (role.isInvited) {
-          throw new BadRequestException('This user is already part of the abstract')
-        }
-        else {
-          throw new BadRequestException('This user has already requested membership')
-        }
+      if (role.type === RoleType[type]) {
+        return role;
       }
       else {
-        if (role.isInvited) {
-          const role0 = new Role();
-          role0.id = role.id;
-          role0.type = RoleType.MEMBER;
-          role0.isRequested = false;
-          role0.isInvited = false;
-          await this.rolesRepository.save(role0);
+        if ( 
+          role.type === RoleType.ADMIN ||
+          (role.type === RoleType.MEMBER && type !== 'ADMIN') ||
+          (role.type === RoleType.SUBSCRIBER && type !== 'ADMIN' && type !== 'MEMBER')
+        ) {
+          // role type is higher than requested type
+          role.type = RoleType[type] || RoleType.OTHER;  
+          return this.rolesRepository.save(role);
         }
         else {
-          const role0 = new Role();
-          role0.id = role.id;
-          role0.isRequested = true;
-          await this.rolesRepository.save(role0);
+          const arrow = await this.arrowsService.getArrowById(arrowId);
+          if (!arrow) {
+            throw new BadRequestException('This arrow does not exist');
+          }
+          role.type = RoleType[type] || RoleType.OTHER;
+          role.userId = user.id;
+          role.arrowId = arrowId;
+          role.isInvited = role.type === RoleType.SUBSCRIBER || role.type === RoleType.OTHER;
+          role.isRequested = true;
+          return this.rolesRepository.save(role);
         }
       }
     }
     else {
-      const abstract = await this.arrowsService.getArrowById(arrowId);
-      if (!abstract) {
-        throw new BadRequestException('This abstract does not exist')
+      const arrow = await this.arrowsService.getArrowById(arrowId);
+      if (!arrow) {
+        throw new BadRequestException('This arrow does not exist');
       }
-      const role0 = new Role();
-      role0.userId = userId;
-      role0.arrowId = arrowId;
-      role0.isInvited = false;
-      role0.isRequested = true;
-      role0.type === RoleType.OTHER;
-      await this.rolesRepository.save(role0);
+      role = new Role();
+      role.type = RoleType[type] || RoleType.OTHER;
+      role.userId = user.id;
+      role.arrowId = arrowId;
+      role.isInvited = type !== 'ADMIN' && type !== 'MEMEBER';
+      role.isRequested = true;
+      return this.rolesRepository.save(role);
     }
-    return this.getRoleByUserIdAndArrowId(userId, arrowId);
   }
 
   async removeRole(userId: string, roleId: string): Promise<Role> {

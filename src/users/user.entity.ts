@@ -37,13 +37,6 @@ export class User {
   @Column()
   color: string;
 
-  @Column({ nullable: true})
-  focusId: string;
-
-  @ManyToOne(() => Arrow, { nullable: true })
-  @JoinColumn({ referencedColumnName: 'id'})
-  focus: Arrow;
-
   @Column({
     type: 'enum',
     enum: PaletteMode,

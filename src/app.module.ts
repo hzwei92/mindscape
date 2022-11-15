@@ -13,7 +13,6 @@ import { UsersService } from './users/users.service';
 import { AuthModule } from './auth/auth.module';
 import { ArrowsModule } from './arrows/arrows.module';
 import { VotesModule } from './votes/votes.module';
-import { SubsModule } from './subs/subs.module';
 import { SearchModule } from './search/search.module';
 import { RolesModule } from './roles/roles.module';
 import { PubSubModule } from './pub-sub/pub-sub.module';
@@ -109,7 +108,6 @@ import { TransfersModule } from './transfers/transfers.module';
     PubSubModule,
     RolesModule,
     SearchModule,
-    SubsModule,
     UsersModule,
     VotesModule,
     TwigsModule,

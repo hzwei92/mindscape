@@ -129,10 +129,10 @@ export const createArrow = (params: {
     twigZ: 0,
     rootTwigId: null,
 
-    canEdit: 'OTHER',
-    canPost: 'OTHER',
-    canTalk: 'OTHER',
-    canHear: 'OTHER',
+    canEdit: 'MEMBER',
+    canPost: 'SUBSCRIBER',
+    canTalk: 'MEMBER',
+    canHear: 'SUBSCRIBER',
     canView: 'OTHER',
 
     roles: [],

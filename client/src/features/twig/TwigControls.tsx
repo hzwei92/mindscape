@@ -13,6 +13,9 @@ import { searchPushSlice } from '../search/searchSlice';
 import { IonButton, IonButtons, IonIcon, IonItem, IonMenu, IonPopover, useIonRouter, useIonToast } from '@ionic/react';
 import { create, ellipsisVertical, link, shieldCheckmarkOutline, closeOutline, notificationsCircleOutline, notificationsOutline} from 'ionicons/icons';
 import usePasteTwig from './usePasteTwig';
+import { RoleType } from '../role/role';
+import useRequestRole from '../role/useRequestRole';
+import { selectRoleByUserIdAndArrowId } from '../role/roleSlice';
 //import useCenterTwig from './useCenterTwig';
 
 interface TwigControlsProps {
@@ -26,7 +29,6 @@ function TwigControls(props: TwigControlsProps) {
   const router = useIonRouter();
 
   const [present] = useIonToast();
-
 
   const {
     user,
@@ -46,30 +48,20 @@ function TwigControls(props: TwigControlsProps) {
 
   const arrow = useAppSelector(state => selectArrowById(state, props.twig.detailId));
   const sheaf = useAppSelector(state => selectSheafById(state, arrow?.sheafId));
+  const role = useAppSelector(state => selectRoleByUserIdAndArrowId(state, user?.id, arrow?.id));
 
   const showOpen = !!arrow?.rootTwigId || user?.id === arrow?.userId;
-  const frameTwig = null;
-  const focusTwig = null;
 
-  const [menuAnchorEl, setMenuAnchorEl] = useState(null as Element | null);
   const [isEditingRoute, setIsEditingRoute] = useState(false);
 
   const { replyTwig } = useReplyTwig();
   const { pasteTwig } = usePasteTwig();
+  const { requestRole } = useRequestRole();
 
-  // const { sub } = useSubArrow(props.twig.post, () => {
-  //   props.setIsLoading(false);
-  // });
-  // const { unsub } = useUnsub(props.twig.post, () => {
-  //   props.setIsLoading(false);
-  // });
-
-  // const { addTwig: addFrameTwig } = useAddTwig('FRAME');
-  // const { addTwig: addFocusTwig } = useAddTwig('FOCUS');
-
-  //const { centerTwig: centerFrameTwig } = useCenterTwig(user, 'FRAME');
-  //const { centerTwig: centerFocusTwig } = useCenterTwig(user, 'FOCUS');
-
+  const isSubbed = (
+    user?.id && arrow?.userId === user?.id || 
+    !!role && role.type !== RoleType.OTHER
+  );
 
   const handleMouseDown = (event: React.MouseEvent) => {
     event.stopPropagation();
@@ -120,14 +112,6 @@ function TwigControls(props: TwigControlsProps) {
     }
   }
 
-  const handleMenuOpenClick = (event: React.MouseEvent) => {
-    setMenuAnchorEl(event.currentTarget);
-  }
-  const handleMenuClose = () => {
-    setMenuAnchorEl(null);
-    setIsEditingRoute(false);
-  }
-
   const handleRouteClick = (event: React.MouseEvent) => {
     setIsEditingRoute(!isEditingRoute);
   }
@@ -150,37 +134,35 @@ function TwigControls(props: TwigControlsProps) {
   const handleCopyURLClick = (event: React.MouseEvent) => {
     event.stopPropagation();
     navigator.clipboard.writeText(`https://mindscape.pub/g/${arrow?.routeName}`);
-    handleMenuClose();
   }
 
   const handleCopyRelativeClick = (event: React.MouseEvent) => {
     event.stopPropagation();
     navigator.clipboard.writeText(`https://mindscape.pub/g/${abstract?.routeName}/${props.twig.i}`);
-    handleMenuClose();
   }
 
-  const handleSubClick = (event: React.MouseEvent) => {
+  const handleSubscribeClick = (event: React.MouseEvent) => {
     event.stopPropagation();
-    //sub();
-    handleMenuClose();
+    if (arrow) {
+      requestRole(arrow?.id, RoleType.SUBSCRIBER);
+    }
   }
   
-  const handleUnsubClick = (event: React.MouseEvent) => {
+  const handleUnsubscribeClick = (event: React.MouseEvent) => {
     event.stopPropagation();
-    //unsub();
-    handleMenuClose();
+    if (arrow && role?.type === RoleType.SUBSCRIBER) {
+      requestRole(arrow?.id, RoleType.OTHER);
+    }
   }
 
   const handleCommitClick = (event: React.MouseEvent) => {
     event.stopPropagation();
     //dispatch(setCommitArrowId(props.twig.detailId))
-    handleMenuClose();
   }
 
   const handleRemoveClick =  (event: React.MouseEvent) => {
     event.stopPropagation();
     //dispatch(setRemoveArrowId(props.twig.detailId));
-    handleMenuClose();
   }
 
   const handlePrevClick = (event: React.MouseEvent) => {
@@ -310,30 +292,80 @@ function TwigControls(props: TwigControlsProps) {
         id={'twigOptionsButton-' + props.twig.id} 
         size='small'
         onMouseDown={handleMouseDown} 
-        onClick={handleMenuOpenClick}
+        style={{
+          color: isSubbed ? user?.color : null,
+        }}
       >
         <IonIcon icon={ellipsisVertical} size='small' />
       </IonButton>
       <IonPopover trigger={'twigOptionsButton-' + props.twig.id} triggerAction='click'>
         <div style={{
-          padding: 10,
+          margin: 10,
+          borderBottom: '1px solid',
+          paddingTop: 5,
+          paddingBottom: 10,
+        }}>
+          <IonButtons>
+            {
+              isSubbed
+                ? <IonButton 
+                    disabled={
+                      arrow?.userId === user?.id || 
+                      role?.type === RoleType.ADMIN || 
+                      role?.type === RoleType.MEMBER
+                    } 
+                    onClick={handleUnsubscribeClick}
+                  >
+                    UNSUBSCRIBE
+                  </IonButton>
+                : <IonButton onClick={handleSubscribeClick}>
+                    SUBSCRIBE
+                  </IonButton>
+            }
+          </IonButtons>
+          <IonButtons>
+            <IonButton onClick={handleCopyClick}>
+              COPY
+            </IonButton>
+            <IonButton disabled={clipboardArrowIds.length !== 1} onClick={handlePasteClick}>
+              PASTE
+            </IonButton>
+          </IonButtons>
+        </div>
+        <div style={{
           display: 'table',
-          borderSpacing: 5,
+          borderSpacing: 10,
         }}>
           <div style={{
-            display: 'table-row'
+            display: 'table-row',
+            flexDirection: 'row',
           }}>
             <div style={{
               display: 'table-cell',
               fontWeight: 'bold',
             }}>
-              routeName
+              arrowID
             </div>
             <div style={{
               display: 'table-cell',
-              whiteSpace: 'pre-wrap',
             }}>
-              /g/{abstract?.routeName}/{props.twig.i}
+              {props.twig.detailId}
+            </div>
+          </div>
+          <div style={{
+            display: 'table-row',
+          }}>
+            <div style={{
+              display: 'table-cell',
+              fontWeight: 'bold',
+            }}>
+              arrowUser
+            </div>
+            <div style={{
+              display: 'table-cell',
+              color: arrow?.user.color
+            }}>
+              {arrow?.user.name}
             </div>
           </div>
           <div style={{
@@ -368,53 +400,22 @@ function TwigControls(props: TwigControlsProps) {
             </div>
           </div>
           <div style={{
-            display: 'table-row',
-            flexDirection: 'row',
+            display: 'table-row'
           }}>
             <div style={{
               display: 'table-cell',
               fontWeight: 'bold',
             }}>
-              arrowID
+              routeName
             </div>
             <div style={{
               display: 'table-cell',
+              whiteSpace: 'pre-wrap',
             }}>
-              {props.twig.detailId}
-            </div>
-          </div>
-          <div style={{
-            display: 'table-row',
-          }}>
-            <div style={{
-              display: 'table-cell',
-              fontWeight: 'bold',
-            }}>
-              arrowUser
-            </div>
-            <div style={{
-              display: 'table-cell',
-              color: arrow?.user.color
-            }}>
-              {arrow?.user.name}
+              /g/{abstract?.routeName}/{props.twig.i}
             </div>
           </div>
         </div>
-        <IonButtons style={{
-          padding: 10,
-        }}>
-          <IonButton onClick={handleCopyClick}>
-            COPY
-          </IonButton>
-          {
-            clipboardArrowIds.length === 1
-              ? <IonButton onClick={handlePasteClick}>
-                  PASTE
-                </IonButton>
-              : null
-          }
-          
-        </IonButtons>
       </IonPopover>
       <IonButton routerLink='/search' onMouseDown={handleMouseDown} onClick={handlePrevClick}>
         {arrow?.inCount} IN

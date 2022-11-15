@@ -137,7 +137,7 @@ const GraphsPage: React.FC = () => {
                         <IonIcon icon={close} />
                       </IonButton>
                       &nbsp;&nbsp;
-                      <IonLabel onClick={handleArrowClick(arrow.id)} style={{
+                      <IonLabel onClick={handleArrowClick(arrow?.id)} style={{
                         cursor: 'pointer',
                         display: 'flex',
                         flexDirection: 'column',
@@ -160,7 +160,10 @@ const GraphsPage: React.FC = () => {
               })
             }
             {
-              roles.filter(role => !tabs.some(tab => tab.arrowId === role.arrowId)).map(role => {
+              roles.filter(role => (
+                !!role.arrow.rootTwigId && 
+                !tabs.some(tab => tab.arrowId === role.arrowId)
+              )).map(role => {
                 const { arrow } = role;
                 return (
                   <IonCard key={`role-${role.id}`} style={{

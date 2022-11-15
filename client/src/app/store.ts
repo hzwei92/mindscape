@@ -4,6 +4,7 @@ import arrowSlice from '../features/arrow/arrowSlice';
 import authSlice from '../features/auth/authSlice';
 import cursorSlice from '../features/cursor/cursorSlice';
 import entrySlice from '../features/entry/entrySlice';
+import roleSlice from '../features/role/roleSlice';
 import searchSlice from '../features/search/searchSlice';
 import sheafSlice from '../features/sheaf/sheafSlice';
 import spaceSlice from '../features/space/spaceSlice';
@@ -18,6 +19,7 @@ export const store = configureStore({
     auth: authSlice,
     cursor: cursorSlice,
     entry: entrySlice,
+    role: roleSlice,
     search: searchSlice,
     sheaf: sheafSlice,
     space: spaceSlice,

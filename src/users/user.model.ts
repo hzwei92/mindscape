@@ -5,18 +5,6 @@ import { Arrow } from 'src/arrows/arrow.model';
 export class User {
   @Field()
   id: string;
-
-  @Field({nullable: true})
-  frameId: string;
-
-  @Field(() => Arrow, {nullable: true})
-  frame: Arrow;
-
-  @Field({nullable: true})
-  focusId: string;
-
-  @Field(() => Arrow, {nullable: true})
-  focus: Arrow;
   
   @Field()
   name: string;

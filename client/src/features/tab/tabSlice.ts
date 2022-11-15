@@ -1,5 +1,4 @@
-import { Action, createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import type { User } from "../user/user";
+import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from '../../app/store';
 import { IdToType } from "../../types";
 import { Tab } from "./tab";
