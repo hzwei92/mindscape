@@ -38,10 +38,10 @@ export class Role {
   })
   type: RoleType;
 
-  @Column({default: false})
+  @Column({default: true})
   isInvited: boolean;
 
-  @Column({default: false})
+  @Column({default: true})
   isRequested: boolean;
 
   @CreateDateColumn()

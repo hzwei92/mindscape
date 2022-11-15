@@ -11,12 +11,10 @@ import {
   Index,
 } from 'typeorm';
 import { User } from 'src/users/user.entity';
-import { Sub } from 'src/subs/sub.entity';
 import { Point } from 'geojson';
 import * as Enums from '../enums';
 import { Role } from 'src/roles/role.entity';
 import { Vote } from 'src/votes/vote.entity';
-import { findDefaultWeight } from 'src/utils';
 import { Twig } from 'src/twigs/twig.entity';
 import { Sheaf } from 'src/sheafs/sheaf.entity';
 
@@ -124,28 +122,28 @@ export class Arrow {
   @Column({
     type: 'enum',
     enum: Enums.RoleType,
-    default: Enums.RoleType.OTHER,
+    default: Enums.RoleType.MEMBER,
   })
   canEdit: Enums.RoleType;
 
   @Column({
     type: 'enum',
     enum: Enums.RoleType,
-    default: Enums.RoleType.OTHER,
+    default: Enums.RoleType.SUBSCRIBER,
   })
   canPost: Enums.RoleType;
   
   @Column({
     type: 'enum',
     enum: Enums.RoleType,
-    default: Enums.RoleType.OTHER,
+    default: Enums.RoleType.MEMBER,
   })
   canTalk: Enums.RoleType;  
   
   @Column({
     type: 'enum',
     enum: Enums.RoleType,
-    default: Enums.RoleType.OTHER,
+    default: Enums.RoleType.SUBSCRIBER,
   })
   canHear: Enums.RoleType;
 
@@ -155,10 +153,6 @@ export class Arrow {
     default: Enums.RoleType.OTHER,
   })
   canView: Enums.RoleType;
-
-
-  @OneToMany(() => Sub, sub => sub.arrow)
-  subs: Sub[];
 
   @OneToMany(() => Role, role => role.arrow)
   roles: Role[];

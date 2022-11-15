@@ -30,22 +30,6 @@ export class UsersResolver {
     private readonly pubSub: RedisPubSub,
   ) {}
 
-  @ResolveField(() => Arrow, {name: 'frame', nullable: true})
-  async getUserFrame(
-    @Parent() user: User,
-  ) {
-    if (!user.frameId) return null;
-    return this.arrowsService.getArrowById(user.frameId);
-  }
-
-  @ResolveField(() => Arrow, {name: 'focus', nullable: true})
-  async getUserFocus(
-    @Parent() user: User,
-  ) {
-    if (!user.focusId) return null;
-    return this.arrowsService.getArrowById(user.focusId);
-  }
-
   @ResolveField(() => [Role], {name: 'roles'})
   async getUserRoles(
     @Parent() user: User,

@@ -6,7 +6,6 @@ import { Arrow } from './arrow.entity';
 import { v4 } from 'uuid'; 
 import { getEmptyDraft, IdToType } from 'src/utils';
 import { SearchService } from 'src/search/search.service';
-import { SubsService } from 'src/subs/subs.service';
 import { RoleType } from 'src/enums';
 import { LOAD_LIMIT, PRIVATE_ARROW_DRAFT, PRIVATE_ARROW_TEXT, START_ARROW_ID } from 'src/constants';
 import { RolesService } from 'src/roles/roles.service';
@@ -29,7 +28,6 @@ export class ArrowsService {
     private readonly votesService: VotesService,
     private readonly twigsService: TwigsService,
     private readonly rolesService: RolesService,
-    private readonly subsService: SubsService,
     private readonly searchService: SearchService,
   ) {}
 
@@ -77,6 +75,7 @@ export class ArrowsService {
       const role = await this.rolesService.getRoleByUserIdAndArrowId(user.id, arrow.abstractId);
       if (
         !role ||
+        (arrow.abstract.canView === RoleType.SUBSCRIBER && role.type !== RoleType.ADMIN && role.type !== RoleType.MEMBER && role.type !== RoleType.SUBSCRIBER) ||
         (arrow.abstract.canView === RoleType.MEMBER && role.type !== RoleType.ADMIN && role.type !== RoleType.MEMBER) ||
         (arrow.abstract.canView === RoleType.ADMIN && role.type !== RoleType.ADMIN)
       ) {
@@ -110,6 +109,7 @@ export class ArrowsService {
         });
         if (
           !role ||
+          (arrow.abstract.canView === RoleType.SUBSCRIBER && role.type !== RoleType.ADMIN && role.type !== RoleType.MEMBER && role.type !== RoleType.SUBSCRIBER) ||
           (arrow.abstract.canView === RoleType.MEMBER && role.type !== RoleType.ADMIN && role.type !== RoleType.MEMBER) ||
           (arrow.abstract.canView === RoleType.ADMIN && role.type !== RoleType.ADMIN)
         ) {
@@ -258,12 +258,9 @@ export class ArrowsService {
 
     const [vote] = await this.votesService.createInitialVotes(user, [arrow1]);
     
-    const [sub] = await this.subsService.createSubs(user, [arrow1]);
-
     return {
       arrow: arrow1,
       vote,
-      sub,
     };
   }
 
@@ -683,7 +680,6 @@ export class ArrowsService {
 
 
     await this.votesService.createInitialVotes(user, arrows1);
-    await this.subsService.createSubs(user, arrows1);
 
     return arrows1
   }

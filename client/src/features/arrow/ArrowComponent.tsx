@@ -78,44 +78,51 @@ export default function ArrowComponent(props: ArrowProps) {
       </div>
       <div style={{
         fontSize: 20,
-        paddingBottom: 10,
         display: 'flex',
         flexDirection: 'row',
+        flexWrap: 'wrap',
       }}>
         <span style={{
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center',
+          paddingRight: 5,
         }}>
             {
               props.showLinkRightIcon
-                ? <IonIcon icon={returnDownForwardOutline} style={{
-                    paddingRight: 1,
-                  }}/>
+                ? <IonIcon icon={returnDownForwardOutline} />
                 : props.showLinkLeftIcon
-                  ? <IonIcon icon={returnUpBack} style={{
-                      paddingRight: 1,
-                    }}/>
+                  ? <IonIcon icon={returnUpBack} />
                   : props.showPostIcon
-                    ? <IonIcon icon={reloadOutline} style={{
-                        paddingRight: 1,
-                      }}/>
+                    ? <IonIcon icon={reloadOutline} />
                     : null
             }
         </span>
-        <UserTag user={arrowUser} />
-        &nbsp;
-        { ' ' }
-        { timeString }
+        <span style={{
+          paddingRight: 5,
+        }}>
+          <UserTag user={arrowUser} />
+        </span>
+        <span style={{
+          paddingRight: 5,
+        }}>
+          { timeString }
+        </span>
         {
           arrow.removeDate
-            ? ' (deleted)'
+            ? <span style={{
+                paddingRight: 5,
+              }}>
+                (deleted)
+              </span>
             : arrow.commitDate 
-              ? ' (committed)'
+              ? <span style={{
+                  paddingRight: 5,
+                }}>
+                  (committed)
+                </span>
               : null
         }
-        &nbsp;
-        &nbsp;
         {
           arrowAbstract?.id === abstract?.id
             ? null
@@ -151,6 +158,9 @@ export default function ArrowComponent(props: ArrowProps) {
               </IonLabel>
             : null
         }
+        <div style={{
+          height: 10,
+        }}/>
         <ArrowEditor
           arrow={arrow}
           isReadonly={false}

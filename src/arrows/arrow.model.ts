@@ -1,7 +1,6 @@
 import { Field, Float, Int, ObjectType } from '@nestjs/graphql';
 import { Role } from 'src/roles/role.model';
 import { Sheaf } from 'src/sheafs/sheaf.model';
-import { Sub } from 'src/subs/sub.model';
 import { Twig } from 'src/twigs/twig.model';
 import { User } from 'src/users/user.model';
 import { Vote } from 'src/votes/vote.model';
@@ -110,10 +109,7 @@ export class Arrow {
   canView: string;
 
 
-
-  @Field(() => [Sub])
-  subs: Sub[];
-
+  
   @Field(() => [Role])
   roles: Role[];
   

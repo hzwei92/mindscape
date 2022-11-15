@@ -3,7 +3,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Arrow } from './arrow.entity';
 import { ArrowsService } from './arrows.service';
 import { ArrowsResolver } from './arrows.resolver';
-import { SubsModule } from 'src/subs/subs.module';
 import { SearchModule } from 'src/search/search.module';
 import { RolesModule } from 'src/roles/roles.module';
 import { UsersModule } from 'src/users/users.module';
@@ -26,7 +25,6 @@ import { JwtModule } from '@nestjs/jwt';
     forwardRef(() => SheafsModule),
     TransfersModule,
     VotesModule,
-    SubsModule,
     PubSubModule,
     SearchModule,
   ],

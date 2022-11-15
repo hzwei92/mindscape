@@ -84,6 +84,7 @@ export class RolesResolver {
     @Args('accessToken') accessToken: string,
     @Args('sessionId') sessionId: string,
     @Args('arrowId') arrowId: string,
+    @Args('type') type: string,
   ) {
     const payload = this.jwtService.verify(accessToken, {
       secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET')
@@ -93,7 +94,7 @@ export class RolesResolver {
       throw new BadRequestException('Invalid accessToken');
     }
 
-    const role = await this.rolesService.requestRole(user.id, arrowId)
+    const role = await this.rolesService.requestRole(user, arrowId, type)
     const arrow = await this.arrowsService.getArrowById(arrowId);
 
     this.pubSub.publish('userRole', {

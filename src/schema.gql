@@ -38,7 +38,6 @@ type Arrow {
   source: Arrow
   sourceId: String
   state: String
-  subs: [Sub!]!
   target: Arrow
   targetId: String
   text: String!
@@ -144,7 +143,7 @@ type Mutation {
   removeTwig(accessToken: String!, sessionId: String!, shouldRemoveDescs: Boolean!, twigId: String!): RemoveTwigResult!
   replyArrow(accessToken: String!, linkDraft: String!, linkId: String!, sessionId: String!, sourceId: String!, targetDraft: String!, targetId: String!): ReplyArrowResult!
   replyTwig(accessToken: String!, draft: String!, parentTwigId: String!, postId: String!, sessionId: String!, twigId: String!, x: Int!, y: Int!): ReplyTwigResult!
-  requestRole(accessToken: String!, arrowId: String!, sessionId: String!): Role!
+  requestRole(accessToken: String!, arrowId: String!, sessionId: String!, type: String!): Role!
   resendUserVerification(accessToken: String!): User!
   saveArrow(accessToken: String!, arrowId: String!, draft: String!, sessionId: String!): Arrow!
   selectTwig(accessToken: String!, sessionId: String!, twigId: String!): SelectTwigResult!
@@ -153,9 +152,7 @@ type Mutation {
   setUserMap(accessToken: String!, lat: Float!, lng: Float!, zoom: Float!): User!
   setUserName(accessToken: String!, name: String!, sessionId: String!): User!
   setUserPalette(accessToken: String!, palette: String!, sessionId: String!): User!
-  subPost(accessToken: String!, arrowId: String!): Sub!
   unfollowUser(accessToken: String!, userId: String!): Lead!
-  unsubPost(accessToken: String!, arrowId: String!): Sub!
   updateTab(accessToken: String!, i: Int!, isFocus: Boolean!, isFrame: Boolean!, tabId: String!): [Tab!]!
   verifyUser(accessToken: String!, code: String!): User!
   voteArrow(accessToken: String!, arrowId: String!, sessionId: String!, weight: Int!): VoteArrowResult!
@@ -237,16 +234,6 @@ type Sheaf {
   weight: Int!
 }
 
-type Sub {
-  arrow: Arrow!
-  arrowId: String!
-  createDate: DateTime!
-  deleteDate: DateTime
-  id: String!
-  user: User!
-  userId: String!
-}
-
 type Subscription {
   arrowRole(arrowId: String!, sessionId: String!): Role!
   dragTwig(abstractId: String!, sessionId: String!): DragTwigResult!
@@ -318,11 +305,7 @@ type User {
   deleteDate: DateTime
   description: String!
   email: String
-  focus: Arrow
-  focusId: String
   followers: [Lead!]!
-  frame: Arrow
-  frameId: String
   id: String!
   isAdmin: Boolean!
   isRegisteredWithGoogle: Boolean!

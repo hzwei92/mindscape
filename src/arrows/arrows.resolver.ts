@@ -6,8 +6,6 @@ import { UsersService } from 'src/users/users.service';
 import { Arrow } from './arrow.model';
 import { ArrowsService } from './arrows.service';
 import { RedisPubSub } from 'graphql-redis-subscriptions';
-import { SubsService } from 'src/subs/subs.service';
-import { Sub } from 'src/subs/sub.model';
 import { Role } from 'src/roles/role.model';
 import { RolesService } from 'src/roles/roles.service';
 import { VotesService } from 'src/votes/votes.service';
@@ -28,7 +26,6 @@ export class ArrowsResolver {
     private readonly arrowsService: ArrowsService,
     private readonly usersService: UsersService,
     private readonly rolesService: RolesService,
-    private readonly subsService: SubsService,
     private readonly votesService: VotesService,
     private readonly sheafsService: SheafsService,
     private readonly transfersService: TransfersService,
@@ -76,13 +73,6 @@ export class ArrowsResolver {
     @Parent() arrow: Arrow,
   ) {
     return this.rolesService.getRolesByArrowId(arrow.id);
-  }
-
-  @ResolveField(() => [Sub], {name: 'subs'})
-  async getArrowSubs(
-    @Parent() arrow: Arrow,
-  ) {
-    return this.subsService.getSubsByArrowId(arrow.id, false);
   }
 
   @ResolveField(() => [Vote], {name: 'votes'})
