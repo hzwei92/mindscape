@@ -146,12 +146,12 @@ const GraphsPage: React.FC = () => {
                         <div>
                           {tab.i + 1}&nbsp;&nbsp;&nbsp;
                           <span style={{
-                            color: arrow.color,  
+                            color: arrow?.color,  
                           }}>
-                            {arrow.title || '...'}
+                            {arrow?.title || '...'}
                           </span>
                           &nbsp;&nbsp;
-                          /g/{arrow.routeName}
+                          /g/{arrow?.routeName}
                         </div>
                       </IonLabel>
                     </IonCardHeader>
@@ -174,16 +174,16 @@ const GraphsPage: React.FC = () => {
                   }}>
                     <IonCardHeader>
                       &nbsp;&nbsp;&nbsp;&nbsp;
-                      <IonLabel onClick={handleArrowClick(arrow.id)} style={{
+                      <IonLabel onClick={handleArrowClick(arrow?.id)} style={{
                         cursor: 'pointer',
                       }}>
                         <span style={{
-                          color: arrow.color,
+                          color: arrow?.color,
                         }}>
-                          {arrow.title || '...'}
+                          {arrow?.title || '...'}
                         </span>
                         &nbsp;&nbsp;
-                        /g/{arrow.routeName}
+                        /g/{arrow?.routeName}
                       </IonLabel>
                     </IonCardHeader>
                   </IonCard>
