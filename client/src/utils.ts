@@ -144,7 +144,9 @@ export const checkPermit = (permissionLevel: string | undefined, roleType?: stri
     ? roleType === 'ADMIN'
     : permissionLevel === 'MEMBER'
       ? roleType === 'ADMIN' || roleType === 'MEMBER'
-      : true;
+      : permissionLevel === 'SUBSCRIBER'
+        ? roleType === 'ADMIN' || roleType === 'MEMBER' || roleType === 'SUBSCRIBER'
+        : true;
 }
 
 export const getTwigColor = (color?: string | null) => {
