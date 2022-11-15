@@ -153,7 +153,9 @@ type Mutation {
   setUserMap(accessToken: String!, lat: Float!, lng: Float!, zoom: Float!): User!
   setUserName(accessToken: String!, name: String!, sessionId: String!): User!
   setUserPalette(accessToken: String!, palette: String!, sessionId: String!): User!
+  subPost(accessToken: String!, arrowId: String!): Sub!
   unfollowUser(accessToken: String!, userId: String!): Lead!
+  unsubPost(accessToken: String!, arrowId: String!): Sub!
   updateTab(accessToken: String!, i: Int!, isFocus: Boolean!, isFrame: Boolean!, tabId: String!): [Tab!]!
   verifyUser(accessToken: String!, code: String!): User!
   voteArrow(accessToken: String!, arrowId: String!, sessionId: String!, weight: Int!): VoteArrowResult!
