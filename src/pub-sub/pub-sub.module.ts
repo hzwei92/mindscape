@@ -24,16 +24,20 @@ export const PUB_SUB = 'PUB_SUB';
         };
 
         return new RedisPubSub({
-          publisher: new Redis(configService.get('REDIS_URL'), {
-            tls: {
-              rejectUnauthorized: false,
-            }
-          }),
-          subscriber: new Redis(configService.get('REDIS_URL'), {
-            tls: {
-              rejectUnauthorized: false,
-            }
-          }),
+          publisher: configService.get('NODE_ENV') === 'production'
+            ? new Redis(configService.get('REDIS_URL'), {
+                tls: {
+                  rejectUnauthorized: false,
+                }
+              })
+            : new Redis(configService.get('REDIS_URL')),
+          subscriber: configService.get('NODE_ENV') === 'production'
+            ? new Redis(configService.get('REDIS_URL'), {
+                tls: {
+                  rejectUnauthorized: false,
+                }
+              })
+            : new Redis(configService.get('REDIS_URL')),
           reviver: dateReviver,
         });
       },

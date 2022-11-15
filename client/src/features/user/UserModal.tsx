@@ -12,6 +12,7 @@ import useCreateTab from "../tab/useCreateTab";
 import { User } from "./user";
 import { USER_FIELDS } from "./userFragments";
 import { selectIdToTab } from "../tab/tabSlice";
+import { getTimeString } from "../../utils";
  
 const GET_USER = gql`
   mutation GetUser($accessToken: String!, $userId: String!) {
@@ -91,28 +92,47 @@ export default function UserModal() {
     setUser1(null);
   }
 
+  const time = new Date(user1?.activeDate || Date.now()).getTime();
+  const timeString = getTimeString(time);
+
   return (
     <IonModal ref={modalRef} onWillDismiss={handleClose}>
       <IonCard>
         <IonCardHeader style={{
-          color: user1?.color,
+          display: 'flex',
         }}>
-          {
-            user1?.verifyEmailDate
-              ? <IonAvatar
-                  style={{
-                    width: 20,
-                    height: 20,
-                    marginRight: 7,
-                    display: 'inline-block',
-                    border: `1px solid ${user1.color}`
-                  }}
-                >
-                  <img src={`https://www.gravatar.com/avatar/${md5(user1?.email)}?d=retro`}/>
-                </IonAvatar>
-              : null
-          }
-          {user1?.name}
+          <span>
+            {
+              user1?.verifyEmailDate
+                ? <IonAvatar
+                    style={{
+                      width: 20,
+                      height: 20,
+                      marginRight: 8,
+                      display: 'inline-block',
+                      border: `1px solid ${user1.color}`
+                    }}
+                  >
+                    <img src={`https://www.gravatar.com/avatar/${md5(user1?.email)}?d=retro`}/>
+                  </IonAvatar>
+                : null
+            }
+          </span>
+          <span>
+            <span  style={{
+              color: user1?.color,
+            }}>
+              {user1?.name}
+            </span>
+            &nbsp;
+            { timeString }
+            <br/>
+            { 
+              user1
+                ? user1.balance + ' points'
+                : null
+            }
+          </span>
         </IonCardHeader>
         <IonCardContent style={{
           height: 'calc(100% - 55px)',
