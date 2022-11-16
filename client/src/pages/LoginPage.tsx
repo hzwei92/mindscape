@@ -4,16 +4,20 @@ import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonIcon,
 import { eye, eyeOff } from 'ionicons/icons';
 import GoogleButton from '../features/auth/GoogleButton';
 import { FULL_USER_FIELDS } from '../features/user/userFragments';
-import { setLogin } from '../features/auth/authSlice';
-import { useAppDispatch } from '../app/store';
+import { selectAccessToken, setAccessToken, setLogin } from '../features/auth/authSlice';
+import { useAppDispatch, useAppSelector } from '../app/store';
 import { AppContext } from '../app/App';
 import { Preferences } from '@capacitor/preferences';
 import { REFRESH_TOKEN } from '../constants';
 
 const LOGIN_USER = gql`
-  mutation LoginUser($email: String!, $pass: String!) {
-    loginUser(email: $email, pass: $pass) {
-      ...FullUserFields
+  mutation LoginUser($accessToken: String!, $email: String!, $pass: String!) {
+    loginUser(accessToken: $accessToken, email: $email, pass: $pass) {
+      user {
+        ...FullUserFields
+      }
+      accessToken
+      refreshToken
     }
   }
   ${FULL_USER_FIELDS}
@@ -25,6 +29,8 @@ const LoginPage: React.FC = () => {
 
   const { palette } = useContext(AppContext);
 
+  const accessToken = useAppSelector(selectAccessToken);
+
   const [message, setMessage] = useState('');
 
   const [loginUser] = useMutation(LOGIN_USER, {
@@ -35,35 +41,16 @@ const LoginPage: React.FC = () => {
     onCompleted: data => {
       console.log(data);
 
-      const cookies = document.cookie.split('; ');
-      console.log('cookies', cookies);
-      let refreshCookie;
-      cookies.some(cookie => {
-        refreshCookie = cookie.match(/^Refresh=.*$/);
-        return !!refreshCookie;
-      });
-      if (refreshCookie && refreshCookie[0]) {
-        console.log(refreshCookie[0]);
-
-        Preferences.set({
-          key: REFRESH_TOKEN,
-          value: refreshCookie[0],
-        });
-      }
-
       client.clearStore();
-      client.writeQuery({
-        query: gql`
-          query LoginQuery {
-            ...FullUserFields
-          }
-          ${FULL_USER_FIELDS}
-        `,
-        data: data.loginUser,
-      });
 
-      dispatch(setLogin(data.loginUser));
+      dispatch(setAccessToken(data.loginUser.accessToken))
+
+      Preferences.set({
+        key: REFRESH_TOKEN,
+        value: data.loginUser.refreshToken,
+      });
       
+      dispatch(setLogin(data.loginUser.user));
     }
   });
 
@@ -86,6 +73,7 @@ const LoginPage: React.FC = () => {
   const handleSubmit = (event: React.MouseEvent) => {
     loginUser({
       variables: {
+        accessToken,
         email,
         pass,
       }
