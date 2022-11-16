@@ -69,7 +69,10 @@ export default function useAuth(palette: 'dark' | 'light') {
 
       dispatch(setAccessToken(data.initUser.accessToken));
 
-      await Preferences.set({ key: REFRESH_TOKEN, value: data.initUser.refreshToken });
+      await Preferences.set({ 
+        key: REFRESH_TOKEN, 
+        value: data.initUser.refreshToken
+      });
 
       setIsLoading(false);
 
