@@ -67,6 +67,8 @@ export type Arrow = {
   updateDate: string | null;
   deleteDate: string | null;
 
+  currentUserRole: Role | null;
+
   __typename: string;
 }
 
@@ -156,6 +158,8 @@ export const createArrow = (params: {
     createDate: date,
     updateDate: date,
     deleteDate: null,
+
+    currentUserRole: null,
 
     __typename: 'Arrow'
   };

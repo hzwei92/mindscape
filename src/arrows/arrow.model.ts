@@ -165,5 +165,5 @@ export class Arrow {
   deleteDate: Date;
 
   @Field(() => Role, { nullable: true })
-  userRole: Role;
+  currentUserRole: Role;
 }

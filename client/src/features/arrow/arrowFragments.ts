@@ -64,10 +64,14 @@ export const FULL_ARROW_FIELDS = gql`
       verifyEmailDate
       color
     }
+    currentUserRole {
+      ...FullRoleFields
+    }
   }
   ${ARROW_FIELDS}
   ${SHEAF_FIELDS}
   ${VOTE_FIELDS}
+  ${FULL_ROLE_FIELDS}
 `;
 
 

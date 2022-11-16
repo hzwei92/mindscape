@@ -29,34 +29,7 @@ export const FULL_USER_FIELDS = gql`
     tabs {
       ...FullTabFields
     }
-    roles {
-      ...FullRoleFields
-    }
-    leaders {
-      ...LeadFields
-      leader {
-        id
-        name
-        routeName
-        color
-        email
-        verifyEmailDate
-      }
-    }
-    followers {
-      ...LeadFields
-      follower {
-        id
-        name
-        routeName
-        color
-        email
-        verifyEmailDate
-      }
-    }
   }
   ${USER_FIELDS}
   ${FULL_TAB_FIELDS}
-  ${LEAD_FIELDS}
-  ${FULL_ROLE_FIELDS}
 `;

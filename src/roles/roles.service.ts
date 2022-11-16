@@ -48,6 +48,8 @@ export class RolesService {
       where: {
         userId,
         arrowId,
+        isInvited: true,
+        isRequested: true,
       },
     });
   }
@@ -140,7 +142,7 @@ export class RolesService {
           role.type = RoleType[type] || RoleType.OTHER;
           role.userId = user.id;
           role.arrowId = arrowId;
-          role.isInvited = role.type === RoleType.SUBSCRIBER || role.type === RoleType.OTHER;
+          role.isInvited = role.type !== RoleType.ADMIN && role.type !== RoleType.MEMBER;
           role.isRequested = true;
           return this.rolesRepository.save(role);
         }
@@ -155,7 +157,7 @@ export class RolesService {
       role.type = RoleType[type] || RoleType.OTHER;
       role.userId = user.id;
       role.arrowId = arrowId;
-      role.isInvited = type !== 'ADMIN' && type !== 'MEMEBER';
+      role.isInvited = role.type !== RoleType.ADMIN && role.type !== RoleType.MEMBER;
       role.isRequested = true;
       return this.rolesRepository.save(role);
     }
