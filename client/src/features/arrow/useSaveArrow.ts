@@ -1,12 +1,12 @@
 import { gql, useMutation, useReactiveVar } from '@apollo/client';
 import { useIonToast } from '@ionic/react';
 import { useAppDispatch, useAppSelector } from '../../app/store';
-import { selectAccessToken, selectSessionId } from '../auth/authSlice';
+import { selectSessionId } from '../auth/authSlice';
 import { mergeArrows, selectArrowIdToInstanceIds, selectIdToInstance, updateInstance } from './arrowSlice';
 
 const SAVE_ARROW = gql`
-  mutation SaveArrow($accessToken: String!, $sessionId: String!, $arrowId: String!, $draft: String!) {
-    saveArrow(accessToken: $accessToken, sessionId: $sessionId, arrowId: $arrowId, draft: $draft) {
+  mutation SaveArrow($sessionId: String!, $arrowId: String!, $draft: String!) {
+    saveArrow(sessionId: $sessionId, arrowId: $arrowId, draft: $draft) {
       id
       draft
       text
@@ -20,7 +20,6 @@ export default function useSaveArrow(arrowId: string, instanceId: string) {
 
   const [present] = useIonToast();
 
-  const accessToken = useAppSelector(selectAccessToken);
   const sessionId = useAppSelector(selectSessionId);
 
   const idToInstance = useAppSelector(selectIdToInstance);
@@ -56,7 +55,6 @@ export default function useSaveArrow(arrowId: string, instanceId: string) {
   const saveArrow = (draft: string) => {
     save({
       variables: {
-        accessToken,
         sessionId,
         arrowId,
         draft,

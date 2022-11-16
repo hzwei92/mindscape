@@ -8,10 +8,12 @@ import { store } from './app/store';
 import { defineCustomElements } from '@ionic/pwa-elements/loader';
 import { createRestartableClient } from './app/graphql';
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
-import { DEV_SERVER_URI, DEV_WS_SERVER_URI, PROD_SERVER_URI, PROD_WS_SERVER_URI } from './constants';
+import { ACCESS_TOKEN, DEV_SERVER_URI, DEV_WS_SERVER_URI, PROD_SERVER_URI, PROD_WS_SERVER_URI } from './constants';
 import { ApolloClient, ApolloProvider, createHttpLink, InMemoryCache, split } from '@apollo/client';
 import { getMainDefinition } from '@apollo/client/utilities';
 import { isPlatform } from '@ionic/react';
+import { setContext } from '@apollo/client/link/context';
+import { Preferences } from '@capacitor/preferences';
 
 defineCustomElements(window);
 
@@ -54,6 +56,21 @@ const httpLink = createHttpLink({
     : 'include'
 });
 
+const authLink = setContext(async (_, { headers }) => {
+  // get the authentication token from local storage if it exists
+  const accessToken = await Preferences.get({
+    key: ACCESS_TOKEN,
+  })
+  // return the headers to the context so httpLink can read them
+  return {
+    headers: {
+      ...headers,
+      accesstoken: accessToken.value,
+    }
+  }
+});
+
+
 const splitLink = split(
   ({ query }) => {
     const definition = getMainDefinition(query);
@@ -63,7 +80,7 @@ const splitLink = split(
     );
   },
   wsLink,
-  httpLink,
+  authLink.concat(httpLink)
 );
 
 const client = new ApolloClient({

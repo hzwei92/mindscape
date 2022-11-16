@@ -5,15 +5,15 @@ import { useContext, useEffect, useState } from "react";
 import { ChromePicker } from "react-color";
 import { AppContext } from "../app/App";
 import { useAppDispatch, useAppSelector } from "../app/store";
-import { selectAccessToken, selectSessionId } from "../features/auth/authSlice";
+import { selectSessionId } from "../features/auth/authSlice";
 import Register from "../features/auth/Register";
 import Verify from "../features/auth/Verify";
 import { mergeUsers } from "../features/user/userSlice";
 import useSetUserColor from "../features/user/useSetUserColor";
 
 const SET_USER_NAME = gql`
-  mutation SetUserName($accessToken: String!, $sessionId: String!, $name: String!) {
-    setUserName(accessToken: $accessToken, sessionId: $sessionId, name: $name) {
+  mutation SetUserName($sessionId: String!, $name: String!) {
+    setUserName(sessionId: $sessionId, name: $name) {
       id
       name
       lowercaseName
@@ -23,8 +23,8 @@ const SET_USER_NAME = gql`
 `;
 
 const GET_USER_BY_NAME = gql`
-  query GetUserByName($accessToken: String!, $name: String!) {
-    getUserByName(accessToken: $accessToken, name: $name) {
+  query GetUserByName($name: String!) {
+    getUserByName(name: $name) {
       id
       name
     }
@@ -36,7 +36,6 @@ const AccountPage: React.FC = () => {
 
   const { user, palette } = useContext(AppContext);
   
-  const accessToken = useAppSelector(selectAccessToken);
   const sessionId = useAppSelector(selectSessionId);
 
   const [isEditingName, setIsEditingName] = useState(false);
@@ -97,7 +96,6 @@ const AccountPage: React.FC = () => {
     const timeout = setTimeout(() => {
       getUserByName({
         variables: {
-          accessToken,
           name: e.target.value,
         },
       });
@@ -107,7 +105,6 @@ const AccountPage: React.FC = () => {
   const handleNameSubmitClick = () => {
     setUserName({
       variables: {
-        accessToken,
         name,
         sessionId: sessionId,
       }

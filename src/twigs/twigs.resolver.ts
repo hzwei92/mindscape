@@ -1,4 +1,4 @@
-import { BadRequestException, Inject } from '@nestjs/common';
+import { Inject, UseGuards } from '@nestjs/common';
 import { Args, Int, Mutation, Parent, ResolveField, Resolver, Subscription } from '@nestjs/graphql';
 import { Arrow } from 'src/arrows/arrow.model';
 import { ArrowsService } from 'src/arrows/arrows.service';
@@ -18,14 +18,12 @@ import { DragTwigResult } from './dto/drag-twig-result.dto';
 import { GraftTwigResult } from './dto/graft-twig-result.dto';
 import { CopyTwigResult } from './dto/copy-twig-result.dto';
 import { TransfersService } from 'src/transfers/transfers.service';
-import { ConfigService } from '@nestjs/config';
-import { JwtService } from '@nestjs/jwt';
+import { CurrentUser, GqlAuthGuard } from 'src/auth/gql-auth.guard';
+import { User as UserEntity } from 'src/users/user.entity';
 
 @Resolver(() => Twig)
 export class TwigsResolver {
   constructor(
-    private readonly configService: ConfigService,
-    private readonly jwtService: JwtService,
     private readonly twigsService: TwigsService,
     private readonly usersService: UsersService,
     private readonly arrowsService: ArrowsService,
@@ -68,24 +66,19 @@ export class TwigsResolver {
     return this.arrowsService.getArrowById(twig.abstractId);
   }
 
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => [Twig], {name: 'getTwigs'})
   async getTwigs(
-    @Args('accessToken') accessToken: string,
+    @CurrentUser() user: UserEntity,
     @Args('abstractId') abstractId: string,
   ) {
-    const payload = this.jwtService.verify(accessToken, {
-      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET')
-    });
-    const user = await this.usersService.getUserById(payload.userId);
-    if (!user) {
-      throw new BadRequestException('Invalid accessToken');
-    }
     return this.twigsService.getTwigsByAbstractId(abstractId);
   }
 
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => ReplyTwigResult, {name: 'replyTwig'})
   async replyTwig(
-    @Args('accessToken') accessToken: string,
+    @CurrentUser() user: UserEntity,
     @Args('sessionId') sessionId: string,
     @Args('parentTwigId') parentTwigId: string,
     @Args('twigId') twigId: string,
@@ -94,14 +87,6 @@ export class TwigsResolver {
     @Args('y', {type: () => Int}) y: number,
     @Args('draft') draft: string,
   ) {
-    const payload = this.jwtService.verify(accessToken, {
-      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET')
-    });
-    const user = await this.usersService.getUserById(payload.userId);
-    if (!user) {
-      throw new BadRequestException('Invalid accessToken');
-    }
-
     const result = await this.twigsService.replyTwig(user, parentTwigId, twigId, postId, x, y, draft);
   
     const user1 = await this.transfersService.replyTransfer(user, result.targetVote, result.linkVote, result.source, result.targetArrow);
@@ -118,9 +103,10 @@ export class TwigsResolver {
     };
   }
 
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => ReplyTwigResult, {name: 'pasteTwig'})
   async pasteTwig(
-    @Args('accessToken') accessToken: string,
+    @CurrentUser() user: UserEntity,
     @Args('sessionId') sessionId: string,
     @Args('parentTwigId') parentTwigId: string,
     @Args('twigId') twigId: string,
@@ -128,14 +114,6 @@ export class TwigsResolver {
     @Args('x', {type: () => Int}) x: number,
     @Args('y', {type: () => Int}) y: number,
   ) {
-    const payload = this.jwtService.verify(accessToken, {
-      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET')
-    });
-    const user = await this.usersService.getUserById(payload.userId);
-    if (!user) {
-      throw new BadRequestException('Invalid accessToken');
-    }
-
     const result = await this.twigsService.pasteTwig(user, parentTwigId, twigId, postId, x, y);
 
     const user1 = await this.transfersService.linkTransfer(user, result.linkVote, result.linkArrow, result.source);
@@ -152,22 +130,15 @@ export class TwigsResolver {
     };
   }
 
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => LinkTwigsResult, {name: 'linkTwigs'})
   async linkTwigs(
-    @Args('accessToken') accessToken: string,
+    @CurrentUser() user: UserEntity,
     @Args('sessionId') sessionId: string,
     @Args('abstractId') abstractId: string,
     @Args('sourceId') sourceId: string,
     @Args('targetId') targetId: string,
   ) {
-    const payload = this.jwtService.verify(accessToken, {
-      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET')
-    });
-    const user = await this.usersService.getUserById(payload.userId);
-    if (!user) {
-      throw new BadRequestException('Invalid accessToken');
-    }
-
     const result = await this.twigsService.linkTwigs(user, abstractId, sourceId, targetId);
 
     const user1 = await this.transfersService.linkTransfer(user, result.vote, result.arrow, result.source);
@@ -187,21 +158,14 @@ export class TwigsResolver {
     };
   }
 
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => RemoveTwigResult, {name: 'removeTwig'})
   async removeTwig(
-    @Args('accessToken') accessToken: string,
+    @CurrentUser() user: UserEntity,
     @Args('sessionId') sessionId: string,
     @Args('twigId') twigId: string,
     @Args('shouldRemoveDescs') shouldRemoveDescs: boolean,
   ) {
-    const payload = this.jwtService.verify(accessToken, {
-      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET')
-    });
-    const user = await this.usersService.getUserById(payload.userId);
-    if (!user) {
-      throw new BadRequestException('Invalid accessToken');
-    }
-
     const result = await this.twigsService.removeTwig(user, twigId, shouldRemoveDescs);
     
     this.pubSub.publish('removeTwig', {
@@ -213,20 +177,13 @@ export class TwigsResolver {
     return result;
   }
 
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => SelectTwigResult, {name: 'selectTwig'})
   async selectTwig(
-    @Args('accessToken') accessToken: string,
+    @CurrentUser() user: UserEntity,
     @Args('sessionId') sessionId: string,
     @Args('twigId') twigId: string,
   ) {
-    const payload = this.jwtService.verify(accessToken, {
-      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET')
-    });
-    const user = await this.usersService.getUserById(payload.userId);
-    if (!user) {
-      throw new BadRequestException('Invalid accessToken');
-    }
-
     const {
       abstract,
       twigs,
@@ -239,23 +196,17 @@ export class TwigsResolver {
       role
     }
   }
+
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => Twig, {name: 'dragTwig'})
   async dragTwig(
-    @Args('accessToken') accessToken: string,
+    @CurrentUser() user: UserEntity,
     @Args('sessionId') sessionId: string,
     @Args('abstractId') abstractId: string,
     @Args('twigId') twigId: string,
     @Args('dx', {type: () => Int}) dx: number,
     @Args('dy', {type: () => Int}) dy: number,
   ) {
-    const payload = this.jwtService.verify(accessToken, {
-      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET')
-    });
-    const user = await this.usersService.getUserById(payload.userId);
-    if (!user) {
-      throw new BadRequestException('Invalid accessToken');
-    }
-
     this.pubSub.publish('dragTwig', {
       sessionId,
       abstractId,
@@ -270,22 +221,15 @@ export class TwigsResolver {
     };
   }
 
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => MoveTwigResult, {name: 'moveTwig'})
   async moveTwig(
-    @Args('accessToken') accessToken: string,
+    @CurrentUser() user: UserEntity,
     @Args('sessionId') sessionId: string,
     @Args('twigId') twigId: string,
     @Args('x', {type: () => Int}) x: number,
     @Args('y', {type: () => Int}) y: number,
   ) {
-    const payload = this.jwtService.verify(accessToken, {
-      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET')
-    });
-    const user = await this.usersService.getUserById(payload.userId);
-    if (!user) {
-      throw new BadRequestException('Invalid accessToken');
-    }
-
     const {
       twigs, 
       role,
@@ -303,23 +247,16 @@ export class TwigsResolver {
     };
   }
 
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => GraftTwigResult, {name: 'graftTwig'})
   async graftTwig(
-    @Args('accessToken') accessToken: string,
+    @CurrentUser() user: UserEntity,
     @Args('sessionId') sessionId: string,
     @Args('parentTwigId') parentTwigId: string,
     @Args('twigId') twigId: string,
     @Args('x', {type: () => Int}) x: number,
     @Args('y', {type: () => Int}) y: number,
   ) {
-    const payload = this.jwtService.verify(accessToken, {
-      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET')
-    });
-    const user = await this.usersService.getUserById(payload.userId);
-    if (!user) {
-      throw new BadRequestException('Invalid accessToken');
-    }
-
     const result = await this.twigsService.graftTwig(user, twigId, parentTwigId, x, y);
 
     this.pubSub.publish('graftTwig', {
@@ -331,37 +268,24 @@ export class TwigsResolver {
     return result;
   }
 
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => CopyTwigResult, {name: 'copyTwig'})
   async copyTwig(
-    @Args('accessToken') accessToken: string,
+    @CurrentUser() user: UserEntity,
     @Args('parentTwigId') parentTwigId: string,
     @Args('twigId') twigId: string,
   ) {
-    const payload = this.jwtService.verify(accessToken, {
-      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET')
-    });
-    const user = await this.usersService.getUserById(payload.userId);
-    if (!user) {
-      throw new BadRequestException('Invalid accessToken');
-    }
     return this.twigsService.copyTwig(user, twigId, parentTwigId);
   }
 
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => OpenTwigResult, {name: 'openTwig'})
   async openTwig(
-    @Args('accessToken') accessToken: string,
+    @CurrentUser() user: UserEntity,
     @Args('sessionId') sessionId: string,
     @Args('twigId') twigId: string,
     @Args('shouldOpen') shouldOpen: boolean,
   ) {
-    const payload = this.jwtService.verify(accessToken, {
-      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET')
-    });
-    const user = await this.usersService.getUserById(payload.userId);
-    if (!user) {
-      throw new BadRequestException('Invalid accessToken');
-    }
-
     const { 
       twig,
       role

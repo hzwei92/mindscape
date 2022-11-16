@@ -7,7 +7,6 @@ import { UsersService } from 'src/users/users.service';
 import { User } from 'src/users/user.entity';
 import { ArrowsService } from 'src/arrows/arrows.service';
 import { Arrow } from 'src/arrows/arrow.entity';
-import e from 'express';
 
 @Injectable()
 export class RolesService {

@@ -3,7 +3,7 @@ import { v4 } from 'uuid';
 import { FULL_TWIG_FIELDS } from './twigFragments';
 import { FULL_ROLE_FIELDS } from '../role/roleFragments';
 import { Arrow } from '../arrow/arrow';
-import { selectAccessToken, selectSessionId } from '../auth/authSlice';
+import { selectSessionId } from '../auth/authSlice';
 import { useContext } from 'react';
 import { createTwig, Twig } from './twig';
 import { mergeTwigs, setNewTwigId } from './twigSlice';
@@ -18,7 +18,6 @@ import { mergeUsers } from '../user/userSlice';
 
 const PASTE_TWIG = gql`
   mutation PasteTwig(
-    $accessToken: String!,
     $sessionId: String!, 
     $parentTwigId: String!, 
     $twigId: String!, 
@@ -27,7 +26,6 @@ const PASTE_TWIG = gql`
     $y: Int!, 
   ) {
     pasteTwig(
-      accessToken: $accessToken,
       sessionId: $sessionId, 
       parentTwigId: $parentTwigId, 
       twigId: $twigId, 
@@ -82,7 +80,6 @@ export default function usePasteTwig() {
   const idToArrow = useAppSelector(selectIdToArrow)
   const idToPos = useAppSelector(selectIdToPos(space));
 
-  const accessToken = useAppSelector(selectAccessToken);
   const sessionId = useAppSelector(selectSessionId);
   
   const [paste] = useMutation(PASTE_TWIG, {
@@ -153,7 +150,6 @@ export default function usePasteTwig() {
 
     paste({
       variables: {
-        accessToken,
         sessionId,
         parentTwigId: parentTwig.id,
         twigId,

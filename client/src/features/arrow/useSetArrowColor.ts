@@ -1,12 +1,11 @@
 import { gql, useMutation } from "@apollo/client";
 import { useAppDispatch, useAppSelector } from "../../app/store";
-import { selectAccessToken } from "../auth/authSlice";
 import { mergeArrows } from "./arrowSlice";
 
 
 const SET_ARROW_COLOR = gql`
-  mutation SetArrowColor($accessToken: String!, $arrowId: String!, $color: String!) {
-    setArrowColor(accessToken: $accessToken, arrowId: $arrowId, color: $color) {
+  mutation SetArrowColor($arrowId: String!, $color: String!) {
+    setArrowColor(arrowId: $arrowId, color: $color) {
       id
       color
     }
@@ -15,8 +14,6 @@ const SET_ARROW_COLOR = gql`
 
 export default function useSetArrowColor() {
   const dispatch = useAppDispatch();
-
-  const accessToken = useAppSelector(selectAccessToken);
 
   const [setColor] = useMutation(SET_ARROW_COLOR, {
     onError: err => {
@@ -31,7 +28,6 @@ export default function useSetArrowColor() {
   const setArrowColor = (arrowId: string, color: string) => {
     setColor({
       variables: {
-        accessToken,
         arrowId,
         color,
       }

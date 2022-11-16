@@ -1,13 +1,13 @@
 import { gql, useMutation } from "@apollo/client";
 import { useAppDispatch, useAppSelector } from "../../app/store";
-import { selectAccessToken, selectSessionId } from "../auth/authSlice";
+import { selectSessionId } from "../auth/authSlice";
 import { RoleType } from "./role";
 import { FULL_ROLE_FIELDS } from "./roleFragments";
 import { mergeRoles } from "./roleSlice";
 
 const REQUEST_ROLE = gql`
-  mutation RequestRole($accessToken: String!, $sessionId: String!, $arrowId: String!, $type: String!) {
-    requestRole(accessToken: $accessToken, sessionId: $sessionId, arrowId: $arrowId, type: $type) {
+  mutation RequestRole($sessionId: String!, $arrowId: String!, $type: String!) {
+    requestRole(sessionId: $sessionId, arrowId: $arrowId, type: $type) {
       ...FullRoleFields
     }
   }
@@ -17,7 +17,6 @@ const REQUEST_ROLE = gql`
 export default function useRequestRole() {
   const dispatch = useAppDispatch();
 
-  const accessToken = useAppSelector(selectAccessToken);
   const sessionId = useAppSelector(selectSessionId);
 
   const [request] = useMutation(REQUEST_ROLE, {
@@ -33,7 +32,6 @@ export default function useRequestRole() {
   const requestRole = (arrowId: string, type: RoleType) => {
     request({
       variables: {
-        accessToken,
         sessionId,
         arrowId,
         type,

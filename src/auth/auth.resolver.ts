@@ -1,4 +1,4 @@
-import { BadRequestException, Inject } from '@nestjs/common';
+import { BadRequestException, Inject, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
 import { PUB_SUB } from 'src/pub-sub/pub-sub.module';
 import { User } from 'src/users/user.model';
@@ -8,6 +8,8 @@ import { UserWithTokens } from './dto/init-user-result.dto';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from 'src/users/users.service';
+import { CurrentUser, GqlAuthGuard } from './gql-auth.guard';
+import { User as UserEntity } from 'src/users/user.entity';
 
 @Resolver()
 export class AuthResolver {
@@ -34,113 +36,69 @@ export class AuthResolver {
     return this.authService.initUser(palette);
   }
 
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => UserWithTokens, {name: 'registerUser'})
   async registerUser(
-    @Args('accessToken') accessToken: string,
+    @CurrentUser() user: UserEntity,
     @Args('email') email: string,
     @Args('pass') pass: string,
   ) {
-    const payload = this.jwtService.verify(accessToken, {
-      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET')
-    });
-    const user = await this.usersService.getUserById(payload.userId);
-    if (!user) {
-      throw new BadRequestException('Invalid accessToken');
-    }
     return this.authService.registerUser(user.id, email, pass);
   }
 
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => UserWithTokens, {name: 'loginUser'})
   async loginUser(
-    @Args('accessToken') accessToken: string,
+    @CurrentUser() user: UserEntity,
     @Args('email') email: string,
     @Args('pass') pass: string,
   ) {
-    const payload = this.jwtService.verify(accessToken, {
-      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET')
-    });
-    const user = await this.usersService.getUserById(payload.userId);
-    if (!user) {
-      throw new BadRequestException('Invalid accessToken');
-    }
-
     return this.authService.loginUser(user, email, pass);
   }
 
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => User, {name: 'registerGoogleUser'})
   async registerGoogleUser(
-    @Args('accessToken') accessToken: string,
+    @CurrentUser() user: UserEntity,
     @Args('token') token: string,
   ) {
-    const payload = this.jwtService.verify(accessToken, {
-      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET')
-    });
-    const user = await this.usersService.getUserById(payload.userId);
-    if (!user) {
-      throw new BadRequestException('Invalid accessToken');
-    }
     return this.authService.registerGoogleUser(user, token);
   }
+
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => UserWithTokens, {name: 'loginGoogleUser'})
   async loginGoogleUser(
-    @Args('accessToken') accessToken: string,
+    @CurrentUser() user: UserEntity,
     @Args('token') token: string,
   ) {
-    const payload = this.jwtService.verify(accessToken, {
-      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET')
-    });
-    const user = await this.usersService.getUserById(payload.userId);
-    if (!user) {
-      throw new BadRequestException('Invalid accessToken');
-    }
-
     return this.authService.loginGoogleUser(user, token);
   }
 
-
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => User, {name: 'logoutUser'})
   async logoutUser (
-    @Args('accessToken') accessToken: string,
+    @CurrentUser() user: UserEntity,
   ) {
-    const payload = this.jwtService.verify(accessToken, {
-      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET')
-    });
-    const user = await this.usersService.getUserById(payload.userId);
-    if (!user) {
-      throw new BadRequestException('Invalid accessToken');
-    }
-
     await this.authService.logoutUser(user);
-
     return user;
   }
 
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => User, {name: 'verifyUser'})
   async verifyUser (
-    @Args('accessToken') accessToken: string,
+    @CurrentUser() user: UserEntity,
     @Args('code') code: string,
   ) {
-    const payload = this.jwtService.verify(accessToken, {
-      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET')
-    });
-    const user = await this.usersService.getUserById(payload.userId);
-    if (!user) {
-      throw new BadRequestException('Invalid accessToken');
-    }
+
     return this.authService.verifyUser(user, code)
   }
 
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => User, {name: 'resendUserVerification'})
   async resendUserVerification (
-    @Args('accessToken') accessToken: string,
+    @CurrentUser() user: UserEntity,
   ) {
-    const payload = this.jwtService.verify(accessToken, {
-      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET')
-    });
-    const user = await this.usersService.getUserById(payload.userId);
-    if (!user) {
-      throw new BadRequestException('Invalid accessToken');
-    }
+
     return this.authService.resendUserVerification(user);
   }
 }

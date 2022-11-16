@@ -10,13 +10,9 @@ import { LeadsModule } from 'src/leads/leads.module';
 import { ArrowsModule } from 'src/arrows/arrows.module';
 import { SheafsModule } from 'src/sheafs/sheafs.module';
 import { TabsModule } from 'src/tabs/tabs.module';
-import { ConfigModule } from '@nestjs/config';
-import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
-    ConfigModule,
-    JwtModule.register({}),
     TypeOrmModule.forFeature([User]),
     SheafsModule,
     ArrowsModule,

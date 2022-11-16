@@ -11,7 +11,6 @@ export class TabsService {
   constructor(
     @InjectRepository(Tab)
     private readonly tabRepository: Repository<Tab>,
-    private readonly arrowsService: ArrowsService,
   ) {}
 
   async getTabsByUserId(userId: string): Promise<Tab[]> {

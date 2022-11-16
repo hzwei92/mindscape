@@ -11,13 +11,9 @@ import { PubSubModule } from 'src/pub-sub/pub-sub.module';
 import { TwigsModule } from 'src/twigs/twigs.module';
 import { SheafsModule } from 'src/sheafs/sheafs.module';
 import { TransfersModule } from 'src/transfers/transfers.module';
-import { ConfigModule } from '@nestjs/config';
-import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
-    ConfigModule,
-    JwtModule.register({}),
     TypeOrmModule.forFeature([Arrow]),
     forwardRef(() => UsersModule),
     forwardRef(() => TwigsModule),

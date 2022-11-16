@@ -8,11 +8,10 @@ import { useAppDispatch, useAppSelector } from '../../app/store';
 import { Arrow } from '../arrow/arrow';
 import useCenterTwig from '../twig/useCenterTwig';
 import { useIonLoading, useIonToast } from '@ionic/react';
-import { selectAccessToken } from '../auth/authSlice';
 
 const GET_DETAILS = gql`
-  mutation GetTwigs($accessToken: String!, $abstractId: String!) {
-    getTwigs(accessToken: $accessToken, abstractId: $abstractId) {
+  mutation GetTwigs($abstractId: String!) {
+    getTwigs(abstractId: $abstractId) {
       ...FullTwigFields
     }
   }
@@ -26,7 +25,6 @@ export default function useInitSpace(space: SpaceType, abstract: Arrow | null, s
 
   const [presentToast] = useIonToast();
 
-  const accessToken = useAppSelector(selectAccessToken);
   const selectedTwigId = useAppSelector(selectSelectedTwigId(space));
 
   const { centerTwig } = useCenterTwig(SpaceType.FRAME);
@@ -65,7 +63,6 @@ export default function useInitSpace(space: SpaceType, abstract: Arrow | null, s
 
     getTwigs({
       variables: {
-        accessToken,
         abstractId: abstract.id
       }
     });

@@ -163,4 +163,7 @@ export class Arrow {
 
   @Field({ nullable: true })
   deleteDate: Date;
+
+  @Field(() => Role, { nullable: true })
+  userRole: Role;
 }

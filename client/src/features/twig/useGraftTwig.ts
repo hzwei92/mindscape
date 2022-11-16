@@ -1,13 +1,13 @@
 import { gql, useMutation, useReactiveVar } from '@apollo/client';
 import { useAppDispatch, useAppSelector } from '../../app/store';
-import { selectAccessToken, selectSessionId } from '../auth/authSlice';
+import { selectSessionId } from '../auth/authSlice';
 import { FULL_ROLE_FIELDS } from '../role/roleFragments';
 import { SpaceType } from '../space/space';
 import { mergeTwigs, selectIdToTwig } from './twigSlice';
 
 const GRAFT = gql`
-  mutation GraftTwig($accessToken: String!, $sessionId: String!, $twigId: String!, $parentTwigId: String!, $x: Int!, $y: Int!) {
-    graftTwig(accessToken: $accessToken, sessionId: $sessionId, twigId: $twigId, parentTwigId: $parentTwigId, x: $x, y: $y) {
+  mutation GraftTwig($sessionId: String!, $twigId: String!, $parentTwigId: String!, $x: Int!, $y: Int!) {
+    graftTwig(sessionId: $sessionId, twigId: $twigId, parentTwigId: $parentTwigId, x: $x, y: $y) {
       twig {
         id
         x
@@ -32,7 +32,6 @@ const GRAFT = gql`
 export default function useGraftTwig(space: SpaceType) {
   const dispatch = useAppDispatch();
 
-  const accessToken = useAppSelector(selectAccessToken);
   const sessionId = useAppSelector(selectSessionId);
 
   const idToTwig = useAppSelector(selectIdToTwig(space));
@@ -57,7 +56,6 @@ export default function useGraftTwig(space: SpaceType) {
 
     graft({
       variables: {
-        accessToken,
         sessionId,
         twigId,
         parentTwigId,

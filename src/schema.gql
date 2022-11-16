@@ -49,6 +49,7 @@ type Arrow {
   url: String
   user: User!
   userId: String!
+  userRole: Role
   votes: [Vote!]!
   weight: Int!
 }
@@ -108,54 +109,54 @@ type MoveTwigResult {
 }
 
 type Mutation {
-  copyTwig(accessToken: String!, parentTwigId: String!, twigId: String!): CopyTwigResult!
-  createGraphTab(accessToken: String!, arrowId: String, name: String!, routeName: String!): [Tab!]!
-  createTab(accessToken: String!, arrowId: String!, i: Int, isFocus: Boolean!, isFrame: Boolean!): [Tab!]!
-  createTabByRouteName(accessToken: String!, i: Int, isFocus: Boolean!, isFrame: Boolean!, routeName: String!): [Tab!]!
-  dragTwig(abstractId: String!, accessToken: String!, dx: Int!, dy: Int!, sessionId: String!, twigId: String!): Twig!
-  followUser(accessToken: String!, userId: String!): Lead!
-  getArrowByRouteName(accessToken: String!, routeName: String!): Arrow
-  getArrows(accessToken: String!, arrowIds: [String!]!): [Arrow!]!
-  getCurrentUser(accessToken: String!): User!
-  getCurrentUserLeads(accessToken: String!): [Lead!]!
-  getIns(accessToken: String!, arrowId: String!, offset: Int!): [Arrow!]!
-  getOuts(accessToken: String!, arrowId: String!, offset: Int!): [Arrow!]!
-  getTwigs(abstractId: String!, accessToken: String!): [Twig!]!
-  getUser(accessToken: String!, userId: String!): User!
-  graftTwig(accessToken: String!, parentTwigId: String!, sessionId: String!, twigId: String!, x: Int!, y: Int!): GraftTwigResult!
+  copyTwig(parentTwigId: String!, twigId: String!): CopyTwigResult!
+  createGraphTab(arrowId: String, name: String!, routeName: String!): [Tab!]!
+  createTab(arrowId: String!, i: Int, isFocus: Boolean!, isFrame: Boolean!): [Tab!]!
+  createTabByRouteName(i: Int, isFocus: Boolean!, isFrame: Boolean!, routeName: String!): [Tab!]!
+  dragTwig(abstractId: String!, dx: Int!, dy: Int!, sessionId: String!, twigId: String!): Twig!
+  followUser(userId: String!): Lead!
+  getArrowByRouteName(routeName: String!): Arrow
+  getArrows(arrowIds: [String!]!): [Arrow!]!
+  getCurrentUser: User!
+  getCurrentUserLeads: [Lead!]!
+  getIns(arrowId: String!, offset: Int!): [Arrow!]!
+  getOuts(arrowId: String!, offset: Int!): [Arrow!]!
+  getTwigs(abstractId: String!): [Twig!]!
+  getUser(userId: String!): User!
+  graftTwig(parentTwigId: String!, sessionId: String!, twigId: String!, x: Int!, y: Int!): GraftTwigResult!
   initUser(palette: String!): UserWithTokens!
-  inviteRole(accessToken: String!, arrowId: String!, sessionId: String!, userName: String!): Role!
-  linkArrows(accessToken: String!, sessionId: String!, sourceId: String!, targetId: String!): LinkArrowsResult!
-  linkTwigs(abstractId: String!, accessToken: String!, sessionId: String!, sourceId: String!, targetId: String!): LinkTwigsResult!
-  loginGoogleUser(accessToken: String!, token: String!): UserWithTokens!
-  loginUser(accessToken: String!, email: String!, pass: String!): UserWithTokens!
-  logoutUser(accessToken: String!): User!
-  moveTwig(accessToken: String!, sessionId: String!, twigId: String!, x: Int!, y: Int!): MoveTwigResult!
-  openTwig(accessToken: String!, sessionId: String!, shouldOpen: Boolean!, twigId: String!): OpenTwigResult!
-  pasteArrow(accessToken: String!, linkDraft: String!, linkId: String!, sessionId: String!, sourceId: String!, targetId: String!): ReplyArrowResult!
-  pasteTwig(accessToken: String!, parentTwigId: String!, postId: String!, sessionId: String!, twigId: String!, x: Int!, y: Int!): ReplyTwigResult!
-  publishCursor(abstractId: String!, accessToken: String!, sessionId: String!, x: Int!, y: Int!): User!
+  inviteRole(arrowId: String!, sessionId: String!, userName: String!): Role!
+  linkArrows(sessionId: String!, sourceId: String!, targetId: String!): LinkArrowsResult!
+  linkTwigs(abstractId: String!, sessionId: String!, sourceId: String!, targetId: String!): LinkTwigsResult!
+  loginGoogleUser(token: String!): UserWithTokens!
+  loginUser(email: String!, pass: String!): UserWithTokens!
+  logoutUser: User!
+  moveTwig(sessionId: String!, twigId: String!, x: Int!, y: Int!): MoveTwigResult!
+  openTwig(sessionId: String!, shouldOpen: Boolean!, twigId: String!): OpenTwigResult!
+  pasteArrow(linkDraft: String!, linkId: String!, sessionId: String!, sourceId: String!, targetId: String!): ReplyArrowResult!
+  pasteTwig(parentTwigId: String!, postId: String!, sessionId: String!, twigId: String!, x: Int!, y: Int!): ReplyTwigResult!
+  publishCursor(abstractId: String!, sessionId: String!, x: Int!, y: Int!): User!
   refreshToken(refreshToken: String!): String!
-  registerGoogleUser(accessToken: String!, token: String!): User!
-  registerUser(accessToken: String!, email: String!, pass: String!): UserWithTokens!
-  removeRole(accessToken: String!, roleId: String!, sessionId: String!): Role!
-  removeTab(accessToken: String!, tabId: String!): RemoveTabResult!
-  removeTwig(accessToken: String!, sessionId: String!, shouldRemoveDescs: Boolean!, twigId: String!): RemoveTwigResult!
-  replyArrow(accessToken: String!, linkDraft: String!, linkId: String!, sessionId: String!, sourceId: String!, targetDraft: String!, targetId: String!): ReplyArrowResult!
-  replyTwig(accessToken: String!, draft: String!, parentTwigId: String!, postId: String!, sessionId: String!, twigId: String!, x: Int!, y: Int!): ReplyTwigResult!
-  requestRole(accessToken: String!, arrowId: String!, sessionId: String!, type: String!): Role!
-  resendUserVerification(accessToken: String!): User!
-  saveArrow(accessToken: String!, arrowId: String!, draft: String!, sessionId: String!): Arrow!
-  selectTwig(accessToken: String!, sessionId: String!, twigId: String!): SelectTwigResult!
-  setArrowColor(accessToken: String!, arrowId: String!, color: String!): Arrow!
-  setUserColor(accessToken: String!, color: String!, sessionId: String!): User!
-  setUserMap(accessToken: String!, lat: Float!, lng: Float!, zoom: Float!): User!
-  setUserName(accessToken: String!, name: String!, sessionId: String!): User!
-  setUserPalette(accessToken: String!, palette: String!, sessionId: String!): User!
-  unfollowUser(accessToken: String!, userId: String!): Lead!
-  updateTab(accessToken: String!, i: Int!, isFocus: Boolean!, isFrame: Boolean!, tabId: String!): [Tab!]!
-  verifyUser(accessToken: String!, code: String!): User!
-  voteArrow(accessToken: String!, arrowId: String!, sessionId: String!, weight: Int!): VoteArrowResult!
+  registerGoogleUser(token: String!): User!
+  registerUser(email: String!, pass: String!): UserWithTokens!
+  removeRole(roleId: String!, sessionId: String!): Role!
+  removeTab(tabId: String!): RemoveTabResult!
+  removeTwig(sessionId: String!, shouldRemoveDescs: Boolean!, twigId: String!): RemoveTwigResult!
+  replyArrow(linkDraft: String!, linkId: String!, sessionId: String!, sourceId: String!, targetDraft: String!, targetId: String!): ReplyArrowResult!
+  replyTwig(draft: String!, parentTwigId: String!, postId: String!, sessionId: String!, twigId: String!, x: Int!, y: Int!): ReplyTwigResult!
+  requestRole(arrowId: String!, sessionId: String!, type: String!): Role!
+  resendUserVerification: User!
+  saveArrow(arrowId: String!, draft: String!, sessionId: String!): Arrow!
+  selectTwig(sessionId: String!, twigId: String!): SelectTwigResult!
+  setArrowColor(arrowId: String!, color: String!): Arrow!
+  setUserColor(color: String!, sessionId: String!): User!
+  setUserMap(lat: Float!, lng: Float!, zoom: Float!): User!
+  setUserName(name: String!, sessionId: String!): User!
+  setUserPalette(palette: String!, sessionId: String!): User!
+  unfollowUser(userId: String!): Lead!
+  updateTab(i: Int!, isFocus: Boolean!, isFrame: Boolean!, tabId: String!): [Tab!]!
+  verifyUser(code: String!): User!
+  voteArrow(arrowId: String!, sessionId: String!, weight: Int!): VoteArrowResult!
 }
 
 type OpenTwigResult {
@@ -164,8 +165,8 @@ type OpenTwigResult {
 }
 
 type Query {
-  getUserByEmail(accessToken: String!, email: String!): User
-  getUserByName(accessToken: String!, name: String!): User
+  getUserByEmail(email: String!): User
+  getUserByName(name: String!): User
 }
 
 type RemoveTabResult {
