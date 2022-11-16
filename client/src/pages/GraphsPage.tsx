@@ -159,37 +159,6 @@ const GraphsPage: React.FC = () => {
                 )
               })
             }
-            {
-              roles.filter(role => (
-                !!role.arrow.rootTwigId && 
-                !tabs.some(tab => tab.arrowId === role.arrowId)
-              )).map(role => {
-                const { arrow } = role;
-                return (
-                  <IonCard key={`role-${role.id}`} style={{
-                    fontSize: 16,
-                    display: 'flex',
-                    flexDirection: 'row',
-                    justifyContent: 'space-between'
-                  }}>
-                    <IonCardHeader>
-                      &nbsp;&nbsp;&nbsp;&nbsp;
-                      <IonLabel onClick={handleArrowClick(arrow?.id)} style={{
-                        cursor: 'pointer',
-                      }}>
-                        <span style={{
-                          color: arrow?.color,
-                        }}>
-                          {arrow?.title || '...'}
-                        </span>
-                        &nbsp;&nbsp;
-                        /g/{arrow?.routeName}
-                      </IonLabel>
-                    </IonCardHeader>
-                  </IonCard>
-                );
-              })
-            }
           </div>
         </div>
       </IonCard>

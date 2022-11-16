@@ -16,6 +16,7 @@ type Arrow {
   commitDate: DateTime
   country: String
   createDate: DateTime!
+  currentUserRole: Role
   deleteDate: DateTime
   details: [Arrow!]!
   draft: String
@@ -49,7 +50,6 @@ type Arrow {
   url: String
   user: User!
   userId: String!
-  userRole: Role
   votes: [Vote!]!
   weight: Int!
 }

@@ -68,8 +68,12 @@ export class ArrowsResolver {
 
   @ResolveField(() => [Role], {name: 'roles'})
   async getArrowRoles(
+    @CurrentUser() user: UserEntity,
     @Parent() arrow: Arrow,
   ) {
+    if (user?.id) {
+      return this.rolesService.getRoleByUserIdAndArrowId(user.id, arrow.id);
+    }
     return this.rolesService.getRolesByArrowId(arrow.id);
   }
 
@@ -78,6 +82,18 @@ export class ArrowsResolver {
     @Parent() arrow: Arrow,
   ) {
     return this.votesService.getVotesByArrowId(arrow.id);
+  }
+
+  @ResolveField(() => Role, { name: 'currentUserRole', nullable: true })
+  async getArrowCurrentUserRole(
+    @CurrentUser() user: UserEntity,
+    @Parent() arrow: Arrow,
+  ) {
+    console.log('user', user);
+    if (user?.id) {
+      return this.rolesService.getRoleByUserIdAndArrowId(user.id, arrow.id);
+    }
+    return null;
   }
 
   @UseGuards(GqlAuthGuard)
