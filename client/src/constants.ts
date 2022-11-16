@@ -39,7 +39,7 @@ export const FRAME_MIN_WIDTH = 400;
 
 export const SPACE_BAR_HEIGHT = 56;
 
-export const VIEW_RADIUS = 500000;
+export const VIEW_RADIUS = 50000;
 
 export const NOT_FOUND = 'NOT_FOUND';
 
