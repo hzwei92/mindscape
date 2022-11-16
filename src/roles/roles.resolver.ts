@@ -3,19 +3,17 @@ import { User } from 'src/users/user.model';
 import { UsersService } from 'src/users/users.service';
 import { Role } from './role.model';
 import { RolesService } from './roles.service';
-import { BadRequestException, forwardRef, Inject } from '@nestjs/common';
+import { forwardRef, Inject, UseGuards } from '@nestjs/common';
 import { PUB_SUB } from 'src/pub-sub/pub-sub.module';
 import { RedisPubSub } from 'graphql-redis-subscriptions';
 import { Arrow } from 'src/arrows/arrow.model';
 import { ArrowsService } from 'src/arrows/arrows.service';
-import { ConfigService } from '@nestjs/config';
-import { JwtService } from '@nestjs/jwt';
+import { CurrentUser, GqlAuthGuard } from 'src/auth/gql-auth.guard';
+import { User as UserEntity } from 'src/users/user.entity';
 
 @Resolver(() => Role)
 export class RolesResolver {
   constructor(
-    private readonly configService: ConfigService,
-    private readonly jwtService: JwtService,
     private readonly rolesService: RolesService,
     @Inject(forwardRef(() => UsersService))
     private readonly usersService: UsersService,
@@ -38,21 +36,14 @@ export class RolesResolver {
     return this.arrowsService.getArrowById(role.arrowId);
   }
 
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => Role, {name: 'inviteRole'})
   async inviteRole(
-    @Args('accessToken') accessToken: string,
+    @CurrentUser() user: UserEntity,
     @Args('sessionId') sessionId: string,
     @Args('userName') userName: string,
     @Args('arrowId') arrowId: string,
   ) {
-    const payload = this.jwtService.verify(accessToken, {
-      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET')
-    });
-    const user = await this.usersService.getUserById(payload.userId);
-    if (!user) {
-      throw new BadRequestException('Invalid accessToken');
-    }
-
     const role = await this.rolesService.inviteRole(user.id, userName, arrowId);
     const arrow = await this.arrowsService.getArrowById(arrowId);
 
@@ -79,21 +70,14 @@ export class RolesResolver {
     return role;
   }
 
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => Role, {name: 'requestRole'})
   async requestRole(
-    @Args('accessToken') accessToken: string,
+    @CurrentUser() user: UserEntity,
     @Args('sessionId') sessionId: string,
     @Args('arrowId') arrowId: string,
     @Args('type') type: string,
   ) {
-    const payload = this.jwtService.verify(accessToken, {
-      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET')
-    });
-    const user = await this.usersService.getUserById(payload.userId);
-    if (!user) {
-      throw new BadRequestException('Invalid accessToken');
-    }
-
     const role = await this.rolesService.requestRole(user, arrowId, type)
     const arrow = await this.arrowsService.getArrowById(arrowId);
 
@@ -120,20 +104,13 @@ export class RolesResolver {
     return role;
   }
 
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => Role, {name: 'removeRole'})
   async removeRole(
-    @Args('accessToken') accessToken: string,
+    @CurrentUser() user: UserEntity,
     @Args('sessionId') sessionId: string,
     @Args('roleId') roleId: string,
   ) {
-    const payload = this.jwtService.verify(accessToken, {
-      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET')
-    });
-    const user = await this.usersService.getUserById(payload.userId);
-    if (!user) {
-      throw new BadRequestException('Invalid accessToken');
-    }
-    
     const role = await this.rolesService.removeRole(user.id, roleId)
     const removedUser = await this.usersService.getUserById(role.userId);
     const arrow = await this.arrowsService.getArrowById(role.arrowId);

@@ -4,15 +4,15 @@ import { mergeTwigs, selectIdToDescIdToTrue, selectIdToTwig } from './twigSlice'
 import type { Arrow } from '../arrow/arrow';
 import type { Twig } from './twig';
 import { useAppDispatch, useAppSelector } from '../../app/store';
-import { selectAccessToken, selectSessionId } from '../auth/authSlice';
+import { selectSessionId } from '../auth/authSlice';
 import { mergeArrows } from '../arrow/arrowSlice';
 import { SpaceType } from '../space/space';
 import { setSelectedSpace, setSelectedTwigId } from '../space/spaceSlice';
 import { useIonRouter } from '@ionic/react';
 
 const SELECT_TWIG = gql`
-  mutation Select_Twig($accessToken: String!, $sessionId: String!, $twigId: String!) {
-    selectTwig(accessToken: $accessToken, sessionId: $sessionId, twigId: $twigId) {
+  mutation Select_Twig($sessionId: String!, $twigId: String!) {
+    selectTwig(sessionId: $sessionId, twigId: $twigId) {
       twigs {
         id
         z
@@ -31,7 +31,6 @@ export default function useSelectTwig(space: SpaceType, canEdit: boolean) {
 
   const router = useIonRouter();
 
-  const accessToken = useAppSelector(selectAccessToken);
   const sessionId = useAppSelector(selectSessionId);
 
   const idToTwig = useAppSelector(selectIdToTwig(space));
@@ -52,7 +51,6 @@ export default function useSelectTwig(space: SpaceType, canEdit: boolean) {
     if (canEdit) {
       select({
         variables: {
-          accessToken,
           sessionId,
           twigId: twig.id,
         },

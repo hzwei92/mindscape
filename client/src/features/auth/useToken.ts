@@ -1,8 +1,8 @@
 import { gql, useMutation } from '@apollo/client';
 import { useAppDispatch, useAppSelector } from '../../app/store';
-import { REFRESH_ACCESS_TOKEN_TIME } from '../../constants';
+import { ACCESS_TOKEN, REFRESH_ACCESS_TOKEN_TIME } from '../../constants';
 import { selectCurrentUser } from '../user/userSlice';
-import { setAccessToken, setAuthIsInit, setAuthIsValid, setTokenInterval } from './authSlice';
+import { setAuthIsInit, setAuthIsValid, setTokenInterval } from './authSlice';
 import { Preferences } from '@capacitor/preferences';
 import { REFRESH_TOKEN as REFRESH_TOKEN_KEY } from '../../constants';
 
@@ -37,7 +37,11 @@ export default function useToken() {
       console.log(data);
 
       if (data.refreshToken) {
-        dispatch(setAccessToken(data.refreshToken));
+        Preferences.set({
+          key: ACCESS_TOKEN,
+          value: data.refreshToken,
+        });
+
         dispatch(setAuthIsValid(true));
       }
       else {

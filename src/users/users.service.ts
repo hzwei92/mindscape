@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entity';
-import { MoreThan, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { adjectives, animals, NumberDictionary, uniqueNamesGenerator } from 'unique-names-generator';
 import { SearchService } from 'src/search/search.service';
@@ -9,8 +9,6 @@ import { ArrowsService } from 'src/arrows/arrows.service';
 import { SheafsService } from 'src/sheafs/sheafs.service';
 import { TabsService } from 'src/tabs/tabs.service';
 import { PaletteMode } from 'src/enums';
-import { getEmptyDraft } from 'src/utils';
-import { Arrow } from 'src/arrows/arrow.entity';
 import { START_ARROW_1_ID, START_ARROW_2_ID } from 'src/constants';
 
 const numbers = NumberDictionary.generate({ min: 100, max: 999 });

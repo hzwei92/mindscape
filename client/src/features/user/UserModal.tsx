@@ -1,11 +1,10 @@
 import { gql, useMutation } from "@apollo/client";
-import { IonAvatar, IonCard, IonCardContent, IonCardHeader, IonLabel, IonModal } from "@ionic/react";
+import { IonAvatar, IonButtons, IonCard, IonCardContent, IonCardHeader, IonLabel, IonModal } from "@ionic/react";
 import md5 from "md5";
 import { useContext, useEffect, useRef, useState } from "react";
 import { useHistory } from "react-router";
 import { AppContext } from "../../app/App";
 import { useAppSelector } from "../../app/store";
-import { selectAccessToken } from "../auth/authSlice";
 import { Tab } from "../tab/tab";
 import { FULL_TAB_FIELDS } from "../tab/tabFragments";
 import useCreateTab from "../tab/useCreateTab";
@@ -15,8 +14,8 @@ import { selectIdToTab } from "../tab/tabSlice";
 import { getTimeString } from "../../utils";
  
 const GET_USER = gql`
-  mutation GetUser($accessToken: String!, $userId: String!) {
-    getUser(accessToken: $accessToken, userId: $userId) {
+  mutation GetUser($userId: String!) {
+    getUser(userId: $userId) {
       ...UserFields
       tabs {
         ...FullTabFields
@@ -30,8 +29,6 @@ const GET_USER = gql`
 
 export default function UserModal() {
   const { user, selectedUserId, setSelectedUserId } = useContext(AppContext);
-
-  const accessToken = useAppSelector(selectAccessToken);
 
   const idToTab = useAppSelector(selectIdToTab);
 
@@ -58,7 +55,6 @@ export default function UserModal() {
       modalRef.current?.present();
       getUser({
         variables: {
-          accessToken,
           userId: selectedUserId,
         }
       });
@@ -101,7 +97,11 @@ export default function UserModal() {
         <IonCardHeader style={{
           display: 'flex',
         }}>
-          <span>
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+          }}>
             {
               user1?.verifyEmailDate
                 ? <IonAvatar
@@ -117,8 +117,8 @@ export default function UserModal() {
                   </IonAvatar>
                 : null
             }
-          </span>
-          <span>
+          </div>
+          <div>
             <span  style={{
               color: user1?.color,
             }}>
@@ -132,7 +132,19 @@ export default function UserModal() {
                 ? user1.balance + ' points'
                 : null
             }
-          </span>
+          </div>
+          <div style={{
+            display: user1?.id === user?.id
+              ? 'none'
+              : 'block',
+            marginLeft: 10,
+          }}>
+            <IonButtons>
+              {
+
+              }
+            </IonButtons>
+          </div>
         </IonCardHeader>
         <IonCardContent style={{
           height: 'calc(100% - 55px)',

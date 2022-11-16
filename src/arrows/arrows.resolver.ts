@@ -1,4 +1,4 @@
-import { BadRequestException, Inject } from '@nestjs/common';
+import { Inject, UseGuards } from '@nestjs/common';
 import { Args, Context, Int, Mutation, Parent, ResolveField, Resolver, Subscription } from '@nestjs/graphql';
 import { PUB_SUB } from 'src/pub-sub/pub-sub.module';
 import { User } from 'src/users/user.model';
@@ -15,14 +15,12 @@ import { SheafsService } from 'src/sheafs/sheafs.service';
 import { ReplyArrowResult } from './dto/reply-arrow-result.dto';
 import { LinkArrowsResult } from './dto/link-arrows-result.dto';
 import { TransfersService } from 'src/transfers/transfers.service';
-import { ConfigService } from '@nestjs/config';
-import { JwtService } from '@nestjs/jwt';
+import { CurrentUser, GqlAuthGuard } from 'src/auth/gql-auth.guard';
+import { User as UserEntity } from 'src/users/user.entity';
 
 @Resolver(() => Arrow)
 export class ArrowsResolver {
   constructor(
-    private readonly configService: ConfigService,
-    private readonly jwtService: JwtService,
     private readonly arrowsService: ArrowsService,
     private readonly usersService: UsersService,
     private readonly rolesService: RolesService,
@@ -82,68 +80,42 @@ export class ArrowsResolver {
     return this.votesService.getVotesByArrowId(arrow.id);
   }
 
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => [Arrow], {name: 'getArrows'})
   async getArrows(
-    @Args('accessToken') accessToken: string,
+    @CurrentUser() user: UserEntity,
     @Args('arrowIds', {type: () => [String]}) arrowIds: string[],
   ) {
-    const payload = this.jwtService.verify(accessToken, {
-      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET')
-    });
-    const user = await this.usersService.getUserById(payload.userId);
-    if (!user) {
-      throw new BadRequestException('Invalid accessToken');
-    }
     return this.arrowsService.getArrowsByIdWithPrivacy(user, arrowIds);
   }
 
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => Arrow, {name: 'getArrowByRouteName', nullable: true })
   async getArrowByRouteName(
-    @Args('accessToken') accessToken: string,
+    @CurrentUser() user: UserEntity,
     @Args('routeName') routeName: string,
   ) {
-    const payload = this.jwtService.verify(accessToken, {
-      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET')
-    });
-    const user = await this.usersService.getUserById(payload.userId);
-    if (!user) {
-      throw new BadRequestException('Invalid accessToken');
-    }
     return this.arrowsService.getArrowByRouteName(routeName);
   }
 
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => Arrow, {name: 'setArrowColor'})
   async setArrowColor(
-    @Args('accessToken') accessToken: string,
+    @CurrentUser() user: UserEntity,
     @Args('arrowId') arrowId: string,
     @Args('color') color: string,
   ) {
-    const payload = this.jwtService.verify(accessToken, {
-      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET')
-    });
-    const user = await this.usersService.getUserById(payload.userId);
-    if (!user) {
-      throw new BadRequestException('Invalid accessToken');
-    }
-
     return this.arrowsService.setArrowColor(user, arrowId, color);
   }
 
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => Arrow, {name: 'saveArrow'})
   async saveArrow(
-    @Args('accessToken') accessToken: string,
+    @CurrentUser() user: UserEntity,
     @Args('sessionId') sessionId: string,
     @Args('arrowId') arrowId: string,
     @Args('draft') draft: string,
   ) {
-    const payload = this.jwtService.verify(accessToken, {
-      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET')
-    });
-    const user = await this.usersService.getUserById(payload.userId);
-    if (!user) {
-      throw new BadRequestException('Invalid accessToken');
-    }
-
     const arrow = await this.arrowsService.saveArrow(user, arrowId, draft);
 
     this.pubSub.publish('saveArrow', {
@@ -154,9 +126,10 @@ export class ArrowsResolver {
     return arrow;
   }
 
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => ReplyArrowResult, {name: 'replyArrow'})
   async replyArrow(
-    @Args('accessToken') accessToken: string,
+    @CurrentUser() user: UserEntity,
     @Args('sessionId') sessionId: string,
     @Args('sourceId') sourceId: string,
     @Args('linkId') linkId: string,
@@ -164,14 +137,6 @@ export class ArrowsResolver {
     @Args('linkDraft') linkDraft: string,
     @Args('targetDraft') targetDraft: string,
   ) {
-    const payload = this.jwtService.verify(accessToken, {
-      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET')
-    });
-    const user = await this.usersService.getUserById(payload.userId);
-    if (!user) {
-      throw new BadRequestException('Invalid accessToken');
-    }
-
     const {
       source,
       link,
@@ -199,23 +164,16 @@ export class ArrowsResolver {
     };
   }
 
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => ReplyArrowResult, {name: 'pasteArrow'})
   async pasteArrow(
-    @Args('accessToken') accessToken: string,
+    @CurrentUser() user: UserEntity,
     @Args('sessionId') sessionId: string,
     @Args('sourceId') sourceId: string,
     @Args('linkId') linkId: string,
     @Args('targetId') targetId: string,
     @Args('linkDraft') linkDraft: string,
   ) {
-    const payload = this.jwtService.verify(accessToken, {
-      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET')
-    });
-    const user = await this.usersService.getUserById(payload.userId);
-    if (!user) {
-      throw new BadRequestException('Invalid accessToken');
-    }
-
     const { 
       source,
       link,
@@ -243,21 +201,14 @@ export class ArrowsResolver {
     };
   }
 
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => LinkArrowsResult, {name: 'linkArrows'})
   async linkArrows(
-    @Args('accessToken') accessToken: string,
+    @CurrentUser() user: UserEntity,
     @Args('sessionId') sessionId: string,
     @Args('sourceId') sourceId: string,
     @Args('targetId') targetId: string,
   ) {
-    const payload = this.jwtService.verify(accessToken, {
-      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET')
-    });
-    const user = await this.usersService.getUserById(payload.userId);
-    if (!user) {
-      throw new BadRequestException('Invalid accessToken');
-    }
-
     const { arrow, vote, source, target } = await this.arrowsService.linkArrows(user, null, sourceId, targetId);
 
     const user1 = await this.transfersService.linkTransfer(user, vote, arrow, source);
@@ -280,35 +231,23 @@ export class ArrowsResolver {
     };
   }
 
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => [Arrow], {name: 'getIns'})
   async getIns(
-    @Args('accessToken') accessToken: string,
+    @CurrentUser() user: UserEntity,
     @Args('arrowId') arrowId: string,
     @Args('offset', {type: () => Int}) offset: number,
   ) {
-    const payload = this.jwtService.verify(accessToken, {
-      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET')
-    });
-    const user = await this.usersService.getUserById(payload.userId);
-    if (!user) {
-      throw new BadRequestException('Invalid accessToken');
-    }
     return this.arrowsService.getArrowsByTargetId(arrowId, offset)
   }
 
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => [Arrow], {name: 'getOuts'})
   async getOuts(
-    @Args('accessToken') accessToken: string,
+    @CurrentUser() user: UserEntity,
     @Args('arrowId') arrowId: string,
     @Args('offset', {type: () => Int}) offset: number,
   ) {
-    const payload = this.jwtService.verify(accessToken, {
-      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET')
-    });
-    const user = await this.usersService.getUserById(payload.userId);
-    if (!user) {
-      throw new BadRequestException('Invalid accessToken');
-    }
     return this.arrowsService.getArrowsBySourceId(arrowId, offset)
   }
 

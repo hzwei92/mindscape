@@ -1,5 +1,5 @@
 import GoogleLogin, { GoogleLoginResponse, GoogleLoginResponseOffline } from 'react-google-login';
-import { GOOGLE_CLIENT_ID, REFRESH_TOKEN } from '../../constants';
+import { ACCESS_TOKEN, GOOGLE_CLIENT_ID, REFRESH_TOKEN } from '../../constants';
 import { gql, useMutation } from '@apollo/client';
 import { useState } from 'react';
 import { FULL_USER_FIELDS } from '../user/userFragments';
@@ -7,12 +7,11 @@ import useToken from './useToken';
 import { useAppDispatch, useAppSelector } from '../../app/store';
 import { setCurrentUser } from '../user/userSlice';
 import { IonButton, IonButtons } from '@ionic/react';
-import { selectAccessToken, setAccessToken } from './authSlice';
 import { Preferences } from '@capacitor/preferences';
 
 const REGISTER_USER = gql`
-  mutation RegisterGoogleUser($accessToken: String!, $token: String!) {
-    registerGoogleUser(accessToken: $accessToken, token: $token) {
+  mutation RegisterGoogleUser($token: String!) {
+    registerGoogleUser(token: $token) {
       user {
         ...FullUserFields
       }
@@ -24,8 +23,8 @@ const REGISTER_USER = gql`
 `;
 
 const LOGIN_USER = gql`
-  mutation LoginGoogleUser($accessToken: String!, $token: String!) {
-    loginGoogleUser(accessToken: $accessToken, token: $token) {
+  mutation LoginGoogleUser($token: String!) {
+    loginGoogleUser(token: $token) {
       user {
         ...FullUserFields
       }
@@ -43,8 +42,6 @@ interface GoogleButtonProps {
 export default function GoogleButton(props: GoogleButtonProps) {
   const dispatch = useAppDispatch();
 
-  const accessToken = useAppSelector(selectAccessToken);
-
   const [message, setMessage] = useState('');
 
   const { refreshTokenInterval } = useToken();
@@ -58,10 +55,17 @@ export default function GoogleButton(props: GoogleButtonProps) {
       console.log(data);
       refreshTokenInterval();
 
-      dispatch(setAccessToken(data.registerGoogleUser.accessToken));
-      dispatch(setCurrentUser(data.registerGoogleUser));
+      await Preferences.set({
+        key: ACCESS_TOKEN,
+        value: data.registerGoogleUser.accessToken,
+      });
 
-      await Preferences.set({ key: REFRESH_TOKEN, value: data.registerGoogleUser.refreshToken });
+      await Preferences.set({ 
+        key: REFRESH_TOKEN, 
+        value: data.registerGoogleUser.refreshToken
+      });
+
+      dispatch(setCurrentUser(data.registerGoogleUser));
 
       props.onCompleted && props.onCompleted();
     },
@@ -76,10 +80,18 @@ export default function GoogleButton(props: GoogleButtonProps) {
       console.log(data);
       refreshTokenInterval();
 
-      dispatch(setAccessToken(data.loginGoogleUser.accessToken));
-      dispatch(setCurrentUser(data.loginGoogleUser));
 
-      await Preferences.set({ key: REFRESH_TOKEN, value: data.loginGoogleUser.refreshToken });
+      await Preferences.set({
+        key: ACCESS_TOKEN,
+        value: data.loginGoogleUser.accessToken,
+      });
+
+      await Preferences.set({
+        key: REFRESH_TOKEN, 
+        value: data.loginGoogleUser.refreshToken
+      });
+
+      dispatch(setCurrentUser(data.loginGoogleUser));
 
       props.onCompleted && props.onCompleted();
     },
@@ -91,7 +103,6 @@ export default function GoogleButton(props: GoogleButtonProps) {
       if (props.isRegistration) {
         registerGoogleUser({
           variables: {
-            accessToken,
             token: response.accessToken,
           },
         });
@@ -99,7 +110,6 @@ export default function GoogleButton(props: GoogleButtonProps) {
       else {
         loginGoogleUser({
           variables: {
-            accessToken,
             token: response.accessToken,
           }
         });

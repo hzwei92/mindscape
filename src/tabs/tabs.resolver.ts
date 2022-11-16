@@ -3,19 +3,15 @@ import { Arrow } from 'src/arrows/arrow.model';
 import { ArrowsService } from 'src/arrows/arrows.service';
 import { Tab } from './tab.model';
 import { TabsService } from './tabs.service';
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException, UseGuards } from '@nestjs/common';
 import { RemoveTabResult } from './dto/remove-tab-result.dto';
 import { SheafsService } from 'src/sheafs/sheafs.service';
-import { JwtService } from '@nestjs/jwt';
-import { ConfigService } from '@nestjs/config';
-import { UsersService } from 'src/users/users.service';
+import { CurrentUser, GqlAuthGuard } from 'src/auth/gql-auth.guard';
+import { User as UserEntity } from 'src/users/user.entity';
 
 @Resolver(Tab)
 export class TabsResolver {
   constructor(
-    private readonly configService: ConfigService,
-    private readonly jwtService: JwtService,
-    private readonly usersService: UsersService,
     private readonly tabsService: TabsService,
     private readonly arrowsService: ArrowsService,
     private readonly sheafsService: SheafsService,
@@ -28,21 +24,14 @@ export class TabsResolver {
     return this.arrowsService.getArrowById(tab.arrowId);
   }
 
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => [Tab], {name: 'createGraphTab'})
   async createGraphTab(
-    @Args('accessToken') accessToken: string,
+    @CurrentUser() user: UserEntity,
     @Args('name') name: string,
     @Args('routeName') routeName: string,
     @Args('arrowId', {nullable: true}) arrowId: string,
   ) {
-    const payload = this.jwtService.verify(accessToken, {
-      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET')
-    });
-    const user = await this.usersService.getUserById(payload.userId);
-    if (!user) {
-      throw new BadRequestException('Invalid accessToken');
-    }
-
     if (arrowId) {
       let arrow = await this.arrowsService.getArrowById(arrowId);
       if (!arrow) {
@@ -75,22 +64,15 @@ export class TabsResolver {
 
   }
 
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => [Tab], { name: 'createTab' })
   async createTab(
-    @Args('accessToken') accessToken: string,
+    @CurrentUser() user: UserEntity,
     @Args('arrowId') arrowId: string,
     @Args('i', {type: () => Int, nullable: true}) i: number,
     @Args('isFrame') isFrame: boolean,
     @Args('isFocus') isFocus: boolean,
   ) {
-    const payload = this.jwtService.verify(accessToken, {
-      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET')
-    });
-    const user = await this.usersService.getUserById(payload.userId);
-    if (!user) {
-      throw new BadRequestException('Invalid accessToken');
-    }
-
     const arrow = await this.arrowsService.getArrowById(arrowId);
     if (!arrow) {
       throw new BadRequestException('Arrow not found');
@@ -101,22 +83,15 @@ export class TabsResolver {
     return this.tabsService.appendTab(user, arrow, isFrame, isFocus);
   }
 
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => [Tab], { name: 'createTabByRouteName' })
   async createTabByRouteName(
-    @Args('accessToken') accessToken: string,
+    @CurrentUser() user: UserEntity,
     @Args('routeName') routeName: string,
     @Args('i', {type: () => Int, nullable: true}) i: number,
     @Args('isFrame') isFrame: boolean,
     @Args('isFocus') isFocus: boolean,
   ) {
-    const payload = this.jwtService.verify(accessToken, {
-      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET')
-    });
-    const user = await this.usersService.getUserById(payload.userId);
-    if (!user) {
-      throw new BadRequestException('Invalid accessToken');
-    }
-
     const arrow = await this.arrowsService.getArrowByRouteName(routeName);
     if (!arrow) {
       throw new BadRequestException('Arrow not found');
@@ -127,36 +102,24 @@ export class TabsResolver {
     return this.tabsService.appendTab(user, arrow, isFrame, isFocus);
   }
 
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => [Tab], { name: 'updateTab' })
   async updateTab(
-    @Args('accessToken') accessToken: string,
+    @CurrentUser() user: UserEntity,
     @Args('tabId') tabId: string,
     @Args('i', {type: () => Int}) i: number,
     @Args('isFrame') isFrame: boolean,
     @Args('isFocus') isFocus: boolean,
   ) {
-    const payload = this.jwtService.verify(accessToken, {
-      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET')
-    });
-    const user = await this.usersService.getUserById(payload.userId);
-    if (!user) {
-      throw new BadRequestException('Invalid accessToken');
-    }
     return this.tabsService.updateTab(user, tabId, i, isFrame, isFocus);
   }
 
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => RemoveTabResult, { name: 'removeTab' })
   async removeTab(
-    @Args('accessToken') accessToken: string,
+    @CurrentUser() user: UserEntity,
     @Args('tabId') tabId: string,
   ) {
-    const payload = this.jwtService.verify(accessToken, {
-      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET')
-    });
-    const user = await this.usersService.getUserById(payload.userId);
-    if (!user) {
-      throw new BadRequestException('Invalid accessToken');
-    }
     return this.tabsService.removeTab(user, tabId);
   }
 }

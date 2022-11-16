@@ -1,20 +1,19 @@
 import { gql, useMutation, useReactiveVar } from '@apollo/client'
 import { useState } from 'react';
 import { useAppSelector } from '../../app/store';
-import { selectAccessToken, selectSessionId } from '../auth/authSlice';
+import { selectSessionId } from '../auth/authSlice';
 import { SpaceType } from '../space/space';
 import { selectScale } from '../space/spaceSlice';
 
 const PUBLISH_CURSOR = gql`
-  mutation PublishCursor($accessToken: String!, $sessionId: String!, $abstractId: String!, $x: Int!, $y: Int!) {
-    publishCursor(accessToken: $accessToken, sessionId: $sessionId, abstractId: $abstractId, x: $x, y: $y) {
+  mutation PublishCursor($sessionId: String!, $abstractId: String!, $x: Int!, $y: Int!) {
+    publishCursor(sessionId: $sessionId, abstractId: $abstractId, x: $x, y: $y) {
       id
     }
   }
 `;
 
 export default function usePublishCursor(space: SpaceType, abstractId?: string) {
-  const accessToken = useAppSelector(selectAccessToken);
   const sessionId = useAppSelector(selectSessionId);
   
   const scale = useAppSelector(selectScale(space));
@@ -38,7 +37,6 @@ export default function usePublishCursor(space: SpaceType, abstractId?: string) 
 
     publish({
       variables: {
-        accessToken,
         sessionId,
         abstractId,
         x: Math.round(x / scale),

@@ -4,15 +4,15 @@ import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonIcon,
 import { eye, eyeOff } from 'ionicons/icons';
 import GoogleButton from '../features/auth/GoogleButton';
 import { FULL_USER_FIELDS } from '../features/user/userFragments';
-import { selectAccessToken, setAccessToken, setLogin } from '../features/auth/authSlice';
+import { setLogin } from '../features/auth/authSlice';
 import { useAppDispatch, useAppSelector } from '../app/store';
 import { AppContext } from '../app/App';
 import { Preferences } from '@capacitor/preferences';
-import { REFRESH_TOKEN } from '../constants';
+import { ACCESS_TOKEN, REFRESH_TOKEN } from '../constants';
 
 const LOGIN_USER = gql`
-  mutation LoginUser($accessToken: String!, $email: String!, $pass: String!) {
-    loginUser(accessToken: $accessToken, email: $email, pass: $pass) {
+  mutation LoginUser($email: String!, $pass: String!) {
+    loginUser(email: $email, pass: $pass) {
       user {
         ...FullUserFields
       }
@@ -29,8 +29,6 @@ const LoginPage: React.FC = () => {
 
   const { palette } = useContext(AppContext);
 
-  const accessToken = useAppSelector(selectAccessToken);
-
   const [message, setMessage] = useState('');
 
   const [loginUser] = useMutation(LOGIN_USER, {
@@ -38,14 +36,17 @@ const LoginPage: React.FC = () => {
       console.error(error);
       setMessage(error.message);
     },
-    onCompleted: data => {
+    onCompleted: async data => {
       console.log(data);
 
       client.clearStore();
 
-      dispatch(setAccessToken(data.loginUser.accessToken))
+      await Preferences.set({
+        key: ACCESS_TOKEN,
+        value: data.loginUser.accessToken,
+      });
 
-      Preferences.set({
+      await Preferences.set({
         key: REFRESH_TOKEN,
         value: data.loginUser.refreshToken,
       });
@@ -73,7 +74,6 @@ const LoginPage: React.FC = () => {
   const handleSubmit = (event: React.MouseEvent) => {
     loginUser({
       variables: {
-        accessToken,
         email,
         pass,
       }

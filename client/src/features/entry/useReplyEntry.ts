@@ -8,11 +8,10 @@ import { mergeUsers, selectCurrentUser } from '../user/userSlice';
 import { createArrow } from '../arrow/arrow';
 import { mergeArrows, selectArrowById } from '../arrow/arrowSlice';
 import { selectFocusTab, selectFrameTab } from '../tab/tabSlice';
-import { selectAccessToken, selectSessionId } from '../auth/authSlice';
+import { selectSessionId } from '../auth/authSlice';
 
 const REPLY_ARROW = gql`
   mutation ReplyArrow(
-    $accessToken: String!,
     $sessionId: String!, 
     $sourceId: String!, 
     $linkId: String! 
@@ -21,7 +20,6 @@ const REPLY_ARROW = gql`
     $targetDraft: String!
   ) {
     replyArrow(
-      accessToken: $accessToken,
       sessionId: $sessionId, 
       sourceId: $sourceId, 
       linkId: $linkId,
@@ -51,7 +49,6 @@ const REPLY_ARROW = gql`
 export default function useReplyEntry(entryId: string) {
   const dispatch = useAppDispatch();
 
-  const accessToken = useAppSelector(selectAccessToken);
   const sessionId = useAppSelector(selectSessionId);
 
   const user = useAppSelector(selectCurrentUser);
@@ -123,7 +120,6 @@ export default function useReplyEntry(entryId: string) {
 
     reply({
       variables: {
-        accessToken,
         sessionId,
         sourceId: entry.arrowId,
         linkId,

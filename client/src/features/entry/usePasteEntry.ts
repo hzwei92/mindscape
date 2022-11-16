@@ -9,11 +9,10 @@ import { createArrow } from '../arrow/arrow';
 import { mergeArrows, selectArrowById } from '../arrow/arrowSlice';
 import { useContext } from 'react';
 import { AppContext } from '../../app/App';
-import { selectAccessToken, selectSessionId } from '../auth/authSlice';
+import { selectSessionId } from '../auth/authSlice';
 
 const PASTE_ARROW = gql`
   mutation PasteArrow(
-    $accessToken: String!,
     $sessionId: String!, 
     $sourceId: String!, 
     $linkId: String! 
@@ -21,7 +20,6 @@ const PASTE_ARROW = gql`
     $linkDraft: String!
   ) {
     pasteArrow(
-      accessToken: $accessToken,
       sessionId: $sessionId, 
       sourceId: $sourceId, 
       linkId: $linkId,
@@ -50,7 +48,6 @@ const PASTE_ARROW = gql`
 export default function usePasteEntry(entryId: string) {
   const dispatch = useAppDispatch();
 
-  const accessToken = useAppSelector(selectAccessToken);
   const sessionId = useAppSelector(selectSessionId);
 
   const { clipboardArrowIds } = useContext(AppContext);
@@ -113,7 +110,6 @@ export default function usePasteEntry(entryId: string) {
 
     paste({
       variables: {
-        accessToken,
         sessionId,
         sourceId: entry.arrowId,
         linkId,

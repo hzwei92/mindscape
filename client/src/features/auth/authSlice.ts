@@ -8,7 +8,6 @@ export interface AuthState {
   isValid: boolean;
   isComplete: boolean;
   sessionId: string;
-  accessToken: string;
   interval: ReturnType<typeof setInterval> | null;
 }
 
@@ -17,7 +16,6 @@ const initialState: AuthState = {
   isValid: false,
   isComplete: false,
   sessionId: v4(),
-  accessToken: '',
   interval: null,
 };
 
@@ -49,12 +47,6 @@ const authSlice = createSlice({
         sessionId: action.payload,
       };
     },
-    setAccessToken: (state, action: PayloadAction<string>) => {
-      return {
-        ...state,
-        accessToken: action.payload,
-      };
-    },
     setTokenInterval: (state, action: PayloadAction<ReturnType<typeof setInterval> | null>) => {
       return {
         ...state,
@@ -72,7 +64,6 @@ const authSlice = createSlice({
         ...state,
         isValid: false,
         isComplete: false,
-        accessToken: '',
       };
     },
     setInit: (state, action: PayloadAction<boolean>) => {
@@ -91,13 +82,11 @@ export const {
   setAuthIsComplete,
   setSessionId,
   setTokenInterval,
-  setAccessToken,
   setInit,
   setLogin,
   setLogout,
 } = authSlice.actions;
 
-export const selectAccessToken = (state: RootState) => state.auth.accessToken;
 export const selectTokenInterval = (state: RootState) => state.auth.interval;
 export const selectAuthIsInit = (state: RootState) => state.auth.isInit;
 export const selectAuthIsValid = (state: RootState) => state.auth.isValid;
