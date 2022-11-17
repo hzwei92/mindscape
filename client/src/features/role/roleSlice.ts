@@ -5,6 +5,7 @@ import { Role } from "./role";
 import { setInit, setLogin, setLogout } from "../auth/authSlice";
 import { setCurrentUser } from "../user/userSlice";
 import { mergeTwigs } from "../twig/twigSlice";
+import { mergeArrows } from "../arrow/arrowSlice";
 
 export interface RoleState {
   idToRole: IdToType<Role>;
@@ -59,6 +60,24 @@ const authSlice = createSlice({
             acc[twig.detail.currentUserRole.id] = {
               ...acc[twig.detail.currentUserRole.id],
               ...twig.detail.currentUserRole
+            };
+          }
+          return acc;
+        }, {
+          ...state.idToRole
+        });
+
+        return {
+          ...state,
+          idToRole,
+        };
+      })
+      .addCase(mergeArrows, (state, action) => {
+        const idToRole = action.payload.reduce((acc, arrow) => {
+          if (arrow?.currentUserRole) {
+            acc[arrow.currentUserRole.id] = {
+              ...acc[arrow.currentUserRole.id],
+              ...arrow.currentUserRole
             };
           }
           return acc;
