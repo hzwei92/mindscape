@@ -183,6 +183,7 @@ function LinkTwig(props: LinkTwigProps) {
               : 'default', 
             pointerEvents: 'auto',
             margin: 0,
+            paddingTop: 10,
           }}
         >
           <div style={{
@@ -200,7 +201,7 @@ function LinkTwig(props: LinkTwigProps) {
                 <IonButtons style={{
                   position: 'absolute',
                   left: TWIG_WIDTH - 85,
-                  top: 0,
+                  top: -10,
                   zIndex: 1,
                   display: 'flex',
                 }}>
