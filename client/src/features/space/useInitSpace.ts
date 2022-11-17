@@ -21,8 +21,6 @@ const GET_DETAILS = gql`
 export default function useInitSpace(space: SpaceType, abstract: Arrow | null, setShouldLoadTwigPositions: Dispatch<SetStateAction<boolean>>) {
   const dispatch = useAppDispatch();
 
-  const [present, dismiss] = useIonLoading();
-
   const [presentToast] = useIonToast();
 
   const selectedTwigId = useAppSelector(selectSelectedTwigId(space));
@@ -32,7 +30,6 @@ export default function useInitSpace(space: SpaceType, abstract: Arrow | null, s
   const [getTwigs] = useMutation(GET_DETAILS, {
     onError: error => {
       console.error(error);
-      dismiss();
       presentToast('Error loading graph: ' + error.message);
     },
     onCompleted: data => {
@@ -45,8 +42,6 @@ export default function useInitSpace(space: SpaceType, abstract: Arrow | null, s
       setShouldLoadTwigPositions(true);
 
       centerTwig(selectedTwigId || '', true, 0);
-      
-      dismiss();
     },
   });
 
@@ -56,10 +51,6 @@ export default function useInitSpace(space: SpaceType, abstract: Arrow | null, s
     if (!abstract?.id) return;
 
     dispatch(resetTwigs(space));
-    
-    present({
-      message: 'Loading...',
-    });
 
     getTwigs({
       variables: {
