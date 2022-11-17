@@ -7,6 +7,7 @@ import { mergeEntries, selectIdToEntry } from '../entry/entrySlice';
 import { VOTE_FIELDS } from '../vote/voteFragments';
 import { Arrow } from './arrow';
 import { FULL_ARROW_FIELDS } from './arrowFragments';
+import { mergeArrows } from './arrowSlice';
 
 const GET_INS = gql`
   mutation GetIns($arrowId: String!, $offset: Int!) {
@@ -109,6 +110,7 @@ export default function useGetIns(entryId: string, arrowId: string) {
         }
       });
 
+      dispatch(mergeArrows(arrows));
       dispatch(mergeEntries(idToEntry1));
     },
     fetchPolicy: 'network-only',

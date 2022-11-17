@@ -55,7 +55,7 @@ const authSlice = createSlice({
       })
       .addCase(mergeTwigs, (state, action) => {
         const idToRole = action.payload.twigs.reduce((acc, twig) => {
-          if (twig.detail.currentUserRole) {
+          if (twig?.detail?.currentUserRole) {
             acc[twig.detail.currentUserRole.id] = {
               ...acc[twig.detail.currentUserRole.id],
               ...twig.detail.currentUserRole
@@ -65,7 +65,7 @@ const authSlice = createSlice({
         }, {
           ...state.idToRole
         });
-        
+
         return {
           ...state,
           idToRole,
