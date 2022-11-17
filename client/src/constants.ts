@@ -29,7 +29,7 @@ export const IFRAMELY_API_KEY ='bc4275a2a8daa296c09f9243cf940f0a'
 
 export const MAX_Z_INDEX = 2000000000;
 
-export const TWIG_WIDTH = 500;
+export const TWIG_WIDTH = 420;
 
 export const MENU_WIDTH = 500;
 export const MENU_MIN_WIDTH = 400;

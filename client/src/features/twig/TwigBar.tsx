@@ -126,7 +126,7 @@ function TwigBar(props: TwigBarProps) {
         }}>
           <IonLabel style={{
             marginLeft: '3px',
-            fontSize: 12,
+            fontSize: 20,
             color: palette === 'dark'
               ? 'black'
               : 'white',
