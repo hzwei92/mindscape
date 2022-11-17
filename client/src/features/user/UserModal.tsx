@@ -173,9 +173,7 @@ export default function UserModal() {
                   </IonCard>
                 );
               })
-            
           }
-          
         </IonCardContent>
       </IonCard>
     </IonModal>
