@@ -71,7 +71,7 @@ function LinkTwigMarker(props: LinkTwigMarkerProps) {
           (props.targetPos?.x ?? 0) + VIEW_RADIUS,
           (props.targetPos?.y ?? 0) + VIEW_RADIUS,
         )}
-        strokeWidth={2 + (isSelected ? 2 : 0) + rating}
+        strokeWidth={1 + (isSelected ? 1 : 0) + rating}
         markerMid={`url(#marker-${link?.userId})`}
         markerEnd={`url(#marker-${link?.userId})`}
       />
@@ -86,7 +86,7 @@ function LinkTwigMarker(props: LinkTwigMarkerProps) {
         y1={(props.sourcePos?.y ?? 0) + VIEW_RADIUS}
         x2={(props.targetPos?.x ?? 0) + VIEW_RADIUS}
         y2={(props.targetPos?.y ?? 0) + VIEW_RADIUS}
-        strokeWidth={10 * ((isSelected ? 4 : 2) + rating)}
+        strokeWidth={10 * ((isSelected ? 2 : 1) + rating)}
         stroke={linkUser?.color}
         strokeLinecap={'round'}
       />

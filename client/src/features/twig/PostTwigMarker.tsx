@@ -30,7 +30,7 @@ function PostTwigMarker(props: PostTwigMarkerProps) {
       y2={props.pos.y + VIEW_RADIUS}
       stroke={palette === 'dark' ? 'white' : 'black'}
       strokeLinecap={'round'}
-      strokeWidth={8}
+      strokeWidth={5}
     />
   )
 }

@@ -203,9 +203,10 @@ function LinkTwig(props: LinkTwigProps) {
       <IonCard ref={cardEl} onClick={handleOpenClick} style={{
         width: CLOSED_LINK_TWIG_DIAMETER,
         height: CLOSED_LINK_TWIG_DIAMETER,
+        border: `1px solid ${twigUser?.color}`,
         outline: isSelected
           ? `5px solid ${twigUser?.color}`
-          : `1px solid ${twigUser?.color}`,
+          : null,
         borderRadius: 10,
         borderTopLeftRadius: 0,
         display: 'flex',
