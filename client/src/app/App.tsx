@@ -27,6 +27,7 @@ import '@ionic/react/css/display.css';
 
 /* Theme variables */
 import '../theme/variables.css';
+
 import AboutPage from '../pages/AboutPage';
 import AppBar from './AppBar';
 import useAuth from '../features/auth/useAuth';

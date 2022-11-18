@@ -146,7 +146,7 @@ export default function EntryComponent(props: EntryComponentProps) {
       onMouseLeave={handleMouseLeave} 
       onClick={handleClick}
       style={{
-        margin: 10,
+        margin: 5,
         marginBottom: 0,
         width: 'calc(100% - 10px)',
         backgroundColor: isLinking
@@ -156,33 +156,24 @@ export default function EntryComponent(props: EntryComponentProps) {
           ? 'crosshair'
           : null, 
         border: null,
-        padding: 5,
-        minHeight: 100,
+        padding: 10,
       }}
     >
-      <div style={{
-        marginTop: 10,
-      }}>
-        <ArrowComponent
-          arrowId={props.entry.arrowId}
-          instanceId={props.entry.id}
-          showLinkRightIcon={!!props.entry.targetId && props.entry.targetId !== props.entry.parentId}
-          showLinkLeftIcon={!!props.entry.sourceId && props.entry.sourceId !== props.entry.parentId}
-          showPostIcon={!props.entry.sourceId && !props.entry.targetId}
-          isWindow={false}
-          isGroup={false}
-          isTab={false}
-          fontSize={20}
-        />
-        <EntryControls
-          entry={props.entry}
-          arrow={arrow}
-          setIsLoading={setIsLoading} 
-          depth={props.depth}
-        />
-      </div>
-
-     
+      <ArrowComponent
+        arrowId={props.entry.arrowId}
+        instanceId={props.entry.id}
+        showLinkRightIcon={!!props.entry.targetId && props.entry.targetId !== props.entry.parentId}
+        showLinkLeftIcon={!!props.entry.sourceId && props.entry.sourceId !== props.entry.parentId}
+        showPostIcon={!props.entry.sourceId && !props.entry.targetId}
+        fontSize={14}
+        tagFontSize={14}
+      />
+      <EntryControls
+        entry={props.entry}
+        arrow={arrow}
+        setIsLoading={setIsLoading} 
+        depth={props.depth}
+      />
     </IonCard>
   )
 }

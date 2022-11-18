@@ -46,17 +46,13 @@ export default function ArrowVoter(props: ArrowVoterProps) {
     <div style={{
       display: 'flex',
       flexDirection: 'column',
-      paddingTop: '7px',
-      marginLeft: '-4px',
     }}>
       <IonButtons style={{
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'center',
       }}>
         <IonButton
           disabled={isVoting || userVote?.weight === 10}
-          size='small' 
           onMouseDown={handleButtonMouseDown}
           onClick={handleVoteClick(
             userVote
@@ -67,12 +63,17 @@ export default function ArrowVoter(props: ArrowVoterProps) {
             color: (userVote?.weight || 0) > 0
               ? user?.color
               : null,
+            height: 20,
           }}
         >
           { 
             (userVote?.weight || 0) > 0
-              ? <IonIcon icon={caretUpOutline} />
-              : <IonIcon icon={chevronUpOutline} size='small' />
+              ? <IonIcon icon={caretUpOutline} style={{
+                  fontSize: 10,
+                }}/>
+              : <IonIcon icon={chevronUpOutline} style={{
+                  fontSize: 10,
+                }}/>
           }
         </IonButton>
         <IonButton
@@ -82,8 +83,8 @@ export default function ArrowVoter(props: ArrowVoterProps) {
           size='small'
           title={`${(userVote?.weight || 0) > 0 ? '+' : ''}${userVote?.weight || 0}`}
           style={{
-            minWidth: '40px',
-            fontSize: 14,
+            height: 20,
+            fontSize: 10,
           }}
         >
           { props.arrow.weight }
@@ -101,12 +102,17 @@ export default function ArrowVoter(props: ArrowVoterProps) {
             color: (userVote?.weight || 0) < 0
               ? user?.color
               : null,
+            height: 20,
           }}
         >
           {
             (userVote?.weight || 0) < 0
-              ? <IonIcon icon={caretDownOutline} />
-              : <IonIcon icon={chevronDownOutline} size='small' />
+              ? <IonIcon icon={caretDownOutline} style={{
+                  fontSize: 10,
+                }}/>
+              : <IonIcon icon={chevronDownOutline} style={{
+                  fontSize: 10,
+                }}/>
           }
         </IonButton>
       </IonButtons>

@@ -40,7 +40,7 @@ const AppBar = () => {
 
   return (
     <div style={{
-      marginTop: isPlatform('ios') && !isPlatform('mobileweb') ? 20 : 0
+      marginTop: isPlatform('ios') && !isPlatform('mobileweb') ? 25 : 0
     }}>
       <IonToolbar mode='md'>
         <IonButtons id='mainMenuButton' slot='start'>

@@ -29,7 +29,7 @@ const initialState: SpaceState = {
   selectedSpace: SpaceType.FRAME,
   [SpaceType.FRAME]: {
     selectedTwigId: '',
-    scale: 0.5,
+    scale: 1,
     scroll: {
       left: 0,
       top: 0,
@@ -48,7 +48,7 @@ const initialState: SpaceState = {
   },
   [SpaceType.FOCUS]: {
     selectedTwigId: '',
-    scale: 0.5,
+    scale: 1,
     scroll: {
       left: 0,
       top: 0,

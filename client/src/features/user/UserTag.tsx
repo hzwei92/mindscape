@@ -7,6 +7,7 @@ import { checkmarkCircleOutline, ellipseOutline } from 'ionicons/icons';
 
 interface UserTagProps {
   user: User | null;
+  fontSize: number;
 }
 export default function UserTag(props: UserTagProps) {
   const { user, setSelectedUserId }  = useContext(AppContext);
@@ -41,36 +42,31 @@ export default function UserTag(props: UserTagProps) {
 
   return(
     <span onMouseDown={handleMouseDown} style={{
-      whiteSpace: 'nowrap'
+      whiteSpace: 'nowrap',
+      fontSize: props.fontSize,
     }}>
       {
         props.user?.verifyEmailDate
-          ? <IonAvatar
+          ? <img 
+              src={`https://www.gravatar.com/avatar/${md5(props.user.email)}?d=retro`}
               style={{
-                display: 'inline-block',
-                marginRight: '4px',
-                width: 17,
-                height: 17,
+                marginRight: 2,
+                marginBottom: -1,
+                borderRadius: 5,
                 border: `1px solid ${props.user.color}`,
-                position: 'relative',
+                width: props.fontSize,
+                height: props.fontSize,
               }}
-            > 
-              <img 
-                src={`https://www.gravatar.com/avatar/${md5(props.user.email)}?d=retro`}
-                style={{
-                  position: 'absolute',
-                  top: 0,
-                  width: 17,
-                  height: 17,
-                }}
-              />
-            </IonAvatar>
+            />
           : null
       }
       <span color={props.user?.color} onClick={handleUserClick}
         style={{
           color: props.user?.color,
-          cursor: 'pointer'
+          cursor: 'pointer',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          fontSize: props.fontSize,
         }}
       >
         {props.user?.name}
@@ -89,7 +85,7 @@ export default function UserTag(props: UserTagProps) {
                         marginTop: '-3px',
                         marginLeft: '2px',
                         padding: 0,
-                        fontSize: 14,
+                        fontSize: props.fontSize,
                       }}
                     >
                       <IonIcon icon={checkmarkCircleOutline} style={{
@@ -104,7 +100,7 @@ export default function UserTag(props: UserTagProps) {
                         marginTop: '-1px',
                         marginLeft: '2px',
                         padding: 0,
-                        fontSize: 10,
+                        fontSize: props.fontSize,
                       }}
                     >
                       <IonIcon icon={ellipseOutline} style={{

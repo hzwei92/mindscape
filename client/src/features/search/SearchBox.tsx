@@ -51,8 +51,8 @@ function SearchBox(props: SearchBoxProps) {
     }}>
       <IonInput
         style={{
-          height: 30,
-          fontSize: 14,
+          height: 40,
+          fontSize: 20,
           width: 'calc(100%)',
         }}
         type={'text'}

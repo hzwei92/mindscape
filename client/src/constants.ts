@@ -29,7 +29,7 @@ export const IFRAMELY_API_KEY ='bc4275a2a8daa296c09f9243cf940f0a'
 
 export const MAX_Z_INDEX = 2000000000;
 
-export const TWIG_WIDTH = 420;
+export const TWIG_WIDTH = 220;
 
 export const MENU_WIDTH = 500;
 export const MENU_MIN_WIDTH = 400;
@@ -43,7 +43,7 @@ export const VIEW_RADIUS = 50000;
 
 export const NOT_FOUND = 'NOT_FOUND';
 
-export const CLOSED_LINK_TWIG_DIAMETER = 40;
+export const CLOSED_LINK_TWIG_DIAMETER = 30;
 
 export const ROLES_MENU_WIDTH = 300;
 
