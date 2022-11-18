@@ -127,6 +127,77 @@ function LinkTwig(props: LinkTwigProps) {
     setRemovalTwigId(twig.id);
   }
 
+  if (twig.isOpen) {
+    return (
+      <IonCard
+        onMouseMove={handleMouseMove}
+        onMouseDown={handleMouseDown}
+        onClick={handleClick}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          width: TWIG_WIDTH,
+          opacity: .8,
+          outline: isSelected
+            ? `5px solid ${twigUser?.color}`
+            : null,
+          border: `1px solid ${twigUser?.color}`,
+          borderRadius: 15,
+          borderTopLeftRadius: 0,
+          backgroundColor: isLinking
+            ? twigUser?.color
+            : null,
+          cursor: pendingLink.sourceArrowId
+            ? 'crosshair'
+            : 'default', 
+          pointerEvents: 'auto',
+          margin: 0,
+        }}
+      >
+        <div style={{
+          padding: 5,
+          position: 'relative',
+        }}>
+          <IonButtons style={{
+            position: 'absolute',
+            right: 0,
+            top: 0,
+          }}>
+            <IonButton onClick={handleOpenClick} style={{
+              height: 20,
+            }}>
+              <IonIcon icon={remove}style={{
+                fontSize: 10,
+              }}/>
+            </IonButton>
+            <IonButton  onClick={handleRemoveClick} style={{
+              height: 20,
+            }}>
+              <IonIcon icon={close}style={{
+                fontSize: 10,
+              }}/>
+            </IonButton>
+          </IonButtons>
+          <ArrowComponent
+            arrowId={twig.detailId}
+            instanceId={twig.id}
+            showLinkLeftIcon={false}
+            showLinkRightIcon={false}
+            showPostIcon={false}
+            fontSize={10}
+            tagFontSize={10}
+          />
+          <TwigControls
+            twig={twig}
+            isPost={false}
+          />
+        </div>
+      </IonCard>
+    );
+  }
+
   return (
     <div>
       <IonCard ref={cardEl} onClick={handleOpenClick} style={{
@@ -135,103 +206,24 @@ function LinkTwig(props: LinkTwigProps) {
         outline: isSelected
           ? `5px solid ${twigUser?.color}`
           : `1px solid ${twigUser?.color}`,
-        borderRadius: 15,
+        borderRadius: 10,
         borderTopLeftRadius: 0,
-        display: twig.isOpen
-          ? 'none'
-          : 'flex',
+        display: 'flex',
         justifyContent: 'center',
         cursor: 'pointer',
         pointerEvents: 'auto',
-        opacity: .9,
+        opacity: .8,
         margin: 0,
       }}>
         <div style={{
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center',
+          fontSize: 12,
         }}>
             {twig.detail.weight}
         </div>
       </IonCard>
-      <div style={{
-        display: twig.isOpen
-          ? 'flex'
-          : 'none',
-      }}>
-        <IonCard
-          onMouseMove={handleMouseMove}
-          onMouseDown={handleMouseDown}
-          onClick={handleClick}
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            width: TWIG_WIDTH,
-            opacity: .8,
-            outline: isSelected
-              ? `10px solid ${twigUser?.color}`
-              : `1px solid ${twigUser?.color}`,
-            borderRadius: 20,
-            borderTopLeftRadius: 0,
-            backgroundColor: isLinking
-              ? twigUser?.color
-              : null,
-            cursor: pendingLink.sourceArrowId
-              ? 'crosshair'
-              : 'default', 
-            pointerEvents: 'auto',
-            margin: 0,
-            paddingTop: 10,
-          }}
-        >
-          <div style={{
-            display: 'flex',
-          }}>
-            <div style={{
-              padding: 0.5,
-              paddingLeft: 0,
-            }}>
-              <div style={{
-                marginRight: 0.5,
-                paddingLeft: 4,
-                position: 'relative',
-              }}>
-                <IonButtons style={{
-                  position: 'absolute',
-                  left: TWIG_WIDTH - 85,
-                  top: -10,
-                  zIndex: 1,
-                  display: 'flex',
-                }}>
-                  <IonButton onClick={handleOpenClick}>
-                    <IonIcon icon={remove} />
-                  </IonButton>
-                  <IonButton onClick={handleRemoveClick}>
-                    <IonIcon icon={close} />
-                  </IonButton>
-                </IonButtons>
-                <ArrowComponent
-                  arrowId={twig.detailId}
-                  instanceId={twig.id}
-                  showLinkLeftIcon={false}
-                  showLinkRightIcon={false}
-                  showPostIcon={false}
-                  isTab={!!twig.tabId}
-                  isGroup={!twig.tabId && !!twig.groupId}
-                  isWindow={!twig.tabId && !twig.groupId && !!twig.windowId}
-                  fontSize={20}
-                />
-                <TwigControls
-                  twig={twig}
-                  isPost={false}
-                />
-              </div>
-            </div>
-          </div>
-        </IonCard>
-      </div>
     </div>
   );
 }

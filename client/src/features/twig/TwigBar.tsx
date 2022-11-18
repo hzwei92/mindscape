@@ -112,47 +112,44 @@ function TwigBar(props: TwigBarProps) {
         <div style={{
           display: 'flex',
         }}>
-        <div style={{
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          fontSize: 14,
-        }}>
-        </div>
-        <div style={{
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-        }}>
-          <IonLabel style={{
-            marginLeft: '3px',
-            fontSize: 20,
-            color: palette === 'dark'
-              ? 'black'
-              : 'white',
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
           }}>
-            {props.twig.i}
-          </IonLabel>
-        </div>
+            <IonLabel style={{
+              marginLeft: '3px',
+              fontSize: 10,
+              color: palette === 'dark'
+                ? 'black'
+                : 'white',
+            }}>
+              {props.twig.i}
+            </IonLabel>
+          </div>
         </div>
         <IonButtons>
           <IonButton
-            size='small'
             color='inherit'
             onMouseDown={dontDrag}
             onClick={handleToggleOpenClick}
+            style={{
+              height: 20,
+            }}
           >
             {
               props.twig.isOpen
-                ? <IonIcon icon={removeOutline} size='medium' style={{
+                ? <IonIcon icon={removeOutline} style={{
                     color: palette === 'dark'
                       ? 'black'
-                      : 'white'
+                      : 'white',
+                    fontSize: 10,
                   }}/>
-                : <IonIcon icon={addOutline} size='medium'  style={{
+                : <IonIcon icon={addOutline} style={{
                     color: palette === 'dark'
                       ? 'black'
-                      : 'white'
+                      : 'white',
+                    fontSize: 10,                  
                   }}/>
             }
           </IonButton>
@@ -162,15 +159,18 @@ function TwigBar(props: TwigBarProps) {
               !canEdit || 
               !!pendingLink.sourceArrowId 
             } 
-            size='small'
             color='inherit'
             onMouseDown={dontDrag}
             onClick={handleRemoveClick}
+            style={{
+              height: 20,
+            }}
           >
-            <IonIcon icon={closeOutline} size='medium' style={{
+            <IonIcon icon={closeOutline} style={{
               color: palette === 'dark'
                 ? 'black'
-                : 'white'
+                : 'white',
+              fontSize: 10,
             }}/>
           </IonButton>
         </IonButtons>

@@ -10,7 +10,7 @@ import { focusSpaceElVar, frameSpaceElVar } from '../../cache';
 import { selectIdToTwig } from '../twig/twigSlice';
 import { selectFocusTab, selectFrameTab } from '../tab/tabSlice';
 import useRemoveTab from '../tab/useRemoveTab';
-import { IonButton, IonButtons, IonCard, IonFab, IonFabButton, IonIcon } from '@ionic/react';
+import { IonButton, IonButtons, IonCard, IonFab, IonFabButton, IonIcon, isPlatform } from '@ionic/react';
 import { add, close, people, remove, settingsOutline, sync } from 'ionicons/icons';
 
 interface SpaceControlsProps {
@@ -133,8 +133,12 @@ export default function SpaceControls(props: SpaceControlsProps) {
   return (
     <div style={{
       position: 'absolute',
-      right: 220,
-      top: 65,
+      right: isPlatform('ios') && !isPlatform('mobileweb')
+        ? 200
+        : 220,
+      top: isPlatform('ios') && !isPlatform('mobileweb')
+        ? 85
+        : 65,
     }}>
       <div style={{
         position: 'fixed',

@@ -74,7 +74,7 @@ export default function EntryTree(props: EntryTreeProps) {
       </div>
       <div style={{
         borderLeft: `2px solid ${arrow.user.color}`,
-        marginLeft: '8px',
+        marginLeft: 5,
       }}>
         {
           entryIds.map(entryId => {

@@ -266,25 +266,31 @@ function TwigControls(props: TwigControlsProps) {
 
   return (
     <IonButtons style={{
-      margin: 1,
-      marginTop: 0,
-      marginLeft: 25,
+      marginLeft: 5,
+      marginTop: 5,
+      marginBottom: -5,
       display: 'flex',
       flexDirection: 'row',
     }}>
       <IonButton
-        size='small'
         disabled={!canPost}
         onMouseDown={handleMouseDown} 
         onClick={handleReplyClick}
+        style={{
+          fontSize: 5,
+          height: 20,
+        }}
       >
         REPLY
       </IonButton>
       <IonButton 
-        size='small'
         disabled={!canView} 
         onMouseDown={handleMouseDown} 
         onClick={handleLinkClick}
+        style={{
+          fontSize: 5,
+          height: 20,
+        }}
       >
         LINK
       </IonButton>
@@ -294,9 +300,12 @@ function TwigControls(props: TwigControlsProps) {
         onMouseDown={handleMouseDown} 
         style={{
           color: isSubbed ? user?.color : null,
+          height: 20,
         }}
       >
-        <IonIcon icon={ellipsisVertical} size='small' />
+        <IonIcon icon={ellipsisVertical} style={{
+          fontSize: 5,
+        }}/>
       </IonButton>
       <IonPopover trigger={'twigOptionsButton-' + props.twig.id} triggerAction='click'>
         <div style={{
@@ -417,10 +426,26 @@ function TwigControls(props: TwigControlsProps) {
           </div>
         </div>
       </IonPopover>
-      <IonButton routerLink='/search' onMouseDown={handleMouseDown} onClick={handlePrevClick}>
+      <IonButton 
+        routerLink='/search' 
+        onMouseDown={handleMouseDown} 
+        onClick={handlePrevClick}
+        style={{
+          fontSize: 5,
+          height: 20,
+        }}
+      >
         {arrow?.inCount} IN
       </IonButton>
-      <IonButton routerLink='/search' onMouseDown={handleMouseDown} onClick={handleNextClick}>
+      <IonButton 
+        routerLink='/search'
+        onMouseDown={handleMouseDown} 
+        onClick={handleNextClick}
+        style={{
+          fontSize: 5,
+          height: 20,
+        }}
+      >
         {arrow?.outCount} OUT
       </IonButton>
       <div style={{
@@ -429,9 +454,12 @@ function TwigControls(props: TwigControlsProps) {
           : 'none',
       }}>
         <IonButton
-          size='small'
           onMouseDown={handleMouseDown}
           onClick={handleOpenClick}
+          style={{
+            fontSize: 5,
+            height: 20,
+          }}
         >
           OPEN {arrow?.twigN ? `(${arrow?.twigN})` : ''}
         </IonButton>

@@ -139,16 +139,18 @@ export default function EntryControls(props: EntryControlsProps) {
 
   return (
     <IonButtons style={{
-      bottom: 0,
-      margin: 1,
-      marginTop: 0,
-      marginLeft: 20,
-      fontSize: 12,
+      marginLeft: 8,
+      marginBottom: -8,
     }}>
-      <IonButton size='small' onClick={handleReplyClick}>
+      <IonButton onClick={handleReplyClick} style={{
+        fontSize: 10,
+        height: 20,
+      }}>
         REPLY
       </IonButton>
-      <IonButton size='small' onClick={handleLinkClick} style={{
+      <IonButton onClick={handleLinkClick} style={{
+        fontSize: 10,
+        height: 20,
       }}>
         LINK
       </IonButton>
@@ -156,8 +158,11 @@ export default function EntryControls(props: EntryControlsProps) {
         color: isSubbed
           ? user?.color
           : null,
+        height: 20,
       }}>
-        <IonIcon icon={ellipsisVertical} size='small' />
+        <IonIcon icon={ellipsisVertical} style={{
+          fontSize: 10,
+        }}/>
       </IonButton>
       <IonPopover trigger={'entryOptionsButton-' + props.entry.id} triggerAction='click'>
         <div style={{
@@ -257,6 +262,8 @@ export default function EntryControls(props: EntryControlsProps) {
             ? `1px solid ${arrowUser?.color}`
             : null,
           borderRadius: 5,
+          fontSize: 10,
+          height: 20,
         }}>
           {props.arrow.inCount} IN
         </IonButton>
@@ -266,8 +273,15 @@ export default function EntryControls(props: EntryControlsProps) {
             ? `1px solid ${arrowUser?.color}`
             : null,
           borderRadius: 5,
+          fontSize: 10,
+          height: 20,
         }}>
           {props.arrow.outCount} OUT
+        </IonButton>
+        <IonButton style={{
+          fontSize: 10,
+        }}>
+          OPEN
         </IonButton>
       </span>
     </IonButtons>

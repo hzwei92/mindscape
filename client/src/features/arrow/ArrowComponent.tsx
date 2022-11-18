@@ -16,10 +16,8 @@ interface ArrowProps {
   showLinkRightIcon: boolean;
   showPostIcon: boolean;
   instanceId: string;
-  isWindow: boolean;
-  isGroup: boolean;
-  isTab: boolean;
   fontSize: number;
+  tagFontSize: number;
 }
 
 export default function ArrowComponent(props: ArrowProps) {
@@ -59,31 +57,29 @@ export default function ArrowComponent(props: ArrowProps) {
 
   const time = new Date(arrow.removeDate || arrow.commitDate || arrow.saveDate || Date.now()).getTime();
   const timeString = getTimeString(time);
-
+  const isEntry = props.showPostIcon || props.showLinkLeftIcon || props.showLinkRightIcon
   return (
     <div style={{
-      paddingLeft: 30,
-      paddingBottom: 10,
-    }}>
-    <div style={{
-      margin:1,
       position: 'relative',
+      paddingLeft: 14,
     }}>
       <div style={{
         position: 'absolute',
-        left: -35,
-        top: -20,
+        left: -10,
+        top: -5,
       }}>
         <ArrowVoter arrow={arrow} />
       </div>
       <div style={{
-        fontSize: 20,
         display: 'flex',
         flexDirection: 'row',
         flexWrap: 'wrap',
+        fontSize: props.tagFontSize,
       }}>
         <span style={{
-          display: 'flex',
+          display: isEntry
+            ? 'flex'
+            : 'none',
           flexDirection: 'column',
           justifyContent: 'center',
           paddingRight: 5,
@@ -101,10 +97,11 @@ export default function ArrowComponent(props: ArrowProps) {
         <span style={{
           paddingRight: 5,
         }}>
-          <UserTag user={arrowUser} />
+          <UserTag user={arrowUser} fontSize={props.tagFontSize}/>
         </span>
         <span style={{
           paddingRight: 5,
+          fontSize: props.tagFontSize,
         }}>
           { timeString }
         </span>
@@ -140,26 +137,17 @@ export default function ArrowComponent(props: ArrowProps) {
             ? <IonLabel onClick={handleTitleClick} style={{
                 whiteSpace: 'pre-wrap',
                 wordWrap: 'break-word',
-                fontSize: 40,
+                fontSize: 20,
                 fontWeight: 'bold',
                 cursor: 'pointer',
+                color: arrow.color,
               }}>
-                {
-                  arrow.faviconUrl
-                    ? <img src={arrow.faviconUrl} style={{
-                        display: 'inline-block',
-                        width: 20,
-                        height: 20,
-                        marginRight: 1,
-                      }}/> 
-                    : null
-                }
                 {arrow.title}
               </IonLabel>
             : null
         }
         <div style={{
-          height: 10,
+          height: 5,
         }}/>
         <ArrowEditor
           arrow={arrow}
@@ -168,7 +156,6 @@ export default function ArrowComponent(props: ArrowProps) {
           fontSize={props.fontSize}
         />
       </div>
-    </div>
     </div>
   )
 

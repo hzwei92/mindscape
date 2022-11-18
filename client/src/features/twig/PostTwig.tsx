@@ -114,67 +114,59 @@ function PostTwig(props: PostTwigProps) {
   );
 
   return (
-    <div style={{
-      display: scale <= .25 && (isPlatform('ios') || isPlatform('android'))
-        ? 'none'
-        : 'flex',
-    }}>
-      <IonCard
-        ref={cardEl}
-        id={'twig-' + twig.id}
-        onMouseMove={handleMouseMove}
-        onMouseDown={handleMouseDown}
-        onClick={handleClick}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          width: TWIG_WIDTH,
-          opacity: .9,
-          margin: 0,
-          outline: isSelected
-            ? `10px solid ${twigUser?.color}`
-            : `1px solid ${twigUser?.color}`,
-          borderRadius: 15,
-          borderTopLeftRadius: 0,
-          backgroundColor: isLinking
-            ? twigUser?.color
-            : null,
-          cursor: pendingLink.sourceArrowId
-            ? 'crosshair'
-            : 'default', 
-          pointerEvents: 'auto',
-        }}
-      >
-        <TwigBar
-          twig={twig}
-          twigUser={twigUser}
-          isSelected={isSelected}
+    <IonCard
+      ref={cardEl}
+      id={'twig-' + twig.id}
+      onMouseMove={handleMouseMove}
+      onMouseDown={handleMouseDown}
+      onClick={handleClick}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        width: TWIG_WIDTH,
+        opacity: .9,
+        margin: 0,
+        outline: isSelected
+          ? `5px solid ${twigUser?.color}`
+          : null,
+        border: `1px solid ${twigUser?.color}`,
+        borderRadius: 8,
+        borderTopLeftRadius: 0,
+        backgroundColor: isLinking
+          ? twigUser?.color
+          : null,
+        cursor: pendingLink.sourceArrowId
+          ? 'crosshair'
+          : 'default', 
+        pointerEvents: 'auto',
+        fontSize: 10,
+      }}
+    >
+      <TwigBar
+        twig={twig}
+        twigUser={twigUser}
+        isSelected={isSelected}
+      />
+      <div style={{
+        padding: 5,
+      }}>
+        <ArrowComponent
+          arrowId={twig.detailId}
+          instanceId={twig.id}
+          showLinkLeftIcon={false}
+          showLinkRightIcon={false}
+          showPostIcon={false}
+          fontSize={twig.isOpen ? 30 : 10}
+          tagFontSize={10}
         />
-        <div style={{
-          padding: 0.5,
-          paddingLeft: 4,
-          paddingTop: 10,
-        }}>
-          <ArrowComponent
-            arrowId={twig.detailId}
-            instanceId={twig.id}
-            showLinkLeftIcon={false}
-            showLinkRightIcon={false}
-            showPostIcon={false}
-            isTab={!!twig.tabId}
-            isGroup={!twig.tabId && !!twig.groupId}
-            isWindow={!twig.tabId && !twig.groupId && !!twig.windowId}
-            fontSize={twig.isOpen ? 60 : 20}
-          />
-          <TwigControls
-            twig={twig}
-            isPost={true}
-          />
-        </div>
-      </IonCard>
-    </div>
+        <TwigControls
+          twig={twig}
+          isPost={true}
+        />
+      </div>
+    </IonCard>
   );
 }
 
