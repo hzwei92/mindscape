@@ -527,19 +527,19 @@ const SpaceComponent = (props: SpaceComponentProps) => {
           onMouseMove={handleTargetMouseMove(twig.id)} 
           style={{
             position: 'absolute',
-            left: pos.x + VIEW_RADIUS + 10,
-            top: pos.y + VIEW_RADIUS + 10,
+            left: pos.x + VIEW_RADIUS,
+            top: pos.y + VIEW_RADIUS,
             zIndex: MAX_Z_INDEX + twig.z,
-            width: twig.isOpen
+            width: twig.isOpen || twig.sourceId === twig.targetId
               ? TWIG_WIDTH
               : CLOSED_LINK_TWIG_DIAMETER,
-            height: twig.isOpen
+            height: twig.isOpen || twig.sourceId === twig.targetId
               ? idToHeight[twig.id]
               : CLOSED_LINK_TWIG_DIAMETER,
             backgroundColor: twig.user?.color,
             opacity: drag?.targetTwigId === twig.id
               ? 0.5
-              : 0,
+              : 0.5,
             borderRadius: 10,
             border: `2px solid ${twig.user.color}`,
           }}
