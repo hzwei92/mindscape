@@ -96,7 +96,7 @@ export class UsersService {
 
     const startArrow1 = await this.arrowsService.getArrowById(START_ARROW_1_ID);
     if (startArrow1) {
-      const tab1 = await this.tabsService.appendTab(user1, startArrow1, false, false);
+      const tab1 = await this.tabsService.appendTab(user1, startArrow1, false, true);
     }
 
     const startArrow2 = await this.arrowsService.getArrowById(START_ARROW_2_ID);
