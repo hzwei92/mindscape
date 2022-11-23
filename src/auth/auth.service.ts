@@ -25,14 +25,21 @@ export class AuthService {
   oauthClient: Auth.OAuth2Client;
 
   async refreshToken(token: string) {
-    const payload = await this.jwtService.verifyAsync(token, {
-      secret: this.configService.get('JWT_REFRESH_TOKEN_SECRET'),
-    });
-    const user = await this.usersService.getUserIfRefreshTokenMatches(payload.userId, token);
-    if (!user) {
-      throw new BadRequestException('Invalid refreshToken');
+    try {
+      const payload = await this.jwtService.verifyAsync(token, {
+        secret: this.configService.get('JWT_REFRESH_TOKEN_SECRET'),
+      });
+      const user = await this.usersService.getUserIfRefreshTokenMatches(payload.userId, token);
+      if (!user) {
+        throw new BadRequestException('Invalid refresh token');
+      }
+      return this.getAccessToken(user.id);
+    } catch (error) {
+      if (error.message === 'jwt expired') {
+        throw new BadRequestException('Invalid refresh token');
+      }
+      throw error;
     }
-    return this.getAccessToken(user.id);
   }
 
   async initUser(palette: string) {

@@ -5,6 +5,7 @@ import { selectCurrentUser } from '../user/userSlice';
 import { setAuthIsInit, setAuthIsValid, setTokenInterval } from './authSlice';
 import { Preferences } from '@capacitor/preferences';
 import { REFRESH_TOKEN as REFRESH_TOKEN_KEY } from '../../constants';
+import { useIonToast } from '@ionic/react';
 
 const REFRESH_TOKEN = gql`
   mutation RefreshToken($refreshToken: String!) {
@@ -17,10 +18,14 @@ export default function useToken() {
   
   const user = useAppSelector(selectCurrentUser);
 
+  const [present] = useIonToast();
+
   const [refresh] = useMutation(REFRESH_TOKEN, {
     onError: error => {
-      if (error.message === 'invalid token') {
-        console.log('Refresh Token Unauthorized');
+      if (error.message === 'Invalid refresh token') {
+        present('Your session has expired. Please log in again.');
+        
+        console.log('Invalid refresh token');
         if (user?.id) {
           //logoutUser(); TODO
         }
