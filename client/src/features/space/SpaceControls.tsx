@@ -3,15 +3,11 @@ import { scaleDown, scaleUp } from '../../utils';
 import { Dispatch, SetStateAction, useContext } from 'react';
 import { SpaceContext } from './SpaceComponent';
 import { useAppDispatch, useAppSelector } from '../../app/store';
-import { selectScale, selectSelectedTwigId, setScale } from './spaceSlice';
+import { selectScale, setScale } from './spaceSlice';
 import { useReactiveVar } from '@apollo/client';
-import { SpaceType } from './space';
-import { focusSpaceElVar, frameSpaceElVar } from '../../cache';
-import { selectIdToTwig } from '../twig/twigSlice';
-import { selectFocusTab, selectFrameTab } from '../tab/tabSlice';
-import useRemoveTab from '../tab/useRemoveTab';
 import { IonButton, IonButtons, IonCard, IonFab, IonFabButton, IonIcon, isPlatform } from '@ionic/react';
-import { add, close, people, remove, settingsOutline, sync } from 'ionicons/icons';
+import { add, people, remove, settingsOutline, sync } from 'ionicons/icons';
+import { spaceElVar } from '../../cache';
 
 interface SpaceControlsProps {
   setShowSettings: Dispatch<SetStateAction<boolean>>;
@@ -19,25 +15,13 @@ interface SpaceControlsProps {
 }
 export default function SpaceControls(props: SpaceControlsProps) {
   const dispatch = useAppDispatch();
-  const { space } = useContext(SpaceContext);
+  const { abstractId } = useContext(SpaceContext);
 
-  const frameTab = useAppSelector(selectFrameTab);
-  const focusTab = useAppSelector(selectFocusTab);
-
-  const frameSelectedTwigId = useAppSelector(selectSelectedTwigId(SpaceType.FRAME));
-  const frameIdToTwig = useAppSelector(selectIdToTwig(SpaceType.FRAME));
-  const focusSelectedTwigId = useAppSelector(selectSelectedTwigId(SpaceType.FOCUS));
-  const focusIdToTwig = useAppSelector(selectIdToTwig(SpaceType.FOCUS));
-
-  const spaceEl = useReactiveVar(space === SpaceType.FRAME
-    ? frameSpaceElVar
-    : focusSpaceElVar);
+  const spaceEl = useReactiveVar(spaceElVar)
     
-  const scale = useAppSelector(selectScale(space));
+  const scale = useAppSelector(selectScale(abstractId)) ?? 1;
 
   const isSynced = true;
-
-  const { removeTab } = useRemoveTab();
 
   const handleScaleDownClick = (event: React.MouseEvent) => {
     event.stopPropagation();
@@ -51,7 +35,7 @@ export default function SpaceControls(props: SpaceControlsProps) {
     const scale1 = scaleDown(scale);
 
     dispatch(setScale({
-      space,
+      abstractId,
       scale: scale1,
     }));
 
@@ -76,7 +60,7 @@ export default function SpaceControls(props: SpaceControlsProps) {
     const scale1 = scaleUp(scale);
 
     dispatch(setScale({
-      space,
+      abstractId,
       scale: scale1
     }));
 
@@ -88,33 +72,6 @@ export default function SpaceControls(props: SpaceControlsProps) {
         top,
       });
     }, 5)
-  };
-
-  const handleCloseClick = (event: React.MouseEvent) => {
-    if (space === SpaceType.FRAME) {
-      removeTab(frameTab?.id);
-      
-      if (focusTab) {
-        const focusTwig = focusIdToTwig[focusSelectedTwigId];
-        const route = `/g/${focusTab.arrow.routeName}/${focusTwig.i || 0}`;
-        //navigate(route);
-      }
-      else {
-        //navigate(`/`);
-      }
-    }
-    else if (space == SpaceType.FOCUS) {
-      removeTab(focusTab?.id);
-
-      if (frameTab) {
-        const frameTwig = frameIdToTwig[frameSelectedTwigId];
-        const route = `/g/${frameTab.arrow.routeName}/${frameTwig.i}`;
-        //navigate(route);
-      }
-      else {
-        //navigate(`/`);
-      }
-    }
   };
 
   const handleSettingsClick = () => {
@@ -136,9 +93,7 @@ export default function SpaceControls(props: SpaceControlsProps) {
       right: isPlatform('ios') && !isPlatform('mobileweb')
         ? 200
         : 220,
-      top: isPlatform('ios') && !isPlatform('mobileweb')
-        ? 85
-        : 65,
+      top: 0,
     }}>
       <div style={{
         position: 'fixed',
@@ -179,9 +134,6 @@ export default function SpaceControls(props: SpaceControlsProps) {
         </IonCard>
         <div>
         <IonFab>
-          <IonFabButton routerLink='/about' title='Close' size='small' color={'light'} onClick={handleCloseClick}>
-            <IonIcon icon={close} size='small'/>
-          </IonFabButton> 
           <IonFabButton title='Settings' size='small' color={'light'}onClick={handleSettingsClick}>
             <IonIcon icon={settingsOutline} size='small'/>
           </IonFabButton> 
@@ -189,7 +141,7 @@ export default function SpaceControls(props: SpaceControlsProps) {
             <IonIcon icon={people} size='small'/>
           </IonFabButton> 
           <div style={{
-            display: isSynced || space === 'FRAME'
+            display: isSynced
               ? 'none'
               : 'block'
           }}>

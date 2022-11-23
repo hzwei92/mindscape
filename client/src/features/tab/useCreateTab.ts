@@ -1,5 +1,7 @@
 import { gql, useMutation } from "@apollo/client";
-import { useAppDispatch, useAppSelector } from "../../app/store";
+import { useIonRouter } from "@ionic/react";
+import { useAppDispatch } from "../../app/store";
+import { Tab } from "./tab";
 import { FULL_TAB_FIELDS } from "./tabFragments";
 import { mergeTabs } from "./tabSlice";
 
@@ -25,6 +27,8 @@ const CREATE_TAB_BY_ROUTENAME = gql`
 export default function useCreateTab() {
   const dispatch = useAppDispatch();
 
+  const router = useIonRouter();
+
   const [createByRouteName] = useMutation(CREATE_TAB_BY_ROUTENAME, {
     onError: err => {
       console.error(err);
@@ -32,6 +36,12 @@ export default function useCreateTab() {
     onCompleted: data  => {
       console.log(data);
       dispatch(mergeTabs(data.createTabByRouteName));
+
+      data.createTabByRouteName.forEach((tab: Tab) => {
+        if (tab.isFocus) {
+          router.push(`/g/${tab.arrow.routeName}`);
+        }
+      })
     }
   });
 
@@ -42,6 +52,12 @@ export default function useCreateTab() {
     onCompleted: data  => {
       console.log(data);
       dispatch(mergeTabs(data.createTab));
+
+      data.createTab.forEach((tab: Tab) => {
+        if (tab.isFocus) {
+          router.push(`/g/${tab.arrow.routeName}`);
+        }
+      })
     }
   });
 

@@ -2,9 +2,8 @@ import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
 import { IdToType } from "../../types";
 import { setInit, setLogin, setLogout } from "../auth/authSlice";
+import { mergeTwigs } from "../space/spaceSlice";
 import { mergeTabs } from "../tab/tabSlice";
-import { mergeTwigs } from "../twig/twigSlice";
-import { setCurrentUser } from "../user/userSlice";
 import type { Arrow, ArrowInstance } from "./arrow";
 
 export interface ArrowState {
@@ -116,34 +115,10 @@ const arrowSlice = createSlice({
           return initialState;
         }
       })
-      .addCase(setLogin, (state, action) => {
-        const {
-          idToArrow,
-          urlToArrowId,
-        } = action.payload.tabs.reduce((acc, tab) => {
-          if (tab.arrow?.id) {
-            acc.idToArrow[tab.arrow.id] = tab.arrow;
-
-            if (tab.arrow.url) {
-              acc.urlToArrowId[tab.arrow.url] = tab.arrow.id
-            }
-          } 
-          return acc;
-        }, {
-          idToArrow: {} as IdToType<Arrow>,
-          urlToArrowId: {} as IdToType<string>,
-        });
-
-        return {
-          ...state,
-          idToArrow,
-          urlToArrowId,
-        }
-      })
       .addCase(setLogout, () => {
         return initialState;
       })
-      .addCase(setCurrentUser, (state, action) => {
+      .addCase(setLogin, (state, action) => {
         const {
           idToArrow,
           urlToArrowId,

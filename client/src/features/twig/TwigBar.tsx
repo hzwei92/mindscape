@@ -24,14 +24,14 @@ function TwigBar(props: TwigBarProps) {
   } = useContext(AppContext);
 
   const {
-    space, 
+    abstractId, 
     abstract, 
     canEdit,
     setRemovalTwigId,
     setTouches,
   } = useContext(SpaceContext);
   
-  const drag = useAppSelector(selectDrag(space));
+  const drag = useAppSelector(selectDrag(abstractId)) ?? {};
 
   const { openTwig } = useOpenTwig();
 
@@ -43,7 +43,7 @@ function TwigBar(props: TwigBarProps) {
     console.log('begin drag');
     if (!props.twig.parent) return;
     dispatch(setDrag({
-      space,
+      abstractId,
       drag: {
         ...drag,
         isScreen: false,

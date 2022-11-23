@@ -1,12 +1,11 @@
-import { gql, useReactiveVar, useSubscription } from '@apollo/client';
+import { gql, useSubscription } from '@apollo/client';
 import { useAppDispatch, useAppSelector } from '../../app/store';
 import { IdToType } from '../../types';
-import { Arrow } from '../arrow/arrow';
 import { selectSessionId } from '../auth/authSlice';
-import { PosType, SpaceType } from '../space/space';
+import { PosType } from '../space/space';
 import { mergeIdToPos } from '../space/spaceSlice';
 import { Twig } from './twig';
-import { mergeTwigs } from './twigSlice';
+import { mergeTwigs } from '../space/spaceSlice';
 
 const MOVE_TWIG_SUB = gql`
   subscription MoveTwig($sessionId: String!, $abstractId: String!) {
@@ -18,25 +17,25 @@ const MOVE_TWIG_SUB = gql`
   }
 `;
 
-export default function useMoveTwigSub(space: SpaceType, abstract: Arrow | null) {
+export default function useMoveTwigSub(abstractId: string) {
   const dispatch = useAppDispatch();
   const sessionId = useAppSelector(selectSessionId);
 
   useSubscription(MOVE_TWIG_SUB, {
     variables: {
       sessionId,
-      abstractId: abstract?.id,
+      abstractId,
     },
     onSubscriptionData: ({subscriptionData: {data: {moveTwig}}}) => {
       console.log(moveTwig);
 
       dispatch(mergeTwigs({
-        space,
+        abstractId,
         twigs: [moveTwig],
       }))
 
       dispatch(mergeIdToPos({
-        space,
+        abstractId,
         idToPos: moveTwig.reduce((acc: IdToType<PosType>, twig: Twig) => {
           acc[twig.id] = {
             x: twig.x,

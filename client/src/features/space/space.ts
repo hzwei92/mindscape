@@ -1,10 +1,6 @@
 import React from "react";
 import { IdToType } from "../../types";
-
-export enum SpaceType {
-  FRAME = 'FRAME',
-  FOCUS = 'FOCUS',
-};
+import { Twig } from "../twig/twig";
 
 export type PosType = {
   x: number;
@@ -22,15 +18,29 @@ export type DragState = {
   targetTwigId: string;
 };
 
+export type AvatarType = {
+  id: string;
+  name: string;
+  color: string;
+  x: number;
+  y: number;
+  date: Date;
+  timeout: ReturnType<typeof setTimeout>;
+};
 
-export type SpaceState = {
-  isOpen: boolean;
+
+export type SpaceData = {
   selectedTwigId: string;
-  spaceEl: React.MutableRefObject<HTMLElement | undefined> | null;
   scale: number;
   scroll: ScrollState;
   cursor: PosType;
   drag: DragState;
   idToPos: IdToType<PosType>;
   idToHeight: IdToType<number>;
-}
+  idToTwig: IdToType<Twig>;
+  iToTwigId: IdToType<string>;
+  shouldReloadTwigTree: boolean;
+  idToChildIdToTrue: IdToType<IdToType<true>>;
+  idToDescIdToTrue: IdToType<IdToType<true>>;
+  idToAvatar: IdToType<AvatarType>;
+};

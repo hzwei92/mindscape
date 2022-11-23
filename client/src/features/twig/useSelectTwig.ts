@@ -1,13 +1,11 @@
 
 import { gql, useMutation } from '@apollo/client';
-import { mergeTwigs, selectIdToDescIdToTrue, selectIdToTwig } from './twigSlice';
 import type { Arrow } from '../arrow/arrow';
 import type { Twig } from './twig';
 import { useAppDispatch, useAppSelector } from '../../app/store';
 import { selectSessionId } from '../auth/authSlice';
 import { mergeArrows } from '../arrow/arrowSlice';
-import { SpaceType } from '../space/space';
-import { setSelectedSpace, setSelectedTwigId } from '../space/spaceSlice';
+import { mergeTwigs, selectIdToDescIdToTrue, selectIdToTwig, setSelectedTwigId } from '../space/spaceSlice';
 import { useIonRouter } from '@ionic/react';
 
 const SELECT_TWIG = gql`
@@ -26,15 +24,15 @@ const SELECT_TWIG = gql`
   }
 `;
 
-export default function useSelectTwig(space: SpaceType, canEdit: boolean) {
+export default function useSelectTwig(abstractId: string, canEdit: boolean) {
   const dispatch = useAppDispatch();
 
   const router = useIonRouter();
 
   const sessionId = useAppSelector(selectSessionId);
 
-  const idToTwig = useAppSelector(selectIdToTwig(space));
-  const idToDescIdToTrue = useAppSelector(selectIdToDescIdToTrue(space));
+  const idToTwig = useAppSelector(selectIdToTwig(abstractId)) || {};
+  const idToDescIdToTrue = useAppSelector(selectIdToDescIdToTrue(abstractId)) || {};
 
   const [select] = useMutation(SELECT_TWIG, {
     onError: error => {
@@ -56,17 +54,9 @@ export default function useSelectTwig(space: SpaceType, canEdit: boolean) {
         },
       });
     }
-    else if (space === 'FOCUS') {
-      //dispatch(setFocusIsSynced(false));
-    }
-    else {
-      throw new Error('Unable to edit frame')
-    }
 
-    dispatch(setSelectedSpace(space));
-    
     dispatch(setSelectedTwigId({
-      space,
+      abstractId,
       selectedTwigId: twig.id,
     }));
 
@@ -88,7 +78,7 @@ export default function useSelectTwig(space: SpaceType, canEdit: boolean) {
     twigs.push(twig1);
 
     dispatch(mergeTwigs({
-      space,
+      abstractId,
       twigs,
     }));
     

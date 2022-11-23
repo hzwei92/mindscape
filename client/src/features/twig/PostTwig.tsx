@@ -6,9 +6,8 @@ import { SpaceContext } from '../space/SpaceComponent';
 import { TWIG_WIDTH } from '../../constants';
 import useLinkArrows from '../arrow/useLinkArrows';
 import ArrowComponent from '../arrow/ArrowComponent';
-import { selectSelectedTwigId, setSelectedSpace, mergeIdToHeight, selectHeightByTwigId, selectScale } from '../space/spaceSlice';
+import { selectSelectedTwigId, mergeIdToHeight, selectHeightByTwigId, selectScale, selectTwigById } from '../space/spaceSlice';
 import { selectUserById } from '../user/userSlice';
-import { selectTwigById } from './twigSlice';
 import { useAppDispatch, useAppSelector } from '../../app/store';
 import { AppContext } from '../../app/App';
 import { IonCard, IonGrid, IonPopover, isPlatform } from '@ionic/react';
@@ -25,19 +24,19 @@ function PostTwig(props: PostTwigProps) {
   } = useContext(AppContext);
 
   const {
-    space,
+    abstractId,
     abstract,
     canEdit,
   } = useContext(SpaceContext);
 
-  const scale = useAppSelector(selectScale(space));
+  const scale = useAppSelector(selectScale(abstractId));
   
-  const twig = useAppSelector(state => selectTwigById(state, space, props.twigId));
+  const twig = useAppSelector(state => selectTwigById(state, abstractId, props.twigId));
   const twigUser = useAppSelector(state => selectUserById(state, twig.userId));
 
-  const height = useAppSelector(state => selectHeightByTwigId(state, space, props.twigId));
+  const height = useAppSelector(state => selectHeightByTwigId(state, abstractId, props.twigId));
 
-  const selectedTwigId = useAppSelector(selectSelectedTwigId(space));
+  const selectedTwigId = useAppSelector(selectSelectedTwigId(abstractId));
   const isSelected = twig.id === selectedTwigId;
 
   const cardEl = useRef<HTMLIonCardElement>(null);
@@ -45,7 +44,7 @@ function PostTwig(props: PostTwigProps) {
   useEffect(() => {
     if (cardEl.current?.clientHeight && cardEl.current.clientHeight !== height) {
       dispatch(mergeIdToHeight({
-        space,
+        abstractId,
         idToHeight: {
           [props.twigId]:  cardEl.current.clientHeight,
         }
@@ -53,7 +52,7 @@ function PostTwig(props: PostTwigProps) {
     }
   }, [cardEl.current?.clientHeight])
 
-  const { selectTwig } = useSelectTwig(space, canEdit);
+  const { selectTwig } = useSelectTwig(abstractId, canEdit);
   const { linkArrows } = useLinkArrows();
 
   const handleClick = (event: React.MouseEvent) => {
@@ -80,7 +79,6 @@ function PostTwig(props: PostTwigProps) {
   
   const handleMouseDown = (event: React.MouseEvent) => {
     event.stopPropagation();
-    dispatch(setSelectedSpace(space));
     if (!isSelected) {
       selectTwig(abstract, twig);
     }

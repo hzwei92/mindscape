@@ -1,13 +1,13 @@
 import { gql, useMutation } from '@apollo/client';
 import { FULL_TWIG_FIELDS } from '../twig/twigFragments';
-import { mergeTwigs, resetTwigs } from '../twig/twigSlice';
 import { Dispatch, SetStateAction, useEffect } from 'react';
-import { SpaceType } from './space';
-import { selectSelectedTwigId } from './spaceSlice';
+import { mergeIdToPos, mergeTwigs, selectSelectedTwigId } from './spaceSlice';
 import { useAppDispatch, useAppSelector } from '../../app/store';
-import { Arrow } from '../arrow/arrow';
 import useCenterTwig from '../twig/useCenterTwig';
-import { useIonLoading, useIonToast } from '@ionic/react';
+import { useIonToast } from '@ionic/react';
+import { IdToType } from '../../types';
+import { PosType } from './space';
+import { Twig } from '../twig/twig';
 
 const GET_DETAILS = gql`
   mutation GetTwigs($abstractId: String!) {
@@ -18,14 +18,14 @@ const GET_DETAILS = gql`
   ${FULL_TWIG_FIELDS}
 `;
 
-export default function useInitSpace(space: SpaceType, abstract: Arrow | null, setShouldLoadTwigPositions: Dispatch<SetStateAction<boolean>>) {
+export default function useInitSpace(abstractId: string) {
   const dispatch = useAppDispatch();
 
   const [presentToast] = useIonToast();
 
-  const selectedTwigId = useAppSelector(selectSelectedTwigId(space));
+  const selectedTwigId = useAppSelector(selectSelectedTwigId(abstractId));
 
-  const { centerTwig } = useCenterTwig(SpaceType.FRAME);
+  const { centerTwig } = useCenterTwig(abstractId);
 
   const [getTwigs] = useMutation(GET_DETAILS, {
     onError: error => {
@@ -34,29 +34,36 @@ export default function useInitSpace(space: SpaceType, abstract: Arrow | null, s
     },
     onCompleted: data => {
       console.log(data);
+      const idToPos = data.getTwigs.reduce((acc: IdToType<PosType>, twig: Twig) => {
+        acc[twig.id] = {
+          x: twig.x,
+          y: twig.y,
+        };
+        return acc;
+      }, {});
+  
       dispatch(mergeTwigs({
-        space,
+        abstractId,
         twigs: data.getTwigs,
       }));
 
-      setShouldLoadTwigPositions(true);
-
+      dispatch(mergeIdToPos({
+        abstractId,
+        idToPos,
+      }));
+      
       centerTwig(selectedTwigId || '', true, 0);
     },
   });
 
   useEffect(() => {
-    console.log('init Space', space, abstract?.id, abstract);
-
-    if (!abstract?.id) return;
-
-    dispatch(resetTwigs(space));
+    if (!abstractId) return;
 
     getTwigs({
       variables: {
-        abstractId: abstract.id
+        abstractId,
       }
     });
-  }, [abstract?.id])
+  }, [abstractId])
 
 }

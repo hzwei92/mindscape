@@ -5,12 +5,11 @@ import { Arrow } from "../arrow/arrow";
 import { mergeArrows } from "../arrow/arrowSlice";
 import { selectSessionId } from "../auth/authSlice";
 import { ROLE_FIELDS } from "../role/roleFragments";
-import { PosType, SpaceType } from "../space/space";
-import { mergeIdToPos } from "../space/spaceSlice";
+import { PosType } from "../space/space";
+import { mergeIdToPos, mergeTwigs } from "../space/spaceSlice";
 import { mergeUsers } from "../user/userSlice";
 import { Twig } from "./twig";
 import { FULL_TWIG_FIELDS } from "./twigFragments";
-import { mergeTwigs } from "./twigSlice";
 
 const LINK_TWIGS = gql`
   subscription LinkTwigs($sessionId: String!, $abstractId: String!) {
@@ -53,7 +52,7 @@ const LINK_TWIGS = gql`
 `;
 
 
-export default function useLinkTwigSub(space: SpaceType, abstract: Arrow | null) {
+export default function useLinkTwigSub(abstractId: string) {
   const dispatch = useAppDispatch();
 
   const sessionId = useAppSelector(selectSessionId);
@@ -61,7 +60,7 @@ export default function useLinkTwigSub(space: SpaceType, abstract: Arrow | null)
   useSubscription(LINK_TWIGS, {
     variables: {
       sessionId,
-      abstractId: abstract?.id,
+      abstractId,
     },
     shouldResubscribe: true,
     onSubscriptionData: ({subscriptionData: {data: {linkTwigs}}}) => {
@@ -78,14 +77,14 @@ export default function useLinkTwigSub(space: SpaceType, abstract: Arrow | null)
       dispatch(mergeUsers([user]));
       
       dispatch(mergeTwigs({
-        space,
+        abstractId,
         twigs,
       }));
 
       dispatch(mergeArrows([abstract, source, target]));
 
       dispatch(mergeIdToPos({
-        space,
+        abstractId,
         idToPos: twigs.reduce((acc: IdToType<PosType>, twig: Twig) => {
           acc[twig.id] = {
             x: twig.x,

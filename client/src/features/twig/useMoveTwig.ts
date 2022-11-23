@@ -2,8 +2,7 @@ import { gql, useMutation } from '@apollo/client';
 import { FULL_ROLE_FIELDS } from '../role/roleFragments';
 import { applyRole } from '../role/applyRole';
 import { selectSessionId } from '../auth/authSlice';
-import { mergeTwigs } from './twigSlice';
-import { SpaceType } from '../space/space';
+import { mergeTwigs } from '../space/spaceSlice';
 import { useAppDispatch, useAppSelector } from '../../app/store';
 
 const MOVE_TWIG = gql`
@@ -22,7 +21,7 @@ const MOVE_TWIG = gql`
   ${FULL_ROLE_FIELDS}
 `;
 
-export default function useMoveTwig(space: SpaceType) {
+export default function useMoveTwig(abstractId: string) {
   const dispatch = useAppDispatch();
 
   const sessionId = useAppSelector(selectSessionId);
@@ -37,7 +36,7 @@ export default function useMoveTwig(space: SpaceType) {
     onCompleted: data => {
       console.log(data);
       dispatch(mergeTwigs({
-        space,
+        abstractId,
         twigs: data.moveTwig.twigs,
       }))
     },

@@ -1,11 +1,10 @@
-import { gql, useReactiveVar, useSubscription } from '@apollo/client';
+import { gql, useSubscription } from '@apollo/client';
 import { useAppDispatch, useAppSelector } from '../../app/store';
 import { IdToType } from '../../types';
-import { Arrow } from '../arrow/arrow';
 import { selectSessionId } from '../auth/authSlice';
-import { PosType, SpaceType } from '../space/space';
+import { PosType } from '../space/space';
 import { mergeIdToPos } from '../space/spaceSlice';
-import { mergeTwigs } from './twigSlice';
+import { mergeTwigs } from '../space/spaceSlice';
 
 const GRAFT_TWIG_SUB = gql`
   subscription GraftTwig($sessionId: String!, $abstractId: String!) {
@@ -27,7 +26,7 @@ const GRAFT_TWIG_SUB = gql`
   }
 `;
 
-export default function useGraftTwigSub(space: SpaceType, abstract: Arrow | null) {
+export default function useGraftTwigSub(abstractId: string) {
   const dispatch = useAppDispatch();
 
   const sessionId = useAppSelector(selectSessionId);
@@ -35,19 +34,19 @@ export default function useGraftTwigSub(space: SpaceType, abstract: Arrow | null
   useSubscription(GRAFT_TWIG_SUB, {
     variables: {
       sessionId,
-      abstractId: abstract?.id,
+      abstractId,
     },
     onSubscriptionData: ({subscriptionData: {data: {graftTwig}}}) => {
       console.log(graftTwig);
 
       const { twig, descs } = graftTwig;
       dispatch(mergeTwigs({
-        space,
+        abstractId,
         twigs: [twig, ...descs],
       }))
 
       dispatch(mergeIdToPos({
-        space,
+        abstractId,
         idToPos: [twig, ...descs].reduce((acc: IdToType<PosType>, twig) => {
           acc[twig.id] = { 
             x: twig.x, 

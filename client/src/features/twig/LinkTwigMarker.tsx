@@ -17,17 +17,17 @@ interface LinkTwigMarkerProps {
 }
 function LinkTwigMarker(props: LinkTwigMarkerProps) {
   const { 
-    space, 
+    abstractId,
     abstract, 
     canEdit,
   } = useContext(SpaceContext);
-  const selectedTwigId = useAppSelector(selectSelectedTwigId(space));
+  const selectedTwigId = useAppSelector(selectSelectedTwigId(abstractId));
   const isSelected = props.twig.id === selectedTwigId;
   
   const [linkI, setLinkI] = useState(0);
   const [clickTimeout, setClickTimeout] = useState(null as ReturnType<typeof setTimeout> | null);
 
-  const { selectTwig } = useSelectTwig(space, canEdit);
+  const { selectTwig } = useSelectTwig(abstractId, canEdit);
 
   
 

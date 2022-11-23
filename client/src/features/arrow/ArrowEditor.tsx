@@ -12,7 +12,6 @@ import linkifyIt, { LinkifyIt } from 'linkify-it';
 import type { Arrow } from './arrow';
 import tlds from 'tlds';
 import createIframelyPlugin from '../editor/createIframelyPlugin';
-import { SpaceContext } from '../space/SpaceComponent';
 import useSaveArrow from './useSaveArrow';
 import { useAppDispatch, useAppSelector } from '../../app/store';
 import { selectInstanceById, updateInstance } from './arrowSlice';
@@ -53,8 +52,6 @@ export default function ArrowEditor(props: ArrowEditorProps) {
     palette,
     pendingLink,
   } = useContext(AppContext);
-
-  const { space } = useContext(SpaceContext);
 
   const instance = useAppSelector(state => selectInstanceById(state, props.instanceId))
 

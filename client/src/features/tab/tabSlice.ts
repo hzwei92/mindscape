@@ -3,7 +3,6 @@ import type { RootState } from '../../app/store';
 import { IdToType } from "../../types";
 import { Tab } from "./tab";
 import { setInit, setLogin, setLogout } from "../auth/authSlice";
-import { setCurrentUser } from "../user/userSlice";
 
 export interface TabState {
   idToTab: IdToType<Tab>;
@@ -40,7 +39,7 @@ const authSlice = createSlice({
         }
       })
       .addCase(setLogin, (state, action) => {
-        const idToTab = action.payload.tabs.reduce((acc: IdToType<Tab>, tab) => {
+        const idToTab = (action.payload?.tabs || []).reduce((acc: IdToType<Tab>, tab) => {
           acc[tab.id] = tab;
           return acc;
         }, {});
@@ -51,16 +50,6 @@ const authSlice = createSlice({
       })
       .addCase(setLogout, (state, action) => {
         return initialState;
-      })
-      .addCase(setCurrentUser, (state, action) => {
-        const idToTab = (action.payload?.tabs || []).reduce((acc: IdToType<Tab>, tab) => {
-          acc[tab.id] = tab;
-          return acc;
-        }, {});
-        return {
-          ...state,
-          idToTab,
-        };
       })
   }
 });

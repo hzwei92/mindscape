@@ -1,29 +1,29 @@
 import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonModal } from '@ionic/react';
 import React, { useContext, useEffect, useRef } from 'react';
 import { useAppSelector } from '../../app/store';
-import { selectIdToDescIdToTrue, selectIdToTwig } from '../twig/twigSlice';
 import useRemoveTwig from '../twig/useRemoveTwig';
 import useSelectTwig from '../twig/useSelectTwig';
 import { SpaceContext } from './SpaceComponent';
+import { selectIdToDescIdToTrue, selectIdToTwig } from './spaceSlice';
 
 export default function RemoveTwigModal() {
   const { 
-    space,
+    abstractId,
     abstract,
     removalTwigId, 
     setRemovalTwigId,
     canEdit,
   } = useContext(SpaceContext);
 
-  const idToTwig = useAppSelector(selectIdToTwig(space));
-  const idToDescIdToTrue = useAppSelector(selectIdToDescIdToTrue(space));
+  const idToTwig = useAppSelector(selectIdToTwig(abstractId)) ?? {}; 
+  const idToDescIdToTrue = useAppSelector(selectIdToDescIdToTrue(abstractId)) ?? {};
 
   const removalTwig = idToTwig[removalTwigId];
 
   const isLink = removalTwig?.sourceId !== removalTwig?.targetId;
 
   const { removeTwig } = useRemoveTwig();
-  const { selectTwig } = useSelectTwig(space, canEdit);
+  const { selectTwig } = useSelectTwig(abstractId, canEdit);
 
 
   const modalRef = useRef<HTMLIonModalElement>(null);

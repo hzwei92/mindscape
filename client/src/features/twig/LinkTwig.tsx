@@ -1,9 +1,8 @@
 import React, { useContext, useEffect, useRef } from 'react';
 import { SpaceContext } from '../space/SpaceComponent';
 import { CLOSED_LINK_TWIG_DIAMETER, TWIG_WIDTH } from '../../constants';
-import { mergeIdToHeight, selectHeightByTwigId, selectSelectedTwigId } from '../space/spaceSlice';
+import { mergeIdToHeight, selectHeightByTwigId, selectSelectedTwigId, selectTwigById } from '../space/spaceSlice';
 import { selectUserById } from '../user/userSlice';
-import { selectTwigById } from './twigSlice';
 import { useAppDispatch, useAppSelector } from '../../app/store';
 import { AppContext } from '../../app/App';
 import useOpenTwig from './useOpenTwig';
@@ -29,12 +28,12 @@ function LinkTwig(props: LinkTwigProps) {
 
   const { 
     abstract,
-    space, 
+    abstractId, 
     canEdit,
     setRemovalTwigId,
   } = useContext(SpaceContext);
   
-  const twig = useAppSelector(state => selectTwigById(state, space, props.twigId));
+  const twig = useAppSelector(state => selectTwigById(state, abstractId, props.twigId));
   const twigUser = useAppSelector(state => selectUserById(state, twig.userId));
 
   const isLinking = (
@@ -42,9 +41,9 @@ function LinkTwig(props: LinkTwigProps) {
     pendingLink.targetArrowId === twig.detailId
   );
 
-  const height = useAppSelector(state => selectHeightByTwigId(state, space, props.twigId));
+  const height = useAppSelector(state => selectHeightByTwigId(state, abstractId, props.twigId));
 
-  const selectedTwigId = useAppSelector(selectSelectedTwigId(space));
+  const selectedTwigId = useAppSelector(selectSelectedTwigId(abstractId));
   const isSelected = twig.id === selectedTwigId;
 
   const cardEl = useRef<HTMLIonCardElement>(null);
@@ -52,7 +51,7 @@ function LinkTwig(props: LinkTwigProps) {
   useEffect(() => {
     if (cardEl.current?.clientHeight && cardEl.current.clientHeight !== height) {
       dispatch(mergeIdToHeight({
-        space,
+        abstractId,
         idToHeight: {
           [twig.id]:  cardEl.current.clientHeight,
         }
@@ -61,7 +60,7 @@ function LinkTwig(props: LinkTwigProps) {
   }, [cardEl.current?.clientHeight])
 
   const { openTwig } = useOpenTwig();
-  const { selectTwig } = useSelectTwig(space, canEdit);
+  const { selectTwig } = useSelectTwig(abstractId, canEdit);
   const { linkArrows } = useLinkArrows();
 
   const handleClick = (event: React.MouseEvent) => {

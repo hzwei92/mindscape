@@ -1,25 +1,22 @@
 import { useReactiveVar } from '@apollo/client';
-import { IonCard, IonCardContent, IonContent, IonIcon } from '@ionic/react';
+import { IonCard, IonIcon } from '@ionic/react';
 import { navigateCircleOutline } from 'ionicons/icons';
-import React, { createContext, Dispatch, MouseEvent, SetStateAction, TouchList, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import React, { createContext, Dispatch, memo, MouseEvent, SetStateAction, TouchList, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { AppContext } from '../../app/App';
 import { useAppDispatch, useAppSelector } from '../../app/store';
-import { focusAdjustIdToPosVar, focusSpaceElVar, frameAdjustIdToPosVar, frameSpaceElVar } from '../../cache';
-import { CLOSED_LINK_TWIG_DIAMETER, MAX_Z_INDEX, TWIG_WIDTH, VIEW_RADIUS } from '../../constants';
+import { adjustTwigIdToPosVar, spaceElVar } from '../../cache';
+import { CLOSED_LINK_TWIG_DIAMETER, MAX_Z_INDEX, OFF_WHITE, TWIG_WIDTH, VIEW_RADIUS } from '../../constants';
 import { IdToType } from '../../types';
 import { checkPermit } from '../../utils';
 import { Arrow } from '../arrow/arrow';
 import { selectArrowById } from '../arrow/arrowSlice';
-import { selectIdToCursor } from '../cursor/cursorSlice';
-import usePublishCursor from '../cursor/usePublishCursor';
-import usePublishCursorSub from '../cursor/usePublishCursorSub';
+import { MenuMode } from '../menu/menu';
 import { Role } from '../role/role';
-import { selectFocusTab } from '../tab/tabSlice';
+import { selectIdToRole } from '../role/roleSlice';
 import LinkTwig from '../twig/LinkTwig';
 import LinkTwigMarker from '../twig/LinkTwigMarker';
 import PostTwig from '../twig/PostTwig';
 import PostTwigMarker from '../twig/PostTwigMarker';
-import { selectIdToDescIdToTrue, selectIdToTwig } from '../twig/twigSlice';
 import useGraftTwig from '../twig/useGraftTwig';
 import useGraftTwigSub from '../twig/useGraftTwigSub';
 import useLinkTwigSub from '../twig/useLinkTwigSub';
@@ -33,16 +30,18 @@ import useTwigTree from '../twig/useTwigTree';
 import RemoveTwigModal from './RemoveTwigModal';
 import RolesModal from './RolesModal';
 import SettingsModal from './SettingsModal';
-import { PosType, SpaceType } from './space';
+import { PosType } from './space';
 import SpaceControls from './SpaceControls';
 import SpaceNav from './SpaceNav';
-import { mergeIdToPos, moveTwigs, resetSpace, selectCursor, selectDrag, selectIdToHeight, selectIdToPos, selectScale, selectScroll, setCursor, setDrag, setScale, setScroll } from './spaceSlice';
+import { mergeIdToPos, moveTwigs, selectAbstractIdToData, selectCursor, selectDrag, selectIdToAvatar, selectIdToDescIdToTrue, selectIdToHeight, selectIdToPos, selectIdToTwig, selectScale, selectScroll, setCursor, setDrag, setScale, setScroll } from './spaceSlice';
 import useInitSpace from './useInitSpace';
+import usePublishAvatar from './usePublishAvatar';
+import usePublishAvatarSub from './usePublishAvatarSub';
 
 export const SpaceContext = createContext({} as {
+  abstractId: string;
   abstract: Arrow | null;
   role: Role | null;
-  space: SpaceType;
   canView: boolean;
   canPost: boolean;
   canEdit: boolean;
@@ -53,57 +52,62 @@ export const SpaceContext = createContext({} as {
 });
 
 interface SpaceComponentProps {
-  space: SpaceType;
+  abstractId: string;
+  left: number;
+  right: number;
 }
 
 const SpaceComponent = (props: SpaceComponentProps) => {
   const dispatch = useAppDispatch();
 
-  const { moveTwig } = useMoveTwig(props.space);
-  const { graftTwig } = useGraftTwig(props.space);
-
-  const { user, palette } = useContext(AppContext);
-
-  const focusTab = useAppSelector(selectFocusTab);
-
-  const abstract = useAppSelector(state => selectArrowById(state, focusTab?.arrowId));
+  const { user, palette, menuX, menuMode } = useContext(AppContext);
  
-  const { publishCursor } = usePublishCursor(props.space, focusTab?.arrowId);
+  useInitSpace(props.abstractId);
+  useTwigTree(props.abstractId);
 
-  usePublishCursorSub(props.space, focusTab?.arrowId);
+  usePublishAvatarSub(props.abstractId);
 
-  useReplyTwigSub(props.space, abstract);
-  usePasteTwigSub(props.space, abstract);
+  useReplyTwigSub(props.abstractId);
+  usePasteTwigSub(props.abstractId);
 
-  useLinkTwigSub(props.space, abstract);
+  useLinkTwigSub(props.abstractId);
 
-  useMoveTwigSub(props.space, abstract);
-  useGraftTwigSub(props.space, abstract);
+  useMoveTwigSub(props.abstractId);
+  useGraftTwigSub(props.abstractId);
 
-  useOpenTwigSub(props.space, abstract);
+  useOpenTwigSub(props.abstractId);
 
-  useRemoveTwigSub(props.space, abstract);
+  useRemoveTwigSub(props.abstractId);
 
-  const scale = useAppSelector(selectScale(props.space));
-  const scroll = useAppSelector(selectScroll(props.space));
-  const cursor = useAppSelector(selectCursor(props.space));
-  const drag = useAppSelector(selectDrag(props.space));
+  const { publishAvatar } = usePublishAvatar(props.abstractId);
+  const { moveTwig } = useMoveTwig(props.abstractId);
+  const { graftTwig } = useGraftTwig(props.abstractId);
 
-  const idToCursor = useAppSelector(selectIdToCursor(props.space));
+  
+  const adjustTwigIdToPos = useReactiveVar(adjustTwigIdToPosVar); 
 
-  const idToPos = useAppSelector(selectIdToPos(props.space));
-  const idToHeight = useAppSelector(selectIdToHeight(props.space));
-  const idToTwig = useAppSelector(selectIdToTwig(props.space));
-  const idToDescIdToTrue = useAppSelector(selectIdToDescIdToTrue(props.space))
+  const idToRole = useAppSelector(selectIdToRole);
 
-  const adjustIdToPosDetail = useReactiveVar(props.space === SpaceType.FRAME
-    ? frameAdjustIdToPosVar
-    : focusAdjustIdToPosVar)
+  const abstractIdToData = useAppSelector(selectAbstractIdToData);
+
+  const {
+    scale,
+    scroll,
+    cursor,
+    drag,
+    idToTwig,
+    idToPos,
+    idToHeight,
+    idToDescIdToTrue,
+    idToAvatar,
+  } = abstractIdToData[props.abstractId] ?? {};
+
+  const abstract = useAppSelector(state => selectArrowById(state, props.abstractId));
 
   let role = null as Role | null;
   (abstract?.roles || []).some(role_i => {
     if (role_i.userId === user?.id && !role_i.deleteDate) {
-      role = role_i;
+      role = idToRole[role_i.id];
       return true;
     }
     return false;
@@ -125,20 +129,10 @@ const SpaceComponent = (props: SpaceComponentProps) => {
   const [isScaling, setIsScaling] = useState(false);
 
 
-  const [shouldLoadTwigPositions, setShouldLoadTwigPositions] = useState(false);
-
-  useTwigTree(props.space);
-  useInitSpace(props.space, abstract, setShouldLoadTwigPositions);
-
   useEffect(() => {
     if (!spaceEl?.current) return;
 
-    if (props.space === SpaceType.FRAME) {
-      frameSpaceElVar(spaceEl);
-    }
-    else {
-      focusSpaceElVar(spaceEl);
-    }
+    spaceElVar(spaceEl);
 
     const preventWheelDefault = (event: WheelEvent) => {
       if (event.ctrlKey || event.metaKey) {
@@ -153,38 +147,13 @@ const SpaceComponent = (props: SpaceComponentProps) => {
     }
   }, [spaceEl?.current]);
 
-  useEffect(() => {
-    if (!shouldLoadTwigPositions) return;
-    
-    setShouldLoadTwigPositions(false);
-
-    dispatch(resetSpace(props.space));
-
-    const idToPos1 = Object.keys(idToTwig).reduce((acc: IdToType<PosType>, twigId) => {
-      const twig = idToTwig[twigId];
-      acc[twigId] = {
-        x: twig.x,
-        y: twig.y,
-      };
-      return acc;
-    }, {});
-
-    if (Object.keys(idToPos1).length) {
-      dispatch(mergeIdToPos({
-        space: props.space,
-        idToPos: idToPos1,
-      }));
-    }
-
-  }, [shouldLoadTwigPositions, idToTwig]);
-
   const [removalTwigId, setRemovalTwigId] = useState('');
 
   const spaceContextValue = useMemo(() => {
     return {
+      abstractId: props.abstractId,
       abstract,
       role,
-      space: props.space,
       canView,
       canPost, 
       canEdit,
@@ -193,31 +162,27 @@ const SpaceComponent = (props: SpaceComponentProps) => {
       touches,
       setTouches,
     };
-  }, [abstract, role, props.space, canView, canPost, canEdit, removalTwigId, touches]);
+  }, [props.abstractId, abstract, role, canView, canPost, canEdit, removalTwigId, touches]);
 
   const moveDrag = (dx: number, dy: number) => {
-    if (drag.isScreen) {
+    if (drag?.isScreen) {
       return;
     }
 
-    if (!drag.twigId) return;
+    if (!drag?.twigId) return;
 
     const dx1 = dx / scale;
     const dy1 = dy / scale;
 
     dispatch(moveTwigs({
-      space: props.space,
+      abstractId: props.abstractId,
       twigIds: [
-        drag.twigId,
-        ...Object.keys(idToDescIdToTrue[drag.twigId] || {}),
+        drag?.twigId,
+        ...Object.keys(idToDescIdToTrue[drag?.twigId] || {}),
       ],
       dx: dx1,
       dy: dy1,
     }));
-
-    if (canEdit) {
-      //dragTwig(drag.twigId, dx1, dy1);
-    }
   };
 
   useEffect(() => {
@@ -225,36 +190,36 @@ const SpaceComponent = (props: SpaceComponentProps) => {
     const x = spaceEl.current.scrollLeft + moveEvent.clientX;
     const y = spaceEl.current.scrollTop + moveEvent.clientY;
 
-    const dx = x - cursor.x;
-    const dy = y - cursor.y;
+    const dx = x - (cursor?.x ?? 0);
+    const dy = y - (cursor?.y ?? 0);
 
     moveDrag(dx, dy);
     
     dispatch(setCursor({
-      space: props.space,
+      abstractId: props.abstractId,
       cursor: {
         x,
         y,
       },
     }));
 
-    publishCursor(x, y);
+    publishAvatar(x, y);
 
     setMoveEvent(null);
   }, [moveEvent, cursor]);
 
   useEffect(() => {
-    if (Object.keys(adjustIdToPosDetail).length) {
+    if (Object.keys(adjustTwigIdToPos).length) {
       dispatch(mergeIdToPos({
-        space: props.space,
-        idToPos: adjustIdToPosDetail,
+        abstractId: props.abstractId,
+        idToPos: adjustTwigIdToPos,
       }));
     }
-  }, [adjustIdToPosDetail])
+  }, [adjustTwigIdToPos]);
 
   const updateScroll = (left: number, top: number) => {
     dispatch(setScroll({
-      space: props.space,
+      abstractId: props.abstractId,
       scroll: {
         left,
         top,
@@ -265,7 +230,7 @@ const SpaceComponent = (props: SpaceComponentProps) => {
     const dy = top - scroll.top;
 
     dispatch(setCursor({
-      space: props.space,
+      abstractId: props.abstractId,
       cursor: {
         x: cursor.x + dx,
         y: cursor.y + dy,
@@ -287,14 +252,14 @@ const SpaceComponent = (props: SpaceComponentProps) => {
       }
 
       const center = {
-        x: cursor.x / scale,
-        y: cursor.y / scale,
+        x: (cursor.x - (menuMode === MenuMode.NONE ? 0 : menuX) - 50) / scale,
+        y: (cursor.y - 32) / scale,
       };
 
       const scale1 = Math.min(Math.max(.03125, scale + event.deltaY * -0.004), 4)
 
-      const left =  Math.round((center.x * scale1) - (event.clientX));
-      const top = Math.round(center.y * scale1 - (event.clientY));
+      const left =  Math.round((center.x * scale1) - (event.clientX - (menuMode === MenuMode.NONE ? 0 : menuX) - 50));
+      const top = Math.round(center.y * scale1 - (event.clientY - 32));
       
       spaceEl.current.scrollTo({
         left,
@@ -304,7 +269,7 @@ const SpaceComponent = (props: SpaceComponentProps) => {
       setIsScaling(true);
       updateScroll(left, top)
       dispatch(setScale({
-        space: props.space,
+        abstractId: props.abstractId,
         scale: scale1
       }));
     }
@@ -312,7 +277,7 @@ const SpaceComponent = (props: SpaceComponentProps) => {
 
   const handleMouseDown = (event: React.MouseEvent) => {
     dispatch(setDrag({
-      space: props.space,
+      abstractId: props.abstractId,
       drag: {
         isScreen: true,
         twigId: '',
@@ -323,7 +288,7 @@ const SpaceComponent = (props: SpaceComponentProps) => {
 
   const endDrag = () => {
     dispatch(setDrag({
-      space: props.space,
+      abstractId: props.abstractId,
       drag: {
         isScreen: false,
         twigId: '',
@@ -331,15 +296,15 @@ const SpaceComponent = (props: SpaceComponentProps) => {
       }
     }));
 
-    if (!drag.twigId) return;
+    if (!drag?.twigId) return;
 
     if (canEdit) {
-      const pos = idToPos[drag.twigId]
-      if (drag.targetTwigId) {
-        graftTwig(drag.twigId, drag.targetTwigId, pos.x, pos.y);
+      const pos = idToPos[drag?.twigId]
+      if (drag?.targetTwigId) {
+        graftTwig(drag?.twigId, drag?.targetTwigId, pos.x, pos.y);
       }
       else {
-        moveTwig(drag.twigId, pos.x, pos.y);
+        moveTwig(drag?.twigId, pos.x, pos.y);
       }
     }
     else {
@@ -352,19 +317,19 @@ const SpaceComponent = (props: SpaceComponentProps) => {
   }
 
   const handleMouseMove = (event: React.MouseEvent, targetId?: string) => {
-    if (drag.isScreen || drag.twigId) {
+    if (drag?.isScreen || drag?.twigId) {
       event.preventDefault();
     }
-    if (!targetId && drag.targetTwigId && !drag.isScreen) {
+    if (!targetId && drag?.targetTwigId && !drag?.isScreen) {
       dispatch(setDrag({
-        space: props.space,
+        abstractId: props.abstractId,
         drag: {
           ...drag,
           targetTwigId: '',
         },
       }));
     }
-    if (drag.isScreen) {
+    if (drag?.isScreen) {
       if (!spaceEl?.current) return;
       spaceEl.current.scrollBy(-1 * event.movementX, -1 * event.movementY)
       return;
@@ -377,9 +342,9 @@ const SpaceComponent = (props: SpaceComponentProps) => {
 
   const handleTargetMouseMove = (targetId: string) => (event: React.MouseEvent) => {
     event.stopPropagation();
-    if (drag.targetTwigId !== targetId) {
+    if (drag?.targetTwigId !== targetId) {
       dispatch(setDrag({
-        space: props.space,
+        abstractId: props.abstractId,
         drag: {
           ...drag,
           targetTwigId: targetId,
@@ -454,12 +419,12 @@ const SpaceComponent = (props: SpaceComponentProps) => {
       updateScroll(left, top)
       dispatch(setScale(scale1));*/
     }
-    else if (drag.twigId) {
+    else if (drag?.twigId) {
       const current = event.touches.item(0);
       const dx = Math.round(current.clientX - touches.item(0).clientX);
       const dy = Math.round(current.clientY - touches.item(0).clientY);
 
-      const pos = idToPos[drag.twigId];
+      const pos = idToPos[drag?.twigId];
 
       let targetTwigId = '';
       Object.keys(idToTwig).some(twigId => {
@@ -479,10 +444,10 @@ const SpaceComponent = (props: SpaceComponentProps) => {
         return !!targetTwigId;
       })
 
-      if (targetTwigId !== drag.targetTwigId) {
+      if (targetTwigId !== drag?.targetTwigId) {
         if (targetTwigId) {
           dispatch(setDrag({
-            space: props.space,
+            abstractId: props.abstractId,
             drag: {
               ...drag,
               targetTwigId,
@@ -491,7 +456,7 @@ const SpaceComponent = (props: SpaceComponentProps) => {
         }
         else {
           dispatch(setDrag({
-            space: props.space,
+            abstractId: props.abstractId,
             drag: {
               ...drag,
               targetTwigId: '',
@@ -520,9 +485,9 @@ const SpaceComponent = (props: SpaceComponentProps) => {
   const idToPos1: IdToType<PosType> = {};
 
 
-  Object.keys(idToTwig).forEach(twigId => {
+  Object.keys(idToTwig || {}).forEach(twigId => {
     const twig = idToTwig[twigId];
-    const pos = idToPos[twigId];
+    const pos = (idToPos ?? {})[twigId];
 
     if (!twig || twig.deleteDate || !pos) return;
     if (twig.abstractId !== abstract?.id) return;
@@ -549,12 +514,12 @@ const SpaceComponent = (props: SpaceComponentProps) => {
 
 
     if (
-      drag.twigId &&
-      twig.id !== drag.twigId && 
-      !Object.keys(idToDescIdToTrue[drag.twigId] || {}).some(descId => descId === twig.id) &&
-      twig.sourceId !== drag.twigId &&
-      twig.targetId !== drag.twigId &&
-      twig.id !== idToTwig[drag.twigId].parent?.id
+      drag?.twigId &&
+      twig.id !== drag?.twigId && 
+      !Object.keys(idToDescIdToTrue[drag?.twigId] || {}).some(descId => descId === twig.id) &&
+      twig.sourceId !== drag?.twigId &&
+      twig.targetId !== drag?.twigId &&
+      twig.id !== idToTwig[drag?.twigId].parent?.id
     ) {
       dropTargets.push(
         <div 
@@ -572,7 +537,7 @@ const SpaceComponent = (props: SpaceComponentProps) => {
               ? idToHeight[twig.id]
               : CLOSED_LINK_TWIG_DIAMETER,
             backgroundColor: twig.user?.color,
-            opacity: drag.targetTwigId === twig.id
+            opacity: drag?.targetTwigId === twig.id
               ? 0.5
               : 0,
             borderRadius: 10,
@@ -659,14 +624,8 @@ const SpaceComponent = (props: SpaceComponentProps) => {
   });
 
   if (Object.keys(idToPos1).length) {
-    if (props.space === SpaceType.FRAME) {
-      frameAdjustIdToPosVar(idToPos1);
-    }
-    else {
-      focusAdjustIdToPosVar(idToPos1);
-    }
+    adjustTwigIdToPosVar(idToPos1);
   }
-
 
   return (
     <SpaceContext.Provider value={spaceContextValue}>
@@ -680,15 +639,15 @@ const SpaceComponent = (props: SpaceComponentProps) => {
         onTouchEnd={handleTouchEnd}
         style={{
           margin: 0,
-          top: 44,
+          padding: 0,
+          height: '100%',
           width: '100%',
-          height: 'calc(100% - 44px)',
           overflow:'scroll',
           backgroundColor: palette === 'dark'
             ? '#000000'
-            : '#e0e0e0',
+            : OFF_WHITE,
           borderRadius: 0,
-          cursor: drag.isScreen || drag.twigId
+          cursor: drag?.isScreen || drag?.twigId
             ? 'grabbing'
             : 'grab',
           position: 'relative',
@@ -713,20 +672,20 @@ const SpaceComponent = (props: SpaceComponentProps) => {
           { dropTargets }
         </div>
         {
-          Object.keys(idToCursor).map(id => {
-            const cursor = idToCursor[id];
+          Object.keys(idToAvatar || {}).map(id => {
+            const avatar = idToAvatar[id];
             return (
               <div key={`cursor-${id}`} style={{
                 position: 'absolute',
-                left: (cursor.x * scale) - 10,
-                top: (cursor.y * scale) - 60,
+                left: (avatar.x * scale) - 10,
+                top: (avatar.y * scale) - 60,
                 zIndex: MAX_Z_INDEX + 10000,
-                color: cursor.color,
+                color: avatar.color,
                 display: 'flex',
                 fontSize: 20,
               }}>
                 <IonIcon icon={navigateCircleOutline} size='large'/>
-                {cursor.name}
+                {avatar.name}
               </div>
             )
           })
@@ -750,4 +709,4 @@ const SpaceComponent = (props: SpaceComponentProps) => {
   );
 };
 
-export default SpaceComponent;
+export default memo(SpaceComponent);

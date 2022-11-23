@@ -2,23 +2,20 @@ import { useReactiveVar } from '@apollo/client';
 import { useContext } from 'react';
 import { AppContext } from '../../app/App';
 import { useAppSelector } from '../../app/store';
-import { focusSpaceElVar, frameSpaceElVar } from '../../cache';
+import { spaceElVar } from '../../cache';
 import { VIEW_RADIUS } from '../../constants';
-import { SpaceType } from '../space/space';
 import { selectIdToPos, selectScale } from '../space/spaceSlice';
 
-export default function useCenterTwig(space: SpaceType) {
+export default function useCenterTwig(abstractId: string) {
   const { 
     user,
     width,
   } = useContext(AppContext);
 
-  const spaceEl = useReactiveVar(space === SpaceType.FRAME
-    ? frameSpaceElVar
-    : focusSpaceElVar);
+  const spaceEl = useReactiveVar(spaceElVar);
 
-  const idToPos = useAppSelector(selectIdToPos(space));
-  const scale = useAppSelector(selectScale(space));
+  const idToPos = useAppSelector(selectIdToPos(abstractId)) || {};
+  const scale = useAppSelector(selectScale(abstractId)) || 1;
 
   const centerTwig = (twigId: string, isSmooth: boolean, delay: number, coords?: any) => {
     setTimeout(() => {
@@ -26,8 +23,6 @@ export default function useCenterTwig(space: SpaceType) {
       if (!user) return;
       
       const pos = idToPos[twigId];
-
-      console.log('centerTwig', pos, space, twigId);
 
       const x1 = ((coords?.x ?? pos?.x ?? 0) + VIEW_RADIUS) * scale;
       const y1 = ((coords?.y ?? pos?.y ?? 0) + VIEW_RADIUS) * scale;

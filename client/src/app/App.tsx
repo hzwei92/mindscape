@@ -1,13 +1,8 @@
-import { Redirect, Route } from 'react-router-dom';
 import {
   IonApp,
-  IonRouterOutlet,
   setupIonicReact
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import SearchPage from '../pages/SearchPage';
-import GraphsPage from '../pages/GraphsPage';
-import ContactsPage from '../pages/ContactsPage';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -28,19 +23,18 @@ import '@ionic/react/css/display.css';
 /* Theme variables */
 import '../theme/variables.css';
 
-import AboutPage from '../pages/AboutPage';
-import AppBar from './AppBar';
-import useAuth from '../features/auth/useAuth';
 import { createContext, Dispatch, SetStateAction, useEffect, useMemo, useRef, useState } from 'react';
 import { User } from '../features/user/user';
 import { useAppSelector } from './store';
 import { selectCurrentUser, selectIdToUser } from '../features/user/userSlice';
-import ViewerPage from '../pages/ViewerPage';
-import AccountPage from '../pages/AccountPage';
-import LoginPage from '../pages/LoginPage';
-import LogoutPage from '../pages/LogoutPage';
+import { MenuMode } from '../features/menu/menu';
+import { APP_BAR_WIDTH, MENU_MIN_WIDTH } from '../constants';
+import AppBar from './AppBar1';
+import useAuth from '../features/auth/useAuth';
 import CreateGraphModal from '../features/arrow/CreateGraphModal';
 import UserModal from '../features/user/UserModal';
+import MenuComponent from '../features/menu/MenuComponent';
+import ExplorerComponent from '../features/explorer/ExplorerComponent';
 
 setupIonicReact();
 
@@ -62,6 +56,9 @@ export const AppContext = createContext({} as {
   palette: 'dark' | 'light';
   setPalette: Dispatch<SetStateAction<'dark' | 'light'>>;
 
+  newTwigId: string;
+  setNewTwigId: Dispatch<SetStateAction<string>>;
+
   pendingLink: PendingLinkType;
   setPendingLink: Dispatch<SetStateAction<PendingLinkType>>;
 
@@ -75,6 +72,15 @@ export const AppContext = createContext({} as {
 
   selectedUserId: string;
   setSelectedUserId: Dispatch<SetStateAction<string>>;
+
+  menuMode: MenuMode;
+  setMenuMode: Dispatch<SetStateAction<MenuMode>>;
+
+  menuX: number;
+  setMenuX: Dispatch<SetStateAction<number>>;
+
+  menuIsResizing: boolean;
+  setMenuIsResizing: Dispatch<SetStateAction<boolean>>;
 });
 
 const App: React.FC = () => {
@@ -102,7 +108,28 @@ const App: React.FC = () => {
 
   const [clipboardArrowIds, setClipboardArrowIds] = useState([] as string[]);
 
+  const [newTwigId, setNewTwigId] = useState('');
+
+
   const [selectedUserId, setSelectedUserId] = useState('');
+
+  const [menuMode, setMenuMode] = useState(MenuMode.ABOUT);
+  const [menuX, setMenuX] = useState(400);
+  const [menuIsResizing, setMenuIsResizing] = useState(false);
+
+
+  const [frameIsOpen, setFrameIsOpen] = useState(false);
+  const [frameX, setFrameX] = useState(width);
+  const [frameIsResizing, setFrameIsResizing] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWidth(window.innerWidth);
+      setHeight(window.innerHeight);
+    };
+
+    window.addEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     if (user?.palette && user?.palette !== palette) {
@@ -119,9 +146,6 @@ const App: React.FC = () => {
 
   useAuth(palette);
 
-  const mainMenuRef = useRef<HTMLIonMenuElement>(null);
-  const userMenuRef = useRef<HTMLIonMenuElement>(null);
-
   const appContextValue = useMemo(() => {
     return {
       user,
@@ -131,6 +155,9 @@ const App: React.FC = () => {
 
       palette,
       setPalette,
+
+      newTwigId,
+      setNewTwigId,
 
       pendingLink,
       setPendingLink,
@@ -146,23 +173,49 @@ const App: React.FC = () => {
 
       selectedUserId,
       setSelectedUserId,
+
+      menuMode,
+      setMenuMode,
+      menuX,
+      setMenuX,
+      menuIsResizing,
+      setMenuIsResizing,
     };
   }, [
     user, 
     width, height, 
     palette,
+    newTwigId,
     pendingLink, 
     isCreatingGraph,
     createGraphArrowId,
     clipboardArrowIds,
     selectedUserId,
+    menuMode,
+    menuX,
+    menuIsResizing
   ]);
+
+  const handleMouseMove = (event: React.MouseEvent) => {
+    if (menuIsResizing) {
+      event.preventDefault();
+      setMenuX(
+        Math.max(event.clientX, MENU_MIN_WIDTH)
+      );
+    }
+  }
+
+  const handleMouseUp = (event: React.MouseEvent) => {
+    if (menuIsResizing) {
+      event.preventDefault();
+      setMenuIsResizing(false);
+    }
+  }
 
   return (
     <AppContext.Provider value={appContextValue}>
       <IonApp>
         <IonReactRouter>
-          <AppBar />
           <svg width={0} height={0}>
             <defs>
               {
@@ -190,19 +243,33 @@ const App: React.FC = () => {
               }
             </defs>
           </svg>
-          <IonRouterOutlet id='router-outlet'>
-            <Route exact path="/about" component={AboutPage} />
-            <Route exact path="/account" component={AccountPage} />
-            <Route exact path="/contacts" component={ContactsPage} />
-            <Route exact path="/graphs" component={GraphsPage} />
-            <Route exact path="/login" component={LoginPage} />
-            <Route exact path="/logout" component={LogoutPage} />
-            <Route exact path="/search" component={SearchPage} />
-            <Route path='/g/:routeName' component={ViewerPage}/>
-            <Route exact path="/">
-              <Redirect to="/about" />
-            </Route>
-          </IonRouterOutlet>
+          <div 
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp} 
+            style={{
+              width: '100%',
+              height: '100%',
+              display: 'flex',
+              flexDirection: 'row',
+            }}
+          >
+            <AppBar />
+            <div style={{
+              display: menuMode === MenuMode.NONE
+                ? 'none'
+                : 'block',
+              height: '100%',
+              width: menuX - APP_BAR_WIDTH + 6,
+            }}>
+              <MenuComponent />
+            </div>
+            <div style={{
+              height: '100%',
+              width: width - (menuMode === MenuMode.NONE ? 0 : menuX),
+            }}>
+              <ExplorerComponent />
+            </div>
+          </div>
           <CreateGraphModal />
           <UserModal />
         </IonReactRouter>
