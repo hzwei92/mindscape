@@ -38,7 +38,7 @@ export default function EntryComponent(props: EntryComponentProps) {
   const focusTab = useAppSelector(selectFocusTab);
   const selectedTwigId = useAppSelector(selectSelectedTwigId(focusTab?.arrowId || ''));
   
-  const idToTwig = useAppSelector(selectIdToTwig(focusTab?.arrowId || ''));
+  const idToTwig = useAppSelector(selectIdToTwig(focusTab?.arrowId || '')) || {};
   const selectedTwig = idToTwig[selectedTwigId];
 
   // useAppSelector(state => selectInstanceById(state, props.entry.id)) // rerender on instance change
