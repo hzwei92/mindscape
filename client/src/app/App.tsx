@@ -265,7 +265,7 @@ const App: React.FC = () => {
             </div>
             <div style={{
               height: '100%',
-              width: width - (menuMode === MenuMode.NONE ? 0 : menuX),
+              width: width - (menuMode === MenuMode.NONE ? 50 : menuX),
             }}>
               <ExplorerComponent />
             </div>
