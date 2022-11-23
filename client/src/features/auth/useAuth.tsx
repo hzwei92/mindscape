@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import useToken from './useToken';
 import { FULL_USER_FIELDS } from '../user/userFragments';
 import { gql, useMutation } from '@apollo/client';
@@ -6,6 +6,7 @@ import { useAppDispatch, useAppSelector } from '../../app/store';
 import { selectAuthIsValid, selectAuthIsInit, selectAuthIsComplete, setLogin } from './authSlice';
 import { Preferences } from '@capacitor/preferences';
 import { ACCESS_TOKEN, REFRESH_TOKEN } from '../../constants';
+import { MenuMode } from '../menu/menu';
 
 const INIT_USER = gql`
   mutation InitUser($palette: String!) {
@@ -29,7 +30,7 @@ const GET_CURRENT_USER = gql`
   ${FULL_USER_FIELDS}
 `;
 
-export default function useAuth(palette: 'dark' | 'light') {
+export default function useAuth(palette: 'dark' | 'light', setMenuMode: Dispatch<SetStateAction<MenuMode>>) {
   const dispatch = useAppDispatch();
 
   const isInit = useAppSelector(selectAuthIsInit);
@@ -79,6 +80,8 @@ export default function useAuth(palette: 'dark' | 'light') {
       refreshTokenInterval();
 
       dispatch(setLogin(data.initUser.user));
+
+      setMenuMode(MenuMode.ABOUT);
     }
   });
 
