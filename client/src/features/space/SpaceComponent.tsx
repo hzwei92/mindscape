@@ -539,7 +539,7 @@ const SpaceComponent = (props: SpaceComponentProps) => {
             backgroundColor: twig.user?.color,
             opacity: drag?.targetTwigId === twig.id
               ? 0.5
-              : 0.5,
+              : 0,
             borderRadius: 10,
             border: `2px solid ${twig.user.color}`,
           }}
