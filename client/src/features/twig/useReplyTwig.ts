@@ -6,7 +6,7 @@ import { Arrow, createArrow } from '../arrow/arrow';
 import { selectSessionId } from '../auth/authSlice';
 import { useContext } from 'react';
 import { createTwig, Twig } from './twig';
-import { mergeTwigs, setNewTwigId } from './twigSlice';
+import { mergeTwigs } from '../space/spaceSlice';
 import { SpaceContext } from '../space/SpaceComponent';
 import { getEmptyDraft } from '../../utils';
 import { mergeIdToPos, selectIdToPos } from '../space/spaceSlice';
@@ -72,13 +72,10 @@ export default function useReplyTwig() {
 
   const [present] = useIonToast();
 
-  const { user } = useContext(AppContext);
-  const { 
-    space, 
-    abstract,
-  } = useContext(SpaceContext);
+  const { user, setNewTwigId } = useContext(AppContext);
+  const { abstractId, abstract } = useContext(SpaceContext);
 
-  const idToPos = useAppSelector(selectIdToPos(space));
+  const idToPos = useAppSelector(selectIdToPos(abstractId));
 
   const sessionId = useAppSelector(selectSessionId);
   
@@ -109,12 +106,12 @@ export default function useReplyTwig() {
       dispatch(mergeArrows([source, abstract]));
       
       dispatch(mergeTwigs({
-        space,
+        abstractId,
         twigs: [link, target]
       }));
 
       dispatch(mergeIdToPos({
-        space,
+        abstractId,
         idToPos: {
           [link.id]: {
             x: link.x,
@@ -192,10 +189,10 @@ export default function useReplyTwig() {
       target: null,
     });
 
-    dispatch(setNewTwigId(twig.id));
+    setNewTwigId(twig.id);
 
     dispatch(mergeIdToPos({
-      space,
+      abstractId,
       idToPos: {
         [twig.id]: {
           x,
@@ -205,7 +202,7 @@ export default function useReplyTwig() {
     }));
 
     dispatch(mergeTwigs({
-      space,
+      abstractId,
       twigs: [twig],
     }))
 

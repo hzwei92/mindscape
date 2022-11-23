@@ -65,7 +65,7 @@ export class User {
 }
 
 @ObjectType()
-export class UserCursor {
+export class UserAvatar {
   @Field()
   id: string;
 

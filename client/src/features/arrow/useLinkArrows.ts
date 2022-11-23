@@ -2,7 +2,7 @@ import { gql, useMutation } from '@apollo/client';
 import { useContext } from 'react';
 import { FULL_TWIG_FIELDS } from '../twig/twigFragments';
 import { ROLE_FIELDS } from '../role/roleFragments';
-import { mergeTwigs } from '../twig/twigSlice';
+import { mergeTwigs } from '../space/spaceSlice';
 import { useAppDispatch, useAppSelector } from '../../app/store';
 import { selectSessionId } from '../auth/authSlice';
 import { SpaceContext } from '../space/SpaceComponent';
@@ -95,7 +95,7 @@ export default function useLinkArrows() {
   } = useContext(AppContext);
 
   const { 
-    space, 
+    abstractId, 
     abstract,
   } = useContext(SpaceContext);
 
@@ -148,14 +148,14 @@ export default function useLinkArrows() {
       dispatch(mergeUsers([user]));
       
       dispatch(mergeTwigs({
-        space,
+        abstractId,
         twigs,
       }));
 
       dispatch(mergeArrows([abstract, source, target]));
 
       dispatch(mergeIdToPos({
-        space,
+        abstractId,
         idToPos: twigs.reduce((acc: IdToType<PosType>, twig: Twig) => {
           acc[twig.id] = {
             x: twig.x,

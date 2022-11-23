@@ -6,9 +6,8 @@ import { Arrow } from '../arrow/arrow';
 import { selectSessionId } from '../auth/authSlice';
 import { useContext } from 'react';
 import { createTwig, Twig } from './twig';
-import { mergeTwigs, setNewTwigId } from './twigSlice';
 import { SpaceContext } from '../space/SpaceComponent';
-import { mergeIdToPos, selectIdToPos } from '../space/spaceSlice';
+import { mergeIdToPos, mergeTwigs, selectIdToPos } from '../space/spaceSlice';
 import { mergeArrows, selectIdToArrow } from '../arrow/arrowSlice';
 import { useAppDispatch, useAppSelector } from '../../app/store';
 import { AppContext } from '../../app/App';
@@ -69,16 +68,16 @@ export default function usePasteTwig() {
 
   const [present] = useIonToast();
 
-  const { user, clipboardArrowIds } = useContext(AppContext);
+  const { user, clipboardArrowIds, setNewTwigId } = useContext(AppContext);
   
   const { 
-    space, 
+    abstractId, 
     abstract,
   } = useContext(SpaceContext);
 
 
   const idToArrow = useAppSelector(selectIdToArrow)
-  const idToPos = useAppSelector(selectIdToPos(space));
+  const idToPos = useAppSelector(selectIdToPos(abstractId));
 
   const sessionId = useAppSelector(selectSessionId);
   
@@ -108,12 +107,12 @@ export default function usePasteTwig() {
       dispatch(mergeArrows([source]));
       
       dispatch(mergeTwigs({
-        space,
+        abstractId,
         twigs: [link, target]
       }));
 
       dispatch(mergeIdToPos({
-        space,
+        abstractId,
         idToPos: {
           [link.id]: {
             x: link.x,
@@ -177,10 +176,10 @@ export default function usePasteTwig() {
       target: null,
     });
 
-    dispatch(setNewTwigId(twig.id));
+    setNewTwigId(twig.id);
 
     dispatch(mergeIdToPos({
-      space,
+      abstractId,
       idToPos: {
         [twig.id]: {
           x,
@@ -190,7 +189,7 @@ export default function usePasteTwig() {
     }));
 
     dispatch(mergeTwigs({
-      space,
+      abstractId,
       twigs: [twig],
     }))
 

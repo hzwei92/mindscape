@@ -1,5 +1,4 @@
 import { Arrow } from "../arrow/arrow";
-import { SpaceType } from "../space/space";
 import { User } from "../user/user";
 
 export type Twig = {
@@ -95,11 +94,4 @@ export const createTwig = (params: {
     __typename: 'Twig'
   };
   return twig;
-}
-
-
-export type CopyingTwigType = {
-  space: SpaceType;
-  twigId: string;
-  parentTwigId: string;
 }

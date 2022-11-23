@@ -2,10 +2,9 @@ import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from '../../app/store';
 import { IdToType } from "../../types";
 import { Role } from "./role";
-import { setInit, setLogin, setLogout } from "../auth/authSlice";
-import { setCurrentUser } from "../user/userSlice";
-import { mergeTwigs } from "../twig/twigSlice";
+import { setInit, setLogout } from "../auth/authSlice";
 import { mergeArrows } from "../arrow/arrowSlice";
+import { mergeTwigs } from "../space/spaceSlice";
 
 export interface RoleState {
   idToRole: IdToType<Role>;
@@ -40,16 +39,6 @@ const authSlice = createSlice({
         if (!action.payload) {
           return initialState;
         }
-      })
-      .addCase(setLogin, (state, action) => {
-        const idToRole = action.payload.roles.reduce((acc: IdToType<Role>, role) => {
-          acc[role.id] = role;
-          return acc;
-        }, {});
-        return {
-          ...state,
-          idToRole,
-        };
       })
       .addCase(setLogout, (state, action) => {
         return initialState;

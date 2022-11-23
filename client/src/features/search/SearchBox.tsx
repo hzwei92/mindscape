@@ -56,7 +56,7 @@ function SearchBox(props: SearchBoxProps) {
           width: 'calc(100%)',
         }}
         type={'text'}
-        placeholder={'Search query...'}
+        placeholder={'Search...'}
         value={slice.query}
         onIonChange={handleChange}
         onKeyPress={handleKeyPress}

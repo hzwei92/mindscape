@@ -1,8 +1,7 @@
 import { gql, useMutation } from "@apollo/client";
-import { IonAvatar, IonButtons, IonCard, IonCardContent, IonCardHeader, IonLabel, IonModal } from "@ionic/react";
+import { IonAvatar, IonButtons, IonCard, IonCardContent, IonCardHeader, IonLabel, IonModal, useIonRouter } from "@ionic/react";
 import md5 from "md5";
 import { useContext, useEffect, useRef, useState } from "react";
-import { useHistory } from "react-router";
 import { AppContext } from "../../app/App";
 import { useAppSelector } from "../../app/store";
 import { Tab } from "../tab/tab";
@@ -38,7 +37,7 @@ export default function UserModal() {
 
   const { createTab } = useCreateTab();
 
-  const history = useHistory();
+  const router = useIonRouter();
 
   const [getUser] = useMutation(GET_USER, {
     onError: err => {
@@ -76,7 +75,7 @@ export default function UserModal() {
         return !!arrowTab;
       });
     if (arrowTab) {
-      history.push(`/g/${arrowTab?.arrow.routeName}/0`);
+      router.push(`/g/${arrowTab?.arrow.routeName}`);
     }
     else {
       createTab(arrowId, null, false, true);

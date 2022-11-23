@@ -2,25 +2,24 @@ import { gql, useMutation, useReactiveVar } from '@apollo/client'
 import { useState } from 'react';
 import { useAppSelector } from '../../app/store';
 import { selectSessionId } from '../auth/authSlice';
-import { SpaceType } from '../space/space';
-import { selectScale } from '../space/spaceSlice';
+import { selectScale } from './spaceSlice';
 
-const PUBLISH_CURSOR = gql`
-  mutation PublishCursor($sessionId: String!, $abstractId: String!, $x: Int!, $y: Int!) {
-    publishCursor(sessionId: $sessionId, abstractId: $abstractId, x: $x, y: $y) {
+const PUBLISH_AVATAR = gql`
+  mutation PublishAvatar($sessionId: String!, $abstractId: String!, $x: Int!, $y: Int!) {
+    publishAvatar(sessionId: $sessionId, abstractId: $abstractId, x: $x, y: $y) {
       id
     }
   }
 `;
 
-export default function usePublishCursor(space: SpaceType, abstractId?: string) {
+export default function usePublishAvatar(abstractId: string) {
   const sessionId = useAppSelector(selectSessionId);
   
-  const scale = useAppSelector(selectScale(space));
+  const scale = useAppSelector(selectScale(abstractId)) ?? 1;
 
   const [count, setCount] = useState(0);
 
-  const [publish] = useMutation(PUBLISH_CURSOR, {
+  const [publish] = useMutation(PUBLISH_AVATAR, {
     onError: error => {
       console.error(error);
     },
@@ -29,7 +28,7 @@ export default function usePublishCursor(space: SpaceType, abstractId?: string) 
     }
   });
 
-  const publishCursor = (x: number, y: number) => {
+  const publishAvatar = (x: number, y: number) => {
     if (!abstractId) return;
 
     setCount(count => (count + 1) % 10);
@@ -45,5 +44,5 @@ export default function usePublishCursor(space: SpaceType, abstractId?: string) 
     });
   }
 
-  return { publishCursor }
+  return { publishAvatar }
 }

@@ -4,8 +4,8 @@ import { useAppDispatch, useAppSelector } from '../../app/store';
 import { selectSessionId } from '../auth/authSlice';
 import { FULL_ROLE_FIELDS } from '../role/roleFragments';
 import { SpaceContext } from '../space/SpaceComponent';
+import { mergeTwigs, selectIdToChildIdToTrue, selectIdToDescIdToTrue, selectIdToTwig } from '../space/spaceSlice';
 import type { Twig } from './twig';
-import { mergeTwigs, selectIdToChildIdToTrue, selectIdToDescIdToTrue, selectIdToTwig } from './twigSlice';
 
 const REMOVE_TWIG = gql`
   mutation RemoveTwig($sessionId: String!, $twigId: String!, $shouldRemoveDescs: Boolean!) {
@@ -25,13 +25,13 @@ const REMOVE_TWIG = gql`
 export default function useRemoveTwig() {
   const dispatch = useAppDispatch();
 
-  const { space, canEdit } = useContext(SpaceContext);
+  const { abstractId, canEdit } = useContext(SpaceContext);
 
   const sessionId = useAppSelector(selectSessionId);
   
-  const idToTwig = useAppSelector(selectIdToTwig(space));
-  const idToDescIdToTrue = useAppSelector(selectIdToDescIdToTrue(space));
-  const idToChildIdToTrue = useAppSelector(selectIdToChildIdToTrue(space));
+  const idToTwig = useAppSelector(selectIdToTwig(abstractId));
+  const idToDescIdToTrue = useAppSelector(selectIdToDescIdToTrue(abstractId));
+  const idToChildIdToTrue = useAppSelector(selectIdToChildIdToTrue(abstractId));
 
   const [remove] = useMutation(REMOVE_TWIG, {
     onError: error => {
@@ -91,7 +91,7 @@ export default function useRemoveTwig() {
     })
 
     dispatch(mergeTwigs({
-      space,
+      abstractId,
       twigs,
     }));
   }

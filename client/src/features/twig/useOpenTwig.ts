@@ -4,7 +4,7 @@ import { useAppDispatch, useAppSelector } from '../../app/store';
 import { selectSessionId } from '../auth/authSlice';
 import { SpaceContext } from '../space/SpaceComponent';
 import type { Twig } from './twig';
-import { mergeTwigs } from './twigSlice';
+import { mergeTwigs } from '../space/spaceSlice';
 
 const OPEN_TWIG = gql`
   mutation OpenTwig($sessionId: String!, $twigId: String!, $shouldOpen: Boolean!) {
@@ -20,7 +20,7 @@ const OPEN_TWIG = gql`
 const useOpenTwig = () => {
   const dispatch = useAppDispatch();
 
-  const { space } = useContext(SpaceContext);
+  const { abstractId } = useContext(SpaceContext);
 
   const sessionId = useAppSelector(selectSessionId);
 
@@ -50,7 +50,7 @@ const useOpenTwig = () => {
     });
 
     dispatch(mergeTwigs({
-      space,
+      abstractId,
       twigs: [twig1],
     }));
   }

@@ -2,11 +2,11 @@ import { gql, useLazyQuery, useMutation } from '@apollo/client';
 import React, { useContext, useState } from 'react';
 import GoogleButton from './GoogleButton';
 import { USER_FIELDS } from '../user/userFragments';
-import { useAppDispatch, useAppSelector } from '../../app/store';
-import { setCurrentUser } from '../user/userSlice';
+import { useAppDispatch } from '../../app/store';
 import { EMAIL_REGEX } from '../../constants';
 import { AppContext } from '../../app/App';
 import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonInput } from '@ionic/react';
+import { mergeUsers } from '../user/userSlice';
 
 const GET_USER_BY_EMAIL = gql`
   query GetUserByEmail($email: String!) {
@@ -56,7 +56,7 @@ export default function Register() {
     },
     onCompleted: data => {
       console.log(data);
-      dispatch(setCurrentUser(Object.assign({}, user, data.registerUser.user)));
+      dispatch(mergeUsers([Object.assign({}, user, data.registerUser.user)]));
     }
   })
 

@@ -135,7 +135,7 @@ type Mutation {
   openTwig(sessionId: String!, shouldOpen: Boolean!, twigId: String!): OpenTwigResult!
   pasteArrow(linkDraft: String!, linkId: String!, sessionId: String!, sourceId: String!, targetId: String!): ReplyArrowResult!
   pasteTwig(parentTwigId: String!, postId: String!, sessionId: String!, twigId: String!, x: Int!, y: Int!): ReplyTwigResult!
-  publishCursor(abstractId: String!, sessionId: String!, x: Int!, y: Int!): User!
+  publishAvatar(abstractId: String!, sessionId: String!, x: Int!, y: Int!): User!
   refreshToken(refreshToken: String!): String!
   registerGoogleUser(token: String!): User!
   registerUser(email: String!, pass: String!): UserWithTokens!
@@ -244,7 +244,7 @@ type Subscription {
   moveTwig(abstractId: String!, sessionId: String!): [Twig!]!
   openTwig(abstractId: String!, sessionId: String!): Twig!
   pasteTwig(abstractId: String!, sessionId: String!): ReplyTwigResult!
-  publishCursor(abstractId: String!, sessionId: String!): UserCursor!
+  publishAvatar(abstractId: String!, sessionId: String!): UserAvatar!
   removeTwig(abstractId: String!, sessionId: String!): RemoveTwigResult!
   replyTwig(abstractId: String!, sessionId: String!): ReplyTwigResult!
   saveArrow(arrowIds: [String!]!, sessionId: String!, userId: String!): Arrow!
@@ -325,7 +325,7 @@ type User {
   verifyEmailDate: DateTime
 }
 
-type UserCursor {
+type UserAvatar {
   color: String!
   id: String!
   name: String!

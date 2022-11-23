@@ -16,6 +16,7 @@ import usePasteTwig from './usePasteTwig';
 import { RoleType } from '../role/role';
 import useRequestRole from '../role/useRequestRole';
 import { selectRoleByUserIdAndArrowId } from '../role/roleSlice';
+import { MenuMode } from '../menu/menu';
 //import useCenterTwig from './useCenterTwig';
 
 interface TwigControlsProps {
@@ -38,6 +39,7 @@ function TwigControls(props: TwigControlsProps) {
     setCreateGraphArrowId,
     clipboardArrowIds,
     setClipboardArrowIds,
+    setMenuMode,
   } = useContext(AppContext);
   
   const {
@@ -193,6 +195,8 @@ function TwigControls(props: TwigControlsProps) {
       entryIds: [id],
       userIds: [],
     }));
+
+    setMenuMode(MenuMode.SEARCH)
   }
 
   const handleNextClick = (event: React.MouseEvent) => {
@@ -262,6 +266,8 @@ function TwigControls(props: TwigControlsProps) {
       entryIds: [id],
       userIds: [],
     }));
+
+    setMenuMode(MenuMode.SEARCH)
   }
 
   return (
@@ -427,7 +433,6 @@ function TwigControls(props: TwigControlsProps) {
         </div>
       </IonPopover>
       <IonButton 
-        routerLink='/search' 
         onMouseDown={handleMouseDown} 
         onClick={handlePrevClick}
         style={{
@@ -438,7 +443,6 @@ function TwigControls(props: TwigControlsProps) {
         {arrow?.inCount} IN
       </IonButton>
       <IonButton 
-        routerLink='/search'
         onMouseDown={handleMouseDown} 
         onClick={handleNextClick}
         style={{

@@ -1,17 +1,20 @@
 import { InstantSearch } from 'react-instantsearch-dom';
 import algoliasearch, { SearchClient } from 'algoliasearch';
-import { useContext, useEffect, useRef, useState } from 'react';
+import { memo, useContext, useEffect, useRef, useState } from 'react';
 import CustomSearchBox from './SearchBox';
 import CustomHits from './Hits';
-import { ALGOLIA_APP_ID, ALGOLIA_APP_KEY, ALGOLIA_INDEX_NAME, APP_BAR_HEIGHT, MAX_Z_INDEX } from '../../constants';
+import { ALGOLIA_APP_ID, ALGOLIA_APP_KEY, ALGOLIA_INDEX_NAME } from '../../constants';
 import { useAppDispatch, useAppSelector } from '../../app/store';
 import { searchGoBack, searchGoForward, searchRefresh, selectSearchIndex, selectSearchShouldRefresh, selectSearchSlice, selectSearchStack } from './searchSlice';
 import EntryTree from '../entry/EntryTree';
-import { IonButton, IonButtons, IonCard, IonIcon } from '@ionic/react';
+import { IonButton, IonButtons, IonCard, IonCardHeader, IonIcon } from '@ionic/react';
 import { chevronBackOutline, chevronForwardOutline, close } from 'ionicons/icons';
+import { AppContext } from '../../app/App';
 
-export default function SearchComponent() {
+function SearchComponent() {
   const dispatch = useAppDispatch();
+
+  const { palette } = useContext(AppContext);
 
   const stack = useAppSelector(selectSearchStack);
   const index = useAppSelector(selectSearchIndex);
@@ -63,15 +66,28 @@ export default function SearchComponent() {
   if (!searchClient) return null;
 
   return (
-    <div style={{
-      height: 'calc(100% - 10px)',
+    <IonCard style={{
+      margin: 0,
+      borderRadius: 0,
       width: '100%',
+      height: '100%',
+      backgroundColor: palette === 'dark'
+        ? '#000000'
+        : '#e0e0e0',
     }}>
+      <IonCardHeader style={{
+        padding: 10,
+      }}>
+        SEARCH
+      </IonCardHeader>
       <InstantSearch searchClient={searchClient} indexName={ALGOLIA_INDEX_NAME}>
         <IonCard style={{
           display: 'flex',
           flexDirection: 'row',
-          marginBottom: 5,
+          margin: 0,
+          border: palette === 'dark'
+            ? '1px solid dimgrey'
+            : '1px solid lavender',
         }}>
           <IonButtons style={{ whiteSpace: 'nowrap', paddingRight: 1,}}>
             <IonButton
@@ -101,7 +117,7 @@ export default function SearchComponent() {
           </div>
         </IonCard>
         <div  style={{
-          height: 'calc(100% - 50px)',
+          height: 'calc(100% - 56px)',
           width: '100%',
           overflowY: 'scroll',
         }}>
@@ -119,6 +135,8 @@ export default function SearchComponent() {
           <div style={{height: '10px'}}/>
         </div>
       </InstantSearch>
-    </div>
+    </IonCard>
   )
 }
+
+export default memo(SearchComponent);

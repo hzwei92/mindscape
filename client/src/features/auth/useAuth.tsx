@@ -3,8 +3,7 @@ import useToken from './useToken';
 import { FULL_USER_FIELDS } from '../user/userFragments';
 import { gql, useMutation } from '@apollo/client';
 import { useAppDispatch, useAppSelector } from '../../app/store';
-import { setCurrentUser } from '../user/userSlice';
-import { selectAuthIsValid, selectAuthIsInit, selectAuthIsComplete } from './authSlice';
+import { selectAuthIsValid, selectAuthIsInit, selectAuthIsComplete, setLogin } from './authSlice';
 import { Preferences } from '@capacitor/preferences';
 import { ACCESS_TOKEN, REFRESH_TOKEN } from '../../constants';
 
@@ -54,7 +53,7 @@ export default function useAuth(palette: 'dark' | 'light') {
 
       refreshTokenInterval();
 
-      dispatch(setCurrentUser(data.getCurrentUser));
+      dispatch(setLogin(data.getCurrentUser));
     }
   });
 
@@ -79,7 +78,7 @@ export default function useAuth(palette: 'dark' | 'light') {
 
       refreshTokenInterval();
 
-      dispatch(setCurrentUser(data.initUser.user));
+      dispatch(setLogin(data.initUser.user));
     }
   });
 

@@ -1,19 +1,18 @@
 import { Twig } from './twig';
-import { SpaceType } from '../space/space';
-import { selectIdToTwig, selectShouldReloadTwigTree, setTwigTree } from './twigSlice';
 import { IdToType } from '../../types';
 import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../app/store';
+import { selectIdToTwig, selectShouldReloadTwigTree, setTwigTree } from '../space/spaceSlice';
 
-export default function useTwigTree(space: SpaceType) {
+export default function useTwigTree(abstractId: string) {
   const dispatch = useAppDispatch();
 
-  const shouldReloadTwigTree = useAppSelector(selectShouldReloadTwigTree(space));
-  const idToTwig = useAppSelector(selectIdToTwig(space));
+  const shouldReloadTwigTree = useAppSelector(selectShouldReloadTwigTree(abstractId));
+  const idToTwig = useAppSelector(selectIdToTwig(abstractId));
 
   useEffect(() => {
     if (!shouldReloadTwigTree) return;
-    const twigs: Twig[] = Object.values(idToTwig);
+    const twigs: Twig[] = Object.values(idToTwig || {});
     loadTwigTree(twigs);
   }, [shouldReloadTwigTree, idToTwig]);
 
@@ -48,7 +47,7 @@ export default function useTwigTree(space: SpaceType) {
     });
 
     dispatch(setTwigTree({
-      space,
+      abstractId,
       idToChildIdToTrue,
       idToDescIdToTrue,
     }))

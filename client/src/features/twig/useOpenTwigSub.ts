@@ -1,12 +1,7 @@
-import { gql, useReactiveVar, useSubscription } from '@apollo/client';
+import { gql, useSubscription } from '@apollo/client';
 import { useAppDispatch, useAppSelector } from '../../app/store';
-import { IdToType } from '../../types';
-import { Arrow } from '../arrow/arrow';
 import { selectSessionId } from '../auth/authSlice';
-import { PosType, SpaceType } from '../space/space';
-import { mergeIdToPos } from '../space/spaceSlice';
-import { Twig } from './twig';
-import { mergeTwigs } from './twigSlice';
+import { mergeTwigs } from '../space/spaceSlice';
 
 const OPEN_TWIG_SUB = gql`
   subscription OpenTwig($sessionId: String!, $abstractId: String!) {
@@ -17,7 +12,7 @@ const OPEN_TWIG_SUB = gql`
   }
 `;
 
-export default function useOpenTwigSub(space: SpaceType, abstract: Arrow | null) {
+export default function useOpenTwigSub(abstractId: string) {
   const dispatch = useAppDispatch();
 
   const sessionId = useAppSelector(selectSessionId);
@@ -25,13 +20,13 @@ export default function useOpenTwigSub(space: SpaceType, abstract: Arrow | null)
   useSubscription(OPEN_TWIG_SUB, {
     variables: {
       sessionId,
-      abstractId: abstract?.id,
+      abstractId,
     },
     onSubscriptionData: ({subscriptionData: {data: {openTwig}}}) => {
       console.log(openTwig);
 
       dispatch(mergeTwigs({
-        space,
+        abstractId,
         twigs: [openTwig],
       }))
     }

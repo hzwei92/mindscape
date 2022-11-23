@@ -4,10 +4,11 @@ import { gql, useMutation } from '@apollo/client';
 import { useState } from 'react';
 import { FULL_USER_FIELDS } from '../user/userFragments';
 import useToken from './useToken';
-import { useAppDispatch, useAppSelector } from '../../app/store';
-import { setCurrentUser } from '../user/userSlice';
+import { useAppDispatch } from '../../app/store';
 import { IonButton, IonButtons } from '@ionic/react';
 import { Preferences } from '@capacitor/preferences';
+import { setLogin } from './authSlice';
+import { mergeUsers } from '../user/userSlice';
 
 const REGISTER_USER = gql`
   mutation RegisterGoogleUser($token: String!) {
@@ -65,7 +66,7 @@ export default function GoogleButton(props: GoogleButtonProps) {
         value: data.registerGoogleUser.refreshToken
       });
 
-      dispatch(setCurrentUser(data.registerGoogleUser));
+      dispatch(mergeUsers([data.registerGoogleUser]));
 
       props.onCompleted && props.onCompleted();
     },
@@ -91,7 +92,7 @@ export default function GoogleButton(props: GoogleButtonProps) {
         value: data.loginGoogleUser.refreshToken
       });
 
-      dispatch(setCurrentUser(data.loginGoogleUser));
+      dispatch(setLogin(data.loginGoogleUser));
 
       props.onCompleted && props.onCompleted();
     },

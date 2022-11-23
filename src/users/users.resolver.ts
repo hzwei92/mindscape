@@ -1,7 +1,7 @@
 import { Inject, UseGuards } from '@nestjs/common';
 import { Args, Float, Int, Mutation, Parent, Query, ResolveField, Resolver, Subscription } from '@nestjs/graphql';
 import { PUB_SUB } from 'src/pub-sub/pub-sub.module';
-import { User, UserCursor } from './user.model';
+import { User, UserAvatar } from './user.model';
 import { RedisPubSub } from 'graphql-redis-subscriptions';
 import { UsersService } from './users.service';
 import { ACTIVE_TIME } from 'src/constants';
@@ -89,18 +89,18 @@ export class UsersResolver {
   }
   
   @UseGuards(GqlAuthGuard)
-  @Mutation(() => User, {name: 'publishCursor'})
-  async publishCursor(
+  @Mutation(() => User, {name: 'publishAvatar'})
+  async publishAvatar(
     @CurrentUser() user: UserEntity,
     @Args('sessionId') sessionId: string,
     @Args('abstractId') abstractId: string,
     @Args('x', {type: () => Int}) x: number,
     @Args('y', {type: () => Int}) y: number,
   ) {
-    this.pubSub.publish('publishCursor', {
+    this.pubSub.publish('publishAvatar', {
       sessionId,
       abstractId,
-      publishCursor: {
+      publishAvatar: {
         id: user.id,
         name: user.name,
         color: user.color,
@@ -180,18 +180,18 @@ export class UsersResolver {
     return user1;
   }
 
-  @Subscription(() => UserCursor, {name: 'publishCursor',
+  @Subscription(() => UserAvatar, {name: 'publishAvatar',
     filter: (payload, variables) => {
       if (payload.sessionId === variables.sessionId) return false;
       return payload.abstractId === variables.abstractId;
     }
   })
-  publishCursorSub(
+  publishAvatarSub(
     @Args('sessionId') sessionId: string,
     @Args('abstractId') abstractId: string,
   ) {
-    console.log('publishCursorSub')
-    return this.pubSub.asyncIterator('publishCursor')
+    console.log('publishAvatarSub')
+    return this.pubSub.asyncIterator('publishAvatar')
   }
 
   @Subscription(() => User, {name: 'updateUser', 

@@ -64,6 +64,7 @@ export default function ArrowVoter(props: ArrowVoterProps) {
               ? user?.color
               : null,
             height: 20,
+          
           }}
         >
           { 

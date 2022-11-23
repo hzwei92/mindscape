@@ -1,14 +1,10 @@
-import { gql, useReactiveVar, useSubscription } from '@apollo/client';
+import { gql, useSubscription } from '@apollo/client';
 import { useAppDispatch, useAppSelector } from '../../app/store';
-import { useContext } from 'react';
 import { FULL_TWIG_FIELDS } from './twigFragments';
 import { FULL_ROLE_FIELDS } from '../role/roleFragments';
-import { SpaceContext } from '../space/SpaceComponent';
-import { mergeTwigs } from './twigSlice';
+import { mergeTwigs } from '../space/spaceSlice';
 import { mergeArrows } from '../arrow/arrowSlice';
-import { AppContext } from '../../app/App';
 import { mergeIdToPos } from '../space/spaceSlice';
-import { SpaceType } from '../space/space';
 import { useIonToast } from '@ionic/react';
 import { Arrow } from '../arrow/arrow';
 import { selectSessionId } from '../auth/authSlice';
@@ -41,7 +37,7 @@ const REPLY_TWIG = gql`
   ${FULL_ROLE_FIELDS}
 `;
 
-export default function useReplyTwigSub(space: SpaceType, abstract: Arrow | null) {
+export default function useReplyTwigSub(abstractId: string) {
   const dispatch = useAppDispatch();
 
   const [present] = useIonToast();
@@ -51,7 +47,7 @@ export default function useReplyTwigSub(space: SpaceType, abstract: Arrow | null
   useSubscription(REPLY_TWIG, {
     variables: {
       sessionId,
-      abstractId: abstract?.id,
+      abstractId,
     },
     onSubscriptionData: ({subscriptionData: {data: {replyTwig}}}) => {
       console.log(replyTwig);
@@ -64,13 +60,15 @@ export default function useReplyTwigSub(space: SpaceType, abstract: Arrow | null
         role,
       } = replyTwig;
 
+      if (!abstract) return;
+
       dispatch(mergeTwigs({
-        space,
+        abstractId: abstract.id,
         twigs: [link, target]
       }));
 
       dispatch(mergeIdToPos({
-        space,
+        abstractId: abstract.id,
         idToPos: [link, target].reduce((acc, twig) => {
           acc[twig.id] = {
             x: twig.x,

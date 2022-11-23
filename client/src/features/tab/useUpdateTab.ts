@@ -1,5 +1,7 @@
 import { gql, useMutation } from "@apollo/client";
+import { useIonRouter } from "@ionic/react";
 import { useAppDispatch, useAppSelector } from "../../app/store";
+import { selectIdToArrow } from "../arrow/arrowSlice";
 import { Tab } from "./tab";
 import { FULL_TAB_FIELDS } from "./tabFragments";
 import { mergeTabs, selectFocusTab, selectFrameTab } from "./tabSlice";

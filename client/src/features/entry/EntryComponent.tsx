@@ -6,8 +6,6 @@ import { MOBILE_WIDTH } from '../../constants';
 import useCenterTwig from '../twig/useCenterTwig';
 import useSelectTwig from '../twig/useSelectTwig';
 import { selectArrowById, selectIdToArrow } from '../arrow/arrowSlice';
-import { selectSelectedSpace, selectSelectedTwigId } from '../space/spaceSlice';
-import { selectIdToTwig } from '../twig/twigSlice';
 import ArrowComponent from '../arrow/ArrowComponent';
 import EntryControls from './EntryControls';
 import useGetOuts from '../arrow/useGetOuts';
@@ -17,6 +15,8 @@ import { IonCard } from '@ionic/react';
 import useLinkArrows from '../arrow/useLinkArrows';
 import { arrowUpCircleSharp } from 'ionicons/icons';
 import { selectUserById } from '../user/userSlice';
+import { selectIdToTwig, selectSelectedTwigId } from '../space/spaceSlice';
+import { selectFocusTab } from '../tab/tabSlice';
 
 interface EntryComponentProps {
   entry: Entry;
@@ -35,10 +35,10 @@ export default function EntryComponent(props: EntryComponentProps) {
   const arrow = useAppSelector(state => selectArrowById(state, props.entry.arrowId));
   const arrowUser = useAppSelector(state => selectUserById(state, arrow?.userId));
 
-  const selectedSpace = useAppSelector(selectSelectedSpace);
-  const selectedTwigId = useAppSelector(selectSelectedTwigId(selectedSpace));
+  const focusTab = useAppSelector(selectFocusTab);
+  const selectedTwigId = useAppSelector(selectSelectedTwigId(focusTab?.arrowId || ''));
   
-  const idToTwig = useAppSelector(selectIdToTwig(selectedSpace));
+  const idToTwig = useAppSelector(selectIdToTwig(focusTab?.arrowId || ''));
   const selectedTwig = idToTwig[selectedTwigId];
 
   // useAppSelector(state => selectInstanceById(state, props.entry.id)) // rerender on instance change

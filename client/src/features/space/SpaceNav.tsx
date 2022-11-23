@@ -1,12 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { SpaceContext } from './SpaceComponent';
 import { useAppSelector } from '../../app/store';
-import { selectIdToTwig } from '../twig/twigSlice';
 import useCenterTwig from '../twig/useCenterTwig';
 import useSelectTwig from '../twig/useSelectTwig';
 import { Twig } from '../twig/twig';
 import { MAX_Z_INDEX } from '../../constants';
-import { selectSelectedSpace, selectSelectedTwigId } from './spaceSlice';
+import { selectIdToTwig, selectSelectedTwigId } from './spaceSlice';
 import { selectIdToUser } from '../user/userSlice';
 import { AppContext } from '../../app/App';
 import { IonFab, IonFabButton, IonIcon } from '@ionic/react';
@@ -18,24 +17,23 @@ export default function SpaceNav() {
   } = useContext(AppContext);
 
   const { 
-    space, 
+    abstractId, 
     abstract, 
     canEdit
   } = useContext(SpaceContext);
 
-  const selectedSpace = useAppSelector(selectSelectedSpace);
-  const selectedTwigId = useAppSelector(selectSelectedTwigId(space));
+  const selectedTwigId = useAppSelector(selectSelectedTwigId(abstractId));
 
-  const idToTwig = useAppSelector(selectIdToTwig(space));
-  const idToUser = useAppSelector(selectIdToUser);
+  const idToTwig = useAppSelector(selectIdToTwig(abstractId)) ?? {};
+  const idToUser = useAppSelector(selectIdToUser) ?? {};
 
   const [twigs, setTwigs] = useState([] as Twig[]);
   const [index, setIndex] = useState(0);
   const hasEarlier = index > 0;
   const hasLater = index < twigs.length - 1;
 
-  const { centerTwig } = useCenterTwig(space);
-  const { selectTwig } = useSelectTwig(space, canEdit);
+  const { centerTwig } = useCenterTwig(abstractId);
+  const { selectTwig } = useSelectTwig(abstractId, canEdit);
 
   useEffect(() => {
     const twigs1 = Object.keys(idToTwig).map(id => idToTwig[id])
@@ -111,7 +109,7 @@ export default function SpaceNav() {
       position: 'absolute',
       marginLeft: -140,
       left: '50%',
-      bottom: 120,
+      bottom: 100,
       zIndex: MAX_Z_INDEX + 100,
     }}>
     <IonFab style={{

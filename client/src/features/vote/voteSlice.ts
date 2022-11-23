@@ -2,9 +2,9 @@ import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
 import { IdToType } from "../../types";
 import { setInit, setLogout } from "../auth/authSlice";
-import { mergeTwigs } from "../twig/twigSlice";
 import { mergeArrows } from "../arrow/arrowSlice";
 import { Vote } from "./vote";
+import { mergeTwigs } from "../space/spaceSlice";
 
 export interface VoteState {
   idToVote: IdToType<Vote>;
@@ -68,59 +68,9 @@ const arrowSlice = createSlice({
           return initialState;
         }
       })
-      // .addCase(setLogin, (state, action) => {
-      //   const {
-      //     idToVote,
-      //     arrowIdToVoteIds,
-      //   } = [action.payload.frame, action.payload.focus].reduce((acc, arrow) => {
-      //     if (arrow?.votes) {
-      //       acc.arrowIdToVoteIds[arrow.id] = [];
-
-      //       arrow.votes.forEach(vote => {
-      //         acc.arrowIdToVoteIds[arrow.id].push(vote.id);
-      //         acc.idToVote[vote.id] = vote;
-      //       });
-      //     } 
-      //     return acc;
-      //   }, {
-      //     idToVote: {} as IdToType<Vote>,
-      //     arrowIdToVoteIds: {} as IdToType<string[]>,
-      //   });
-
-      //   return {
-      //     ...state,
-      //     idToVote,
-      //     arrowIdToVoteIds,
-      //   };
-      // })
       .addCase(setLogout, () => {
         return initialState;
       })
-      // .addCase(setCurrentUser, (state, action) => {
-      //   const {
-      //     idToVote,
-      //     arrowIdToVoteIds,
-      //   } = [action.payload?.frame, action.payload?.focus].reduce((acc, arrow) => {
-      //     if (arrow?.votes?.length) {
-      //       acc.arrowIdToVoteIds[arrow.id] = [];
-
-      //       arrow.votes.forEach(vote => {
-      //         acc.arrowIdToVoteIds[arrow.id].push(vote.id);
-      //         acc.idToVote[vote.id] = vote;
-      //       });
-      //     } 
-      //     return acc;
-      //   }, {
-      //     idToVote: {} as IdToType<Vote>,
-      //     arrowIdToVoteIds: {} as IdToType<string[]>,
-      //   });
-
-      //   return {
-      //     ...state,
-      //     idToVote,
-      //     arrowIdToVoteIds,
-      //   };
-      // })
       .addCase(mergeTwigs, (state, action) => {
         const {
           idToVote,
