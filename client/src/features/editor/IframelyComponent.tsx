@@ -51,11 +51,13 @@ export default function IframelyComponent(props: any) {
   } 
   else {
     return (
-      <div style={{
-        width: '100%'
-      }} dangerouslySetInnerHTML = {
-        html
-      }/> 
+      <div 
+        dangerouslySetInnerHTML={html} 
+        style={{
+          width: '100%',
+          margin: 0,
+        }} 
+      />
     );
   }
 }
