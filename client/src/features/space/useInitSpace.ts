@@ -1,7 +1,7 @@
 import { gql, useMutation } from '@apollo/client';
 import { FULL_TWIG_FIELDS } from '../twig/twigFragments';
 import { Dispatch, SetStateAction, useEffect } from 'react';
-import { mergeIdToPos, mergeTwigs, selectSelectedTwigId } from './spaceSlice';
+import { mergeIdToPos, mergeTwigs, selectIdToPos, selectSelectedTwigId } from './spaceSlice';
 import { useAppDispatch, useAppSelector } from '../../app/store';
 import useCenterTwig from '../twig/useCenterTwig';
 import { useIonToast } from '@ionic/react';
@@ -24,6 +24,7 @@ export default function useInitSpace(abstractId: string) {
   const [presentToast] = useIonToast();
 
   const selectedTwigId = useAppSelector(selectSelectedTwigId(abstractId));
+  const idToPos = useAppSelector(selectIdToPos(abstractId)) ?? {};
 
   const { centerTwig } = useCenterTwig(abstractId);
 
@@ -34,7 +35,7 @@ export default function useInitSpace(abstractId: string) {
     },
     onCompleted: data => {
       console.log(data);
-      const idToPos = data.getTwigs.reduce((acc: IdToType<PosType>, twig: Twig) => {
+      const idToPos1 = data.getTwigs.reduce((acc: IdToType<PosType>, twig: Twig) => {
         acc[twig.id] = {
           x: twig.x,
           y: twig.y,
@@ -49,10 +50,15 @@ export default function useInitSpace(abstractId: string) {
 
       dispatch(mergeIdToPos({
         abstractId,
-        idToPos,
+        idToPos: idToPos1,
       }));
       
-      centerTwig(selectedTwigId || '', true, 0);
+      if (
+        idToPos1[selectedTwigId]?.x !== idToPos[selectedTwigId]?.x || 
+        idToPos1[selectedTwigId]?.y !== idToPos[selectedTwigId]?.y
+      ) {
+        centerTwig(selectedTwigId || '', true, 0);
+      }
     },
   });
 
@@ -64,6 +70,9 @@ export default function useInitSpace(abstractId: string) {
         abstractId,
       }
     });
+    if (idToPos[selectedTwigId]) {
+      centerTwig(selectedTwigId || '', true, 0);
+    }
   }, [abstractId])
 
 }
