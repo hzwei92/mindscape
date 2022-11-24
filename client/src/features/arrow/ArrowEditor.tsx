@@ -161,6 +161,8 @@ export default function ArrowEditor(props: ArrowEditorProps) {
       color: palette === 'dark'
         ? 'white'
         : 'black',
+      width: '100%',
+      margin: 0,
     }}>
       <Editor
         placeholder={

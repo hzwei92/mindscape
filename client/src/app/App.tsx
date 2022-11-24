@@ -23,6 +23,8 @@ import '@ionic/react/css/display.css';
 /* Theme variables */
 import '../theme/variables.css';
 
+import '../theme/base.css';
+
 import { createContext, Dispatch, SetStateAction, useEffect, useMemo, useRef, useState } from 'react';
 import { User } from '../features/user/user';
 import { useAppSelector } from './store';
