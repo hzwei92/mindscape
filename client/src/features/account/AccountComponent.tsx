@@ -10,6 +10,8 @@ import Register from "../auth/Register";
 import Verify from "../auth/Verify";
 import { mergeUsers } from "../user/userSlice";
 import useSetUserColor from "../user/useSetUserColor";
+import LoginModal from "./LoginModal";
+import LogoutModal from "./LogoutModal";
 
 const SET_USER_NAME = gql`
   mutation SetUserName($sessionId: String!, $name: String!) {
@@ -37,6 +39,9 @@ const AccountComponent: React.FC = () => {
   const { user, palette } = useContext(AppContext);
   
   const sessionId = useAppSelector(selectSessionId);
+
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   const [isEditingName, setIsEditingName] = useState(false);
   const [name, setName] = useState(user?.name);
@@ -128,6 +133,14 @@ const AccountComponent: React.FC = () => {
 
     setColorTimeout(timeout);
   };
+
+  const handleLoginClick = (event: React.MouseEvent) => {
+    setShowLoginModal(true);
+  };
+
+  const handleLogoutClick = (event: React.MouseEvent) => {
+    setShowLogoutModal(true);
+  }
   
   return (
     <IonCard style={{
@@ -144,6 +157,18 @@ const AccountComponent: React.FC = () => {
       }}>
         ACCOUNT
       </IonCardHeader>
+        <IonCard style={{
+          padding: 10,
+        }}> 
+            <IonButtons>
+              <IonButton onClick={handleLoginClick}>
+                LOGIN
+              </IonButton>
+              <IonButton onClick={handleLogoutClick}>
+                LOGOUT
+              </IonButton>
+            </IonButtons>
+        </IonCard>
         <IonCard style={{
           marginTop: 0,
         }}>
@@ -229,6 +254,8 @@ const AccountComponent: React.FC = () => {
             />
           </IonCardContent>
         </IonCard>
+      <LoginModal show={showLoginModal} setShow={setShowLoginModal} />
+      <LogoutModal show={showLogoutModal} setShow={setShowLogoutModal}/>
     </IonCard>
   );
 };

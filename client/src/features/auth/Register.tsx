@@ -115,7 +115,9 @@ export default function Register() {
 
   return (
       <IonCard>
-        <IonCardHeader>
+        <IonCardHeader style={{
+          fontWeight: 'bold',
+        }}>
           Email
         </IonCardHeader>
         <IonCardContent>

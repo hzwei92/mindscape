@@ -7,6 +7,8 @@ import { selectAuthIsValid, selectAuthIsInit, selectAuthIsComplete, setLogin } f
 import { Preferences } from '@capacitor/preferences';
 import { ACCESS_TOKEN, REFRESH_TOKEN } from '../../constants';
 import { MenuMode } from '../menu/menu';
+import { useIonRouter } from '@ionic/react';
+import { Tab } from '../tab/tab';
 
 const INIT_USER = gql`
   mutation InitUser($palette: String!) {
@@ -32,6 +34,8 @@ const GET_CURRENT_USER = gql`
 
 export default function useAuth(palette: 'dark' | 'light', setMenuMode: Dispatch<SetStateAction<MenuMode>>) {
   const dispatch = useAppDispatch();
+
+  const router = useIonRouter();
 
   const isInit = useAppSelector(selectAuthIsInit);
   const isValid = useAppSelector(selectAuthIsValid);
@@ -82,6 +86,15 @@ export default function useAuth(palette: 'dark' | 'light', setMenuMode: Dispatch
       dispatch(setLogin(data.initUser.user));
 
       setMenuMode(MenuMode.ABOUT);
+
+      data.initUser.user.tabs.some((t: Tab) => {
+        if (t.isFocus) {
+          router.push(`/g/${t.arrow.routeName}`);
+          return true;
+        }
+        return false;
+      })
+
     }
   });
 

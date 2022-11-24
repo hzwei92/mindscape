@@ -144,8 +144,6 @@ const App: React.FC = () => {
     document.body.classList.toggle('dark', palette === 'dark');
   }, [palette])
 
-  useAuth(palette, setMenuMode);
-
   const appContextValue = useMemo(() => {
     return {
       user,

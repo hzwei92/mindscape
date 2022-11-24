@@ -14,6 +14,7 @@ import {
 import { useContext, useState } from "react";
 import useLinkArrowsSub from "../features/arrow/useLinkArrowsSub";
 import useSaveArrowSub from "../features/arrow/useSaveArrowSub";
+import useAuth from "../features/auth/useAuth";
 import { MenuMode } from "../features/menu/menu";
 import useSetUserPalette from "../features/user/useSetUserPalette";
 import { AppContext } from "./App";
@@ -21,10 +22,6 @@ import useAppRouter from "./useAppRouter";
 
 
 const AppBar = () => {
-  useAppRouter();
-  useSaveArrowSub();
-  useLinkArrowsSub();
-
   const { setUserPalette } = useSetUserPalette();
 
   const { 
@@ -33,6 +30,11 @@ const AppBar = () => {
     menuMode,
     setMenuMode,
   } = useContext(AppContext);
+
+  useAuth(palette, setMenuMode);
+  useAppRouter();
+  useSaveArrowSub();
+  useLinkArrowsSub();
 
   const [label, setLabel] = useState(MenuMode.NONE);
 
