@@ -66,7 +66,7 @@ export default function GoogleButton(props: GoogleButtonProps) {
         value: data.registerGoogleUser.refreshToken
       });
 
-      dispatch(mergeUsers([data.registerGoogleUser]));
+      dispatch(mergeUsers([data.registerGoogleUser.user]));
 
       props.onCompleted && props.onCompleted();
     },
@@ -92,7 +92,7 @@ export default function GoogleButton(props: GoogleButtonProps) {
         value: data.loginGoogleUser.refreshToken
       });
 
-      dispatch(setLogin(data.loginGoogleUser));
+      dispatch(setLogin(data.loginGoogleUser.user));
 
       props.onCompleted && props.onCompleted();
     },
