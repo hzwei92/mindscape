@@ -101,7 +101,7 @@ export class UsersService {
 
     const startArrow2 = await this.arrowsService.getArrowById(START_ARROW_2_ID);
     if (startArrow2) {
-      const tab2 = await this.tabsService.appendTab(user1, startArrow2, false, false);
+      const tab2 = await this.tabsService.appendTab(user1, startArrow2, false, !startArrow1);
     }
 
     let startArrow = await this.arrowsService.getStartArrow();
@@ -109,7 +109,7 @@ export class UsersService {
       startArrow = await this.arrowsService.createStartArrow(user1);
     }
 
-    const tab = await this.tabsService.appendTab(user1, startArrow, false, false);
+    const tab = await this.tabsService.appendTab(user1, startArrow, false, !startArrow1 && !startArrow2);
 
     const user2 = await this.getUserById(user1.id);
 

@@ -113,7 +113,7 @@ const App: React.FC = () => {
 
   const [selectedUserId, setSelectedUserId] = useState('');
 
-  const [menuMode, setMenuMode] = useState(MenuMode.ABOUT);
+  const [menuMode, setMenuMode] = useState(MenuMode.NONE);
   const [menuX, setMenuX] = useState(400);
   const [menuIsResizing, setMenuIsResizing] = useState(false);
 
@@ -143,8 +143,6 @@ const App: React.FC = () => {
   useEffect(() => {
     document.body.classList.toggle('dark', palette === 'dark');
   }, [palette])
-
-  useAuth(palette);
 
   const appContextValue = useMemo(() => {
     return {
