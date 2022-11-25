@@ -57,7 +57,7 @@ export class AuthResolver {
   }
 
   @UseGuards(GqlAuthGuard)
-  @Mutation(() => User, {name: 'registerGoogleUser'})
+  @Mutation(() => UserWithTokens, {name: 'registerGoogleUser'})
   async registerGoogleUser(
     @CurrentUser() user: UserEntity,
     @Args('token') token: string,
