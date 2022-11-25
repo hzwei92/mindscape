@@ -226,8 +226,8 @@ const SpaceComponent = (props: SpaceComponentProps) => {
       },
     }));
 
-    const dx = left - scroll.left;
-    const dy = top - scroll.top;
+    const dx = left - scroll?.left;
+    const dy = top - scroll?.top;
 
     dispatch(setCursor({
       abstractId: props.abstractId,
@@ -244,10 +244,10 @@ const SpaceComponent = (props: SpaceComponentProps) => {
 
       const { scrollLeft, scrollTop } = spaceEl.current;
 
-      if (scroll.left !== scrollLeft || scroll.top !== scrollTop) {
+      if (scroll?.left !== scrollLeft || scroll?.top !== scrollTop) {
         spaceEl.current.scrollTo({
-          left: scroll.left,
-          top: scroll.top,
+          left: scroll?.left,
+          top: scroll?.top,
         });
       }
 
@@ -677,8 +677,8 @@ const SpaceComponent = (props: SpaceComponentProps) => {
             return (
               <div key={`cursor-${id}`} style={{
                 position: 'absolute',
-                left: (avatar.x * scale) - 10,
-                top: (avatar.y * scale) - 60,
+                left: (avatar.x * scale) - 60,
+                top: (avatar.y * scale) - 50,
                 zIndex: MAX_Z_INDEX + 10000,
                 color: avatar.color,
                 display: 'flex',
