@@ -97,7 +97,7 @@ export default function EntryTree(props: EntryTreeProps) {
                 cursor: 'pointer',
               }}>
                 <IonLabel style={{
-                  color: arrow.user.color,
+                  color: arrow.user?.color,
                 }}>
                   load {remaining} more
                 </IonLabel>
