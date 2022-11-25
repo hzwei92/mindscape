@@ -91,15 +91,16 @@ export default function SpaceControls(props: SpaceControlsProps) {
     <div style={{
       position: 'absolute',
       right: isPlatform('ios') && !isPlatform('mobileweb')
-        ? 200
-        : 220,
+        ? 150
+        : 170,
       top: 0,
     }}>
       <div style={{
         position: 'fixed',
         zIndex: MAX_Z_INDEX,
         display: 'flex',
-        flexDirection: 'row',
+        flexDirection: 'column',
+        justifyContent: 'right'
       }}>
         <IonCard color={'light'} style={{
           margin: 10,
@@ -133,7 +134,9 @@ export default function SpaceControls(props: SpaceControlsProps) {
           </IonButtons>
         </IonCard>
         <div>
-        <IonFab>
+        <IonFab style={{
+          right: 0,
+        }}>
           <IonFabButton title='Settings' size='small' color={'light'}onClick={handleSettingsClick}>
             <IonIcon icon={settingsOutline} size='small'/>
           </IonFabButton> 
