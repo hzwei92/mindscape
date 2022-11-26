@@ -41,7 +41,7 @@ function TwigBar(props: TwigBarProps) {
 
   const beginDrag = () => {
     console.log('begin drag');
-    if (!props.twig.parent) return;
+    if (props.twig.id === abstract?.rootTwigId) return;
     dispatch(setDrag({
       abstractId,
       drag: {
