@@ -56,6 +56,8 @@ const useAppRouter = () => {
     
     const path = router.routeInfo?.pathname.split('/') || [];
 
+    console.log('path', path)
+
     if (path[1] === 'g') {
       let tab = null as Tab | null;
       let arrow = null as Arrow | null;
@@ -102,7 +104,7 @@ const useAppRouter = () => {
                 focusCenterTwig(twigId, true, 0);
               }
             }
-            else {
+            else if (path[3] !== '0') {
               console.log('select root twig bc provided index is invalid');
               router.push(`/g/${path[2]}/0`, undefined, 'replace');
             }
