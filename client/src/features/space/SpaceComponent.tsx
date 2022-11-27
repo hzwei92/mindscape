@@ -128,6 +128,8 @@ const SpaceComponent = (props: SpaceComponentProps) => {
 
   const [isScaling, setIsScaling] = useState(false);
 
+  const [cursorClient, setCursorClient] = useState({ x: 0, y: 0 });
+
 
   useEffect(() => {
     if (!spaceEl?.current) return;
@@ -187,13 +189,24 @@ const SpaceComponent = (props: SpaceComponentProps) => {
 
   useEffect(() => {
     if (!moveEvent || !spaceEl?.current) return;
+
     const x = spaceEl.current.scrollLeft + moveEvent.clientX;
     const y = spaceEl.current.scrollTop + moveEvent.clientY;
 
     const dx = x - (cursor?.x ?? 0);
     const dy = y - (cursor?.y ?? 0);
 
-    moveDrag(dx, dy);
+    if (drag?.isScreen) {
+      spaceEl.current.scrollBy(cursorClient.x - moveEvent.clientX, cursorClient.y - moveEvent.clientY);
+    }
+    else {
+      moveDrag(dx, dy);
+    }
+    
+    setCursorClient({
+      x: moveEvent.clientX,
+      y: moveEvent.clientY,
+    });
     
     dispatch(setCursor({
       abstractId: props.abstractId,
@@ -206,6 +219,7 @@ const SpaceComponent = (props: SpaceComponentProps) => {
     publishAvatar(x, y);
 
     setMoveEvent(null);
+
   }, [moveEvent, cursor]);
 
   useEffect(() => {
@@ -329,14 +343,14 @@ const SpaceComponent = (props: SpaceComponentProps) => {
         },
       }));
     }
-    if (drag?.isScreen) {
-      if (!spaceEl?.current) return;
-      spaceEl.current.scrollBy(-1 * event.movementX, -1 * event.movementY)
-      return;
-    }
-
     if (!moveEvent) {
       setMoveEvent(event);
+    }
+    else {
+      setCursorClient({
+        x: event.clientX,
+        y: event.clientY,
+      });
     }
   }
 

@@ -45,7 +45,7 @@ export default function RemoveTwigModal() {
     event.stopPropagation();
     if (!removalTwigId) return;
 
-    if (!isLink) {
+    if (!isLink && removalTwig.parent?.id) {
       selectTwig(abstract, idToTwig[removalTwig.parent.id]);
     }
 
