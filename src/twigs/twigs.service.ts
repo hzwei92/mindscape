@@ -261,7 +261,7 @@ export class TwigsService {
       i: parentTwig.abstract.twigN + 2,
       x: Math.round((parentTwig.x + x) / 2),
       y: Math.round((parentTwig.y + y) / 2),
-      z: parentTwig.abstract.twigZ + 2,
+      z: parentTwig.abstract.twigZ,
       isOpen: false,
     });
 
