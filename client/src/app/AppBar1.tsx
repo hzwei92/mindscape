@@ -31,8 +31,8 @@ const AppBar = () => {
     setMenuMode,
   } = useContext(AppContext);
 
-  useAuth(palette, setMenuMode);
   useAppRouter();
+  useAuth();
   useSaveArrowSub();
   useLinkArrowsSub();
 

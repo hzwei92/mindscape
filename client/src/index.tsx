@@ -17,8 +17,6 @@ import { Preferences } from '@capacitor/preferences';
 
 defineCustomElements(window);
 
-console.log(process.env.NODE_ENV, isPlatform('ios') || isPlatform('android'), document.location, document.cookie)
-
 const wsClient = createRestartableClient({
   url: process.env.NODE_ENV === 'production'
     ? isPlatform('ios') || isPlatform('android')

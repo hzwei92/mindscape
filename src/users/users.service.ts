@@ -71,24 +71,12 @@ export class UsersService {
     return user;
   }
 
-  async initUser(palette: string): Promise<User> {
-    let name = '';
-    let existingUser = null;
-
-    do {
-      name = uniqueNamesGenerator({
-        dictionaries: [adjectives, animals, numbers],
-        length: 3,
-        separator: '-'
-      });
-      existingUser = await this.getUserByName(name);
-    } while (existingUser);
-
+  async initUser(name: string, color: string, palette: string): Promise<User> {
     const user0 = new User();
     user0.name = name;
     user0.lowercaseName = name.toLowerCase();
     user0.routeName = encodeURIComponent(user0.lowercaseName);
-    user0.color = '#' + Math.round(Math.random() * Math.pow(16, 6)).toString(16).padStart(6, '0')
+    user0.color = color;
     user0.palette = palette === 'dark'
       ? PaletteMode.DARK
       : PaletteMode.LIGHT;

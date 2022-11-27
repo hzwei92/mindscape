@@ -31,9 +31,11 @@ export class AuthResolver {
 
   @Mutation(() => UserWithTokens, {name: 'initUser'})
   async initUser(
+    @Args('name') name: string,
+    @Args('color') color: string,
     @Args('palette') palette: string,
   ) {
-    return this.authService.initUser(palette);
+    return this.authService.initUser(name, color, palette);
   }
 
   @UseGuards(GqlAuthGuard)

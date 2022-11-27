@@ -2,6 +2,7 @@ import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonModal
 import { Dispatch, SetStateAction, useContext, useEffect, useRef } from 'react';
 import { AppContext } from '../../app/App';
 import useLogout from '../auth/useLogout';
+import { MenuMode } from '../menu/menu';
 
 interface LogoutModalProps {
   show: boolean;
@@ -9,7 +10,7 @@ interface LogoutModalProps {
 };
 
 function LogoutModal(props: LogoutModalProps) {
-  const { palette } = useContext(AppContext);
+  const { setMenuMode } = useContext(AppContext);
 
   const modalRef = useRef<HTMLIonModalElement>(null);
 
@@ -26,6 +27,7 @@ function LogoutModal(props: LogoutModalProps) {
 
   const handleLogoutClick = () => {
     logoutUser();
+    setMenuMode(MenuMode.NONE);
     handleClose();
   }
 
