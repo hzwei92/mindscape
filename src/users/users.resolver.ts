@@ -79,8 +79,7 @@ export class UsersResolver {
     return this.usersService.getUserByEmail(email);
   }
 
-  @UseGuards(GqlAuthGuard)
-  @Query(() => User, {name: 'getUserByName', nullable: true})
+  @Mutation(() => User, {name: 'getUserByName', nullable: true})
   async getUserByName(
     @CurrentUser() user: UserEntity,
     @Args('name') name: string,

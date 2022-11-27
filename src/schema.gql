@@ -123,8 +123,9 @@ type Mutation {
   getOuts(arrowId: String!, offset: Int!): [Arrow!]!
   getTwigs(abstractId: String!): [Twig!]!
   getUser(userId: String!): User!
+  getUserByName(name: String!): User
   graftTwig(parentTwigId: String!, sessionId: String!, twigId: String!, x: Int!, y: Int!): GraftTwigResult!
-  initUser(palette: String!): UserWithTokens!
+  initUser(color: String!, name: String!, palette: String!): UserWithTokens!
   inviteRole(arrowId: String!, sessionId: String!, userName: String!): Role!
   linkArrows(sessionId: String!, sourceId: String!, targetId: String!): LinkArrowsResult!
   linkTwigs(abstractId: String!, sessionId: String!, sourceId: String!, targetId: String!): LinkTwigsResult!
@@ -166,7 +167,6 @@ type OpenTwigResult {
 
 type Query {
   getUserByEmail(email: String!): User
-  getUserByName(name: String!): User
 }
 
 type RemoveTabResult {

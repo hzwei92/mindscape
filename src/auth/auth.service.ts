@@ -42,8 +42,8 @@ export class AuthService {
     }
   }
 
-  async initUser(palette: string) {
-    const user = await this.usersService.initUser(palette);
+  async initUser(name: string, color: string, palette: string) {
+    const user = await this.usersService.initUser(name, color, palette);
     const accessToken = this.getAccessToken(user.id);
     const refreshToken = await this.getRefreshToken(user.id, false);
     return {

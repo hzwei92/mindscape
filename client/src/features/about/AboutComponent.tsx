@@ -38,10 +38,6 @@ export default function AboutComponent() {
             An account has been automatically generated for you.
             Register an email to secure access to it.
           </li>
-          <li>
-            Keep tabs on graphs using the numbers in the top right.
-            Click a number there to open the corresponding graph.
-          </li>
         </ul>
       </IonCard>
       <IonCard>

@@ -1,4 +1,4 @@
-import { gql, useLazyQuery, useMutation } from "@apollo/client";
+import { gql, useMutation } from "@apollo/client";
 import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonIcon, IonInput } from "@ionic/react"
 import { createOutline, send } from "ionicons/icons";
 import { useContext, useEffect, useState } from "react";
@@ -25,7 +25,7 @@ const SET_USER_NAME = gql`
 `;
 
 const GET_USER_BY_NAME = gql`
-  query GetUserByName($name: String!) {
+  mutation GetUserByName($name: String!) {
     getUserByName(name: $name) {
       id
       name
@@ -53,7 +53,7 @@ const AccountComponent: React.FC = () => {
   
   const { setUserColor } = useSetUserColor();
    
-  const [getUserByName] = useLazyQuery(GET_USER_BY_NAME, {
+  const [getUserByName] = useMutation(GET_USER_BY_NAME, {
     onError: error => {
       console.error(error);
     },
@@ -104,6 +104,7 @@ const AccountComponent: React.FC = () => {
           name: e.target.value,
         },
       });
+      setNameTimeout(null);
     }, 300);
     setNameTimeout(timeout);
   }
@@ -126,7 +127,7 @@ const AccountComponent: React.FC = () => {
       clearTimeout(colorTimeout);
     }
     const timeout = setTimeout(() => {
-       setUserColor(color.hex);
+      setUserColor(color.hex);
 
       setColorTimeout(null);
     }, 500);
@@ -161,11 +162,11 @@ const AccountComponent: React.FC = () => {
           padding: 10,
         }}> 
             <IonButtons>
-              <IonButton onClick={handleLoginClick}>
-                LOGIN
-              </IonButton>
               <IonButton onClick={handleLogoutClick}>
                 LOGOUT
+              </IonButton>
+              <IonButton onClick={handleLoginClick}>
+                LOGIN
               </IonButton>
             </IonButtons>
         </IonCard>
@@ -200,6 +201,7 @@ const AccountComponent: React.FC = () => {
                   <IonIcon icon={createOutline} size='small'/>
                 </IonButton>
               </IonButtons>
+              { nameError || null }
             </div>
             <div style={{
               display: isEditingName

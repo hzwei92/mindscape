@@ -1,27 +1,10 @@
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import useToken from './useToken';
 import { FULL_USER_FIELDS } from '../user/userFragments';
 import { gql, useMutation } from '@apollo/client';
 import { useAppDispatch, useAppSelector } from '../../app/store';
 import { selectAuthIsValid, selectAuthIsInit, selectAuthIsComplete, setLogin } from './authSlice';
-import { Preferences } from '@capacitor/preferences';
-import { ACCESS_TOKEN, REFRESH_TOKEN } from '../../constants';
-import { MenuMode } from '../menu/menu';
-import { useIonRouter } from '@ionic/react';
-import { Tab } from '../tab/tab';
-
-const INIT_USER = gql`
-  mutation InitUser($palette: String!) {
-    initUser(palette: $palette) {
-      user {
-        ...FullUserFields
-      }
-      accessToken
-      refreshToken
-    }
-  }
-  ${FULL_USER_FIELDS}
-`;
+import { AppContext } from '../../app/App';
 
 const GET_CURRENT_USER = gql`
   mutation GetCurrentUser {
@@ -32,10 +15,10 @@ const GET_CURRENT_USER = gql`
   ${FULL_USER_FIELDS}
 `;
 
-export default function useAuth(palette: 'dark' | 'light', setMenuMode: Dispatch<SetStateAction<MenuMode>>) {
+export default function useAuth() {
   const dispatch = useAppDispatch();
 
-  const router = useIonRouter();
+  const { setShowInitUserModal } = useContext(AppContext); 
 
   const isInit = useAppSelector(selectAuthIsInit);
   const isValid = useAppSelector(selectAuthIsValid);
@@ -62,42 +45,6 @@ export default function useAuth(palette: 'dark' | 'light', setMenuMode: Dispatch
     }
   });
 
-  const [initUser] = useMutation(INIT_USER, {
-    onError: error => {
-      console.error(error);
-    },
-    onCompleted: async data => {
-      console.log(data);
-
-      await Preferences.set({
-        key: ACCESS_TOKEN,
-        value: data.initUser.accessToken,
-      });
-
-      await Preferences.set({ 
-        key: REFRESH_TOKEN, 
-        value: data.initUser.refreshToken
-      });
-
-      setIsLoading(false);
-
-      refreshTokenInterval();
-
-      dispatch(setLogin(data.initUser.user));
-
-      setMenuMode(MenuMode.ABOUT);
-
-      data.initUser.user.tabs.some((t: Tab) => {
-        if (t.isFocus) {
-          router.push(`/g/${t.arrow.routeName}`);
-          return true;
-        }
-        return false;
-      })
-
-    }
-  });
-
   useEffect(() => {
     refreshToken();
   }, [])
@@ -111,12 +58,7 @@ export default function useAuth(palette: 'dark' | 'light', setMenuMode: Dispatch
       getUser();
     }
     else {
-      setIsLoading(true)
-      initUser({
-        variables: {
-          palette,
-        }
-      });
+      setShowInitUserModal(true);
     }
   }, [isInit, isValid]);
 }

@@ -32,11 +32,11 @@ import { selectCurrentUser, selectIdToUser } from '../features/user/userSlice';
 import { MenuMode } from '../features/menu/menu';
 import { APP_BAR_WIDTH, MENU_MIN_WIDTH } from '../constants';
 import AppBar from './AppBar1';
-import useAuth from '../features/auth/useAuth';
 import CreateGraphModal from '../features/arrow/CreateGraphModal';
 import UserModal from '../features/user/UserModal';
 import MenuComponent from '../features/menu/MenuComponent';
 import ExplorerComponent from '../features/explorer/ExplorerComponent';
+import InitUserModal from '../features/auth/InitUserModal';
 
 setupIonicReact();
 
@@ -83,6 +83,9 @@ export const AppContext = createContext({} as {
 
   menuIsResizing: boolean;
   setMenuIsResizing: Dispatch<SetStateAction<boolean>>;
+
+  showInitUserModal: boolean;
+  setShowInitUserModal: Dispatch<SetStateAction<boolean>>;
 });
 
 const App: React.FC = () => {
@@ -112,17 +115,13 @@ const App: React.FC = () => {
 
   const [newTwigId, setNewTwigId] = useState('');
 
-
   const [selectedUserId, setSelectedUserId] = useState('');
 
   const [menuMode, setMenuMode] = useState(MenuMode.NONE);
   const [menuX, setMenuX] = useState(400);
   const [menuIsResizing, setMenuIsResizing] = useState(false);
 
-
-  const [frameIsOpen, setFrameIsOpen] = useState(false);
-  const [frameX, setFrameX] = useState(width);
-  const [frameIsResizing, setFrameIsResizing] = useState(false);
+  const [showInitUserModal, setShowInitUserModal] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
@@ -180,6 +179,9 @@ const App: React.FC = () => {
       setMenuX,
       menuIsResizing,
       setMenuIsResizing,
+
+      showInitUserModal,
+      setShowInitUserModal,
     };
   }, [
     user, 
@@ -193,7 +195,8 @@ const App: React.FC = () => {
     selectedUserId,
     menuMode,
     menuX,
-    menuIsResizing
+    menuIsResizing,
+    showInitUserModal,
   ]);
 
   const handleMouseMove = (event: React.MouseEvent) => {
@@ -270,6 +273,7 @@ const App: React.FC = () => {
               <ExplorerComponent />
             </div>
           </div>
+          <InitUserModal />
           <CreateGraphModal />
           <UserModal />
         </IonReactRouter>
