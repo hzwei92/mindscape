@@ -35,8 +35,8 @@ export default function AboutComponent() {
           paddingRight: 10,
         }}>
           <li>
-            An account has been automatically generated for you.
-            Register an email to secure access to it.
+            An account has been generated for you.
+            Register an <b>email</b> to secure access to it.
           </li>
         </ul>
       </IonCard>
@@ -54,21 +54,17 @@ export default function AboutComponent() {
             You know how we browse the Web one page at a time?
 
             Imagine zooming out to see the pages and links of the Web
-            displayed as a directed graph (i.e. a flowchart). 
+            displayed as a <b>graph</b> (i.e. a flowchart). 
           </li>
           <li>
-            Suppose you could upvote/downvote the links of the graph 
+            Suppose you could <b>upvote/downvote</b> the links of the graph 
             to prioritize them for browsing,
             thus helping to direct the flow of attention across the Web.
           </li>
           <li>
-            What if you could filter these votes by various demographics
-            (e.g. Millenial aged people, citizens of the United States, 
-            people who participate in a particular graph, and/or the people you follow)
+            What if you could <b>filter</b> these votes by various demographics
+            (e.g.the people you follow)
             to see the information digest of a particular slice of the population?
-          </li>
-          <li>
-            Mindscape.pub explores these ideas and more!
           </li>
         </ul>
       </IonCard>
@@ -82,50 +78,38 @@ export default function AboutComponent() {
           marginTop: 0,
           paddingRight: 10,
         }}>
-        <li>
-          Suppose Alice writes a blog post.
-
-          Then, Bob reads it and responds with his own blog post.
-
-          How are Alice's readers to find and read Bob's response?
-
-          Bob can easily link from his post to Alice's,
-          but hyperlinks can only be detected and traversed in the forward direction,
-          so this doesn't really help.
-
-          The Web2.0 solution would be for Bob to comment on Alice's post 
-          with a hyperlink back to his own post.
-          However, Alice might not have comments enabled on her blog. 
-          Or Alice might choose to 
-          censor Bob's comment.
-
-          So, the Web doesn't really have a standardized protocol 
-          for replying to one post with another.
-        </li>
-        <li>
-          The underlying cause of this and other issues is the 
-          lack of a way to properly apply structure to the posts of the Web.
-        </li>
-        <li>
-          We are developing this new mode of browsing and extending the Web
-          in order to give users the ability to organize posts into nested graphs
-          in space.
-          
-          The ability to organize posts like this yields a medium 
-          that is more deeply expressive,
-          enabling smarter browsing.
-
-          For instance, one would be able to view the replies to a post,
-          sorted by the votes of a particular demographic.
-        </li>
-        <li>
-          To organize our voices.
-
-          So we can all contribute as citizen journalists.
-
-          For grassroots science and democracy.
-        </li>
-      </ul>
+          <li>
+            The zeitgeist is characterized by the media through which it moves.
+          </li>
+          <li>
+            Today, social media organizes posts into timelines and algorithmic feeds.
+            Tree structure is also employed to organize threads accessible via these linear structures.
+          </li>
+          <li>
+            In timelines, old posts disappear into the past, even if they are still relevant.
+          </li>
+          <li>
+            Algorithmic feeds don't offer much opportunity for decision making in the exploration of content.
+          </li>
+          <li>
+            Regarding tree structures, I can extend a tree with my own posts. 
+            But I also want to be able to fashion my own trees from arbitrary posts,
+            and use these trees as modular expressions.
+          </li>
+          <li>
+            Mindscape enables the definition of nested graph struture, which can express the three types above.
+          </li>
+          <li>
+            But it also offers the free spatial composition of posts, similar to the placement of icons on desktops.
+          </li>
+          <li>
+            In this sense, Mindscape is an enzyme, enabling the holding of disparate reagents in place, 
+            in the view of the user, 
+            so that the user can react with them, 
+            perhaps defining new relationships between the reagents by 
+            creating labeled arrows between them, or upvoting existing arrows.
+          </li>
+        </ul>
       </IonCard>
       <IonCard>
         <IonCardHeader style={{
@@ -137,16 +121,18 @@ export default function AboutComponent() {
           marginTop: 0,
           paddingRight: 10,
         }}>
-<li>
+        <li>
           One of the guiding principles in our research and development is
           the idea that we should design information to 
           leverage our physical intuition regarding material in space-time.
-
-          (For instance, today's operating systems 
+        </li>
+        <li>
+          For instance, today's operating systems 
           typically use the metaphor of nested folders to 
           give the user some material intuition for how 
-          a directory tree is structured.)
-
+          a directory tree is structured.
+        </li>
+        <li>
           This has inspired us to use a model of nested graphs in space, which 
           allows the user to compose posts in two key ways: 
         </li>
@@ -165,10 +151,12 @@ export default function AboutComponent() {
           arrows exist alongside the posts as objects in their own right.
 
           This results in their having significantly different properties.
-
-          (For instance, a hyperlink can only be traversed in one direction
-          while an arrow can be traversed in either direction.)
-
+        </li>
+        <li>
+          For instance, a hyperlink can only be traversed in one direction
+          while an arrow can be traversed in either direction.
+        </li>
+        <li>
           By connecting posts with arrows, we place the posts into a graph,
           i.e. an abstract space of arbitrary dimensionality.
 
@@ -183,15 +171,18 @@ export default function AboutComponent() {
           to produce more complex expressions.
           
           This is a fundamental, recursive process that occurs in all acts of expression.
-
-          (For instance, one organizes characters into words, 
-          words into sentences, sentences into paragraphs, etc.)
-
+        </li>
+        <li>
+          For instance, one organizes characters into words, 
+          words into sentences, sentences into paragraphs, etc.
+        </li>
+        <li>
           Previously, it was difficult to express oneself in the composition of posts.
 
           Now, we can define relationships between posts, composing them
           to form graphs.
-
+        </li>
+        <li>
           Since graphs are nested, each graph is essentially a post in a meta-graph,
           so we unlock not just one additional level of organization,
           but an arbitrary number of levels.
