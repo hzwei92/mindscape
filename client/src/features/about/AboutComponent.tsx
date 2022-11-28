@@ -79,11 +79,11 @@ export default function AboutComponent() {
           paddingRight: 10,
         }}>
           <li>
-            The zeitgeist is characterized by the media through which it moves.
+            The <b>zeitgeist</b> is characterized by the media through which it moves.
           </li>
           <li>
-            Today, social media organizes posts into timelines and algorithmic feeds.
-            Tree structure is also employed to organize threads accessible via these linear structures.
+            Today, <b>social media</b> organizes posts into timelines and algorithmic feeds.
+            Tree structure is also employed to organize threads accessible via these <b>linear structures</b>.
           </li>
           <li>
             In timelines, old posts disappear into the past, even if they are still relevant.
@@ -92,22 +92,26 @@ export default function AboutComponent() {
             Algorithmic feeds don't offer much opportunity for decision making in the exploration of content.
           </li>
           <li>
-            Regarding tree structures, I can extend a tree with my own posts. 
+            Regarding <b>tree structures</b>, I can extend a tree with my own posts. 
             But I also want to be able to fashion my own trees from arbitrary posts,
             and use these trees as modular expressions.
           </li>
           <li>
-            Mindscape enables the definition of nested graph struture, which can express the three types above.
+            Mindscape enables the composition of posts into 
+            a <b>nested, weighted, directed graph structure</b>, 
+            which has the power to express the three types above.
           </li>
           <li>
-            But it also offers the free spatial composition of posts, similar to the placement of icons on desktops.
+            It also offers the free <b>spatial composition</b> of posts, similar to the placement of icons on desktops.
           </li>
           <li>
-            In this sense, Mindscape is an enzyme, enabling the holding of disparate reagents in place, 
+            Mindscape is <b>enzymatic</b> in function, enabling the holding of disparate reagents in place, 
             in the view of the user, 
-            so that the user can react with them, 
-            perhaps defining new relationships between the reagents by 
-            creating labeled arrows between them, or upvoting existing arrows.
+            so a reaction can occur.
+          </li>
+          <li>
+            To bridge echo chambers and treat social amnesia by increasing the <b>modularity</b> of posts, 
+            enabling new modes of <b>composition</b>.
           </li>
         </ul>
       </IonCard>
@@ -124,7 +128,7 @@ export default function AboutComponent() {
         <li>
           One of the guiding principles in our research and development is
           the idea that we should design information to 
-          leverage our physical intuition regarding material in space-time.
+          leverage our <b>physical intuition</b> regarding material in space-time.
         </li>
         <li>
           For instance, today's operating systems 
@@ -134,18 +138,18 @@ export default function AboutComponent() {
         </li>
         <li>
           This has inspired us to use a model of nested graphs in space, which 
-          allows the user to compose posts in two key ways: 
+          allows the user to <b>compose posts</b> in two key ways: 
         </li>
         <li>
           Firstly, this type of interface materializes posts as objects 
           that can be moved around in space.
 
-          Thus, one can position posts in a way that uses distance and direction 
+          Thus, one can <b>position</b> posts in a way that uses distance and direction 
           to convey information
           regarding the relationships between posts.
         </li>
         <li>
-          Secondly, it provides a new way to link posts: the arrow. 
+          Secondly, it provides a new way to link posts: the <b>arrow</b>. 
 
           While hyperlinks exist embedded within posts as properties of those posts, 
           arrows exist alongside the posts as objects in their own right.
@@ -165,7 +169,7 @@ export default function AboutComponent() {
         </li>
         <li>
           Composition of posts is meaningful 
-          because it is the application of syntax onto posts.
+          because it is the application of <b>syntax</b> onto posts.
 
           Within a post, syntax is applied to simpler expressions, composing them
           to produce more complex expressions.
@@ -189,7 +193,7 @@ export default function AboutComponent() {
         </li>
         <li>
           The point of composing posts into graphs is to be able to express
-          oneself in terms of preexisting posts.
+          oneself in terms of <b>preexisting posts</b>.
           
           This means that one can easily cite another person's post,
           integrating it into their own statements.
@@ -210,25 +214,30 @@ export default function AboutComponent() {
           paddingRight: 10,
         }}>
           <li>
-            Mindscape uses a single data type, the arrow, to represent
+            Mindscape uses a single data type, the <b>arrow</b>, to represent
             both the nodes and the edges of a graph.
-
-            (We can think of each node as an arrow that starts and ends at itself, 
-            like identity arrows in category theory.)
-
+          </li>
+          <li>
+            We can think of each node as an arrow that starts and ends at itself, 
+            like identity arrows in category theory.
+          </li>
+          <li>
             This is significant because it means that each edge has a text fields
             that can be used to label the edge.
-
+          </li>
+          <li>
             Also, each arrow can be said to connect two arrows. This means
             that we can have arrows between all 3: node and node, node and edge, edge and edge
           </li>
           <li>
-            Another data type, the twig, is used to define additional structure on a graph.
-
+            Another data type, the <b>twig</b>, is used to define additional structure on a graph.
+          </li>
+          <li>
             The twig expresses the tagging of a set of detail-arrows with an abstract-arrow.
 
             We can imagine this as the nesting of the details under an abstract.
-
+          </li>
+          <li>
             The detail-arrows are further structured by twigs, into a tree structure rooted 
             at the abstract.
 

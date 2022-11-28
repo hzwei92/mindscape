@@ -11,7 +11,7 @@ import { selectAbstractIdToData, selectSpaceData } from "../space/spaceSlice";
 import { Tab } from "../tab/tab";
 import { selectFocusTab, selectIdToTab } from "../tab/tabSlice";
 import useRemoveTab from "../tab/useRemoveTab";
-
+import icon from './icon.png'
 
 export default function ExplorerComponent() {
   const { menuX, width, palette, setIsCreatingGraph, setCreateGraphArrowId } = useContext(AppContext);
@@ -67,7 +67,8 @@ export default function ExplorerComponent() {
       flexDirection: 'column',
     }}>
       <div style={{
-        overflow: 'hidden',
+        overflow: 'clip',
+        height: '32px',
       }}>
       <div style={{
         width: '100%',
@@ -173,7 +174,7 @@ export default function ExplorerComponent() {
             : <IonCard style={{
                 margin: 0,
                 borderRadius: 0,
-                height: '100%',
+                height: 'calc(100% - 32px)',
                 width: '100%',
                 backgroundColor: palette === 'dark'
                   ? 'black'
@@ -187,7 +188,7 @@ export default function ExplorerComponent() {
                   flexDirection: 'row',
                   justifyContent: 'center',
                 }}>
-                  👁‍🗨
+                  <img src={icon} />
                 </div>
               </IonCard>
         }
