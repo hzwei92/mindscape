@@ -1,6 +1,7 @@
 import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonModal, IonPage } from '@ionic/react';
 import { Dispatch, SetStateAction, useContext, useEffect, useRef } from 'react';
 import { AppContext } from '../../app/App';
+import Register from '../auth/Register1';
 import useLogout from '../auth/useLogout';
 import { MenuMode } from '../menu/menu';
 
@@ -10,13 +11,14 @@ interface LogoutModalProps {
 };
 
 function LogoutModal(props: LogoutModalProps) {
-  const { setMenuMode } = useContext(AppContext);
+  const { user,  setMenuMode } = useContext(AppContext);
 
   const modalRef = useRef<HTMLIonModalElement>(null);
 
   const { logoutUser } = useLogout();
 
   useEffect(() => {
+    console.log('show logout modal', props.show);
     if (props.show) {
       modalRef.current?.present();
     }
@@ -26,9 +28,10 @@ function LogoutModal(props: LogoutModalProps) {
   }, [props.show]);
 
   const handleLogoutClick = () => {
+    modalRef.current?.dismiss();
+    handleClose();
     logoutUser();
     setMenuMode(MenuMode.NONE);
-    handleClose();
   }
 
   const handleCancelClick = () => {
@@ -47,15 +50,40 @@ function LogoutModal(props: LogoutModalProps) {
         height: '100%',
         margin: 0,
       }}>
-        <IonCardHeader>
-          Logout
+        <IonCardHeader style={{
+          fontSize: 80,
+          marginBottom: 30,
+          textAlign: 'center',
+        }}>
+          Peace out!
         </IonCardHeader>
-        <IonCardContent>
-          You will not be able to recover this account if you logout now
-          without registering first.
-          <br/>
-          <br/>
-          <IonButtons >
+        <IonCardContent style={{
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+        }}>
+          {
+            !user?.email
+              ? <div>
+                  <div style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                    marginBottom: 30,
+                  }}>
+                    You will not be able to recover this account if you logout now
+                    without registering first.
+                  </div>
+                  <Register />
+                </div>
+              : null
+          }
+          <IonButtons style={{
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'center',
+            marginTop: 80,
+          }}>
             <IonButton onClick={handleLogoutClick}>
               LOGOUT
             </IonButton>

@@ -36,7 +36,7 @@ export default function AboutComponent() {
         }}>
           <li>
             An account has been generated for you.
-            Register an <b>email</b> to secure access to it.
+            Register an <b>email</b> via the Account menu to secure access to it.
           </li>
           <li>
             Use the button in the bottom left to toggle <b>day/night mode</b>.

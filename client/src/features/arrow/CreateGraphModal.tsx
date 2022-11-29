@@ -5,6 +5,7 @@ import { FULL_TAB_FIELDS } from "../tab/tabFragments";
 import { mergeTabs } from "../tab/tabSlice";
 import { AppContext } from "../../app/App";
 import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonInput, IonModal, useIonRouter } from "@ionic/react";
+import { uniqueNamesGenerator, adjectives, animals } from "unique-names-generator";
 
 const CREATE_GRAPH = gql`
   mutation CreateGraphTab($name: String!, $routeName: String!, $arrowId: String) {
@@ -42,6 +43,24 @@ export default function CreateGraphModal() {
   const [routeTimeout, setRouteTimeout] = useState(null as ReturnType<typeof setTimeout> | null);
 
   const [isReady, setIsReady] = useState(false);
+
+  useEffect(() => {
+    if (isCreatingGraph) {
+      if (createGraphArrowId) {
+        setName('');
+        setRouteName('');
+      }
+      else {
+        const name1 = uniqueNamesGenerator({
+          dictionaries: [adjectives, animals],
+          length: 2,
+          separator: '-'
+        }) + '-' + Math.round(Math.random() * 1000).toString().padStart(3, '0');
+        setName(name1);
+        setRouteName(name1);
+      }
+    }
+  }, [isCreatingGraph]);
 
   const [create] = useMutation(CREATE_GRAPH, {
     onError: err => {
@@ -105,7 +124,6 @@ export default function CreateGraphModal() {
 
   const handleClose = () => {
     setIsCreatingGraph(false);
-    setName('');
     setCreateGraphArrowId(null);
   }
 
@@ -122,33 +140,65 @@ export default function CreateGraphModal() {
 
   return (
     <IonModal isOpen={isCreatingGraph} onWillDismiss={handleClose}>
-      <IonCard>
-        <IonCardHeader>
-          Create a graph
+      <IonCard style={{
+        margin: 0,
+        height: '100%',
+      }}>
+        <IonCardHeader style={{
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'center',
+          fontSize: 80,
+          marginBottom: 60,
+        }}>
+          New graph...
         </IonCardHeader>
-        <IonCardContent>
-          <IonInput
-            placeholder='Name'
-            value={name}
-            onIonChange={handleNameChange}
-          />
-          <IonInput
-            placeholder="route-name"
-            value={routeName}
-            onIonChange={handleRouteNameChange}
-          />
-          {routeError && <div>{routeError}</div>}
-          <IonButtons style={{
-            marginTop: 2,
-          }}>
-            <IonButton disabled={!!routeError || !isReady || routeName.length === 0} onClick={handleSubmitClick}>
-              CREATE
-            </IonButton>
-            &nbsp;&nbsp;
-            <IonButton onClick={handleClose}>
-              CANCEL
-            </IonButton>
-          </IonButtons>
+        <IonCardContent style={{
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}>
+            <div style={{
+              marginBottom: 40,
+              textAlign: 'center',
+            }}>
+              Select a name for the graph and a route-name for its URL.
+            </div>
+            <IonInput
+              placeholder='Name'
+              value={name}
+              onIonChange={handleNameChange}
+              style={{
+                border: '1px solid',
+                borderRadius: 5,
+                marginBottom: 20,
+                width: 300,
+              }}
+            />
+            <IonInput
+              placeholder="route-name"
+              value={routeName}
+              onIonChange={handleRouteNameChange}
+              style={{
+                border: '1px solid',
+                borderRadius: 5,
+                marginBottom: 20,
+                width: 300,
+              }}
+            />
+            {routeError && <div>{routeError}</div>}
+            <IonButtons style={{
+              marginTop: 80,
+            }}>
+              <IonButton disabled={!!routeError || !isReady || routeName.length === 0} onClick={handleSubmitClick}>
+                CREATE
+              </IonButton>
+              &nbsp;&nbsp;
+              <IonButton onClick={handleClose}>
+                CANCEL
+              </IonButton>
+            </IonButtons>
         </IonCardContent>
       </IonCard>
     </IonModal>

@@ -28,6 +28,8 @@ export default function InitUserModal() {
   const modalRef = useRef<HTMLIonModalElement>(null);
 
   useEffect(() => {
+    if (!showInitUserModal) return;
+
     const name1 = uniqueNamesGenerator({
       dictionaries: [adjectives, animals],
       length: 2,
@@ -38,7 +40,7 @@ export default function InitUserModal() {
 
     setName(name1);
     setColor(color1);
-  }, []);
+  }, [showInitUserModal]);
 
   useEffect(() => {
     if (showInitUserModal) {
@@ -139,6 +141,8 @@ export default function InitUserModal() {
                 borderRadius: 5,
                 border: '1px solid',
                 borderColor: nameError ? 'red' : null,
+                paddingLeft: 10,
+                width: 300,
               }}
             />
             {
@@ -149,11 +153,18 @@ export default function InitUserModal() {
             </div>
             <div style={{
               marginTop: 20,
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'center',
             }}>
-              <ChromePicker color={color} onChange={handleColorChange} />
+              <ChromePicker
+                color={color}
+                disableAlpha={true} 
+                onChange={handleColorChange} 
+              />
             </div>
             <IonButtons style={{
-              marginTop: 30,
+              marginTop: 60,
               display: 'flex',
               flexDirection: 'row',
               justifyContent: 'center',

@@ -1,4 +1,4 @@
-import { IonButton, IonButtons, IonCard, IonFab, IonFabButton, IonIcon, useIonRouter } from "@ionic/react";
+import { IonButton, IonButtons, IonCard, IonIcon, useIonRouter } from "@ionic/react";
 import { add, close } from "ionicons/icons";
 import React, { useContext } from "react";
 import { AppContext } from "../../app/App";
@@ -7,7 +7,7 @@ import { OFF_WHITE } from "../../constants";
 import { Arrow } from "../arrow/arrow";
 import { selectIdToArrow } from "../arrow/arrowSlice";
 import SpaceComponent from "../space/SpaceComponent";
-import { selectAbstractIdToData, selectSpaceData } from "../space/spaceSlice";
+import { selectAbstractIdToData } from "../space/spaceSlice";
 import { Tab } from "../tab/tab";
 import { selectFocusTab, selectIdToTab } from "../tab/tabSlice";
 import useRemoveTab from "../tab/useRemoveTab";
