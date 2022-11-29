@@ -38,7 +38,7 @@ export default function usePublishAvatarSub(abstractId: string) {
           abstractId,
           id: publishAvatar.id,
         }));
-      }, 1000);
+      }, 5000);
 
       publishAvatar.timeout = timeout;
 
