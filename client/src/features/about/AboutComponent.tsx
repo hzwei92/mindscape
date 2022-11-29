@@ -230,7 +230,7 @@ export default function AboutComponent() {
           </li>
           <li>
             Also, each arrow can be said to connect two arrows. This means
-            that we can have arrows between all 3: post and post, post and link, link and link.
+            that we can have arrows between all three: post and post, post and link, link and link.
           </li>
           <li>
             Another data type, the <b>twig</b>, is used to define additional structure on a graph.
@@ -245,10 +245,6 @@ export default function AboutComponent() {
             at the abstract-arrow.
 
             This tree structure is used to position arrows; drag an arrow and its subtree moves with it.
-          </li>
-          <li>
-            Twigs define two tree structures: the nesting of arrows inside of other arrows, 
-            and the tree structure of posts inside of a particular arrow.
           </li>
         </ul>
       </IonCard>
