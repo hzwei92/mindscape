@@ -218,33 +218,37 @@ export default function AboutComponent() {
         }}>
           <li>
             Mindscape uses a single data type, the <b>arrow</b>, to represent
-            both the nodes and the edges of a graph.
+            both the posts and the links of a graph.
           </li>
           <li>
-            We can think of each node as an arrow that starts and ends at itself, 
+            We can think of each post as an arrow that starts and ends at itself, 
             like identity arrows in category theory.
           </li>
           <li>
-            This is significant because it means that each edge has a text fields
-            that can be used to label the edge.
+            This is significant because it means that each link has a text fields
+            that can be used to label the link.
           </li>
           <li>
             Also, each arrow can be said to connect two arrows. This means
-            that we can have arrows between all 3: node and node, node and edge, edge and edge
+            that we can have arrows between all 3: post and post, post and link, link and link.
           </li>
           <li>
             Another data type, the <b>twig</b>, is used to define additional structure on a graph.
           </li>
           <li>
-            The twig expresses the tagging of a set of detail-arrows with an abstract-arrow.
+            The twig expresses the tagging of a set of arrows with the id of a single arrow.
 
-            We can imagine this as the nesting of the details under an abstract.
+            We can imagine this as the nesting of a set of details under an abstract.
           </li>
           <li>
             The detail-arrows are further structured by twigs, into a tree structure rooted 
-            at the abstract.
+            at the abstract-arrow.
 
-            This tree structure is used to position arrows, drag an arrow and its subtree moves with it.
+            This tree structure is used to position arrows; drag an arrow and its subtree moves with it.
+          </li>
+          <li>
+            Twigs define two tree structures: the nesting of arrows inside of other arrows, 
+            and the tree structure of posts inside of a particular arrow.
           </li>
         </ul>
       </IonCard>
