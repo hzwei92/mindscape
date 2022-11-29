@@ -20,7 +20,7 @@ export default function usePublishAvatarSub(abstractId: string) {
 
   const sessionId = useAppSelector(selectSessionId);
 
-  const idToAvatar = useAppSelector(selectIdToAvatar(abstractId));
+  const idToAvatar = useAppSelector(selectIdToAvatar(abstractId)) || {};
 
   useSubscription(PUBLISH_CURSOR, {
     variables: {
