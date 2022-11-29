@@ -3,6 +3,7 @@ import { RootState } from '../../app/store';
 import { IdToType } from '../../types';
 import { setLogin, setLogout } from '../auth/authSlice';
 import { AvatarType, DragState, PosType, ScrollState, SpaceData } from '../space/space';
+import { mergeTabs } from '../tab/tabSlice';
 import { Twig } from '../twig/twig';
 
 export interface SpaceState {
@@ -247,50 +248,46 @@ export const spaceSlice = createSlice({
     },
   },
   extraReducers: builder => {
-    builder.addCase(setLogin, (state, action) => {
-      const tab = (action.payload?.tabs || [])
-        .sort((a, b) => a.i - b.i);
+    builder
+    .addCase(mergeTabs, (state, action) => {
 
-      if (tab.length === 0) return state;
-
-      const abstractIdToData = (action.payload?.tabs || []).reduce((acc: IdToType<SpaceData>, tab) => {
-        const { arrow } = tab;
-
-        if (!arrow) return acc;
-
-        acc[tab.arrowId] = {
-          selectedTwigId: arrow.rootTwigId || '',
-          scale: 1,
-          scroll: {
-            left: 0,
-            top: 0,
-          },
-          cursor: {
-            x: 0,
-            y: 0,
-          },
-          drag: {
-            isScreen: false,
-            twigId: '',
-            targetTwigId: '',
-          },
-          idToPos: {},
-          idToHeight: {},
-          idToTwig: {},
-          iToTwigId: {},
-          shouldReloadTwigTree: false,
-          idToChildIdToTrue: {},
-          idToDescIdToTrue: {},
-          idToAvatar: {},
-        };
-
+      const abstractIdToData = action.payload.reduce((acc, tab) => {
+        if (tab.arrowId && !acc[tab?.arrowId]) {
+          acc[tab.arrowId] = {
+            selectedTwigId: tab.arrow?.rootTwigId ?? '',
+            scale: 1,
+            scroll: {
+              left: 0,
+              top: 0,
+            },
+            cursor: {
+              x: 0,
+              y: 0,
+            },
+            drag: {
+              isScreen: false,
+              twigId: '',
+              targetTwigId: '',
+            },
+            idToPos: {},
+            idToHeight: {},
+            idToTwig: {},
+            iToTwigId: {},
+            shouldReloadTwigTree: false,
+            idToChildIdToTrue: {},
+            idToDescIdToTrue: {},
+            idToAvatar: {},
+          };
+        }
         return acc;
-      }, {});
-
+      }, { ...state.abstractIdToData });
       return {
-        ...state,
-        abstractIdToData,
-      };
+        ...state, 
+        abstractIdToData: {
+          ...state.abstractIdToData,
+          ...abstractIdToData,
+        }
+      }
     })
     .addCase(setLogout, (state, action) => {
       return initialState;

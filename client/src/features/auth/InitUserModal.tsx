@@ -111,9 +111,7 @@ export default function InitUserModal() {
       }}>
         <IonCardHeader style={{
           fontSize: 80,
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'center',
+          textAlign: 'center',
         }}>
           Welcome!
         </IonCardHeader>
@@ -127,7 +125,7 @@ export default function InitUserModal() {
             flexDirection: 'column',
           }}>
             <div style={{
-              marginBottom: 20,
+              marginBottom: 10,
               textAlign: 'center',
             }}>
               Choose a name and a color.
@@ -152,7 +150,7 @@ export default function InitUserModal() {
             }
             </div>
             <div style={{
-              marginTop: 20,
+              marginTop: 10,
               display: 'flex',
               flexDirection: 'row',
               justifyContent: 'center',
@@ -164,7 +162,7 @@ export default function InitUserModal() {
               />
             </div>
             <IonButtons style={{
-              marginTop: 60,
+              marginTop: 15,
               display: 'flex',
               flexDirection: 'row',
               justifyContent: 'center',

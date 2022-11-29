@@ -52,7 +52,6 @@ function LogoutModal(props: LogoutModalProps) {
       }}>
         <IonCardHeader style={{
           fontSize: 80,
-          marginBottom: 30,
           textAlign: 'center',
         }}>
           Peace out!
@@ -69,7 +68,7 @@ function LogoutModal(props: LogoutModalProps) {
                     display: 'flex',
                     flexDirection: 'row',
                     justifyContent: 'center',
-                    marginBottom: 30,
+                    marginBottom: 20,
                   }}>
                     You will not be able to recover this account if you logout now
                     without registering first.
@@ -82,7 +81,7 @@ function LogoutModal(props: LogoutModalProps) {
             display: 'flex',
             flexDirection: 'row',
             justifyContent: 'center',
-            marginTop: 80,
+            marginTop: 50,
           }}>
             <IonButton onClick={handleLogoutClick}>
               LOGOUT

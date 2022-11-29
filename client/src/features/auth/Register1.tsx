@@ -147,7 +147,7 @@ export default function Register() {
         {message}
       </div>
     <IonButtons style={{
-      marginBottom: 20,
+      marginBottom: 10,
     }}>
       <IonButton
         disabled={!isFormValid}

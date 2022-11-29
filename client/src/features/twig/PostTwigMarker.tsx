@@ -14,7 +14,7 @@ interface PostTwigMarkerProps {
 function PostTwigMarker(props: PostTwigMarkerProps) {
   const { palette } = useContext(AppContext);
   const { abstract } = useContext(SpaceContext);
-  
+
   if (
     !props.pos || 
     props.twig.deleteDate || 
@@ -24,10 +24,10 @@ function PostTwigMarker(props: PostTwigMarkerProps) {
 
   return (
     <line 
-      x1={props.parentPos.x + VIEW_RADIUS}
-      y1={props.parentPos.y + VIEW_RADIUS}
-      x2={props.pos.x + VIEW_RADIUS}
-      y2={props.pos.y + VIEW_RADIUS}
+      x1={(props.parentPos?.x ?? 0) + VIEW_RADIUS}
+      y1={(props.parentPos?.y ?? 0) + VIEW_RADIUS}
+      x2={(props.pos?.x ?? 0) + VIEW_RADIUS}
+      y2={(props.pos?.y ?? 0) + VIEW_RADIUS}
       stroke={palette === 'dark' ? 'white' : 'black'}
       strokeLinecap={'round'}
       strokeWidth={5}

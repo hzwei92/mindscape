@@ -1,6 +1,6 @@
 import { gql, useMutation } from '@apollo/client';
 import { FULL_TWIG_FIELDS } from '../twig/twigFragments';
-import { Dispatch, SetStateAction, useEffect } from 'react';
+import { useEffect } from 'react';
 import { mergeIdToPos, mergeTwigs, selectIdToPos, selectSelectedTwigId } from './spaceSlice';
 import { useAppDispatch, useAppSelector } from '../../app/store';
 import useCenterTwig from '../twig/useCenterTwig';
@@ -35,6 +35,7 @@ export default function useInitSpace(abstractId: string) {
     },
     onCompleted: data => {
       console.log(data);
+
       const idToPos1 = data.getTwigs.reduce((acc: IdToType<PosType>, twig: Twig) => {
         acc[twig.id] = {
           x: twig.x,
@@ -52,7 +53,7 @@ export default function useInitSpace(abstractId: string) {
         abstractId,
         idToPos: idToPos1,
       }));
-      
+
       if (
         idToPos1[selectedTwigId]?.x !== idToPos[selectedTwigId]?.x || 
         idToPos1[selectedTwigId]?.y !== idToPos[selectedTwigId]?.y
