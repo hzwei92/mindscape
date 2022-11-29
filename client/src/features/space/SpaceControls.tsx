@@ -15,7 +15,7 @@ interface SpaceControlsProps {
 }
 export default function SpaceControls(props: SpaceControlsProps) {
   const dispatch = useAppDispatch();
-  const { abstractId } = useContext(SpaceContext);
+  const { abstract, abstractId } = useContext(SpaceContext);
 
   const spaceEl = useReactiveVar(spaceElVar)
     
@@ -90,14 +90,14 @@ export default function SpaceControls(props: SpaceControlsProps) {
   return (
     <div style={{
       position: 'absolute',
-      right: isPlatform('ios') && !isPlatform('mobileweb')
-        ? 150
-        : 170,
+      right: isPlatform('ios') || isPlatform('android')
+        ? 140
+        : 165,
       top: 0,
     }}>
       <div style={{
         position: 'fixed',
-        zIndex: MAX_Z_INDEX,
+        zIndex: abstract?.twigZ ?? 0 + 100,
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'right'
