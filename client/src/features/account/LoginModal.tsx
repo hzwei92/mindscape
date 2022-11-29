@@ -111,19 +111,41 @@ const LoginModal = (props: LoginModalProps) => {
         width: '100%',
         margin: 0,
       }}>
-        <IonCardHeader>
-          Login
+        <IonCardHeader style={{
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'center',
+          fontSize: 80,
+          textAlign: 'center',
+          marginBottom: 60,
+        }}>
+          Welcome back!
         </IonCardHeader>
-        <IonCardContent>
+        <IonCardContent style={{
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'center',
+        }}>
+          <div>
           <IonInput
             type='email'
             placeholder='Email'
             value={email}
-            onIonChange={handleEmailChange}
+            onIonChange={handleEmailChange} 
+            style={{
+              marginBottom: 10,
+              border: '1px solid',
+              borderRadius: 5,
+              width: 300,
+            }}
           />
           <div style={{
             display: 'flex',
             flexDirection: 'row',
+            border: '1px solid',
+            borderRadius: 5,
+            marginBottom: 10,
+            width: 300,
           }}>
             <IonInput
               type={showPass ? 'text' : 'password'}
@@ -140,12 +162,25 @@ const LoginModal = (props: LoginModalProps) => {
           <div>
             { message }
           </div>
-          <IonButtons>
+          <IonButtons style={{
+            marginBottom: 60,
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'center',
+          }}>
             <IonButton disabled={!isFormValid} onClick={handleSubmit}>
               LOGIN WITH EMAIL
             </IonButton>
           </IonButtons>
-          <GoogleButton isRegistration={false} />
+          <div style={{
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'center',
+          }}>
+            <GoogleButton isRegistration={false} />
+          </div>
+
+          </div>
         </IonCardContent>
       </IonCard>
     </IonModal>
