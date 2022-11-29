@@ -89,9 +89,12 @@ export default function SpaceControls(props: SpaceControlsProps) {
     // dispatch(setFocusIsSynced(true));
     // dispatch(setFocusShouldSync(true));
   };
+  const handleMouseMove = (e: React.MouseEvent) => {
+    e.preventDefault();
+  }
 
   return (
-    <div style={{
+    <div onMouseMove={handleMouseMove} style={{
       position: 'absolute',
       right: props.showRoles || props.showSettings
         ? isPlatform('ios') || isPlatform('android')
@@ -106,17 +109,13 @@ export default function SpaceControls(props: SpaceControlsProps) {
       <div style={{
         position: 'fixed',
         zIndex: abstract?.twigZ ?? 0 + 100,
-        display: 'flex',
-        flexDirection: 'row',
-        height: '100%',
       }}>
         <div style={{
           display: 'flex',
           flexDirection: 'column',
         }}>
-          <IonCard color={'light'} style={{
+          <IonCard color='light' style={{
             margin: 10,
-            padding: 1,
             whiteSpace: 'nowrap',
             display: 'flex',
             flexDirection: 'row',
@@ -151,10 +150,10 @@ export default function SpaceControls(props: SpaceControlsProps) {
             <IonFab style={{
               marginLeft: -60,
             }}>
-              <IonFabButton title='Settings' size='small' color={'light'}onClick={handleSettingsClick}>
+              <IonFabButton title='Settings' size='small' color={ props.showSettings ? 'primary' : 'light'}  onClick={handleSettingsClick}>
                 <IonIcon icon={settingsOutline} size='small'/>
               </IonFabButton> 
-              <IonFabButton title='Members' size='small'color={'light'} onClick={handleRolesClick}>
+              <IonFabButton title='Members' size='small' color={ props.showRoles ? 'primary' : 'light'} onClick={handleRolesClick}>
                 <IonIcon icon={people} size='small'/>
               </IonFabButton> 
               <div style={{
@@ -172,12 +171,19 @@ export default function SpaceControls(props: SpaceControlsProps) {
             </IonFab>
           </div>    
         </div>
-        {
-          props.showRoles
-            ? <RolesPanel showRoles={props.showRoles} setShowRoles={props.setShowRoles} />
-            : null
-        }
       </div>
+      {
+        props.showRoles
+          ? <div style={{
+              position: 'fixed',
+              top: 32,
+              right: 10,
+              height: '100%',
+            }}>
+              <RolesPanel showRoles={props.showRoles} setShowRoles={props.setShowRoles} />
+            </div>
+          : null
+        }
     </div>
   )
 }
