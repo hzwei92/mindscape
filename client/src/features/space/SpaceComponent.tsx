@@ -190,8 +190,9 @@ const SpaceComponent = (props: SpaceComponentProps) => {
   useEffect(() => {
     if (!moveEvent || !spaceEl?.current) return;
 
-    const x = spaceEl.current.scrollLeft + moveEvent.clientX;
-    const y = spaceEl.current.scrollTop + moveEvent.clientY;
+    console.log(moveEvent.clientX, menuX)
+    const x = spaceEl.current.scrollLeft + moveEvent.clientX - (menuMode === MenuMode.NONE ? 50 : 10 + menuX);
+    const y = spaceEl.current.scrollTop + moveEvent.clientY - 32;
 
     const dx = x - (cursor?.x ?? 0);
     const dy = y - (cursor?.y ?? 0);
@@ -266,13 +267,13 @@ const SpaceComponent = (props: SpaceComponentProps) => {
       }
 
       const center = {
-        x: (cursor.x - (menuMode === MenuMode.NONE ? 0 : menuX) - 50) / scale,
-        y: (cursor.y - 32) / scale,
+        x: (cursor.x) / scale,
+        y: (cursor.y) / scale,
       };
 
       const scale1 = Math.min(Math.max(.03125, scale + event.deltaY * -0.004), 4)
 
-      const left =  Math.round((center.x * scale1) - (event.clientX - (menuMode === MenuMode.NONE ? 0 : menuX) - 50));
+      const left =  Math.round((center.x * scale1) - (event.clientX - (menuMode === MenuMode.NONE ? 50 : 10 + menuX)));
       const top = Math.round(center.y * scale1 - (event.clientY - 32));
       
       spaceEl.current.scrollTo({
@@ -691,7 +692,7 @@ const SpaceComponent = (props: SpaceComponentProps) => {
             return (
               <div key={`cursor-${id}`} style={{
                 position: 'absolute',
-                left: (avatar.x * scale) - 60,
+                left: (avatar.x * scale) - 10,
                 top: (avatar.y * scale) - 50,
                 zIndex: MAX_Z_INDEX + 10000,
                 color: avatar.color,
