@@ -12,6 +12,7 @@ import {
   sunnyOutline
 } from "ionicons/icons";
 import { useContext, useState } from "react";
+import { MAX_Z_INDEX } from "../constants";
 import useLinkArrowsSub from "../features/arrow/useLinkArrowsSub";
 import useSaveArrowSub from "../features/arrow/useSaveArrowSub";
 import useAuth from "../features/auth/useAuth";
@@ -69,6 +70,7 @@ const AppBar = () => {
       minHeight: '100%',
       width: 50,
       overflow: 'visible',
+      zIndex: MAX_Z_INDEX,
     }}>
       <IonButtons style={{
         display: 'flex',

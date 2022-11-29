@@ -109,7 +109,7 @@ export default function SpaceNav() {
       position: 'absolute',
       marginLeft: -140,
       left: '50%',
-      bottom: 100,
+      bottom: 70,
       zIndex: abstract?.twigZ ?? 0 + 100,
     }}>
     <IonFab style={{

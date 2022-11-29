@@ -68,12 +68,8 @@ export class ArrowsResolver {
 
   @ResolveField(() => [Role], {name: 'roles'})
   async getArrowRoles(
-    @CurrentUser() user: UserEntity,
     @Parent() arrow: Arrow,
   ) {
-    if (user?.id) {
-      return this.rolesService.getRoleByUserIdAndArrowId(user.id, arrow.id);
-    }
     return this.rolesService.getRolesByArrowId(arrow.id);
   }
 
