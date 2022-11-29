@@ -134,16 +134,18 @@ export default function ArrowComponent(props: ArrowProps) {
       <div>
         {
           arrow.title 
-            ? <IonLabel onClick={handleTitleClick} style={{
+            ? <div onClick={handleTitleClick} style={{
                 whiteSpace: 'pre-wrap',
                 wordWrap: 'break-word',
                 fontSize: 20,
-                fontWeight: 'bold',
+                fontWeight: 900,
                 cursor: 'pointer',
                 color: arrow.color,
+                paddingTop: 5,
+                textDecoration: 'underline',
               }}>
                 {arrow.title}
-              </IonLabel>
+              </div>
             : null
         }
         <div style={{

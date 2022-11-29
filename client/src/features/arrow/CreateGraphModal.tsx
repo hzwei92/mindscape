@@ -150,6 +150,7 @@ export default function CreateGraphModal() {
           justifyContent: 'center',
           fontSize: 80,
           marginBottom: 60,
+          textAlign: 'center'
         }}>
           New graph...
         </IonCardHeader>
