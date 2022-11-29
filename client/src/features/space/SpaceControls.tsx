@@ -1,4 +1,4 @@
-import { MAX_Z_INDEX } from '../../constants';
+import { MAX_Z_INDEX, SPACE_PANEL_WIDTH } from '../../constants';
 import { scaleDown, scaleUp } from '../../utils';
 import { Dispatch, SetStateAction, useContext } from 'react';
 import { SpaceContext } from './SpaceComponent';
@@ -8,9 +8,12 @@ import { useReactiveVar } from '@apollo/client';
 import { IonButton, IonButtons, IonCard, IonFab, IonFabButton, IonIcon, isPlatform } from '@ionic/react';
 import { add, people, remove, settingsOutline, sync } from 'ionicons/icons';
 import { spaceElVar } from '../../cache';
+import RolesPanel from './RolesPanel';
 
 interface SpaceControlsProps {
+  showSettings: boolean;
   setShowSettings: Dispatch<SetStateAction<boolean>>;
+  showRoles: boolean;
   setShowRoles: Dispatch<SetStateAction<boolean>>;
 }
 export default function SpaceControls(props: SpaceControlsProps) {
@@ -90,73 +93,88 @@ export default function SpaceControls(props: SpaceControlsProps) {
   return (
     <div style={{
       position: 'absolute',
-      right: isPlatform('ios') || isPlatform('android')
-        ? 140
-        : 165,
+      right: props.showRoles || props.showSettings
+        ? isPlatform('ios') || isPlatform('android')
+          ? 140 + SPACE_PANEL_WIDTH + 10
+          : 165 + SPACE_PANEL_WIDTH + 10
+        : isPlatform('ios') || isPlatform('android')
+          ? 140
+          : 165,
       top: 0,
     }}>
       <div style={{
         position: 'fixed',
         zIndex: abstract?.twigZ ?? 0 + 100,
         display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'right'
+        flexDirection: 'row',
       }}>
-        <IonCard color={'light'} style={{
-          margin: 10,
-          padding: 1,
-          whiteSpace: 'nowrap',
+        <div style={{
           display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'space-between'
+          flexDirection: 'column',
         }}>
-          <IonButtons>
-            <IonButton 
-              disabled={scale === .03125} 
-              onClick={handleScaleDownClick} 
-            >
-              <IonIcon icon={remove} />
-            </IonButton>
-          </IonButtons>
-          <span style={{
-            width: '50px',
+          <IonCard color={'light'} style={{
+            margin: 10,
+            padding: 1,
+            whiteSpace: 'nowrap',
             display: 'flex',
             flexDirection: 'row',
-            justifyContent: 'center',
-            paddingTop: 7,
+            justifyContent: 'space-between'
           }}>
-            { Math.round(scale * 100) }%
-          </span>
-          <IonButtons>
-            <IonButton disabled={scale === 4} onClick={handleScaleUpClick}>
-              <IonIcon icon={add} />
-            </IonButton>
-          </IonButtons>
-        </IonCard>
-        <div>
-        <IonFab style={{
-          right: 0,
-        }}>
-          <IonFabButton title='Settings' size='small' color={'light'}onClick={handleSettingsClick}>
-            <IonIcon icon={settingsOutline} size='small'/>
-          </IonFabButton> 
-          <IonFabButton title='Members' size='small'color={'light'} onClick={handleRolesClick}>
-            <IonIcon icon={people} size='small'/>
-          </IonFabButton> 
-          <div style={{
-            display: isSynced
-              ? 'none'
-              : 'block'
-          }}>
-            <IonFabButton title='Sync' size='small' color='primary' onClick={handleSyncClick} style={{
-              marginTop: 1,
-              fontSize: 20,
+            <IonButtons>
+              <IonButton 
+                disabled={scale === .03125} 
+                onClick={handleScaleDownClick} 
+              >
+                <IonIcon icon={remove} />
+              </IonButton>
+            </IonButtons>
+            <span style={{
+              width: '50px',
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'center',
+              paddingTop: 7,
             }}>
-              <IonIcon icon={sync} size='small' />
-            </IonFabButton>  
-          </div>
-        </IonFab>
+              { Math.round(scale * 100) }%
+            </span>
+            <IonButtons>
+              <IonButton disabled={scale === 4} onClick={handleScaleUpClick}>
+                <IonIcon icon={add} />
+              </IonButton>
+            </IonButtons>
+          </IonCard>
+          <div style={{
+            textAlign: 'right',
+          }}>
+            <IonFab style={{
+              marginLeft: -60,
+            }}>
+              <IonFabButton title='Settings' size='small' color={'light'}onClick={handleSettingsClick}>
+                <IonIcon icon={settingsOutline} size='small'/>
+              </IonFabButton> 
+              <IonFabButton title='Members' size='small'color={'light'} onClick={handleRolesClick}>
+                <IonIcon icon={people} size='small'/>
+              </IonFabButton> 
+              <div style={{
+                display: isSynced
+                  ? 'none'
+                  : 'block'
+              }}>
+                <IonFabButton title='Sync' size='small' color='primary' onClick={handleSyncClick} style={{
+                  marginTop: 1,
+                  fontSize: 20,
+                }}>
+                  <IonIcon icon={sync} size='small' />
+                </IonFabButton>  
+              </div>
+            </IonFab>
+          </div>    
         </div>
+        {
+          props.showRoles
+            ? <RolesPanel showRoles={props.showRoles} setShowRoles={props.setShowRoles} />
+            : null
+        }
       </div>
     </div>
   )

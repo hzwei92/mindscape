@@ -28,7 +28,7 @@ import useRemoveTwigSub from '../twig/useRemoveTwigSub';
 import useReplyTwigSub from '../twig/useReplyTwigSub';
 import useTwigTree from '../twig/useTwigTree';
 import RemoveTwigModal from './RemoveTwigModal';
-import RolesModal from './RolesModal';
+import RolesPanel from './RolesPanel';
 import SettingsModal from './SettingsModal';
 import { PosType } from './space';
 import SpaceControls from './SpaceControls';
@@ -706,17 +706,15 @@ const SpaceComponent = (props: SpaceComponentProps) => {
         }
       </IonCard>
       <SpaceControls 
+        showRoles={showRoles}
         setShowRoles={setShowRoles}
+        showSettings={showSettings}
         setShowSettings={setShowSettings}
       />
       <SpaceNav />
       <SettingsModal 
         showSettings={showSettings}
         setShowSettings={setShowSettings}
-      />
-      <RolesModal
-        showRoles={showRoles}
-        setShowRoles={setShowRoles}
       />
       <RemoveTwigModal />
     </SpaceContext.Provider>
