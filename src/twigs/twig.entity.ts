@@ -95,18 +95,6 @@ export class Twig {
   @TreeChildren()
   children: Twig[];
 
-  @Column({ nullable: true })
-  windowId: number;
-
-  @Column({ nullable: true })
-  groupId: number;
-
-  @Column({ nullable: true })
-  tabId: number;
-  
-  @Column({ nullable: true })
-  bookmarkId: string;
-
   @CreateDateColumn()
   createDate: Date;
 
