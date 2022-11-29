@@ -250,8 +250,7 @@ export const spaceSlice = createSlice({
   extraReducers: builder => {
     builder
     .addCase(mergeTabs, (state, action) => {
-
-      const abstractIdToData = action.payload.reduce((acc, tab) => {
+      const abstractIdToData = (action.payload || []).reduce((acc, tab) => {
         if (tab.arrowId && !acc[tab?.arrowId]) {
           acc[tab.arrowId] = {
             selectedTwigId: tab.arrow?.rootTwigId ?? '',
@@ -288,6 +287,42 @@ export const spaceSlice = createSlice({
           ...abstractIdToData,
         }
       }
+    })
+    .addCase(setLogin, (state, action) => {
+      const abstractIdToData = (action.payload?.tabs || []).reduce((acc: IdToType<SpaceData>, tab) => {
+        if (tab.arrowId) {
+          acc[tab.arrowId] = {
+            selectedTwigId: tab.arrow?.rootTwigId ?? '',
+            scale: 1,
+            scroll: {
+              left: 0,
+              top: 0,
+            },
+            cursor: {
+              x: 0,
+              y: 0,
+            },
+            drag: {
+              isScreen: false,
+              twigId: '',
+              targetTwigId: '',
+            },
+            idToPos: {},
+            idToHeight: {},
+            idToTwig: {},
+            iToTwigId: {},
+            shouldReloadTwigTree: false,
+            idToChildIdToTrue: {},
+            idToDescIdToTrue: {},
+            idToAvatar: {},
+          };
+        }
+        return acc;
+      }, { ... state.abstractIdToData });
+      return {
+        ...state,
+        abstractIdToData,
+      };
     })
     .addCase(setLogout, (state, action) => {
       return initialState;

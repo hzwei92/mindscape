@@ -100,7 +100,7 @@ const SpaceComponent = (props: SpaceComponentProps) => {
     idToHeight,
     idToDescIdToTrue,
     idToAvatar,
-  } = abstractIdToData[props.abstractId] ?? {};
+  } = abstractIdToData[props.abstractId];
 
   const abstract = useAppSelector(state => selectArrowById(state, props.abstractId));
 
@@ -692,7 +692,7 @@ const SpaceComponent = (props: SpaceComponentProps) => {
               <div key={`cursor-${id}`} style={{
                 position: 'absolute',
                 left: (avatar.x * scale) - 10,
-                top: (avatar.y * scale) - 50,
+                top: (avatar.y * scale) - 20,
                 zIndex: MAX_Z_INDEX + 10000,
                 color: avatar.color,
                 display: 'flex',
