@@ -30,8 +30,8 @@ export default function ExplorerComponent() {
 
   const handleTabClick = (arrow: Arrow) => (e: React.MouseEvent) => {
     e.stopPropagation();
-    const twigId = abstractIdToData[arrow.id].selectedTwigId;
-    const twig = abstractIdToData[arrow.id].idToTwig[twigId];
+    const twigId = abstractIdToData[arrow.id]?.selectedTwigId;
+    const twig = abstractIdToData[arrow.id]?.idToTwig[twigId];
     router.push(`/g/${arrow.routeName}/${twig?.i ?? 0}`);
   }
 

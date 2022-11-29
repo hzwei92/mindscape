@@ -190,7 +190,6 @@ const SpaceComponent = (props: SpaceComponentProps) => {
   useEffect(() => {
     if (!moveEvent || !spaceEl?.current) return;
 
-    console.log(moveEvent.clientX, menuX)
     const x = spaceEl.current.scrollLeft + moveEvent.clientX - (menuMode === MenuMode.NONE ? 50 : 10 + menuX);
     const y = spaceEl.current.scrollTop + moveEvent.clientY - 32;
 

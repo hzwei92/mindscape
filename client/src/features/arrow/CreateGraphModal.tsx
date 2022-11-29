@@ -149,7 +149,6 @@ export default function CreateGraphModal() {
           flexDirection: 'row',
           justifyContent: 'center',
           fontSize: 80,
-          marginBottom: 60,
           textAlign: 'center'
         }}>
           New graph...
@@ -190,7 +189,7 @@ export default function CreateGraphModal() {
             />
             {routeError && <div>{routeError}</div>}
             <IonButtons style={{
-              marginTop: 80,
+              marginTop: 50,
             }}>
               <IonButton disabled={!!routeError || !isReady || routeName.length === 0} onClick={handleSubmitClick}>
                 CREATE
