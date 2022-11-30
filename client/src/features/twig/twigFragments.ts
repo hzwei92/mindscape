@@ -14,10 +14,6 @@ export const TWIG_FIELDS = gql`
     y
     z
     isRoot
-    windowId
-    groupId
-    tabId
-    bookmarkId
     isOpen
     createDate
     updateDate

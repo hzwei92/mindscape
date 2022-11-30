@@ -61,18 +61,6 @@ export class Twig {
   @Field(() => [Twig])
   children: Twig[];
 
-  @Field(() => Int, { nullable: true })
-  windowId: number;
-
-  @Field(() => Int, { nullable: true })
-  groupId: number;
-
-  @Field(() => Int, { nullable: true })
-  tabId: number;
-
-  @Field({ nullable: true })
-  bookmarkId: string;
-
   @Field()
   createDate: Date;
 

@@ -6,6 +6,7 @@ import { SPACE_BAR_HEIGHT, SPACE_PANEL_WIDTH } from '../../constants';
 import { AppContext } from '../../app/App';
 import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonModal, isPlatform } from '@ionic/react';
 import UserTag from '../user/UserTag';
+import { checkPermit } from '../../utils';
 
 
 interface RolesPanelProps {
@@ -47,7 +48,7 @@ export default function RolesPanel(props: RolesPanelProps) {
     });
 
   const [isInviting, setIsInviting] = useState(false);
-  const canInvite = role && (role.type === 'ADMIN' || role.type === 'MEMBER')
+  const canInvite = checkPermit(abstract?.canAssignMemberRole, role?.type);
 
   // const { requestRole } = useRequestRole();
   // const { inviteRole } = useInviteRole(props.jam.id, () => {});
@@ -92,9 +93,9 @@ export default function RolesPanel(props: RolesPanelProps) {
           Owner - 1 
         </div>
         <div style={{
-          padding: 10,
+          padding: 5,
         }}>
-          <UserTag user={abstract.user} fontSize={16}/>
+          <UserTag user={abstract.user} fontSize={14}/>
         </div>
         <div style={{
           fontWeight: 'bold',
@@ -106,9 +107,9 @@ export default function RolesPanel(props: RolesPanelProps) {
           admins.map(role_i => {
             return (
               <div key={'role-'+role_i.id} style={{
-                padding: 10,
+                padding: 5,
               }}>
-                <UserTag user={role_i.user} fontSize={16} />
+                <UserTag user={role_i.user} fontSize={14} />
               </div>
             );
           })
@@ -123,9 +124,9 @@ export default function RolesPanel(props: RolesPanelProps) {
           members.map(role_i => {
             return (
               <div key={'role-'+role_i.id} style={{
-                padding: 10,
+                padding: 5,
               }}>
-                <UserTag user={role_i.user} fontSize={16} />
+                <UserTag user={role_i.user} fontSize={14} />
               </div>
             );
           })
@@ -140,9 +141,9 @@ export default function RolesPanel(props: RolesPanelProps) {
           subscribers.map(role_i => {
             return (
               <div key={'role-'+role_i.id} style={{
-                padding: 10,
+                padding: 5,
               }}>
-                <UserTag user={role_i.user} fontSize={16} />
+                <UserTag user={role_i.user} fontSize={14} />
               </div>
             );
           })
@@ -157,9 +158,9 @@ export default function RolesPanel(props: RolesPanelProps) {
           others.map(role_i => {
             return (
               <div key={'role-'+role_i.id} style={{
-                padding: 10,
+                padding: 5,
               }}>
-                <UserTag user={role_i.user} fontSize={16} />
+                <UserTag user={role_i.user} fontSize={14} />
               </div>
             );
           })

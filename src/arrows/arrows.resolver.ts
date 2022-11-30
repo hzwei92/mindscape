@@ -121,6 +121,20 @@ export class ArrowsResolver {
   }
 
   @UseGuards(GqlAuthGuard)
+  @Mutation(() => Arrow, {name: 'setArrowPermissions'})
+  async setArrowPermissions(
+    @CurrentUser() user: UserEntity,
+    @Args('arrowId') arrowId: string,
+    @Args('canAssignMemberRole', { nullable: true }) canAssignMemberRole: string,
+    @Args('canEditLayout', { nullable: true }) canEditLayout: string,
+    @Args('canPost', { nullable: true }) canPost: string,
+  ) {
+    return this.arrowsService.setArrowPermissions(user, arrowId, canAssignMemberRole, canEditLayout, canPost);
+  }
+
+  
+
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => Arrow, {name: 'saveArrow'})
   async saveArrow(
     @CurrentUser() user: UserEntity,

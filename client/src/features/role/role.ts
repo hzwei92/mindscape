@@ -18,6 +18,7 @@ export type Role = {
 
 
 export enum RoleType {
+  NONE = 'NONE',
   ADMIN = 'ADMIN',
   MEMBER = 'MEMBER',
   SUBSCRIBER = 'SUBSCRIBER',

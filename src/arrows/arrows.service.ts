@@ -291,6 +291,33 @@ export class ArrowsService {
     return this.arrowsRepository.save(arrow);
   }
 
+  async setArrowPermissions(user: User, arrowId: string, canAssignMemberRole: string | null, canEditLayout: string | null, canPost: string | null) {
+    const arrow = await this.arrowsRepository.findOne({ 
+      where: {
+        id: arrowId 
+      }
+    });
+
+    if (!arrow) {
+      throw new BadRequestException('This arrow does not exist');
+    }
+    if (arrow.userId !== user.id) {
+      throw new BadRequestException('You do not have permission to edit this arrow');
+    }
+
+    if (canAssignMemberRole) {
+      arrow.canAssignMemberRole = RoleType[canAssignMemberRole];
+    }
+    if (canEditLayout) {
+      arrow.canEditLayout = RoleType[canEditLayout];
+    }
+    if (canPost) {
+      arrow.canPost = RoleType[canPost];
+    }
+
+    return this.arrowsRepository.save(arrow);
+  }
+
   async saveArrow(user: User, arrowId: string, draft: string) {
     const arrow = await this.arrowsRepository.findOne({ 
       where: {
@@ -512,176 +539,6 @@ export class ArrowsService {
       vote,
       isPreexisting,
     }
-  }
-
-  async loadWindowArrows(user: User, abstract: Arrow, windows: WindowEntry[]) {
-    let arrows = [];
-    let sheafs = [];
-    windows.forEach(entry => {
-      const sheaf = new Sheaf();
-      sheaf.id = v4();
-      sheaf.routeName = sheaf.id;
-      sheafs.push(sheaf);
-
-      const arrow = new Arrow();
-      arrow.id = entry.arrowId;
-      arrow.userId = user.id;
-      arrow.sheafId = sheaf.id;
-      arrow.abstractId = abstract.id;
-      arrow.title = 'Window ' + entry.windowId;
-      arrow.routeName = arrow.id;
-      arrows.push(arrow);
-    });
-    await this.sheafsService.saveSheafs(sheafs);
-    arrows = await this.arrowsRepository.save(arrows);
-    await this.finishArrows(user, arrows);
-  }
-
-  async loadGroupArrows(user: User, abstract: Arrow, groups: GroupEntry[]) {
-    let sheafs = [];
-    let arrows = []
-    groups.forEach(entry => {
-      const sheaf = new Sheaf();
-      sheaf.id = v4();
-      sheaf.routeName = sheaf.id;
-      sheafs.push(sheaf);
-
-      const arrow = new Arrow();
-      arrow.id = entry.arrowId;
-      arrow.userId = user.id;
-      arrow.sheafId = sheaf.id;
-      arrow.abstractId = abstract.id;
-      arrow.title = 'Group ' + entry.groupId.toString();
-      arrow.routeName = arrow.id;
-      arrows.push(arrow);
-    });
-    await this.sheafsService.saveSheafs(sheafs);
-    arrows = await this.arrowsRepository.save(arrows);
-    await this.finishArrows(user, arrows);
-  }
-
-  async loadTabArrows(user: User, abstract: Arrow, entries: (TabEntry | Entry | BookmarkEntry)[]) {
-    const existingArrows = await this.getArrowsByUserIdAndUrls(user.id, entries.map(entry => entry.url));
-    const urlToArrow: IdToType<Arrow> = existingArrows.reduce((acc, arrow) => {
-      acc[arrow.url] = arrow;
-      return acc;
-    }, {})
-
-    const existingSheafs = await this.sheafsService.getSheafsByUrls(entries.map(entry => entry.url));
-    const urlToSheaf: IdToType<Sheaf> = existingSheafs.reduce((acc, sheaf) => {
-      acc[sheaf.url] = sheaf;
-      return acc;
-    }, {});
-
-    const urlToEntry: IdToType<TabEntry | Entry | BookmarkEntry> = entries.reduce((acc, entry) => {
-      acc[entry.url] = entry;
-      return acc;
-    }, {});
-
-    let sheafs = [];
-    let arrows = [];
-    Object.keys(urlToEntry).forEach(url => {
-      const entry = urlToEntry[url];
-
-      let arrow = urlToArrow[url];
-
-      if (arrow) {
-        entry.arrowId = arrow.id;
-      }
-      else {
-        let sheaf = urlToSheaf[url];
-        
-        if (!sheaf) {
-          sheaf = new Sheaf();
-          sheaf.id = v4();
-          sheaf.routeName = sheaf.id;
-          sheaf.url = entry.url;
-          sheafs.push(sheaf);
-        }
-  
-        arrow = new Arrow();
-        arrow.id = entry.arrowId;
-        arrow.userId = user.id;
-        arrow.sheafId = sheaf.id;
-        arrow.abstractId = abstract.id;
-        arrow.title = entry.title;
-        arrow.url = entry.url;
-        arrow.faviconUrl = entry.faviconUrl
-        arrow.routeName = arrow.id;
-        arrows.push(arrow);
-
-        urlToArrow[arrow.url] = arrow;
-      }
-    });
-
-    await this.sheafsService.saveSheafs(sheafs);
-    arrows = await this.arrowsRepository.save(arrows);
-    await this.finishArrows(user, arrows);
-
-    return entries;
-  }
-
-  async loadBookmarkArrows(user: User, abstract: Arrow, entries: BookmarkEntry[]) {
-    const urlEntries: BookmarkEntry[] = [];
-    const nonUrlEntries: BookmarkEntry[] = [];
-    entries.forEach(entry => {
-      if (entry.url) {
-        urlEntries.push(entry);
-      }
-      else {
-        nonUrlEntries.push(entry);
-      }
-    });
-
-    const urlEntries1 = await this.loadTabArrows(user, abstract, urlEntries) as BookmarkEntry[];
-
-    const sheafs = [];
-    let arrows = [];
-    nonUrlEntries.forEach(entry => {
-      const sheaf = new Sheaf();
-      sheaf.id = v4();
-      sheaf.routeName = sheaf.id;
-      sheafs.push(sheaf);
-
-      const arrow = new Arrow();
-      arrow.id = entry.arrowId;
-      arrow.sourceId = arrow.id;
-      arrow.targetId = arrow.id;
-      arrow.userId = user.id;
-      arrow.sheafId = sheaf.id;
-      arrow.abstractId = abstract.id;
-      arrow.title = entry.title;
-      arrow.url = entry.url;
-      arrow.routeName = arrow.id;
-      arrows.push(arrow);
-    });
-
-    await this.sheafsService.saveSheafs(sheafs);
-    arrows = await this.arrowsRepository.save(arrows);
-    await this.finishArrows(user, arrows);
-    return [...urlEntries1, ...nonUrlEntries];
-  }
-
-  async finishArrows(user: User, arrows: Arrow[]) {
-    const twigs = await this.twigsService.createRootTwigs(user, arrows);
-
-    const detailIdToTwigId = twigs.reduce((acc, twig) => {
-      acc[twig.detailId] = twig.id;
-      return acc;
-    }, {});
-
-    arrows.forEach(arrow => {
-      arrow.rootTwigId = detailIdToTwigId[arrow.id];
-    });
-
-    const arrows1 = await this.arrowsRepository.save(arrows);
-
-    this.searchService.saveArrows(arrows1);
-
-
-    await this.votesService.createInitialVotes(user, arrows1);
-
-    return arrows1
   }
 
   async incrementInCount(id: string, value: number) {

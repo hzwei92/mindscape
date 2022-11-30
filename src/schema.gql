@@ -6,7 +6,8 @@ type Arrow {
   abstract: Arrow!
   abstractId: String!
   activeDate: DateTime!
-  canEdit: String!
+  canAssignMemberRole: String!
+  canEditLayout: String!
   canHear: String!
   canPost: String!
   canTalk: String!
@@ -150,6 +151,7 @@ type Mutation {
   saveArrow(arrowId: String!, draft: String!, sessionId: String!): Arrow!
   selectTwig(sessionId: String!, twigId: String!): SelectTwigResult!
   setArrowColor(arrowId: String!, color: String!): Arrow!
+  setArrowPermissions(arrowId: String!, canAssignMemberRole: String, canEditLayout: String, canPost: String): Arrow!
   setUserColor(color: String!, sessionId: String!): User!
   setUserMap(lat: Float!, lng: Float!, zoom: Float!): User!
   setUserName(name: String!, sessionId: String!): User!
@@ -272,13 +274,11 @@ type Tab {
 type Twig {
   abstract: Arrow!
   abstractId: String!
-  bookmarkId: String
   children: [Twig!]!
   createDate: DateTime!
   deleteDate: DateTime
   detail: Arrow
   detailId: String!
-  groupId: Int
   i: Int!
   id: String!
   isOpen: Boolean!
@@ -286,13 +286,11 @@ type Twig {
   parent: Twig
   source: Twig
   sourceId: String
-  tabId: Int
   target: Twig
   targetId: String
   updateDate: DateTime!
   user: User!
   userId: String!
-  windowId: Int
   x: Int!
   y: Int!
   z: Int!
