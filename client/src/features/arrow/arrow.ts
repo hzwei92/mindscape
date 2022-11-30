@@ -1,4 +1,4 @@
-import { Role } from '../role/role';
+import { Role, RoleType } from '../role/role';
 import { Sheaf } from '../sheaf/sheaf';
 import type { User } from '../user/user';
 import { Vote } from '../vote/vote';
@@ -39,7 +39,8 @@ export type Arrow = {
   twigZ: number;
   rootTwigId: string | null;
 
-  canEdit: string;
+  canAssignRoles: string;
+  canEditLayout: string;
   canPost: string;
   canTalk: string;
   canHear: string;
@@ -131,11 +132,12 @@ export const createArrow = (params: {
     twigZ: 0,
     rootTwigId: null,
 
-    canEdit: 'MEMBER',
-    canPost: 'SUBSCRIBER',
-    canTalk: 'MEMBER',
-    canHear: 'SUBSCRIBER',
-    canView: 'OTHER',
+    canAssignRoles: RoleType.ADMIN,
+    canEditLayout: RoleType.MEMBER,
+    canPost: RoleType.SUBSCRIBER,
+    canTalk: RoleType.MEMBER,
+    canHear: RoleType.SUBSCRIBER,
+    canView: RoleType.OTHER,
 
     roles: [],
     // subs: [],

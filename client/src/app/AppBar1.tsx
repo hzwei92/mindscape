@@ -294,8 +294,12 @@ const AppBar = () => {
         }}>
           {
             palette === 'dark'
-              ? <IonIcon icon={moonOutline} size='small'/>
-              : <IonIcon icon={sunnyOutline} size='small'/>
+              ? <IonIcon icon={moonOutline} size='small' style={{
+                  color: user?.color
+                }}/>
+              : <IonIcon icon={sunnyOutline} size='large' style={{
+                  color: user?.color
+                }}/>
           }
         </IonButton>
       </IonButtons>

@@ -1,5 +1,6 @@
 import { MOBILE_WIDTH } from './constants';
 import { v4 } from 'uuid';
+import { RoleType } from './features/role/role';
 
 const second = 1000;
 const minute = 60 * second;
@@ -140,12 +141,12 @@ export const getEmptyDraft = () => {
 }
 
 export const checkPermit = (permissionLevel: string | undefined, roleType?: string) => {
-  return permissionLevel === 'ADMIN'
-    ? roleType === 'ADMIN'
-    : permissionLevel === 'MEMBER'
-      ? roleType === 'ADMIN' || roleType === 'MEMBER'
-      : permissionLevel === 'SUBSCRIBER'
-        ? roleType === 'ADMIN' || roleType === 'MEMBER' || roleType === 'SUBSCRIBER'
+  return permissionLevel === RoleType.ADMIN
+    ? roleType === RoleType.ADMIN
+    : permissionLevel === RoleType.MEMBER
+      ? roleType === RoleType.ADMIN || roleType === RoleType.MEMBER
+      : permissionLevel === RoleType.SUBSCRIBER
+        ? roleType === RoleType.ADMIN || roleType === RoleType.MEMBER || roleType === RoleType.SUBSCRIBER
         : true;
 }
 

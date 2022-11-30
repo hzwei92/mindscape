@@ -29,11 +29,11 @@ import useReplyTwigSub from '../twig/useReplyTwigSub';
 import useTwigTree from '../twig/useTwigTree';
 import RemoveTwigModal from './RemoveTwigModal';
 import RolesPanel from './RolesPanel';
-import SettingsModal from './SettingsModal';
+import SettingsModal from './SettingsPanel';
 import { PosType } from './space';
 import SpaceControls from './SpaceControls';
 import SpaceNav from './SpaceNav';
-import { mergeIdToPos, moveTwigs, selectAbstractIdToData, selectCursor, selectDrag, selectIdToAvatar, selectIdToDescIdToTrue, selectIdToHeight, selectIdToPos, selectIdToTwig, selectScale, selectScroll, setCursor, setDrag, setScale, setScroll } from './spaceSlice';
+import { mergeIdToPos, moveTwigs, selectAbstractIdToData, selectIdToHeight, setCursor, setDrag, setScale, setScroll } from './spaceSlice';
 import useInitSpace from './useInitSpace';
 import usePublishAvatar from './usePublishAvatar';
 import usePublishAvatarSub from './usePublishAvatarSub';
@@ -113,7 +113,7 @@ const SpaceComponent = (props: SpaceComponentProps) => {
     return false;
   });
 
-  const canEdit = abstract?.userId === user?.id || checkPermit(abstract?.canEdit, role?.type)
+  const canEdit = abstract?.userId === user?.id || checkPermit(abstract?.canEditLayout, role?.type)
   const canPost = abstract?.userId === user?.id || checkPermit(abstract?.canPost, role?.type)
   const canView = abstract?.userId === user?.id || checkPermit(abstract?.canView, role?.type)
 

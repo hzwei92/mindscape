@@ -43,7 +43,7 @@ const useAppRouter = () => {
     return false;
   });
 
-  const canEdit = abstract?.userId === user?.id || checkPermit(abstract?.canEdit, role?.type)
+  const canEdit = abstract?.userId === user?.id || checkPermit(abstract?.canEditLayout, role?.type)
 
   const { centerTwig: focusCenterTwig } = useCenterTwig(focusTab?.arrowId || '');
   const { selectTwig: focusSelectTwig } = useSelectTwig(focusTab?.arrowId || '', canEdit);

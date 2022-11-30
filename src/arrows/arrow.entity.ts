@@ -117,14 +117,20 @@ export class Arrow {
 
   @Column({ nullable: true })
   rootTwigId: string;
-
+  
+  @Column({
+    type: 'enum',
+    enum: Enums.RoleType,
+    default: Enums.RoleType.ADMIN,
+  })
+  canAssignRoles: Enums.RoleType;
 
   @Column({
     type: 'enum',
     enum: Enums.RoleType,
     default: Enums.RoleType.MEMBER,
   })
-  canEdit: Enums.RoleType;
+  canEditLayout: Enums.RoleType;
 
   @Column({
     type: 'enum',

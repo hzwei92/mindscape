@@ -9,6 +9,8 @@ import { IonButton, IonButtons, IonCard, IonFab, IonFabButton, IonIcon, isPlatfo
 import { add, people, remove, settingsOutline, sync } from 'ionicons/icons';
 import { spaceElVar } from '../../cache';
 import RolesPanel from './RolesPanel';
+import { AppContext } from '../../app/App';
+import SettingsPanel from './SettingsPanel';
 
 interface SpaceControlsProps {
   showSettings: boolean;
@@ -18,6 +20,8 @@ interface SpaceControlsProps {
 }
 export default function SpaceControls(props: SpaceControlsProps) {
   const dispatch = useAppDispatch();
+
+  const { user } = useContext(AppContext);
   const { abstract, abstractId } = useContext(SpaceContext);
 
   const spaceEl = useReactiveVar(spaceElVar)
@@ -78,10 +82,12 @@ export default function SpaceControls(props: SpaceControlsProps) {
   };
 
   const handleSettingsClick = () => {
+    props.setShowRoles(false);
     props.setShowSettings(val => !val);
   };
 
   const handleRolesClick = () => {
+    props.setShowSettings(false);
     props.setShowRoles(val => !val);
   }
 
@@ -150,11 +156,15 @@ export default function SpaceControls(props: SpaceControlsProps) {
             <IonFab style={{
               marginLeft: -60,
             }}>
-              <IonFabButton title='Settings' size='small' color={ props.showSettings ? 'primary' : 'light'}  onClick={handleSettingsClick}>
-                <IonIcon icon={settingsOutline} size='small'/>
+              <IonFabButton title='Settings' size='small' color='light'  onClick={handleSettingsClick}>
+                <IonIcon icon={settingsOutline} size='small' style={{
+                  color: props.showSettings ? user?.color : null,
+                }}/>
               </IonFabButton> 
-              <IonFabButton title='Members' size='small' color={ props.showRoles ? 'primary' : 'light'} onClick={handleRolesClick}>
-                <IonIcon icon={people} size='small'/>
+              <IonFabButton title='Members' size='small' color='light' onClick={handleRolesClick}>
+                <IonIcon icon={people} size='small' style={{
+                  color: props.showRoles ? user?.color : null
+                }}/>
               </IonFabButton> 
               <div style={{
                 display: isSynced
@@ -172,18 +182,15 @@ export default function SpaceControls(props: SpaceControlsProps) {
           </div>    
         </div>
       </div>
-      {
-        props.showRoles
-          ? <div style={{
-              position: 'fixed',
-              top: 32,
-              right: 10,
-              height: '100%',
-            }}>
-              <RolesPanel showRoles={props.showRoles} setShowRoles={props.setShowRoles} />
-            </div>
-          : null
-        }
+      <div style={{
+        position: 'fixed',
+        top: 32,
+        right: 10,
+        height: '100%',
+      }}>
+        { props.showRoles && <RolesPanel showRoles={props.showRoles} setShowRoles={props.setShowRoles} /> }
+        { props.showSettings && <SettingsPanel showSettings={props.showSettings} setShowSettings={props.setShowSettings} /> }
+      </div>
     </div>
   )
 }

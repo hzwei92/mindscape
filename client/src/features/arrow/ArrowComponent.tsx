@@ -3,7 +3,7 @@ import { useContext, useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../app/store';
 import { getTimeString } from '../../utils';
 import { selectUserById } from '../user/userSlice';
-import { IonIcon, IonLabel, useIonRouter } from '@ionic/react';
+import { IonIcon, useIonRouter } from '@ionic/react';
 import ArrowEditor from './ArrowEditor';
 import ArrowVoter from './ArrowVoter';
 import { reloadOutline, returnDownForwardOutline, returnUpBack } from 'ionicons/icons';
@@ -138,7 +138,7 @@ export default function ArrowComponent(props: ArrowProps) {
                 whiteSpace: 'pre-wrap',
                 wordWrap: 'break-word',
                 fontSize: 20,
-                fontWeight: 900,
+                fontWeight: 'bold',
                 cursor: 'pointer',
                 color: arrow.color,
                 paddingTop: 5,
