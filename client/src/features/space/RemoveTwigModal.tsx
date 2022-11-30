@@ -59,30 +59,32 @@ export default function RemoveTwigModal() {
   return (
     <IonModal ref={modalRef} onWillDismiss={handleClose}>
       <IonCard style={{
-        padding: 10,
+        margin: 0,
+        height: '100%',
       }}>
-        <IonCardHeader>
-          Remove
+        <IonCardHeader style={{
+          fontSize: 80,
+          textAlign: 'center',
+        }}>
+          Remove this { descIds.length ? 'tree' : 'twig' }...
         </IonCardHeader>
         <IonCardContent>
-          This does not delete the post, it merely removes it from this view.
-          <br/>
-          To delete a post open the More Options menu on the post.
-          <br/>
-          <br/>
-          <IonButtons>
+          <div style={{
+            textAlign: 'center',
+          }}>
+            This does not delete posts or links, it merely detaches them from the graph.
+            <br/>
+            To delete a post or a link, access the More Option menu.
+          </div>
+          <IonButtons style={{
+            marginTop: 60,
+            width: '100%',
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'center',
+          }}>
             <IonButton onClick={handleRemoveSubtreeClick}>
               Remove
-              {
-                isLink
-                  ? ' Link'
-                  : ' Post'
-              }
-              {
-                descIds.length
-                  ? ' Subtree'
-                  : ''
-              }
             </IonButton>
             &nbsp;
             &nbsp;

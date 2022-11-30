@@ -73,7 +73,9 @@ export default function EntryTree(props: EntryTreeProps) {
         />
       </div>
       <div style={{
-        borderLeft: `2px solid ${arrow.user.color}`,
+        borderLeft: entry.showIns || entry.showOuts
+          ? `2px solid ${arrow.user.color}`
+          : undefined,
         marginLeft: 5,
       }}>
         {

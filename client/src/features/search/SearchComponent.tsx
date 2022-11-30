@@ -117,7 +117,7 @@ function SearchComponent() {
           </div>
         </IonCard>
         <div  style={{
-          height: 'calc(100% - 56px)',
+          height: 'calc(100% - 80px)',
           width: '100%',
           overflowY: 'scroll',
         }}>

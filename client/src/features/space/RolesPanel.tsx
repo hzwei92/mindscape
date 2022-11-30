@@ -7,6 +7,8 @@ import { AppContext } from '../../app/App';
 import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonModal, isPlatform } from '@ionic/react';
 import UserTag from '../user/UserTag';
 import { checkPermit } from '../../utils';
+import { useAppSelector } from '../../app/store';
+import { selectIdToRole } from '../role/roleSlice';
 
 
 interface RolesPanelProps {
@@ -23,6 +25,8 @@ export default function RolesPanel(props: RolesPanelProps) {
     role,
   } = useContext(SpaceContext);
 
+  const idToRole = useAppSelector(selectIdToRole);
+
   const admins: Role[] = [];
   const members: Role[] = [];
   const subscribers: Role[] = [];
@@ -31,19 +35,22 @@ export default function RolesPanel(props: RolesPanelProps) {
     .filter(role_i => !role_i.deleteDate)
     .sort((a, b) => a.updateDate < b.updateDate ? -1 : 1)
     .forEach(role_i => {
-      if (role_i.type === RoleType.ADMIN) {
-        if (role_i.userId !== abstract?.userId) {
-          admins.push(role_i);
+      const role1 = idToRole[role_i.id];
+      if (!role1) return;
+      
+      if (role1.type === RoleType.ADMIN) {
+        if (role1.userId !== abstract?.userId) {
+          admins.push(role1);
         }
       }
-      else if (role_i.type === RoleType.MEMBER) {
-        members.push(role_i);
+      else if (role1.type === RoleType.MEMBER) {
+        members.push(role1);
       }
-      else if (role_i.type === RoleType.SUBSCRIBER) {
-        subscribers.push(role_i);
+      else if (role1.type === RoleType.SUBSCRIBER) {
+        subscribers.push(role1);
       }
       else {
-        others.push(role_i);
+        others.push(role1);
       }
     });
 
