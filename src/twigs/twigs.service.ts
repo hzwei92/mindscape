@@ -10,10 +10,6 @@ import { Arrow } from 'src/arrows/arrow.entity';
 import { User } from 'src/users/user.entity';
 import { checkPermit, IdToType } from 'src/utils';
 import { SheafsService } from 'src/sheafs/sheafs.service';
-import { WindowEntry } from './dto/window-entry.dto';
-import { GroupEntry } from './dto/group-entry.dto';
-import { TabEntry } from './dto/tab-entry.dto';
-import { BookmarkEntry } from './dto/bookmark-entry.dto';
 import { v4 } from 'uuid';
 import { UsersService } from 'src/users/users.service';
 
@@ -176,9 +172,11 @@ export class TwigsService {
       throw new BadRequestException('This parent twig does not exist');
     }
 
+    let abstract = await this.arrowsService.getArrowById(parentTwig.abstractId);
+
     let role = await this.rolesService.getRoleByUserIdAndArrowId(user.id, parentTwig.abstractId);
     let role1 = null;
-    if (checkPermit(parentTwig.abstract.canReply, role?.type)) {
+    if (abstract.userId === user.id || checkPermit(parentTwig.abstract.canPost, role?.type)) {
       if (!role) {
         role = await this.rolesService.createRole(user, parentTwig.abstract, RoleType.OTHER);
         role1 = role;
@@ -267,10 +265,9 @@ export class TwigsService {
 
     await this.arrowsService.incrementTwigN(parentTwig.abstractId, 2);
     await this.arrowsService.incrementTwigZ(parentTwig.abstractId, 2);
-    const abstract = await this.arrowsService.getArrowById(parentTwig.abstractId);
+    abstract = await this.arrowsService.getArrowById(parentTwig.abstractId);
 
     const source = await this.arrowsService.getArrowById(parentTwig.detailId);
-
 
     return {
       abstract,
@@ -303,9 +300,11 @@ export class TwigsService {
       throw new BadRequestException('This parent twig does not exist');
     }
 
+    let abstract = await this.arrowsService.getArrowById(parentTwig.abstractId);
+
     let role = await this.rolesService.getRoleByUserIdAndArrowId(user.id, parentTwig.abstractId);
     let role1 = null;
-    if (checkPermit(parentTwig.abstract.canReply, role?.type)) {
+    if (abstract.userId === user.id || checkPermit(parentTwig.abstract.canPost, role?.type)) {
       if (!role) {
         role = await this.rolesService.createRole(user, parentTwig.abstract, RoleType.OTHER);
         role1 = role;
@@ -372,7 +371,7 @@ export class TwigsService {
 
     await this.arrowsService.incrementTwigN(parentTwig.abstractId, 2);
     await this.arrowsService.incrementTwigZ(parentTwig.abstractId, 2);
-    const abstract = await this.arrowsService.getArrowById(parentTwig.abstractId);
+    abstract = await this.arrowsService.getArrowById(parentTwig.abstractId);
 
     const source = await this.arrowsService.getArrowById(parentTwig.detailId);
 

@@ -97,6 +97,12 @@ export class UsersService {
       startArrow = await this.arrowsService.createStartArrow(user1);
     }
 
+    let reserveUser = await this.getReserveUser();
+    if (!reserveUser) {
+      user1.isReserve = true;
+      await this.usersRepository.save(user1);
+    }
+
     const tab = await this.tabsService.appendTab(user1, startArrow, false, !startArrow1 && !startArrow2);
 
     const user2 = await this.getUserById(user1.id);

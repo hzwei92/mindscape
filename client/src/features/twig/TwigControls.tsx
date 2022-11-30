@@ -44,7 +44,7 @@ function TwigControls(props: TwigControlsProps) {
   
   const {
     abstract,
-    canReply,
+    canPost,
     canView
   } = useContext(SpaceContext)
 
@@ -279,7 +279,7 @@ function TwigControls(props: TwigControlsProps) {
       flexDirection: 'row',
     }}>
       <IonButton
-        disabled={!canReply}
+        disabled={!canPost}
         onMouseDown={handleMouseDown} 
         onClick={handleReplyClick}
         style={{

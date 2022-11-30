@@ -43,7 +43,7 @@ export const SpaceContext = createContext({} as {
   abstract: Arrow | null;
   role: Role | null;
   canView: boolean;
-  canReply: boolean;
+  canPost: boolean;
   canEdit: boolean;
   removalTwigId: string;
   setRemovalTwigId: Dispatch<SetStateAction<string>>;
@@ -114,7 +114,7 @@ const SpaceComponent = (props: SpaceComponentProps) => {
   });
 
   const canEdit = abstract?.userId === user?.id || checkPermit(abstract?.canEditLayout, role?.type)
-  const canReply = abstract?.userId === user?.id || checkPermit(abstract?.canReply, role?.type)
+  const canPost = abstract?.userId === user?.id || checkPermit(abstract?.canPost, role?.type)
   const canView = abstract?.userId === user?.id || checkPermit(abstract?.canView, role?.type)
 
   const spaceEl = useRef<HTMLIonCardElement>(null);
@@ -157,14 +157,14 @@ const SpaceComponent = (props: SpaceComponentProps) => {
       abstract,
       role,
       canView,
-      canReply, 
+      canPost, 
       canEdit,
       removalTwigId, 
       setRemovalTwigId,
       touches,
       setTouches,
     };
-  }, [props.abstractId, abstract, role, canView, canReply, canEdit, removalTwigId, touches]);
+  }, [props.abstractId, abstract, role, canView, canPost, canEdit, removalTwigId, touches]);
 
   const moveDrag = (dx: number, dy: number) => {
     if (drag?.isScreen) {

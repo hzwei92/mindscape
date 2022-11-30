@@ -41,7 +41,7 @@ export type Arrow = {
 
   canAssignMemberRole: string;
   canEditLayout: string;
-  canReply: string;
+  canPost: string;
   canTalk: string;
   canHear: string;
   canView: string;
@@ -134,7 +134,7 @@ export const createArrow = (params: {
 
     canAssignMemberRole: RoleType.ADMIN,
     canEditLayout: RoleType.MEMBER,
-    canReply: RoleType.SUBSCRIBER,
+    canPost: RoleType.SUBSCRIBER,
     canTalk: RoleType.MEMBER,
     canHear: RoleType.SUBSCRIBER,
     canView: RoleType.OTHER,

@@ -13,7 +13,6 @@ import { mergeIdToPos, selectIdToPos } from '../space/spaceSlice';
 import { mergeArrows } from '../arrow/arrowSlice';
 import { useAppDispatch, useAppSelector } from '../../app/store';
 import { AppContext } from '../../app/App';
-import { applyRole } from '../role/applyRole';
 import { useIonRouter, useIonToast } from '@ionic/react';
 import { mergeUsers } from '../user/userSlice';
 
@@ -86,9 +85,6 @@ export default function useReplyTwig() {
         message: 'Error replying: ' + error.message,
         position: 'bottom',
       });
-    },
-    update: (cache, {data: {replyTwig}}) => {
-      applyRole(cache, replyTwig.role);
     },
     onCompleted: data => {
       console.log(data);

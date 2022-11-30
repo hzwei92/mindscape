@@ -11,7 +11,6 @@ import { mergeIdToPos, mergeTwigs, selectIdToPos } from '../space/spaceSlice';
 import { mergeArrows, selectIdToArrow } from '../arrow/arrowSlice';
 import { useAppDispatch, useAppSelector } from '../../app/store';
 import { AppContext } from '../../app/App';
-import { applyRole } from '../role/applyRole';
 import { useIonRouter, useIonToast } from '@ionic/react';
 import { mergeUsers } from '../user/userSlice';
 
@@ -88,9 +87,6 @@ export default function usePasteTwig() {
         message: 'Error pasting: ' + error.message,
         position: 'bottom',
       });
-    },
-    update: (cache, {data: {pasteTwig}}) => {
-      applyRole(cache, pasteTwig.role);
     },
     onCompleted: data => {
       console.log(data);
