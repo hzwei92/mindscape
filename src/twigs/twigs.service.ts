@@ -178,7 +178,7 @@ export class TwigsService {
 
     let role = await this.rolesService.getRoleByUserIdAndArrowId(user.id, parentTwig.abstractId);
     let role1 = null;
-    if (checkPermit(parentTwig.abstract.canPost, role?.type)) {
+    if (checkPermit(parentTwig.abstract.canReply, role?.type)) {
       if (!role) {
         role = await this.rolesService.createRole(user, parentTwig.abstract, RoleType.OTHER);
         role1 = role;
@@ -305,7 +305,7 @@ export class TwigsService {
 
     let role = await this.rolesService.getRoleByUserIdAndArrowId(user.id, parentTwig.abstractId);
     let role1 = null;
-    if (checkPermit(parentTwig.abstract.canPost, role?.type)) {
+    if (checkPermit(parentTwig.abstract.canReply, role?.type)) {
       if (!role) {
         role = await this.rolesService.createRole(user, parentTwig.abstract, RoleType.OTHER);
         role1 = role;
@@ -670,7 +670,7 @@ export class TwigsService {
 
     let role = await this.rolesService.getRoleByUserIdAndArrowId(user.id, abstract.id);
     let role1 = null;
-    if (checkPermit(abstract.canEditLayout, role?.type)) {
+    if (twig.userId === user.id || checkPermit(abstract.canEditLayout, role?.type)) {
       if (!role) {
         role = await this.rolesService.createRole(user, abstract, RoleType.OTHER);
         role1 = role;
@@ -738,7 +738,7 @@ export class TwigsService {
 
     let role = await this.rolesService.getRoleByUserIdAndArrowId(user.id, abstract.id);
     let role1 = null;
-    if (checkPermit(abstract.canEditLayout, role?.type)) {
+    if (twig.userId === user.id || checkPermit(abstract.canEditLayout, role?.type)) {
       if (!role) {
         role = await this.rolesService.createRole(user, abstract, RoleType.OTHER);
         role1 = role;

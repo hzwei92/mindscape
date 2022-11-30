@@ -182,38 +182,38 @@ export default function SettingsPanel(props: SettingsPanelProps) {
     if (!abstract) return;
 
     if (roleType === RoleType.ADMIN) {
-      if (checkPermit(abstract.canPost, RoleType.ADMIN)) {
+      if (checkPermit(abstract.canReply, RoleType.ADMIN)) {
         setArrowPermissions(abstract.id, {
-          canPost: RoleType.NONE,
+          canReply: RoleType.NONE,
         });
       }
       else {
         setArrowPermissions(abstract.id, {
-          canPost: RoleType.ADMIN,
+          canReply: RoleType.ADMIN,
         });
       }
     }
     else if (roleType === RoleType.MEMBER) {
-      if (checkPermit(abstract.canPost, RoleType.MEMBER)) {
+      if (checkPermit(abstract.canReply, RoleType.MEMBER)) {
         setArrowPermissions(abstract.id, {
-          canPost: RoleType.ADMIN,
+          canReply: RoleType.ADMIN,
         });
       }
       else {
         setArrowPermissions(abstract.id, {
-          canPost: RoleType.MEMBER,
+          canReply: RoleType.MEMBER,
         });
       }
     }
     else if (roleType === RoleType.SUBSCRIBER) {
-      if (checkPermit(abstract.canPost, RoleType.SUBSCRIBER)) {
+      if (checkPermit(abstract.canReply, RoleType.SUBSCRIBER)) {
         setArrowPermissions(abstract.id, {
-          canPost: RoleType.MEMBER,
+          canReply: RoleType.MEMBER,
         });
       }
       else {
         setArrowPermissions(abstract.id, {
-          canPost: RoleType.SUBSCRIBER,
+          canReply: RoleType.SUBSCRIBER,
         });
       }
     }
@@ -308,24 +308,24 @@ export default function SettingsPanel(props: SettingsPanelProps) {
         <div style={{
           paddingBottom: 10,
         }}>
-          <b>Can post</b>
+          <b>Can reply</b>
           <IonItem>
             <IonCheckbox 
-              checked={checkPermit(abstract.canPost, RoleType.ADMIN)}
+              checked={checkPermit(abstract.canReply, RoleType.ADMIN)}
               onClick={handleCanPostClick(RoleType.ADMIN)}
             />
             <IonLabel>&nbsp;Admin</IonLabel>
           </IonItem>
           <IonItem>
             <IonCheckbox 
-              checked={checkPermit(abstract.canPost, RoleType.MEMBER)}
+              checked={checkPermit(abstract.canReply, RoleType.MEMBER)}
               onClick={handleCanPostClick(RoleType.MEMBER)}
             />
             <IonLabel>&nbsp;Member</IonLabel>
           </IonItem>
           <IonItem>
             <IonCheckbox 
-              checked={checkPermit(abstract.canPost, RoleType.SUBSCRIBER)}
+              checked={checkPermit(abstract.canReply, RoleType.SUBSCRIBER)}
               onClick={handleCanPostClick(RoleType.SUBSCRIBER)}
             />
             <IonLabel>&nbsp;Subscriber</IonLabel>

@@ -137,7 +137,7 @@ export class Arrow {
     enum: Enums.RoleType,
     default: Enums.RoleType.SUBSCRIBER,
   })
-  canPost: Enums.RoleType;
+  canReply: Enums.RoleType;
   
   @Column({
     type: 'enum',

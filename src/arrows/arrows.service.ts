@@ -291,7 +291,7 @@ export class ArrowsService {
     return this.arrowsRepository.save(arrow);
   }
 
-  async setArrowPermissions(user: User, arrowId: string, canAssignMemberRole: string | null, canEditLayout: string | null, canPost: string | null) {
+  async setArrowPermissions(user: User, arrowId: string, canAssignMemberRole: string | null, canEditLayout: string | null, canReply: string | null) {
     const arrow = await this.arrowsRepository.findOne({ 
       where: {
         id: arrowId 
@@ -311,8 +311,8 @@ export class ArrowsService {
     if (canEditLayout) {
       arrow.canEditLayout = RoleType[canEditLayout];
     }
-    if (canPost) {
-      arrow.canPost = RoleType[canPost];
+    if (canReply) {
+      arrow.canReply = RoleType[canReply];
     }
 
     return this.arrowsRepository.save(arrow);

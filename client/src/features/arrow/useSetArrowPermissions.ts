@@ -9,18 +9,18 @@ const SET_ARROW_PERMISSIONS = gql`
     $arrowId: String!, 
     $canAssignMemberRole: String, 
     $canEditLayout: String,
-    $canPost: String
+    $canReply: String
   ) {
     setArrowPermissions(
       arrowId: $arrowId,
       canAssignMemberRole: $canAssignMemberRole,
       canEditLayout: $canEditLayout,
-      canPost: $canPost
+      canReply: $canReply
     ) {
       id
       canAssignMemberRole
       canEditLayout
-      canPost
+      canReply
     }
   }
 `;
@@ -39,13 +39,13 @@ export default function useSetArrowPermissions() {
   });
 
   const setArrowPermissions = (arrowId: string, permissions: any) => {
-    const { canAssignMemberRole, canEditLayout, canPost } = permissions;
+    const { canAssignMemberRole, canEditLayout, canReply } = permissions;
     setPermissions({
       variables: {
         arrowId,
         canAssignMemberRole,
         canEditLayout,
-        canPost,
+        canReply,
       }
     });
   }
