@@ -312,7 +312,7 @@ const SpaceComponent = (props: SpaceComponentProps) => {
 
     if (!drag?.twigId) return;
 
-    if (canEdit) {
+    if (canEdit || idToTwig[drag.twigId].userId === user?.id) {
       const pos = idToPos[drag?.twigId]
       if (drag?.targetTwigId) {
         graftTwig(drag?.twigId, drag?.targetTwigId, pos.x, pos.y);
