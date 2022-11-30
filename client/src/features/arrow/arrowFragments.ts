@@ -22,7 +22,7 @@ export const ARROW_FIELDS = gql`
     twigN
     twigZ
     rootTwigId
-    canAssignRoles
+    canAssignMemberRole
     canEditLayout
     canPost
     canTalk

@@ -94,7 +94,7 @@ export class Arrow {
   rootTwigId: string;
 
   @Field()
-  canAssignRoles: string;
+  canAssignMemberRole: string;
 
   @Field()
   canEditLayout: string;

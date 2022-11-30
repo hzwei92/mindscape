@@ -39,7 +39,7 @@ export type Arrow = {
   twigZ: number;
   rootTwigId: string | null;
 
-  canAssignRoles: string;
+  canAssignMemberRole: string;
   canEditLayout: string;
   canPost: string;
   canTalk: string;
@@ -132,7 +132,7 @@ export const createArrow = (params: {
     twigZ: 0,
     rootTwigId: null,
 
-    canAssignRoles: RoleType.ADMIN,
+    canAssignMemberRole: RoleType.ADMIN,
     canEditLayout: RoleType.MEMBER,
     canPost: RoleType.SUBSCRIBER,
     canTalk: RoleType.MEMBER,

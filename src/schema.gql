@@ -6,7 +6,7 @@ type Arrow {
   abstract: Arrow!
   abstractId: String!
   activeDate: DateTime!
-  canAssignRoles: String!
+  canAssignMemberRole: String!
   canEditLayout: String!
   canHear: String!
   canPost: String!
@@ -151,7 +151,7 @@ type Mutation {
   saveArrow(arrowId: String!, draft: String!, sessionId: String!): Arrow!
   selectTwig(sessionId: String!, twigId: String!): SelectTwigResult!
   setArrowColor(arrowId: String!, color: String!): Arrow!
-  setArrowPermissions(arrowId: String!, canAssignRoles: String, canEditLayout: String, canPost: String): Arrow!
+  setArrowPermissions(arrowId: String!, canAssignMemberRole: String, canEditLayout: String, canPost: String): Arrow!
   setUserColor(color: String!, sessionId: String!): User!
   setUserMap(lat: Float!, lng: Float!, zoom: Float!): User!
   setUserName(name: String!, sessionId: String!): User!

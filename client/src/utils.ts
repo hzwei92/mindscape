@@ -141,13 +141,15 @@ export const getEmptyDraft = () => {
 }
 
 export const checkPermit = (permissionLevel: string | undefined, roleType?: string) => {
-  return permissionLevel === RoleType.ADMIN
-    ? roleType === RoleType.ADMIN
-    : permissionLevel === RoleType.MEMBER
-      ? roleType === RoleType.ADMIN || roleType === RoleType.MEMBER
-      : permissionLevel === RoleType.SUBSCRIBER
-        ? roleType === RoleType.ADMIN || roleType === RoleType.MEMBER || roleType === RoleType.SUBSCRIBER
-        : true;
+  return permissionLevel === RoleType.NONE
+    ? false
+    : permissionLevel === RoleType.ADMIN
+      ? roleType === RoleType.ADMIN
+      : permissionLevel === RoleType.MEMBER
+        ? roleType === RoleType.ADMIN || roleType === RoleType.MEMBER
+        : permissionLevel === RoleType.SUBSCRIBER
+          ? roleType === RoleType.ADMIN || roleType === RoleType.MEMBER || roleType === RoleType.SUBSCRIBER
+          : true;
 }
 
 export const getTwigColor = (color?: string | null) => {

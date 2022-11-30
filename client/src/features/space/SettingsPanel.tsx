@@ -7,6 +7,7 @@ import { AppContext } from '../../app/App';
 import { IonCard, IonCardContent, IonCardHeader, IonCheckbox, IonItem, IonLabel, IonModal } from '@ionic/react';
 import { SPACE_PANEL_WIDTH } from '../../constants';
 import useSetArrowPermissions from '../arrow/useSetArrowPermissions';
+import { checkPermit } from '../../utils';
 
 interface SettingsPanelProps {
   showSettings: boolean;
@@ -53,21 +54,6 @@ export default function SettingsPanel(props: SettingsPanelProps) {
   const [colorTimeout, setColorTimeout] = useState<ReturnType<typeof setTimeout> | null>(null);
   const isAdmin = abstract?.userId === user?.id || role?.type === 'ADMIN';
 
-  const [canAdminAssignRoles, setCanAdminAssignRoles] = useState(true);
-  const [canAdminEditLayout, setCanAdminEditLayout] = useState(true);
-  const [canAdminPost, setCanAdminPost] = useState(true);
-
-  const [canMemberAssignRoles, setCanMemberAssignRoles] = useState(false);
-  const [canMemberEditLayout, setCanMemberEditLayout] = useState(true);
-  const [canMemberPost, setCanMemberPost] = useState(true);
-
-  const [canSubscriberAssignRoles, setCanSubscriberAssignRoles] = useState(false);
-  const [canSubscriberEditLayout, setCanSubscriberEditLayout] = useState(false);
-  const [canSubscriberPost, setCanSubscriberPost] = useState(true);
-  
-  const [canOtherAssignRoles, setCanOtherAssignRoles] = useState(false);
-  const [canOtherEditLayout, setCanOtherEditLayout] = useState(false);
-  const [canOtherPost, setCanOtherPost] = useState(false);
 
   useEffect(() => {
     if (!abstract?.color) return;
@@ -75,86 +61,6 @@ export default function SettingsPanel(props: SettingsPanelProps) {
     setColor(abstract.color);
   }, [abstract?.color])
 
-  useEffect(() => {
-    if (abstract?.canAssignRoles === RoleType.ADMIN) {
-      setCanAdminAssignRoles(true);
-      setCanMemberAssignRoles(false);
-      setCanSubscriberAssignRoles(false);
-      setCanOtherAssignRoles(false);
-    }
-    else if (abstract?.canAssignRoles === RoleType.MEMBER) {
-      setCanAdminAssignRoles(true);
-      setCanMemberAssignRoles(true);
-      setCanSubscriberAssignRoles(false);
-      setCanOtherAssignRoles(false);
-    }
-    else if (abstract?.canAssignRoles === RoleType.SUBSCRIBER) {
-      setCanAdminAssignRoles(true);
-      setCanMemberAssignRoles(true);
-      setCanSubscriberAssignRoles(true);
-      setCanOtherAssignRoles(false);
-    }
-    else {
-      setCanAdminAssignRoles(true);
-      setCanMemberAssignRoles(true);
-      setCanSubscriberAssignRoles(true);
-      setCanOtherAssignRoles(true);
-    }
-  }, [abstract?.canAssignRoles]);
-
-  useEffect(() => {
-    if (abstract?.canEditLayout === RoleType.ADMIN) {
-      setCanAdminEditLayout(true);
-      setCanMemberEditLayout(false);
-      setCanSubscriberEditLayout(false);
-      setCanOtherEditLayout(false);
-    }
-    else if (abstract?.canEditLayout === RoleType.MEMBER) {
-      setCanAdminEditLayout(true);
-      setCanMemberEditLayout(true);
-      setCanSubscriberEditLayout(false);
-      setCanOtherEditLayout(false);
-    }
-    else if (abstract?.canEditLayout === RoleType.SUBSCRIBER) {
-      setCanAdminEditLayout(true);
-      setCanMemberEditLayout(true);
-      setCanSubscriberEditLayout(true);
-      setCanOtherEditLayout(false);
-    }
-    else {
-      setCanAdminEditLayout(true);
-      setCanMemberEditLayout(true);
-      setCanSubscriberEditLayout(true);
-      setCanOtherEditLayout(true);
-    }
-  }, [abstract?.canEditLayout]);
-
-  useEffect(() => {
-    if (abstract?.canPost === RoleType.ADMIN) {
-      setCanAdminPost(true);
-      setCanMemberPost(false);
-      setCanSubscriberPost(false);
-      setCanOtherPost(false);
-    }
-    else if (abstract?.canPost === RoleType.MEMBER) {
-      setCanAdminPost(true);
-      setCanMemberPost(true);
-      setCanSubscriberPost(false);
-      setCanOtherPost(false);
-    }
-    else if (abstract?.canPost === RoleType.SUBSCRIBER) {
-      setCanAdminPost(true);
-      setCanMemberPost(true);
-      setCanSubscriberPost(true);
-      setCanOtherPost(false);
-    }
-    else {
-      setCanAdminPost(true);
-      setCanMemberPost(true);
-      setCanSubscriberPost(true);
-      setCanOtherPost(true);
-    }
-  }, [abstract?.canPost]);
 
   useEffect(() => {
     if (props.showSettings) {
@@ -187,72 +93,131 @@ export default function SettingsPanel(props: SettingsPanelProps) {
     props.setShowSettings(false);
   }
 
-  const handleCanAssignRolesClick = (roleType: RoleType) => (e: any) => {
+  const handleCanAssignMemberRoleClick = (roleType: RoleType) => (e: any) => {
+    e.preventDefault();
     if (!abstract) return;
 
-    if (e.detail.checked) {
-      setArrowPermissions(abstract.id, roleType, null, null);
+    if (roleType === RoleType.ADMIN) {
+      if (checkPermit(abstract.canAssignMemberRole, RoleType.ADMIN)) {
+        setArrowPermissions(abstract.id, {
+          canAssignMemberRole: RoleType.NONE,
+        });
+      }
+      else {
+        setArrowPermissions(abstract.id, {
+          canAssignMemberRole: RoleType.ADMIN,
+        });
+      }
     }
-    else {
-      if (roleType === RoleType.ADMIN) {
-        setArrowPermissions(abstract.id, RoleType.NONE, null, null);
+    else if (roleType === RoleType.MEMBER) {
+      if (checkPermit(abstract.canAssignMemberRole, RoleType.MEMBER)) {
+        setArrowPermissions(abstract.id, {
+          canAssignMemberRole: RoleType.ADMIN,
+        });
       }
-      else if (roleType === RoleType.MEMBER) {
-        setArrowPermissions(abstract.id, RoleType.ADMIN, null, null);
+      else {
+        setArrowPermissions(abstract.id, {
+          canAssignMemberRole: RoleType.MEMBER,
+        });
       }
-      else if (roleType === RoleType.SUBSCRIBER) {
-        setArrowPermissions(abstract.id, RoleType.MEMBER, null, null);
+    }
+    else if (roleType === RoleType.SUBSCRIBER) {
+      if (checkPermit(abstract.canAssignMemberRole, RoleType.SUBSCRIBER)) {
+        setArrowPermissions(abstract.id, {
+          canAssignMemberRole: RoleType.MEMBER,
+        });
       }
-      else if (roleType === RoleType.OTHER) {
-        setArrowPermissions(abstract.id, RoleType.SUBSCRIBER, null, null);
+      else {
+        setArrowPermissions(abstract.id, {
+          canAssignMemberRole: RoleType.SUBSCRIBER,
+        });
       }
     }
   }
 
   const handleCanEditLayoutClick = (roleType: RoleType) => (e: any) => {
+    e.preventDefault();
     if (!abstract) return;
 
-    if (e.detail.checked) {
-      setArrowPermissions(abstract.id, null, roleType, null);
+    if (roleType === RoleType.ADMIN) {
+      if (checkPermit(abstract.canEditLayout, RoleType.ADMIN)) {
+        setArrowPermissions(abstract.id, {
+          canEditLayout: RoleType.NONE,
+        });
+      }
+      else {
+        setArrowPermissions(abstract.id, {
+          canEditLayout: RoleType.ADMIN,
+        });
+      }
     }
-    else {
-      if (roleType === RoleType.ADMIN) {
-        setArrowPermissions(abstract.id, null, RoleType.NONE, null);
+    else if (roleType === RoleType.MEMBER) {
+      if (checkPermit(abstract.canEditLayout, RoleType.MEMBER)) {
+        setArrowPermissions(abstract.id, {
+          canEditLayout: RoleType.ADMIN,
+        });
       }
-      else if (roleType === RoleType.MEMBER) {
-        setArrowPermissions(abstract.id, null, RoleType.ADMIN, null);
+      else {
+        setArrowPermissions(abstract.id, {
+          canEditLayout: RoleType.MEMBER,
+        });
       }
-      else if (roleType === RoleType.SUBSCRIBER) {
-        setArrowPermissions(abstract.id, null, RoleType.MEMBER, null);
+    }
+    else if (roleType === RoleType.SUBSCRIBER) {
+      if (checkPermit(abstract.canEditLayout, RoleType.SUBSCRIBER)) {
+        setArrowPermissions(abstract.id, {
+          canEditLayout: RoleType.MEMBER,
+        });
       }
-      else if (roleType === RoleType.OTHER) {
-        setArrowPermissions(abstract.id, null, RoleType.SUBSCRIBER, null);
+      else {
+        setArrowPermissions(abstract.id, {
+          canEditLayout: RoleType.SUBSCRIBER,
+        });
       }
     }
   }
 
   const handleCanPostClick = (roleType: RoleType) => (e: any) => {
+    e.preventDefault();
     if (!abstract) return;
 
-    if (e.detail.checked) {
-      setArrowPermissions(abstract.id, null, null, roleType);
+    if (roleType === RoleType.ADMIN) {
+      if (checkPermit(abstract.canPost, RoleType.ADMIN)) {
+        setArrowPermissions(abstract.id, {
+          canPost: RoleType.NONE,
+        });
+      }
+      else {
+        setArrowPermissions(abstract.id, {
+          canPost: RoleType.ADMIN,
+        });
+      }
     }
-    else {
-      if (roleType === RoleType.ADMIN) {
-        setArrowPermissions(abstract.id, null, null, RoleType.NONE);
+    else if (roleType === RoleType.MEMBER) {
+      if (checkPermit(abstract.canPost, RoleType.MEMBER)) {
+        setArrowPermissions(abstract.id, {
+          canPost: RoleType.ADMIN,
+        });
       }
-      else if (roleType === RoleType.MEMBER) {
-        setArrowPermissions(abstract.id, null, null, RoleType.ADMIN);
+      else {
+        setArrowPermissions(abstract.id, {
+          canPost: RoleType.MEMBER,
+        });
       }
-      else if (roleType === RoleType.SUBSCRIBER) {
-        setArrowPermissions(abstract.id, null, null, RoleType.MEMBER);
+    }
+    else if (roleType === RoleType.SUBSCRIBER) {
+      if (checkPermit(abstract.canPost, RoleType.SUBSCRIBER)) {
+        setArrowPermissions(abstract.id, {
+          canPost: RoleType.MEMBER,
+        });
       }
-      else if (roleType === RoleType.OTHER) {
-        setArrowPermissions(abstract.id, null, null, RoleType.SUBSCRIBER);
+      else {
+        setArrowPermissions(abstract.id, {
+          canPost: RoleType.SUBSCRIBER,
+        });
       }
     }
   }
-
 
   if (!abstract) return null;
 
@@ -283,76 +248,87 @@ export default function SettingsPanel(props: SettingsPanelProps) {
           fontWeight: 'bold',
           fontSize: 20,
           paddingBottom: 5,
+          marginTop: 10,
         }}>
           Permissions
         </div>
         <div style={{
           paddingBottom: 10,
         }}>
-          <b>Admins</b> 
+          <b>Can assign Member role</b> 
           <IonItem style={{
           }}>
-            <IonCheckbox checked={canAdminAssignRoles} onIonChange={handleCanAssignRolesClick(RoleType.ADMIN)}/>
-            <IonLabel>&nbsp;can assign roles</IonLabel>
+            <IonCheckbox 
+              checked={checkPermit(abstract.canAssignMemberRole, RoleType.ADMIN)} 
+              onClick={handleCanAssignMemberRoleClick(RoleType.ADMIN)}
+            />
+            <IonLabel>&nbsp;Admin</IonLabel>
           </IonItem>
           <IonItem>
-            <IonCheckbox checked={canAdminEditLayout} onIonChange={handleCanEditLayoutClick(RoleType.ADMIN)}/>
-            <IonLabel>&nbsp;can edit layout</IonLabel>
+            <IonCheckbox 
+              checked={checkPermit(abstract.canAssignMemberRole, RoleType.MEMBER)} 
+              onClick={handleCanAssignMemberRoleClick(RoleType.MEMBER)}
+            />
+            <IonLabel>&nbsp;Member</IonLabel>
           </IonItem>
           <IonItem>
-            <IonCheckbox checked={canAdminPost} onIonChange={handleCanPostClick(RoleType.ADMIN)}/>
-            <IonLabel>&nbsp;can post</IonLabel>
-          </IonItem>
-        </div>
-        <div style={{
-          paddingBottom: 10,
-        }}>
-          <b>Members</b>
-          <IonItem>
-            <IonCheckbox checked={canMemberAssignRoles} onIonChange={handleCanAssignRolesClick(RoleType.MEMBER)}/>
-            <IonLabel>&nbsp;can assign roles</IonLabel>
-          </IonItem>
-          <IonItem>
-            <IonCheckbox checked={canMemberEditLayout} onIonChange={handleCanEditLayoutClick(RoleType.MEMBER)} />
-            <IonLabel>&nbsp;can edit layout</IonLabel>
-          </IonItem>
-          <IonItem>
-            <IonCheckbox checked={canMemberPost} onIonChange={handleCanPostClick(RoleType.MEMBER)} />
-            <IonLabel>&nbsp;can post</IonLabel>
+            <IonCheckbox 
+              checked={checkPermit(abstract.canAssignMemberRole, RoleType.SUBSCRIBER)} 
+              onClick={handleCanAssignMemberRoleClick(RoleType.SUBSCRIBER)}
+            />
+            <IonLabel>&nbsp;Subscriber</IonLabel>
           </IonItem>
         </div>
         <div style={{
           paddingBottom: 10,
         }}>
-          <b>Subscribers</b>
+          <b>Can edit layout</b>
           <IonItem>
-            <IonCheckbox checked={canSubscriberAssignRoles} onIonChange={handleCanAssignRolesClick(RoleType.SUBSCRIBER)}/>
-            <IonLabel>&nbsp;can assign roles</IonLabel>
+            <IonCheckbox 
+              checked={checkPermit(abstract.canEditLayout, RoleType.ADMIN)}
+              onClick={handleCanEditLayoutClick(RoleType.ADMIN)}
+            />
+            <IonLabel>&nbsp;Admin</IonLabel>
           </IonItem>
           <IonItem>
-            <IonCheckbox checked={canSubscriberEditLayout} onIonChange={handleCanEditLayoutClick(RoleType.SUBSCRIBER)}/>
-            <IonLabel>&nbsp;can edit layout</IonLabel>
+            <IonCheckbox 
+              checked={checkPermit(abstract.canEditLayout, RoleType.MEMBER)} 
+              onClick={handleCanEditLayoutClick(RoleType.MEMBER)}
+            />
+            <IonLabel>&nbsp;Member</IonLabel>
           </IonItem>
           <IonItem>
-            <IonCheckbox checked={canSubscriberPost} onIonChange={handleCanPostClick(RoleType.SUBSCRIBER)}/>
-            <IonLabel>&nbsp;can post</IonLabel>
+            <IonCheckbox
+              checked={checkPermit(abstract.canEditLayout, RoleType.SUBSCRIBER)}
+              onClick={handleCanEditLayoutClick(RoleType.SUBSCRIBER)}
+            />
+            <IonLabel>&nbsp;Subscriber</IonLabel>
           </IonItem>
         </div>
         <div style={{
           paddingBottom: 10,
         }}>
-          <b>Others</b>
+          <b>Can post</b>
           <IonItem>
-            <IonCheckbox checked={canOtherAssignRoles} onIonChange={handleCanAssignRolesClick(RoleType.OTHER)}/>
-            <IonLabel>&nbsp;can assign roles</IonLabel>
+            <IonCheckbox 
+              checked={checkPermit(abstract.canPost, RoleType.ADMIN)}
+              onClick={handleCanPostClick(RoleType.ADMIN)}
+            />
+            <IonLabel>&nbsp;Admin</IonLabel>
           </IonItem>
           <IonItem>
-            <IonCheckbox checked={canOtherEditLayout} onIonChange={handleCanEditLayoutClick(RoleType.OTHER)}/>
-            <IonLabel>&nbsp;can edit layout</IonLabel>
+            <IonCheckbox 
+              checked={checkPermit(abstract.canPost, RoleType.MEMBER)}
+              onClick={handleCanPostClick(RoleType.MEMBER)}
+            />
+            <IonLabel>&nbsp;Member</IonLabel>
           </IonItem>
           <IonItem>
-            <IonCheckbox checked={canOtherPost} onIonChange={handleCanPostClick(RoleType.OTHER)}/>
-            <IonLabel>&nbsp;can post</IonLabel>
+            <IonCheckbox 
+              checked={checkPermit(abstract.canPost, RoleType.SUBSCRIBER)}
+              onClick={handleCanPostClick(RoleType.SUBSCRIBER)}
+            />
+            <IonLabel>&nbsp;Subscriber</IonLabel>
           </IonItem>
         </div>
       </IonCardContent>

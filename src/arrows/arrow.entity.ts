@@ -121,9 +121,9 @@ export class Arrow {
   @Column({
     type: 'enum',
     enum: Enums.RoleType,
-    default: Enums.RoleType.ADMIN,
+    default: Enums.RoleType.MEMBER,
   })
-  canAssignRoles: Enums.RoleType;
+  canAssignMemberRole: Enums.RoleType;
 
   @Column({
     type: 'enum',

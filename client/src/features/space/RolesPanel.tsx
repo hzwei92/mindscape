@@ -48,7 +48,7 @@ export default function RolesPanel(props: RolesPanelProps) {
     });
 
   const [isInviting, setIsInviting] = useState(false);
-  const canInvite = checkPermit(abstract?.canAssignRoles, role?.type);
+  const canInvite = checkPermit(abstract?.canAssignMemberRole, role?.type);
 
   // const { requestRole } = useRequestRole();
   // const { inviteRole } = useInviteRole(props.jam.id, () => {});

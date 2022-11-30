@@ -291,6 +291,33 @@ export class ArrowsService {
     return this.arrowsRepository.save(arrow);
   }
 
+  async setArrowPermissions(user: User, arrowId: string, canAssignMemberRole: string | null, canEditLayout: string | null, canPost: string | null) {
+    const arrow = await this.arrowsRepository.findOne({ 
+      where: {
+        id: arrowId 
+      }
+    });
+
+    if (!arrow) {
+      throw new BadRequestException('This arrow does not exist');
+    }
+    if (arrow.userId !== user.id) {
+      throw new BadRequestException('You do not have permission to edit this arrow');
+    }
+
+    if (canAssignMemberRole) {
+      arrow.canAssignMemberRole = RoleType[canAssignMemberRole];
+    }
+    if (canEditLayout) {
+      arrow.canEditLayout = RoleType[canEditLayout];
+    }
+    if (canPost) {
+      arrow.canPost = RoleType[canPost];
+    }
+
+    return this.arrowsRepository.save(arrow);
+  }
+
   async saveArrow(user: User, arrowId: string, draft: string) {
     const arrow = await this.arrowsRepository.findOne({ 
       where: {

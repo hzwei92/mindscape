@@ -7,18 +7,18 @@ import { mergeArrows } from "./arrowSlice";
 const SET_ARROW_PERMISSIONS = gql`
   mutation SetArrowPermissions(
     $arrowId: String!, 
-    $canAssignRoles: String, 
+    $canAssignMemberRole: String, 
     $canEditLayout: String,
     $canPost: String
   ) {
     setArrowPermissions(
       arrowId: $arrowId,
-      canAssignRoles: $canAssignRoles,
+      canAssignMemberRole: $canAssignMemberRole,
       canEditLayout: $canEditLayout,
       canPost: $canPost
     ) {
       id
-      canAssignRoles
+      canAssignMemberRole
       canEditLayout
       canPost
     }
@@ -38,11 +38,12 @@ export default function useSetArrowPermissions() {
     }
   });
 
-  const setArrowPermissions = (arrowId: string, canAssignRoles: RoleType | null, canEditLayout: RoleType | null, canPost: RoleType | null) => {
+  const setArrowPermissions = (arrowId: string, permissions: any) => {
+    const { canAssignMemberRole, canEditLayout, canPost } = permissions;
     setPermissions({
       variables: {
         arrowId,
-        canAssignRoles,
+        canAssignMemberRole,
         canEditLayout,
         canPost,
       }

@@ -125,11 +125,11 @@ export class ArrowsResolver {
   async setArrowPermissions(
     @CurrentUser() user: UserEntity,
     @Args('arrowId') arrowId: string,
-    @Args('canAssignRoles', { nullable: true }) canAssignRoles: string,
+    @Args('canAssignMemberRole', { nullable: true }) canAssignMemberRole: string,
     @Args('canEditLayout', { nullable: true }) canEditLayout: string,
     @Args('canPost', { nullable: true }) canPost: string,
   ) {
-    return this.arrowsService.setArrowPermissions(user, arrowId, canAssignRoles, canEditLayout, canPost);
+    return this.arrowsService.setArrowPermissions(user, arrowId, canAssignMemberRole, canEditLayout, canPost);
   }
 
   
