@@ -100,7 +100,7 @@ export class Arrow {
   canEditLayout: string;
 
   @Field()
-  canPost: string;
+  canReply: string;
   
   @Field()
   canTalk: string;  
