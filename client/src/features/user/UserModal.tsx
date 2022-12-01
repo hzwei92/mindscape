@@ -92,7 +92,10 @@ export default function UserModal() {
 
   return (
     <IonModal ref={modalRef} onWillDismiss={handleClose}>
-      <IonCard>
+      <IonCard style={{
+        margin: 0,
+        height: '100%',
+      }}>
         <IonCardHeader style={{
           display: 'flex',
         }}>
@@ -124,7 +127,7 @@ export default function UserModal() {
               {user1?.name}
             </span>
             &nbsp;
-            { timeString }
+            { user1?.id ? timeString: null }
             <br/>
             { 
               user1
