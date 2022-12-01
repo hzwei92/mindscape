@@ -3,10 +3,10 @@ import { gql, useMutation } from '@apollo/client';
 import type { Arrow } from '../arrow/arrow';
 import type { Twig } from './twig';
 import { useAppDispatch, useAppSelector } from '../../app/store';
-import { selectSessionId } from '../auth/authSlice';
+import { selectSessionId, setAuthIsInit, setAuthIsValid } from '../auth/authSlice';
 import { mergeArrows } from '../arrow/arrowSlice';
 import { mergeTwigs, selectIdToDescIdToTrue, selectIdToTwig, setSelectedTwigId } from '../space/spaceSlice';
-import { useIonRouter } from '@ionic/react';
+import { useIonRouter, useIonToast } from '@ionic/react';
 
 const SELECT_TWIG = gql`
   mutation Select_Twig($sessionId: String!, $twigId: String!) {
@@ -27,6 +27,7 @@ const SELECT_TWIG = gql`
 export default function useSelectTwig(abstractId: string, canEdit: boolean) {
   const dispatch = useAppDispatch();
 
+  const [present] = useIonToast();
   const router = useIonRouter();
 
   const sessionId = useAppSelector(selectSessionId);
@@ -36,7 +37,14 @@ export default function useSelectTwig(abstractId: string, canEdit: boolean) {
 
   const [select] = useMutation(SELECT_TWIG, {
     onError: error => {
-      console.error(error);
+      present('Error selecting twig: ' + error.message, 3000);
+      if (error.message === 'Unauthorized') {
+        dispatch(setAuthIsInit(false));
+        dispatch(setAuthIsValid(false));
+      }
+      else {
+        console.error(error);
+      }
     },
     onCompleted: data => {
       console.log(data);

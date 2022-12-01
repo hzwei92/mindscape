@@ -1,15 +1,16 @@
-import { gql, useMutation, useReactiveVar } from '@apollo/client';
+import { gql, useMutation } from '@apollo/client';
 import { v4 } from 'uuid';
 import { useAppDispatch, useAppSelector } from '../../app/store';
-import { addEntry, selectIdToEntry, selectNewEntryId, updateEntry } from './entrySlice';
+import { addEntry, mergeEntries, selectIdToEntry, updateEntry } from './entrySlice';
 import { Entry } from './entry';
 import { FULL_ARROW_FIELDS } from '../arrow/arrowFragments';
 import { mergeUsers, selectCurrentUser } from '../user/userSlice';
 import { createArrow } from '../arrow/arrow';
 import { mergeArrows, selectArrowById } from '../arrow/arrowSlice';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { AppContext } from '../../app/App';
-import { selectSessionId } from '../auth/authSlice';
+import { selectSessionId, setAuthIsInit, setAuthIsValid } from '../auth/authSlice';
+import { useIonToast } from '@ionic/react';
 
 const PASTE_ARROW = gql`
   mutation PasteArrow(
@@ -48,6 +49,8 @@ const PASTE_ARROW = gql`
 export default function usePasteEntry(entryId: string) {
   const dispatch = useAppDispatch();
 
+  const [present] = useIonToast();
+
   const sessionId = useAppSelector(selectSessionId);
 
   const { clipboardArrowIds } = useContext(AppContext);
@@ -57,15 +60,33 @@ export default function usePasteEntry(entryId: string) {
   const user = useAppSelector(selectCurrentUser);
 
   const idToEntry = useAppSelector(selectIdToEntry);
-  const newEntryId = useAppSelector(selectNewEntryId);
-
   const entry = idToEntry[entryId];
 
   const arrow = useAppSelector(state => selectArrowById(state, entry.arrowId));
+
+  const [newLinkId, setNewLinkId] = useState('');
+  const [newTargetId, setNewTargetId] = useState('');
   
   const [paste] = useMutation(PASTE_ARROW, {
     onError: error => {
-      console.error(error);
+      present('Error pasting entry: ' + error.message, 3000);
+      if (error.message === 'Unauthorized') {
+        dispatch(setAuthIsInit(false));
+        dispatch(setAuthIsValid(false));
+      }
+      else {
+        console.error(error);
+      }
+      dispatch(mergeEntries({
+        [newLinkId]: {
+          id: newLinkId,
+          isDeleted: true,
+        } as Entry,
+        [newTargetId]: {
+          id: newTargetId,
+          isDeleted: true,
+        } as Entry,
+      }))
     },
     onCompleted: data => {
       console.log(data);
@@ -88,7 +109,12 @@ export default function usePasteEntry(entryId: string) {
   });
 
   const pasteEntry = () => {
-    if (!user || newEntryId) return;
+    if (!user) return;
+
+    const targetEntryId = v4();
+    const linkEntryId = v4();
+    setNewTargetId(targetEntryId);
+    setNewLinkId(linkEntryId);
 
     const linkId = v4();
     const target = clipboardArrow;
@@ -133,9 +159,6 @@ export default function usePasteEntry(entryId: string) {
     
     dispatch(mergeArrows([link]));
 
-    const targetEntryId = v4();
-    const linkEntryId = v4();
-
     const targetEntry: Entry = {
       id: targetEntryId,
       userId: user.id,
@@ -148,6 +171,7 @@ export default function usePasteEntry(entryId: string) {
       sourceId: null,
       targetId: null,
       shouldGetLinks: false,
+      isDeleted: false,
     };
 
     const linkEntry: Entry = {
@@ -162,6 +186,7 @@ export default function usePasteEntry(entryId: string) {
       sourceId: entry.id,
       targetId: targetEntryId,
       shouldGetLinks: false,
+      isDeleted:false,
     };
 
     dispatch(addEntry(targetEntry));

@@ -6,12 +6,10 @@ import { Entry } from './entry';
 
 export interface EntryState {
   idToEntry: IdToType<Entry>;
-  newEntryId: string;
 };
 
 const initialState: EntryState = {
   idToEntry: {},
-  newEntryId: '',
 };
 
 export const entrySlice = createSlice({
@@ -82,6 +80,5 @@ export const {
 } = entrySlice.actions;
 
 export const selectIdToEntry = (state: RootState) => state.entry.idToEntry;
-export const selectNewEntryId = (state: RootState) => state.entry.newEntryId;
 
 export default entrySlice.reducer

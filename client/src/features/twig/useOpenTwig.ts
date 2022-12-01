@@ -1,10 +1,11 @@
 import { gql, useMutation } from '@apollo/client';
 import { useContext } from 'react';
 import { useAppDispatch, useAppSelector } from '../../app/store';
-import { selectSessionId } from '../auth/authSlice';
+import { selectSessionId, setAuthIsInit, setAuthIsValid } from '../auth/authSlice';
 import { SpaceContext } from '../space/SpaceComponent';
 import type { Twig } from './twig';
 import { mergeTwigs } from '../space/spaceSlice';
+import { useIonToast } from '@ionic/react';
 
 const OPEN_TWIG = gql`
   mutation OpenTwig($sessionId: String!, $twigId: String!, $shouldOpen: Boolean!) {
@@ -20,16 +21,22 @@ const OPEN_TWIG = gql`
 const useOpenTwig = () => {
   const dispatch = useAppDispatch();
 
+  const [present] = useIonToast();
+
   const { abstractId } = useContext(SpaceContext);
 
   const sessionId = useAppSelector(selectSessionId);
 
   const [open] = useMutation(OPEN_TWIG, {
     onError: error => {
-      console.error(error);
-    },
-    update: (cache, {data: {openTwig}}) => {
-      //applyRole(cache, openTwig.role);
+      present('Error modifying twig: ' + error.message, 3000);
+      if (error.message === 'Unauthorized') {
+        dispatch(setAuthIsInit(false));
+        dispatch(setAuthIsValid(false));
+      }
+      else {
+        console.error(error);
+      }
     },
     onCompleted: data => {
       console.log(data);

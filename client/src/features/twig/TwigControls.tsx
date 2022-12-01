@@ -206,6 +206,7 @@ function TwigControls(props: TwigControlsProps) {
       sourceId: null,
       targetId: null,
       shouldGetLinks: true,
+      isDeleted: false,
     }));
 
     dispatch(searchPushSlice({
@@ -244,6 +245,7 @@ function TwigControls(props: TwigControlsProps) {
           sourceId: null,
           targetId: null,
           shouldGetLinks: false,
+          isDeleted: false,
         }));
       }
 
@@ -261,6 +263,7 @@ function TwigControls(props: TwigControlsProps) {
           sourceId: null,
           targetId: null,
           shouldGetLinks: false,
+          isDeleted: false,
         }));
       }
     }
@@ -277,6 +280,7 @@ function TwigControls(props: TwigControlsProps) {
       sourceId,
       targetId,
       shouldGetLinks: true,
+      isDeleted: false,
     }));
 
     dispatch(searchPushSlice({
