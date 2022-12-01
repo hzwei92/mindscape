@@ -3,7 +3,7 @@ import { v4 } from 'uuid';
 import { FULL_TWIG_FIELDS } from './twigFragments';
 import { FULL_ROLE_FIELDS } from '../role/roleFragments';
 import { Arrow } from '../arrow/arrow';
-import { selectSessionId } from '../auth/authSlice';
+import { selectSessionId, setAuthIsInit, setAuthIsValid } from '../auth/authSlice';
 import { useContext } from 'react';
 import { createTwig, Twig } from './twig';
 import { SpaceContext } from '../space/SpaceComponent';
@@ -67,7 +67,7 @@ export default function usePasteTwig() {
 
   const [present] = useIonToast();
 
-  const { user, clipboardArrowIds, setNewTwigId } = useContext(AppContext);
+  const { user, clipboardArrowIds, newTwigId, setNewTwigId } = useContext(AppContext);
   
   const { 
     abstractId, 
@@ -82,11 +82,25 @@ export default function usePasteTwig() {
   
   const [paste] = useMutation(PASTE_TWIG, {
     onError: error => {
-      console.error(error);
       present({
         message: 'Error pasting: ' + error.message,
         position: 'bottom',
+        duration: 3000,
       });
+      if (error.message === 'Unauthorized') {
+        dispatch(setAuthIsInit(false));
+        dispatch(setAuthIsValid(false));
+      }
+      else {
+        console.error(error);
+      }
+      dispatch(mergeTwigs({
+        abstractId,
+        twigs: [{
+          id: newTwigId,
+          deleteDate: new Date().toISOString(),
+        } as Twig],
+      }))
     },
     onCompleted: data => {
       console.log(data);
@@ -136,8 +150,8 @@ export default function usePasteTwig() {
 
     console.log(dx, dy, dr);
     const twigId = v4();
-    const x = Math.round((600 * dx / dr) + pos.x);
-    const y = Math.round((600 * dy / dr) + pos.y);
+    const x = Math.round((300 * dx / dr) + pos.x);
+    const y = Math.round((300 * dy / dr) + pos.y);
 
     console.log(x, y)
 

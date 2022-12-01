@@ -3,7 +3,7 @@ import { v4 } from 'uuid';
 import { FULL_TWIG_FIELDS } from './twigFragments';
 import { FULL_ROLE_FIELDS } from '../role/roleFragments';
 import { Arrow, createArrow } from '../arrow/arrow';
-import { selectSessionId } from '../auth/authSlice';
+import { selectSessionId, setAuthIsInit, setAuthIsValid } from '../auth/authSlice';
 import { useContext } from 'react';
 import { createTwig, Twig } from './twig';
 import { mergeTwigs } from '../space/spaceSlice';
@@ -71,7 +71,7 @@ export default function useReplyTwig() {
 
   const [present] = useIonToast();
 
-  const { user, setNewTwigId } = useContext(AppContext);
+  const { user, newTwigId, setNewTwigId } = useContext(AppContext);
   const { abstractId, abstract } = useContext(SpaceContext);
 
   const idToPos = useAppSelector(selectIdToPos(abstractId));
@@ -80,11 +80,26 @@ export default function useReplyTwig() {
   
   const [reply] = useMutation(REPLY_TWIG, {
     onError: error => {
-      console.error(error);
       present({
         message: 'Error replying: ' + error.message,
         position: 'bottom',
+        duration: 3000,
       });
+      if (error.message === 'Unauthorized') {
+        dispatch(setAuthIsInit(false));
+        dispatch(setAuthIsValid(false));
+      }
+      else {
+        console.error(error);
+      }
+
+      dispatch(mergeTwigs({
+        abstractId,
+        twigs: [{
+          id: newTwigId,
+          deleteDate: new Date().toISOString(),
+        } as Twig],
+      }));
     },
     onCompleted: data => {
       console.log(data);

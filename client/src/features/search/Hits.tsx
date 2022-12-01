@@ -54,7 +54,8 @@ function Hits(props: HitsProps) {
               inIds: [],
               sourceId: null,
               targetId: null,
-              shouldGetLinks: false
+              shouldGetLinks: false,
+              isDeleted: false,
             };
             idToEntry1[entry.id] = entry;
             entryIds.push(entry.id);

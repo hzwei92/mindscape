@@ -1,7 +1,9 @@
 import { gql, useMutation } from '@apollo/client';
+import { useIonToast } from '@ionic/react';
 import { v4 } from 'uuid';
 import { useAppDispatch, useAppSelector } from '../../app/store';
 import { IdToType } from '../../types';
+import { setAuthIsInit, setAuthIsValid } from '../auth/authSlice';
 import { Entry } from '../entry/entry';
 import { mergeEntries, selectIdToEntry } from '../entry/entrySlice';
 import { VOTE_FIELDS } from '../vote/voteFragments';
@@ -32,11 +34,20 @@ const GET_INS = gql`
 export default function useGetIns(entryId: string, arrowId: string) {
   const dispatch = useAppDispatch();
 
+  const [present] = useIonToast();
+
   const idToEntry = useAppSelector(selectIdToEntry);
 
   const [getInArrows] = useMutation(GET_INS, {
     onError: error => {
-      console.error(error);
+      present('Error gettings arrows: ' + error.message, 3000);
+      if (error.message === 'Unauthorized') {
+        dispatch(setAuthIsInit(false));
+        dispatch(setAuthIsValid(false));
+      }
+      else {
+        console.error(error);
+      }
     },
     onCompleted: data => {
       console.log(data);
@@ -76,6 +87,7 @@ export default function useGetIns(entryId: string, arrowId: string) {
             sourceId: sourceEntryId,
             targetId: entryId,
             shouldGetLinks: false,
+            isDeleted: false,
           };
           idToEntry1[linkEntry.id] = linkEntry;
 
@@ -91,6 +103,7 @@ export default function useGetIns(entryId: string, arrowId: string) {
             sourceId: null,
             targetId: null,
             shouldGetLinks: false,
+            isDeleted: false,
           };
           idToEntry1[sourceEntry.id] = sourceEntry;
 

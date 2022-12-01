@@ -46,8 +46,9 @@ export default function useAuth() {
   });
 
   useEffect(() => {
+    if (isInit) return;
     refreshToken();
-  }, [])
+  }, [isInit])
 
   useEffect(() => {
     if (!isInit || isComplete) return;

@@ -4,6 +4,7 @@ import { v4 } from 'uuid';
 import { AppContext } from '../../app/App';
 import { useAppDispatch, useAppSelector } from '../../app/store';
 import { selectArrowById } from '../arrow/arrowSlice';
+import { Entry } from '../entry/entry';
 import { addEntry } from '../entry/entrySlice';
 import useReplyEntry from '../entry/useReplyEntry';
 import { MenuMode } from '../menu/menu';
@@ -84,6 +85,7 @@ export default function ReplyTwigModal() {
           sourceId: null,
           targetId: null,
           shouldGetLinks: false,
+          isDeleted: false,
         }));
       }
 
@@ -101,11 +103,12 @@ export default function ReplyTwigModal() {
           sourceId: null,
           targetId: null,
           shouldGetLinks: false,
+          isDeleted: false,
         }));
       }
     }
 
-    const entry = {
+    const entry: Entry = {
       id,
       userId: arrow.userId,
       parentId: '',
@@ -117,6 +120,7 @@ export default function ReplyTwigModal() {
       sourceId,
       targetId,
       shouldGetLinks: true,
+      isDeleted: false,
     }
     dispatch(addEntry(entry));
 

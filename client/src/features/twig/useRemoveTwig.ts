@@ -1,8 +1,9 @@
 import { gql, useMutation } from '@apollo/client';
+import { useIonToast } from '@ionic/react';
 import { useContext } from 'react';
 import { AppContext } from '../../app/App';
 import { useAppDispatch, useAppSelector } from '../../app/store';
-import { selectSessionId } from '../auth/authSlice';
+import { selectSessionId, setAuthIsInit, setAuthIsValid } from '../auth/authSlice';
 import { FULL_ROLE_FIELDS } from '../role/roleFragments';
 import { SpaceContext } from '../space/SpaceComponent';
 import { mergeTwigs, selectIdToChildIdToTrue, selectIdToDescIdToTrue, selectIdToTwig } from '../space/spaceSlice';
@@ -26,6 +27,8 @@ const REMOVE_TWIG = gql`
 export default function useRemoveTwig() {
   const dispatch = useAppDispatch();
 
+  const [present] = useIonToast();
+
   const { user } = useContext(AppContext);
   const { abstractId, canEdit } = useContext(SpaceContext);
 
@@ -37,7 +40,14 @@ export default function useRemoveTwig() {
 
   const [remove] = useMutation(REMOVE_TWIG, {
     onError: error => {
-      console.error(error);
+      present('Error removing twig: ' + error.message, 3000);
+      if (error.message === 'Unauthorized') {
+        dispatch(setAuthIsInit(false));
+        dispatch(setAuthIsValid(false));
+      }
+      else {
+        console.error(error);
+      }
     },
     onCompleted: data => {
       console.log(data);

@@ -8,6 +8,7 @@ import { useIonToast } from '@ionic/react';
 import { IdToType } from '../../types';
 import { PosType } from './space';
 import { Twig } from '../twig/twig';
+import { setAuthIsInit, setAuthIsValid } from '../auth/authSlice';
 
 const GET_DETAILS = gql`
   mutation GetTwigs($abstractId: String!) {
@@ -30,8 +31,15 @@ export default function useInitSpace(abstractId: string) {
 
   const [getTwigs] = useMutation(GET_DETAILS, {
     onError: error => {
-      console.error(error);
-      presentToast('Error loading graph: ' + error.message);
+      presentToast('Error loading graph: ' + error.message, 3000);
+
+      if (error.message === 'Unauthorized') {
+        dispatch(setAuthIsInit(false));
+        dispatch(setAuthIsValid(false));
+      }
+      else {
+        console.error(error);
+      }
     },
     onCompleted: data => {
       console.log(data);

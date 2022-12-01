@@ -1,6 +1,7 @@
 import { gql, useMutation, useReactiveVar } from '@apollo/client';
+import { useIonToast } from '@ionic/react';
 import { useAppDispatch, useAppSelector } from '../../app/store';
-import { selectSessionId } from '../auth/authSlice';
+import { selectSessionId, setAuthIsInit, setAuthIsValid } from '../auth/authSlice';
 import { FULL_ROLE_FIELDS } from '../role/roleFragments';
 import { mergeTwigs, selectIdToTwig } from '../space/spaceSlice';
 
@@ -31,13 +32,22 @@ const GRAFT = gql`
 export default function useGraftTwig(abstractId: string) {
   const dispatch = useAppDispatch();
 
+  const [present] = useIonToast();
+
   const sessionId = useAppSelector(selectSessionId);
 
   const idToTwig = useAppSelector(selectIdToTwig(abstractId));
   
   const [graft] = useMutation(GRAFT, {
     onError: error => {
-      console.error(error);
+      present('Error grafting twig: ' + error.message, 3000);
+      if (error.message === 'Unauthorized') {
+        dispatch(setAuthIsInit(false));
+        dispatch(setAuthIsValid(false));
+      }
+      else {
+        console.error(error);
+      }
     },
     onCompleted: data => {
       console.log(data);

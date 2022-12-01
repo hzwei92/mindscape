@@ -1,7 +1,7 @@
 import { gql, useMutation, useReactiveVar } from '@apollo/client';
 import { useIonToast } from '@ionic/react';
 import { useAppDispatch, useAppSelector } from '../../app/store';
-import { selectSessionId } from '../auth/authSlice';
+import { selectSessionId, setAuthIsComplete, setAuthIsInit, setAuthIsValid } from '../auth/authSlice';
 import { mergeArrows, selectArrowIdToInstanceIds, selectIdToInstance, updateInstance } from './arrowSlice';
 
 const SAVE_ARROW = gql`
@@ -31,6 +31,10 @@ export default function useSaveArrow(arrowId: string, instanceId: string) {
       present({
         message: 'Error saving arrow: ' + error.message,
       })
+      if (error.message === 'Unauthorized') {
+        dispatch(setAuthIsInit(false));
+        dispatch(setAuthIsValid(false));
+      }
     },
     onCompleted: data => {
       console.log(data);

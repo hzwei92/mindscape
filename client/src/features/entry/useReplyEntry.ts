@@ -1,14 +1,15 @@
-import { gql, useMutation, useReactiveVar } from '@apollo/client';
+import { gql, useMutation } from '@apollo/client';
 import { v4 } from 'uuid';
 import { useAppDispatch, useAppSelector } from '../../app/store';
-import { addEntry, selectIdToEntry, selectNewEntryId, updateEntry } from './entrySlice';
+import { addEntry, mergeEntries, selectIdToEntry, updateEntry } from './entrySlice';
 import { Entry } from './entry';
 import { FULL_ARROW_FIELDS } from '../arrow/arrowFragments';
 import { mergeUsers, selectCurrentUser } from '../user/userSlice';
 import { createArrow } from '../arrow/arrow';
-import { mergeArrows, selectArrowById, selectIdToArrow } from '../arrow/arrowSlice';
-import { selectFocusTab, selectFrameTab } from '../tab/tabSlice';
-import { selectSessionId } from '../auth/authSlice';
+import { mergeArrows, selectIdToArrow } from '../arrow/arrowSlice';
+import { selectSessionId, setAuthIsInit, setAuthIsValid } from '../auth/authSlice';
+import { useIonToast } from '@ionic/react';
+import { useState } from 'react';
 
 const REPLY_ARROW = gql`
   mutation ReplyArrow(
@@ -49,18 +50,39 @@ const REPLY_ARROW = gql`
 export default function useReplyEntry() {
   const dispatch = useAppDispatch();
 
+  const [present] = useIonToast();
+
   const sessionId = useAppSelector(selectSessionId);
 
   const user = useAppSelector(selectCurrentUser);
 
   const idToEntry = useAppSelector(selectIdToEntry);
-  const newEntryId = useAppSelector(selectNewEntryId);
 
   const idToArrow = useAppSelector(selectIdToArrow);
+
+  const [newLinkId, setNewLinkId] = useState('');
+  const [newTargetId, setNewTargetId] = useState('');
   
   const [reply] = useMutation(REPLY_ARROW, {
     onError: error => {
-      console.error(error);
+      present('Error pasting entry: ' + error.message, 3000);
+      if (error.message === 'Unauthorized') {
+        dispatch(setAuthIsInit(false));
+        dispatch(setAuthIsValid(false));
+      }
+      else {
+        console.error(error);
+      }
+      dispatch(mergeEntries({
+        [newLinkId]: {
+          id: newLinkId,
+          isDeleted: true,
+        } as Entry,
+        [newTargetId]: {
+          id: newTargetId,
+          isDeleted: true,
+        } as Entry,
+      }))
     },
     onCompleted: data => {
       console.log(data);
@@ -83,7 +105,12 @@ export default function useReplyEntry() {
   });
 
   const replyEntry = (entry: Entry) => {
-    if (!user || newEntryId) return;
+    if (!user) return;
+
+    const targetEntryId = v4();
+    const linkEntryId = v4();
+    setNewLinkId(linkEntryId);
+    setNewTargetId(targetEntryId);
 
     const arrow = idToArrow[entry?.arrowId];
 
@@ -155,8 +182,6 @@ export default function useReplyEntry() {
     
     dispatch(mergeArrows([target, link]));
 
-    const targetEntryId = v4();
-    const linkEntryId = v4();
 
     const targetEntry: Entry = {
       id: targetEntryId,
@@ -170,6 +195,7 @@ export default function useReplyEntry() {
       sourceId: null,
       targetId: null,
       shouldGetLinks: false,
+      isDeleted: false,
     };
 
     const linkEntry: Entry = {
@@ -184,6 +210,7 @@ export default function useReplyEntry() {
       sourceId: entry.id,
       targetId: targetEntryId,
       shouldGetLinks: false,
+      isDeleted: false,
     };
 
     dispatch(addEntry(targetEntry));
@@ -193,7 +220,7 @@ export default function useReplyEntry() {
       ...entry,
       showIns: false,
       showOuts: true,
-      outIds: [linkEntryId, ...idToEntry[entry.id].outIds]
+      outIds: [linkEntryId, ...(idToEntry[entry.id]?.outIds || [])]
     }));
 
   };

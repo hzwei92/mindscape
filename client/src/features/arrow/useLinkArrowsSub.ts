@@ -103,6 +103,7 @@ export default function useLinkArrowsSub() {
                 sourceId: entryId,
                 targetId: targetEntryId,
                 shouldGetLinks: false,
+                isDeleted: false,
               };
               idToEntry1[linkEntry.id] = linkEntry;
 
@@ -118,6 +119,7 @@ export default function useLinkArrowsSub() {
                 sourceId: null,
                 targetId: null,
                 shouldGetLinks: false,
+                isDeleted: false,
               }
               idToEntry1[targetEntry.id] = targetEntry;
             }
@@ -147,6 +149,7 @@ export default function useLinkArrowsSub() {
                 sourceId: sourceEntryId,
                 targetId: entryId,
                 shouldGetLinks: false,
+                isDeleted: false,
               };
               idToEntry1[linkEntry.id] = linkEntry;
     
@@ -162,6 +165,7 @@ export default function useLinkArrowsSub() {
                 sourceId: null,
                 targetId: null,
                 shouldGetLinks: false,
+                isDeleted: false,
               };
               idToEntry1[sourceEntry.id] = sourceEntry;
             }

@@ -10,4 +10,5 @@ export type Entry = {
   sourceId: string | null;
   targetId: string | null;
   shouldGetLinks: boolean;
+  isDeleted: boolean;
 }

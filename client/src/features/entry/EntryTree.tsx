@@ -23,7 +23,7 @@ export default function EntryTree(props: EntryTreeProps) {
   const { getIns } = useGetIns(props.entryId, entry?.arrowId);
   const { getOuts } = useGetOuts(props.entryId, entry?.arrowId);
 
-  if (!entry) return null;
+  if (!entry || entry.isDeleted) return null;
 
   const handleLoadClick = (event: React.MouseEvent) => {
     if (entry.showIns) {
