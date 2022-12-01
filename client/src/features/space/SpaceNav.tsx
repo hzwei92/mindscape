@@ -8,12 +8,14 @@ import { MAX_Z_INDEX } from '../../constants';
 import { selectIdToTwig, selectSelectedTwigId } from './spaceSlice';
 import { selectIdToUser } from '../user/userSlice';
 import { AppContext } from '../../app/App';
-import { IonFab, IonFabButton, IonIcon } from '@ionic/react';
+import { IonFab, IonFabButton, IonIcon, isPlatform } from '@ionic/react';
 import { playBackOutline, playForwardOutline, playSkipBackOutline, playSkipForwardOutline, scanOutline } from 'ionicons/icons';
+import { MenuMode } from '../menu/menu';
 
 export default function SpaceNav() {
   const {
-    palette
+    palette,
+    menuMode,
   } = useContext(AppContext);
 
   const { 
@@ -111,6 +113,9 @@ export default function SpaceNav() {
   
   return (
     <div onMouseMove={handleMouseMove} style={{
+      display: isPlatform('mobile') && menuMode !== MenuMode.NONE
+        ? 'none'
+        : 'block',
       position: 'absolute',
       marginLeft: -140,
       left: '50%',
