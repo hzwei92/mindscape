@@ -125,6 +125,14 @@ const App: React.FC = () => {
   const [showInitUserModal, setShowInitUserModal] = useState(false);
 
   useEffect(() => {
+
+    const handleRotate = () => {
+      setWidth(window.innerWidth);
+      setHeight(window.innerHeight);
+    }
+
+    window.matchMedia('(orientation: portrait)').addEventListener('change', handleRotate);
+
     const handleResize = () => {
       setWidth(window.innerWidth);
       setHeight(window.innerHeight);
@@ -133,6 +141,11 @@ const App: React.FC = () => {
     window.addEventListener('resize', handleResize);
 
     window.scrollTo(0, 1);
+
+    return () => {
+      window.matchMedia('(orientation: portrait)').removeEventListener('change', handleRotate);
+      window.removeEventListener('resize', handleResize);
+    }
   }, []);
 
   useEffect(() => {
