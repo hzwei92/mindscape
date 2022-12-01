@@ -30,7 +30,7 @@ import { User } from '../features/user/user';
 import { useAppSelector } from './store';
 import { selectCurrentUser, selectIdToUser } from '../features/user/userSlice';
 import { MenuMode } from '../features/menu/menu';
-import { APP_BAR_WIDTH, MENU_MIN_WIDTH, MENU_WIDTH } from '../constants';
+import { APP_BAR_WIDTH, MAX_Z_INDEX, MENU_MIN_WIDTH, MENU_WIDTH } from '../constants';
 import AppBar from './AppBar1';
 import CreateGraphModal from '../features/arrow/CreateGraphModal';
 import UserModal from '../features/user/UserModal';
@@ -263,6 +263,7 @@ const App: React.FC = () => {
                 : 'block',
               height: '100%',
               width: menuX - APP_BAR_WIDTH + 6,
+              zIndex: MAX_Z_INDEX,
             }}>
               <MenuComponent />
             </div>
