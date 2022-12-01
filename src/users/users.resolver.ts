@@ -93,8 +93,8 @@ export class UsersResolver {
     @CurrentUser() user: UserEntity,
     @Args('sessionId') sessionId: string,
     @Args('abstractId') abstractId: string,
-    @Args('x', {type: () => Int}) x: number,
-    @Args('y', {type: () => Int}) y: number,
+    @Args('x', {type: () => Int, nullable: true}) x: number,
+    @Args('y', {type: () => Int, nullable: true}) y: number,
   ) {
     this.pubSub.publish('publishAvatar', {
       sessionId,
@@ -188,7 +188,7 @@ export class UsersResolver {
   })
   publishAvatarSub(
     @Args('sessionId') sessionId: string,
-    @Args('abstractIds', {type: () => [String]}) abstractId: string[],
+    @Args('abstractIds', {type: () => [String]}) abstractIds: string[],
   ) {
     console.log('publishAvatarSub')
     return this.pubSub.asyncIterator('publishAvatar')

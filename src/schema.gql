@@ -137,7 +137,7 @@ type Mutation {
   openTwig(sessionId: String!, shouldOpen: Boolean!, twigId: String!): OpenTwigResult!
   pasteArrow(linkDraft: String!, linkId: String!, sessionId: String!, sourceId: String!, targetId: String!): ReplyArrowResult!
   pasteTwig(parentTwigId: String!, postId: String!, sessionId: String!, twigId: String!, x: Int!, y: Int!): ReplyTwigResult!
-  publishAvatar(abstractId: String!, sessionId: String!, x: Int!, y: Int!): User!
+  publishAvatar(abstractId: String!, sessionId: String!, x: Int, y: Int): User!
   refreshToken(refreshToken: String!): String!
   registerGoogleUser(token: String!): UserWithTokens!
   registerUser(email: String!, pass: String!): UserWithTokens!
@@ -328,8 +328,8 @@ type UserAvatar {
   color: String!
   id: String!
   name: String!
-  x: Int!
-  y: Int!
+  x: Int
+  y: Int
 }
 
 type UserWithTokens {

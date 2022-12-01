@@ -78,9 +78,9 @@ export class UserAvatar {
   @Field()
   color: string;
 
-  @Field(() => Int)
+  @Field(() => Int, { nullable: true })
   x: number;
 
-  @Field(() => Int)
+  @Field(() => Int, { nullable: true })
   y: number;
 }

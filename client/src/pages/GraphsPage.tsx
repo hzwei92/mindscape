@@ -21,7 +21,6 @@ const GraphsPage: React.FC = () => {
   } = useContext(AppContext);
   
   const idToTab = useAppSelector(selectIdToTab);
-  const focusTab = useAppSelector(selectFocusTab);
 
   const roles = [...(user?.roles || [])]
     .filter(role =>!role.deleteDate);

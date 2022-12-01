@@ -57,3 +57,6 @@ export const OFF_WHITE = '#e0e0e0';
 export const SPACE_PANEL_WIDTH = 280;
 
 export const INPUT_WIDTH = 300;
+
+
+export const ACTIVE_TIME = 60 * 1000;
