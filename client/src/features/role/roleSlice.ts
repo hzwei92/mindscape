@@ -48,7 +48,7 @@ const authSlice = createSlice({
         return {
           ...state,
           idToRole: action.payload.reduce((acc, tab) => {
-            (tab.arrow.roles || []).forEach(role => {
+            (tab.arrow?.roles || []).forEach(role => {
               acc[role.id] = {
                 ...acc[role.id],
                 ...role
