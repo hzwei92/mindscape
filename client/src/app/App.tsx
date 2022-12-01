@@ -1,5 +1,6 @@
 import {
   IonApp,
+  isPlatform,
   setupIonicReact
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
@@ -118,7 +119,7 @@ const App: React.FC = () => {
   const [selectedUserId, setSelectedUserId] = useState('');
 
   const [menuMode, setMenuMode] = useState(MenuMode.NONE);
-  const [menuX, setMenuX] = useState(MENU_WIDTH);
+  const [menuX, setMenuX] = useState(isPlatform('mobile') ? (width - 6) : MENU_WIDTH);
   const [menuIsResizing, setMenuIsResizing] = useState(false);
 
   const [showInitUserModal, setShowInitUserModal] = useState(false);
