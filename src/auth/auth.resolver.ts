@@ -1,4 +1,4 @@
-import { BadRequestException, Inject, UseGuards } from '@nestjs/common';
+import { BadRequestException, Inject, UseGuards, UseInterceptors, UsePipes } from '@nestjs/common';
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
 import { PUB_SUB } from 'src/pub-sub/pub-sub.module';
 import { User } from 'src/users/user.model';
@@ -48,7 +48,7 @@ export class AuthResolver {
     return this.authService.registerUser(user.id, email, pass);
   }
 
-  @UseGuards(GqlAuthGuard)
+  @UsePipes(GqlAuthGuard)
   @Mutation(() => UserWithTokens, {name: 'loginUser'})
   async loginUser(
     @CurrentUser() user: UserEntity,
@@ -67,7 +67,7 @@ export class AuthResolver {
     return this.authService.registerGoogleUser(user, token);
   }
 
-  @UseGuards(GqlAuthGuard)
+  @UsePipes(GqlAuthGuard)
   @Mutation(() => UserWithTokens, {name: 'loginGoogleUser'})
   async loginGoogleUser(
     @CurrentUser() user: UserEntity,

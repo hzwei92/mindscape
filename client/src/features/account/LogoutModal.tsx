@@ -63,7 +63,9 @@ function LogoutModal(props: LogoutModalProps) {
         }}>
           {
             !user?.email
-              ? <div>
+              ? <div style={{
+                  marginBottom: 40,
+                }}>
                   <div style={{
                     display: 'flex',
                     flexDirection: 'row',
@@ -82,7 +84,7 @@ function LogoutModal(props: LogoutModalProps) {
             display: 'flex',
             flexDirection: 'row',
             justifyContent: 'center',
-            marginTop: 50,
+            marginTop: 20,
           }}>
             <IonButton onClick={handleLogoutClick}>
               LOGOUT

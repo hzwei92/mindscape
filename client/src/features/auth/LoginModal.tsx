@@ -2,9 +2,9 @@ import React, { Dispatch, SetStateAction, useContext, useEffect, useRef, useStat
 import { gql, useApolloClient, useMutation } from '@apollo/client';
 import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonIcon, IonInput, IonItem, IonModal, IonPage } from '@ionic/react';
 import { eye, eyeOff } from 'ionicons/icons';
-import GoogleButton from '../auth/GoogleButton';
+import GoogleButton from './GoogleButton';
 import { FULL_USER_FIELDS } from '../user/userFragments';
-import { setLogin } from '../auth/authSlice';
+import { setLogin } from './authSlice';
 import { useAppDispatch, useAppSelector } from '../../app/store';
 import { AppContext } from '../../app/App';
 import { Preferences } from '@capacitor/preferences';
@@ -24,16 +24,11 @@ const LOGIN_USER = gql`
 `;
 
 
-interface LoginModalProps {
-  show: boolean;
-  setShow: Dispatch<SetStateAction<boolean>>;
-}
-
-const LoginModal = (props: LoginModalProps) => {
+const LoginModal = () => {
   const client = useApolloClient();
   const dispatch = useAppDispatch();
 
-  const { palette } = useContext(AppContext);
+  const { user, showLoginModal, setShowLoginModal, setShowInitUserModal } = useContext(AppContext);
 
   const modalRef = useRef<HTMLIonModalElement>(null);
 
@@ -69,13 +64,13 @@ const LoginModal = (props: LoginModalProps) => {
   const [showPass, setShowPass] = useState(false);
 
   useEffect(() => {
-    if (props.show) {
+    if (showLoginModal) {
       modalRef.current?.present();
     }
     else {
       modalRef.current?.dismiss();
     }
-  }, [props.show]);
+  }, [showLoginModal]);
 
   const handleEmailChange = (e: any) => {
     setMessage('')
@@ -97,16 +92,23 @@ const LoginModal = (props: LoginModalProps) => {
         pass,
       }
     })
+    setShowLoginModal(false);
   };
 
+  const handleCancelClick = () => {
+    if (!user) {
+      setShowInitUserModal(true);
+    }
+    handleClose();
+  }
   const handleClose = () => {
-    props.setShow(false);
+    setShowLoginModal(false);
   }
 
   const isFormValid = email.length && pass.length;
 
   return (
-    <IonModal ref={modalRef} onWillDismiss={handleClose}>
+    <IonModal ref={modalRef} onWillDismiss={handleClose} canDismiss={!(showLoginModal && !user?.id)}>
       <IonCard style={{
         padding: 10,
         height: '100%',
@@ -117,7 +119,7 @@ const LoginModal = (props: LoginModalProps) => {
           display: 'flex',
           flexDirection: 'row',
           justifyContent: 'center',
-          fontSize: 80,
+          fontSize: 60,
           textAlign: 'center',
         }}>
           Welcome back!
@@ -190,7 +192,7 @@ const LoginModal = (props: LoginModalProps) => {
             flexDirection: 'row',
             justifyContent: 'center',
           }}>
-            <IonButton onClick={handleClose}>
+            <IonButton onClick={handleCancelClick}>
               CANCEL
             </IonButton>
           </IonButtons>
