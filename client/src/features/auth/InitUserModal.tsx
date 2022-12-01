@@ -1,10 +1,11 @@
-import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonInput, IonModal, IonNote } from "@ionic/react";
+import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonInput, IonItem, IonLabel, IonModal, IonNote } from "@ionic/react";
 import { useContext, useEffect, useRef, useState } from "react";
 import { ChromePicker } from "react-color";
 import { AppContext } from "../../app/App";
 import useInitUser from "./useInitUser";
 import { gql, useMutation } from "@apollo/client";
 import { uniqueNamesGenerator, adjectives, animals } from "unique-names-generator";
+import { INPUT_WIDTH } from "../../constants";
 
 const GET_USER_BY_NAME = gql`
   mutation GetUserByName($name: String!) {
@@ -128,21 +129,25 @@ export default function InitUserModal() {
               marginBottom: 10,
               textAlign: 'center',
             }}>
-              Choose a <b>name</b> and a <b>color</b>.
+              Choose a name and a color.
             </div>
             <div>
-            <IonInput
-              placeholder="Name"
-              value={name}
-              onIonChange={handleNameChange}
-              style={{
-                borderRadius: 5,
+              <IonItem style={{
+                width: INPUT_WIDTH,
+                marginBottom: 10,
                 border: '1px solid',
-                borderColor: nameError ? 'red' : null,
-                paddingLeft: 10,
-                width: 300,
-              }}
-            />
+                borderRadius: 5,
+              }}>
+                <IonInput
+                  placeholder="Name"
+                  value={name}
+                  onIonChange={handleNameChange}
+                  style={{
+                    width: 300,
+                  }}
+                />
+              </IonItem>
+
             {
               nameError
                 ? <IonNote color={'danger'}>This name is already in use.</IonNote>

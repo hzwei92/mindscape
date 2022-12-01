@@ -4,8 +4,9 @@ import { gql, useMutation } from "@apollo/client";
 import { FULL_TAB_FIELDS } from "../tab/tabFragments";
 import { mergeTabs } from "../tab/tabSlice";
 import { AppContext } from "../../app/App";
-import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonInput, IonModal, useIonRouter } from "@ionic/react";
+import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonInput, IonItem, IonLabel, IonModal, IonNote, useIonRouter } from "@ionic/react";
 import { uniqueNamesGenerator, adjectives, animals } from "unique-names-generator";
+import { INPUT_WIDTH } from "../../constants";
 
 const CREATE_GRAPH = gql`
   mutation CreateGraphTab($name: String!, $routeName: String!, $arrowId: String) {
@@ -157,31 +158,40 @@ export default function CreateGraphModal() {
               marginBottom: 40,
               textAlign: 'center',
             }}>
-              Select a <b>name</b> for the graph and a <b>route-name</b> for its URL.
+              Choose a <b>name</b> for the graph and a <b style={{whiteSpace: 'nowrap'}}>route-name</b> for its URL.
             </div>
-            <IonInput
-              placeholder='Name'
-              value={name}
-              onIonChange={handleNameChange}
-              style={{
-                border: '1px solid',
-                borderRadius: 5,
-                marginBottom: 20,
-                width: 300,
-              }}
-            />
-            <IonInput
-              placeholder="route-name"
-              value={routeName}
-              onIonChange={handleRouteNameChange}
-              style={{
-                border: '1px solid',
-                borderRadius: 5,
-                marginBottom: 20,
-                width: 300,
-              }}
-            />
-            {routeError && <div>{routeError}</div>}
+            <IonItem style={{
+              width: INPUT_WIDTH,
+              borderRadius: 5,
+              marginBottom: 20,
+              border: '1px solid',
+            }}>
+              <IonInput
+                placeholder='Name'
+                value={name}
+                onIonChange={handleNameChange}
+                style={{
+                }}
+              />
+            </IonItem>
+            <IonItem style={{
+              width: INPUT_WIDTH,
+              borderRadius: 5,
+              marginBottom: 20,
+              border: '1px solid',
+            }}>
+              <IonInput
+                placeholder="route-name"
+                value={routeName}
+                onIonChange={handleRouteNameChange}
+                style={{
+                }}
+              />
+              <IonNote slot='error'>
+                { routeError }
+              </IonNote>
+            </IonItem>
+
             <IonButtons style={{
               marginTop: 50,
             }}>
