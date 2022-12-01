@@ -11,6 +11,7 @@ import { spaceElVar } from '../../cache';
 import RolesPanel from './RolesPanel';
 import { AppContext } from '../../app/App';
 import SettingsPanel from './SettingsPanel';
+import { MenuMode } from '../menu/menu';
 
 interface SpaceControlsProps {
   showSettings: boolean;
@@ -21,7 +22,7 @@ interface SpaceControlsProps {
 export default function SpaceControls(props: SpaceControlsProps) {
   const dispatch = useAppDispatch();
 
-  const { user } = useContext(AppContext);
+  const { user, menuMode } = useContext(AppContext);
   const { abstract, abstractId } = useContext(SpaceContext);
 
   const spaceEl = useReactiveVar(spaceElVar)
@@ -101,12 +102,15 @@ export default function SpaceControls(props: SpaceControlsProps) {
 
   return (
     <div onMouseMove={handleMouseMove} style={{
+      display: isPlatform('mobile') && menuMode !== MenuMode.NONE
+        ? 'none'
+        : 'block',
       position: 'absolute',
       right: props.showRoles || props.showSettings
-        ? isPlatform('ios') || isPlatform('android')
+        ? isPlatform('mobile')
           ? 140 + SPACE_PANEL_WIDTH + 10
           : 165 + SPACE_PANEL_WIDTH + 10
-        : isPlatform('ios') || isPlatform('android')
+        : isPlatform('mobile')
           ? 140
           : 165,
       top: 0,
