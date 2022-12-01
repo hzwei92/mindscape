@@ -11,6 +11,5 @@
     "CapacitorCookies": {
       "enabled": true
     }
-  },
-  "limitsNavigationsToAppBoundDomains": true
+  }
 }

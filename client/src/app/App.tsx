@@ -97,6 +97,7 @@ const App: React.FC = () => {
 
   const [width, setWidth] = useState(window.innerWidth);
   const [height, setHeight] = useState(window.innerHeight);
+  const [isPortrait, setIsPortrait] = useState(height > width);
 
   const [palette, setPalette] = useState<'dark' | 'light'>('dark');
 
@@ -125,10 +126,10 @@ const App: React.FC = () => {
   const [showInitUserModal, setShowInitUserModal] = useState(false);
 
   useEffect(() => {
-
     const handleRotate = () => {
       setWidth(window.innerWidth);
       setHeight(window.innerHeight);
+      setIsPortrait(window.innerHeight > window.innerWidth);
     }
 
     window.matchMedia('(orientation: portrait)').addEventListener('change', handleRotate);
@@ -267,7 +268,12 @@ const App: React.FC = () => {
             onMouseUp={handleMouseUp} 
             style={{
               width: '100%',
-              height: '100%',
+              height: isPortrait && isPlatform('ios') && !isPlatform('mobileweb')
+                ? 'calc(100% - 44px)'
+                : '100%',
+              marginTop: isPortrait && isPlatform('ios') && !isPlatform('mobileweb')
+                ? 44
+                : 0,
               display: 'flex',
               flexDirection: 'row',
             }}

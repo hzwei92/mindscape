@@ -19,3 +19,7 @@ body {
   overflow-y: scroll;
   -webkit-overflow-scrolling: touch;
 }
+
+ion-modal {
+  z-index: 2000000001;
+}
