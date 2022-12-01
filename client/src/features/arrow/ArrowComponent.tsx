@@ -3,12 +3,14 @@ import { useContext, useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../app/store';
 import { getTimeString } from '../../utils';
 import { selectUserById } from '../user/userSlice';
-import { IonIcon, useIonRouter } from '@ionic/react';
+import { IonIcon, isPlatform, useIonRouter } from '@ionic/react';
 import ArrowEditor from './ArrowEditor';
 import ArrowVoter from './ArrowVoter';
 import { reloadOutline, returnDownForwardOutline, returnUpBack } from 'ionicons/icons';
 import UserTag from '../user/UserTag';
 import { SpaceContext } from '../space/SpaceComponent';
+import { AppContext } from '../../app/App';
+import { MenuMode } from '../menu/menu';
 
 interface ArrowProps {
   arrowId: string;
@@ -23,6 +25,7 @@ interface ArrowProps {
 export default function ArrowComponent(props: ArrowProps) {
   const dispatch = useAppDispatch();
 
+  const { setMenuMode } = useContext(AppContext);
   const { abstract } = useContext(SpaceContext);
 
   const router = useIonRouter();
@@ -48,10 +51,16 @@ export default function ArrowComponent(props: ArrowProps) {
   if (!arrow) return null;
 
   const handleTitleClick = () => {
+    if (isPlatform('mobile')) {
+      setMenuMode(MenuMode.NONE);
+    }
     router.push(`/g/${arrow.routeName}/0`)
   }
 
   const handleAbstractClick = () => {
+    if (isPlatform('mobile')) {
+      setMenuMode(MenuMode.NONE);
+    }
     router.push(`/g/${arrowAbstract?.routeName}/0`)
   }
 
