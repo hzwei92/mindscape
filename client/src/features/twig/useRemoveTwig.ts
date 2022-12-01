@@ -1,5 +1,6 @@
 import { gql, useMutation } from '@apollo/client';
 import { useContext } from 'react';
+import { AppContext } from '../../app/App';
 import { useAppDispatch, useAppSelector } from '../../app/store';
 import { selectSessionId } from '../auth/authSlice';
 import { FULL_ROLE_FIELDS } from '../role/roleFragments';
@@ -25,6 +26,7 @@ const REMOVE_TWIG = gql`
 export default function useRemoveTwig() {
   const dispatch = useAppDispatch();
 
+  const { user } = useContext(AppContext);
   const { abstractId, canEdit } = useContext(SpaceContext);
 
   const sessionId = useAppSelector(selectSessionId);
@@ -43,7 +45,7 @@ export default function useRemoveTwig() {
   });
 
   const removeTwig = (twig: Twig, shouldRemoveDescs: boolean) => {
-    if (canEdit) {
+    if (twig.userId === user?.id || canEdit) {
       remove({
         variables: {
           sessionId,

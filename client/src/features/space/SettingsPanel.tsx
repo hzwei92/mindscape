@@ -133,6 +133,18 @@ export default function SettingsPanel(props: SettingsPanelProps) {
         });
       }
     }
+    else if (roleType === RoleType.OTHER) {
+      if (checkPermit(abstract.canAssignMemberRole, RoleType.OTHER)) {
+        setArrowPermissions(abstract.id, {
+          canAssignMemberRole: RoleType.SUBSCRIBER,
+        });
+      }
+      else {
+        setArrowPermissions(abstract.id, {
+          canAssignMemberRole: RoleType.OTHER,
+        });
+      }
+    }
   }
 
   const handleCanEditLayoutClick = (roleType: RoleType) => (e: any) => {
@@ -175,45 +187,69 @@ export default function SettingsPanel(props: SettingsPanelProps) {
         });
       }
     }
-  }
+    else if (roleType === RoleType.OTHER) {
+      if (checkPermit(abstract.canEditLayout, RoleType.OTHER)) {
+        setArrowPermissions(abstract.id, {
+          canEditLayout: RoleType.SUBSCRIBER,
+        });
+      }
+      else {
+        setArrowPermissions(abstract.id, {
+          canEditLayout: RoleType.OTHER,
+        });
+      }
+    }
+   }
 
   const handleCanPostClick = (roleType: RoleType) => (e: any) => {
     e.preventDefault();
     if (!abstract) return;
 
     if (roleType === RoleType.ADMIN) {
-      if (checkPermit(abstract.canReply, RoleType.ADMIN)) {
+      if (checkPermit(abstract.canPost, RoleType.ADMIN)) {
         setArrowPermissions(abstract.id, {
-          canReply: RoleType.NONE,
+          canPost: RoleType.NONE,
         });
       }
       else {
         setArrowPermissions(abstract.id, {
-          canReply: RoleType.ADMIN,
+          canPost: RoleType.ADMIN,
         });
       }
     }
     else if (roleType === RoleType.MEMBER) {
-      if (checkPermit(abstract.canReply, RoleType.MEMBER)) {
+      if (checkPermit(abstract.canPost, RoleType.MEMBER)) {
         setArrowPermissions(abstract.id, {
-          canReply: RoleType.ADMIN,
+          canPost: RoleType.ADMIN,
         });
       }
       else {
         setArrowPermissions(abstract.id, {
-          canReply: RoleType.MEMBER,
+          canPost: RoleType.MEMBER,
         });
       }
     }
     else if (roleType === RoleType.SUBSCRIBER) {
-      if (checkPermit(abstract.canReply, RoleType.SUBSCRIBER)) {
+      if (checkPermit(abstract.canPost, RoleType.SUBSCRIBER)) {
         setArrowPermissions(abstract.id, {
-          canReply: RoleType.MEMBER,
+          canPost: RoleType.MEMBER,
         });
       }
       else {
         setArrowPermissions(abstract.id, {
-          canReply: RoleType.SUBSCRIBER,
+          canPost: RoleType.SUBSCRIBER,
+        });
+      }
+    }
+    else if (roleType === RoleType.OTHER) {
+      if (checkPermit(abstract.canPost, RoleType.OTHER)) {
+        setArrowPermissions(abstract.id, {
+          canPost: RoleType.SUBSCRIBER,
+        });
+      }
+      else {
+        setArrowPermissions(abstract.id, {
+          canPost: RoleType.OTHER,
         });
       }
     }
@@ -278,6 +314,13 @@ export default function SettingsPanel(props: SettingsPanelProps) {
             />
             <IonLabel>&nbsp;Subscriber</IonLabel>
           </IonItem>
+          <IonItem>
+            <IonCheckbox
+              checked={checkPermit(abstract.canAssignMemberRole, RoleType.OTHER)}
+              onClick={handleCanAssignMemberRoleClick(RoleType.OTHER)}
+            />
+            <IonLabel>&nbsp;Other</IonLabel>
+          </IonItem>
         </div>
         <div style={{
           paddingBottom: 10,
@@ -304,31 +347,45 @@ export default function SettingsPanel(props: SettingsPanelProps) {
             />
             <IonLabel>&nbsp;Subscriber</IonLabel>
           </IonItem>
+          <IonItem>
+            <IonCheckbox
+              checked={checkPermit(abstract.canEditLayout, RoleType.OTHER)}
+              onClick={handleCanEditLayoutClick(RoleType.OTHER)}
+            />
+            <IonLabel>&nbsp;Other</IonLabel>
+          </IonItem>
         </div>
         <div style={{
           paddingBottom: 10,
         }}>
-          <b>Can reply</b>
+          <b>Can post</b>
           <IonItem>
             <IonCheckbox 
-              checked={checkPermit(abstract.canReply, RoleType.ADMIN)}
+              checked={checkPermit(abstract.canPost, RoleType.ADMIN)}
               onClick={handleCanPostClick(RoleType.ADMIN)}
             />
             <IonLabel>&nbsp;Admin</IonLabel>
           </IonItem>
           <IonItem>
             <IonCheckbox 
-              checked={checkPermit(abstract.canReply, RoleType.MEMBER)}
+              checked={checkPermit(abstract.canPost, RoleType.MEMBER)}
               onClick={handleCanPostClick(RoleType.MEMBER)}
             />
             <IonLabel>&nbsp;Member</IonLabel>
           </IonItem>
           <IonItem>
             <IonCheckbox 
-              checked={checkPermit(abstract.canReply, RoleType.SUBSCRIBER)}
+              checked={checkPermit(abstract.canPost, RoleType.SUBSCRIBER)}
               onClick={handleCanPostClick(RoleType.SUBSCRIBER)}
             />
             <IonLabel>&nbsp;Subscriber</IonLabel>
+          </IonItem>
+          <IonItem>
+            <IonCheckbox
+              checked={checkPermit(abstract.canPost, RoleType.OTHER)}
+              onClick={handleCanPostClick(RoleType.OTHER)}
+            />
+            <IonLabel>&nbsp;Other</IonLabel>
           </IonItem>
         </div>
       </IonCardContent>

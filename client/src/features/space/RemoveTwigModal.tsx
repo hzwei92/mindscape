@@ -10,8 +10,9 @@ export default function RemoveTwigModal() {
   const { 
     abstractId,
     abstract,
+    showRemoveTwigModal,
     removalTwigId, 
-    setRemovalTwigId,
+    setShowRemoveTwigModal,
     canEdit,
   } = useContext(SpaceContext);
 
@@ -29,16 +30,16 @@ export default function RemoveTwigModal() {
   const modalRef = useRef<HTMLIonModalElement>(null);
 
   useEffect(() => {
-    if (removalTwigId) {
+    if (showRemoveTwigModal) {
       modalRef.current?.present();
     } else {
       modalRef.current?.dismiss();
     }
-  }, [removalTwigId]);
+  }, [showRemoveTwigModal]);
 
 
   const handleClose = () => {
-    setRemovalTwigId('');
+    setShowRemoveTwigModal(false);
   };
 
   const handleRemoveSubtreeClick = (event: React.MouseEvent) => {
@@ -59,30 +60,39 @@ export default function RemoveTwigModal() {
   return (
     <IonModal ref={modalRef} onWillDismiss={handleClose}>
       <IonCard style={{
-        padding: 10,
+        margin: 0,
+        height: '100%',
       }}>
-        <IonCardHeader>
-          Remove
+        <IonCardHeader style={{
+          fontSize: 80,
+          textAlign: 'center',
+        }}>
+          Remove...
         </IonCardHeader>
         <IonCardContent>
-          This does not delete the post, it merely removes it from this view.
-          <br/>
-          To delete a post open the More Options menu on the post.
-          <br/>
-          <br/>
-          <IonButtons>
+          <div style={{
+            textAlign: 'center',
+          }}>
+            {
+              descIds.length > 0 && (<div style={{
+                marginBottom: 20,
+              }}>
+                This post has <b>{descIds.length} children</b> that will also be removed.
+              </div>)
+            }
+            This does not delete posts or links, it merely detaches them from the graph.
+            <br/>
+            To delete a post or a link, access the More Option menu.
+          </div>
+          <IonButtons style={{
+            marginTop: 60,
+            width: '100%',
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'center',
+          }}>
             <IonButton onClick={handleRemoveSubtreeClick}>
               Remove
-              {
-                isLink
-                  ? ' Link'
-                  : ' Post'
-              }
-              {
-                descIds.length
-                  ? ' Subtree'
-                  : ''
-              }
             </IonButton>
             &nbsp;
             &nbsp;

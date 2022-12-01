@@ -1,6 +1,5 @@
 import { gql, useMutation } from '@apollo/client';
 import { FULL_ROLE_FIELDS } from '../role/roleFragments';
-import { applyRole } from '../role/applyRole';
 import { selectSessionId } from '../auth/authSlice';
 import { mergeTwigs } from '../space/spaceSlice';
 import { useAppDispatch, useAppSelector } from '../../app/store';
@@ -29,9 +28,6 @@ export default function useMoveTwig(abstractId: string) {
   const [move] = useMutation(MOVE_TWIG, {
     onError: error => {
       console.error(error);
-    },
-    update: (cache, {data: {moveTwig}}) => {
-      applyRole(cache, moveTwig.role);
     },
     onCompleted: data => {
       console.log(data);

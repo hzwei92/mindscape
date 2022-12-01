@@ -4,7 +4,7 @@ import { User } from 'src/users/user.entity';
 import { In, Repository } from 'typeorm';
 import { Arrow } from './arrow.entity';
 import { v4 } from 'uuid'; 
-import { getEmptyDraft, IdToType } from 'src/utils';
+import { getEmptyDraft } from 'src/utils';
 import { SearchService } from 'src/search/search.service';
 import { RoleType } from 'src/enums';
 import { LOAD_LIMIT, PRIVATE_ARROW_DRAFT, PRIVATE_ARROW_TEXT, START_ARROW_ID } from 'src/constants';
@@ -13,10 +13,6 @@ import { TwigsService } from 'src/twigs/twigs.service';
 import { VotesService } from 'src/votes/votes.service';
 import { SheafsService } from 'src/sheafs/sheafs.service';
 import { Sheaf } from 'src/sheafs/sheaf.entity';
-import { WindowEntry } from 'src/twigs/dto/window-entry.dto';
-import { GroupEntry } from 'src/twigs/dto/group-entry.dto';
-import { Entry, TabEntry } from 'src/twigs/dto/tab-entry.dto';
-import { BookmarkEntry } from 'src/twigs/dto/bookmark-entry.dto';
 import { convertFromRaw } from 'draft-js';
 
 @Injectable()
@@ -291,7 +287,7 @@ export class ArrowsService {
     return this.arrowsRepository.save(arrow);
   }
 
-  async setArrowPermissions(user: User, arrowId: string, canAssignMemberRole: string | null, canEditLayout: string | null, canReply: string | null) {
+  async setArrowPermissions(user: User, arrowId: string, canAssignMemberRole: string | null, canEditLayout: string | null, canPost: string | null) {
     const arrow = await this.arrowsRepository.findOne({ 
       where: {
         id: arrowId 
@@ -311,8 +307,8 @@ export class ArrowsService {
     if (canEditLayout) {
       arrow.canEditLayout = RoleType[canEditLayout];
     }
-    if (canReply) {
-      arrow.canReply = RoleType[canReply];
+    if (canPost) {
+      arrow.canPost = RoleType[canPost];
     }
 
     return this.arrowsRepository.save(arrow);

@@ -127,9 +127,9 @@ export class ArrowsResolver {
     @Args('arrowId') arrowId: string,
     @Args('canAssignMemberRole', { nullable: true }) canAssignMemberRole: string,
     @Args('canEditLayout', { nullable: true }) canEditLayout: string,
-    @Args('canReply', { nullable: true }) canReply: string,
+    @Args('canPost', { nullable: true }) canPost: string,
   ) {
-    return this.arrowsService.setArrowPermissions(user, arrowId, canAssignMemberRole, canEditLayout, canReply);
+    return this.arrowsService.setArrowPermissions(user, arrowId, canAssignMemberRole, canEditLayout, canPost);
   }
 
   

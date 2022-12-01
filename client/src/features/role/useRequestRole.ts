@@ -1,10 +1,12 @@
 import { gql, useMutation } from "@apollo/client";
+import { useContext } from "react";
 import { useAppDispatch, useAppSelector } from "../../app/store";
 import { selectSessionId } from "../auth/authSlice";
+import { SpaceContext } from "../space/SpaceComponent";
 import { RoleType } from "./role";
 import { FULL_ROLE_FIELDS } from "./roleFragments";
 import { mergeRoles } from "./roleSlice";
-
+import { mergeRoles as mergeSpaceRoles } from "../space/spaceSlice";
 const REQUEST_ROLE = gql`
   mutation RequestRole($sessionId: String!, $arrowId: String!, $type: String!) {
     requestRole(sessionId: $sessionId, arrowId: $arrowId, type: $type) {
@@ -14,8 +16,10 @@ const REQUEST_ROLE = gql`
   ${FULL_ROLE_FIELDS}
 `;
 
-export default function useRequestRole() {
+export default function useRequestRole(onCompleted?: () => void) {
   const dispatch = useAppDispatch();
+
+  const { abstractId } = useContext(SpaceContext);
 
   const sessionId = useAppSelector(selectSessionId);
 
@@ -26,6 +30,11 @@ export default function useRequestRole() {
     onCompleted: data => {
       console.log(data);
       dispatch(mergeRoles([data.requestRole]));
+      dispatch(mergeSpaceRoles({
+        abstractId,
+        roles: [data.requestRole]
+      }));
+      onCompleted && onCompleted();
     },
   });
 

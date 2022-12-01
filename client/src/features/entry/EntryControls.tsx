@@ -44,7 +44,7 @@ export default function EntryControls(props: EntryControlsProps) {
 
   const [isEditingRoute, setIsEditingRoute] = useState(false);
 
-  const { replyEntry } = useReplyEntry(props.entry.id);
+  const { replyEntry } = useReplyEntry();
   const { pasteEntry } = usePasteEntry(props.entry.id);
   const { requestRole } = useRequestRole();
 
@@ -52,7 +52,7 @@ export default function EntryControls(props: EntryControlsProps) {
 
   const handleReplyClick = (event: React.MouseEvent) => {
     event.stopPropagation();
-    replyEntry();
+    replyEntry(props.entry);
   }
 
   const handleLinkClick = (event: React.MouseEvent) => {

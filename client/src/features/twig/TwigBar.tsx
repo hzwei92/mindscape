@@ -8,6 +8,7 @@ import useOpenTwig from './useOpenTwig';
 import { AppContext } from '../../app/App';
 import { IonButton, IonButtons, IonIcon, IonLabel } from '@ionic/react';
 import { addOutline, closeOutline, removeOutline } from 'ionicons/icons';
+import { userInfo } from 'os';
 
 interface TwigBarProps {
   twig: Twig;
@@ -19,6 +20,7 @@ function TwigBar(props: TwigBarProps) {
   const dispatch = useAppDispatch();
 
   const { 
+    user,
     palette,
     pendingLink,
   } = useContext(AppContext);
@@ -28,6 +30,7 @@ function TwigBar(props: TwigBarProps) {
     abstract, 
     canEdit,
     setRemovalTwigId,
+    setShowRemoveTwigModal,
     setTouches,
   } = useContext(SpaceContext);
   
@@ -65,6 +68,7 @@ function TwigBar(props: TwigBarProps) {
   const handleRemoveClick = (event: React.MouseEvent) => {
     event.stopPropagation();
     setRemovalTwigId(props.twig.id);
+    setShowRemoveTwigModal(true);
   }
 
   const handleMouseDown = (event: React.MouseEvent) => {
@@ -156,7 +160,7 @@ function TwigBar(props: TwigBarProps) {
           <IonButton
             disabled={
               abstract?.id === props.twig.detailId || 
-              !canEdit || 
+              (props.twig.userId !== user?.id && !canEdit) || 
               !!pendingLink.sourceArrowId 
             } 
             color='inherit'

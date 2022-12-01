@@ -9,7 +9,7 @@ type Arrow {
   canAssignMemberRole: String!
   canEditLayout: String!
   canHear: String!
-  canReply: String!
+  canPost: String!
   canTalk: String!
   canView: String!
   city: String
@@ -151,7 +151,7 @@ type Mutation {
   saveArrow(arrowId: String!, draft: String!, sessionId: String!): Arrow!
   selectTwig(sessionId: String!, twigId: String!): SelectTwigResult!
   setArrowColor(arrowId: String!, color: String!): Arrow!
-  setArrowPermissions(arrowId: String!, canAssignMemberRole: String, canEditLayout: String, canReply: String): Arrow!
+  setArrowPermissions(arrowId: String!, canAssignMemberRole: String, canEditLayout: String, canPost: String): Arrow!
   setUserColor(color: String!, sessionId: String!): User!
   setUserMap(lat: Float!, lng: Float!, zoom: Float!): User!
   setUserName(name: String!, sessionId: String!): User!

@@ -2,6 +2,7 @@ import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
 import { IdToType } from '../../types';
 import { setLogin, setLogout } from '../auth/authSlice';
+import { Role } from '../role/role';
 import { AvatarType, DragState, PosType, ScrollState, SpaceData } from '../space/space';
 import { mergeTabs } from '../tab/tabSlice';
 import { Twig } from '../twig/twig';
@@ -36,6 +37,7 @@ const initialState: SpaceState = {
       idToChildIdToTrue: {},
       idToDescIdToTrue: {},
       idToAvatar: {},
+      idToRole: {},
     }
   },
 };
@@ -246,6 +248,22 @@ export const spaceSlice = createSlice({
         abstractIdToData,
       };
     },
+    mergeRoles: (state, action: PayloadAction<{abstractId: string, roles: Role[]}>) => {
+      const idToRole = action.payload.roles.reduce((acc, role) => {
+        acc[role.id] = role;
+        return acc;
+      }, { ...state.abstractIdToData[action.payload.abstractId].idToRole });
+      return {
+        ...state,
+        abstractIdToData: {
+          ...state.abstractIdToData,
+          [action.payload.abstractId]: {
+            ...state.abstractIdToData[action.payload.abstractId],
+            idToRole,
+          },
+        }
+      };
+    },
   },
   extraReducers: builder => {
     builder
@@ -276,6 +294,10 @@ export const spaceSlice = createSlice({
             idToChildIdToTrue: {},
             idToDescIdToTrue: {},
             idToAvatar: {},
+            idToRole: (tab.arrow.roles || []).reduce((acc, role) => {
+              acc[role.id] = role;
+              return acc;
+            }, {} as IdToType<Role>),
           };
         }
         return acc;
@@ -315,6 +337,10 @@ export const spaceSlice = createSlice({
             idToChildIdToTrue: {},
             idToDescIdToTrue: {},
             idToAvatar: {},
+            idToRole: (tab.arrow.roles || []).reduce((acc: IdToType<Role>, role) => {
+              acc[role.id] = role;
+              return acc;
+            }, {}),
           };
         }
         return acc;
@@ -344,6 +370,7 @@ export const {
   addAvatar,
   removeAvatar,
   resetSpace,
+  mergeRoles,
 } = spaceSlice.actions;
 
 
