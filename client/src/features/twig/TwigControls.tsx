@@ -59,6 +59,8 @@ function TwigControls(props: TwigControlsProps) {
 
   const [isEditingRoute, setIsEditingRoute] = useState(false);
 
+  const [showMenu, setShowMenu] = useState(false);
+
   const { replyTwig } = useReplyTwig();
   const { pasteTwig } = usePasteTwig();
   const { requestRole } = useRequestRole();
@@ -70,6 +72,11 @@ function TwigControls(props: TwigControlsProps) {
 
   const handleMouseDown = (event: React.MouseEvent) => {
     event.stopPropagation();
+  }
+
+  const handleOptionsClick = (event: React.MouseEvent) => {
+    event.stopPropagation();
+    setShowMenu(true);
   }
 
   const handleOpenClick = (event: React.MouseEvent) => {
@@ -128,6 +135,7 @@ function TwigControls(props: TwigControlsProps) {
   }
 
   const handleCopyClick = () => {
+    setShowMenu(false);
     setClipboardArrowIds([
       props.twig.detailId,
     ]);
@@ -139,7 +147,7 @@ function TwigControls(props: TwigControlsProps) {
 
   const handlePasteClick = () => {
     if (!arrow) return;
-
+    setShowMenu(false);
     pasteTwig(props.twig, arrow);
   }
   const handleCopyURLClick = (event: React.MouseEvent) => {
@@ -154,6 +162,7 @@ function TwigControls(props: TwigControlsProps) {
 
   const handleSubscribeClick = (event: React.MouseEvent) => {
     event.stopPropagation();
+    setShowMenu(false);
     if (arrow) {
       requestRole(arrow?.id, RoleType.SUBSCRIBER);
     }
@@ -161,6 +170,7 @@ function TwigControls(props: TwigControlsProps) {
   
   const handleUnsubscribeClick = (event: React.MouseEvent) => {
     event.stopPropagation();
+    setShowMenu(false);
     if (arrow && role?.type === RoleType.SUBSCRIBER) {
       requestRole(arrow?.id, RoleType.OTHER);
     }
@@ -312,6 +322,7 @@ function TwigControls(props: TwigControlsProps) {
         id={'twigOptionsButton-' + props.twig.id} 
         size='small'
         onMouseDown={handleMouseDown} 
+        onClick={handleOptionsClick}
         style={{
           color: isSubbed ? user?.color : null,
           height: 20,
@@ -321,7 +332,7 @@ function TwigControls(props: TwigControlsProps) {
           fontSize: 5,
         }}/>
       </IonButton>
-      <IonPopover trigger={'twigOptionsButton-' + props.twig.id} triggerAction='click'>
+      <IonPopover trigger={'twigOptionsButton-' + props.twig.id} isOpen={showMenu} onWillDismiss={() => {setShowMenu(false)}}>
         <div style={{
           margin: 10,
           borderBottom: '1px solid',

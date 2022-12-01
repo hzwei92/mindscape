@@ -1,5 +1,5 @@
 
-import { Dispatch, SetStateAction, useContext, useState } from 'react';
+import React, { Dispatch, SetStateAction, useContext, useRef, useState } from 'react';
 import { Entry } from './entry';
 import { useAppDispatch, useAppSelector } from '../../app/store';
 import { updateEntry } from './entrySlice';
@@ -47,7 +47,9 @@ export default function EntryControls(props: EntryControlsProps) {
 
   const showOpen = !!props.arrow.rootTwigId || props.arrow.userId === user?.id;
 
-  const [menuAnchorEl, setMenuAnchorEl] = useState(null as Element | null);
+  const [showMenu, setShowMenu] = useState(false);
+
+  const popoverRef = useRef<HTMLIonPopoverElement>(null);
 
   const [isEditingRoute, setIsEditingRoute] = useState(false);
 
@@ -57,8 +59,8 @@ export default function EntryControls(props: EntryControlsProps) {
 
   const { promoteEntry } = usePromoteEntry();
 
-  const handleOpenClick = (event: React.MouseEvent) => {
-    event.stopPropagation();
+  const handleOpenClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
     if (props.arrow.rootTwigId) {
       const route = `/g/${props.arrow.routeName}/0`;
       router.push(route);
@@ -68,13 +70,14 @@ export default function EntryControls(props: EntryControlsProps) {
       setIsCreatingGraph(true);
     }
   }
-  const handleReplyClick = (event: React.MouseEvent) => {
-    event.stopPropagation();
+
+  const handleReplyClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
     replyEntry(props.entry);
   }
 
-  const handleLinkClick = (event: React.MouseEvent) => {
-    event.stopPropagation();
+  const handleLinkClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
     if (pendingLink.sourceArrowId === props.entry.arrowId) {
       setPendingLink({
         sourceAbstractId: '',
@@ -97,8 +100,8 @@ export default function EntryControls(props: EntryControlsProps) {
     }
   }
 
-  const handlePrevClick = (event: React.MouseEvent) => {
-    event.stopPropagation();
+  const handlePrevClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
     if (props.entry.showIns) {
       dispatch(updateEntry({
         ...props.entry,
@@ -115,8 +118,8 @@ export default function EntryControls(props: EntryControlsProps) {
     }
   }
 
-  const handleNextClick = (event: React.MouseEvent) => {
-    event.stopPropagation();
+  const handleNextClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
     if (props.entry.showOuts) {
       dispatch(updateEntry({
         ...props.entry,
@@ -133,31 +136,44 @@ export default function EntryControls(props: EntryControlsProps) {
     }
   }
 
-  const handlePromoteClick = (event: React.MouseEvent) => {
+  const handlePromoteClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    popoverRef.current?.dismiss();
+    setShowMenu(false);
     promoteEntry(props.entry);
   }
 
-  const handleCopyClick = () => {
+  const handleCopyClick = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    setShowMenu(false);
     setClipboardArrowIds([props.arrow.id]);
 
   }
 
-  const handlePasteClick = () => {
+  const handlePasteClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setShowMenu(false);
     pasteEntry();
   }
 
-  const handleSubscribeClick = (event: React.MouseEvent) => {
-    event.stopPropagation();
+  const handleSubscribeClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setShowMenu(false);
     requestRole(props.arrow.id, RoleType.SUBSCRIBER);
   }
   
-  const handleUnsubscribeClick = (event: React.MouseEvent) => {
-    event.stopPropagation();
+  const handleUnsubscribeClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setShowMenu(false);
     if (role?.type === RoleType.SUBSCRIBER) {
       requestRole(props.arrow.id, RoleType.OTHER);
     }
   }
 
+  const handleOptionsClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setShowMenu(true);
+  }
 
   return (
     <IonButtons style={{
@@ -176,7 +192,7 @@ export default function EntryControls(props: EntryControlsProps) {
       }}>
         LINK
       </IonButton>
-      <IonButton id={'entryOptionsButton-' + props.entry.id} style={{
+      <IonButton id={'entryOptionsButton-' + props.entry.id} onClick={handleOptionsClick} style={{
         color: isSubbed
           ? user?.color
           : null,
@@ -186,7 +202,12 @@ export default function EntryControls(props: EntryControlsProps) {
           fontSize: 10,
         }}/>
       </IonButton>
-      <IonPopover trigger={'entryOptionsButton-' + props.entry.id} triggerAction='click'>
+      <IonPopover 
+        trigger={'entryOptionsButton-' + props.entry.id} 
+        isOpen={showMenu} 
+        ref={popoverRef}
+        onWillDismiss={() => {setShowMenu(false)}}
+      >
         <div style={{
           margin: 10,
           borderBottom: '1px solid',
