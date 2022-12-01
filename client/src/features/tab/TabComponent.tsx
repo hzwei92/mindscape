@@ -158,7 +158,11 @@ export default function TabComponent(props: TabComponentProps) {
           opacity: isOver ? 0.2 : 1,
         }}
       >
-        { props.tab.i }
+        <div style={{
+          paddingLeft: 2,
+        }}>
+          { props.tab.i }
+        </div>
         <div style={{
           display: 'flex',
           flexDirection: 'column',
