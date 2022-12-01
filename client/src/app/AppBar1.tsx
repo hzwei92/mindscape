@@ -1,4 +1,4 @@
-import { IonButton, IonButtons,useIonRouter, IonCard, IonIcon } from "@ionic/react";
+import { IonButton, IonButtons,useIonRouter, IonCard, IonIcon, IonPopover } from "@ionic/react";
 import { 
   chatboxOutline, 
   filterOutline, 
@@ -57,6 +57,10 @@ const AppBar = () => {
     else {
       setMenuMode(mode);
     }
+  }
+
+  const handleAgreeClick = () => {
+
   }
 
   return (
@@ -254,6 +258,7 @@ const AppBar = () => {
           FEED
         </IonCard>
         <IonButton 
+          id={'menu-info-button'}
           onMouseEnter={handleMenuMouseEnter(MenuMode.ABOUT)}
           onMouseLeave={handleMenuMouseLeave}
           onClick={handleMenuClick(MenuMode.ABOUT)}
