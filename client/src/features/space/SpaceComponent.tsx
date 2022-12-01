@@ -723,7 +723,7 @@ const SpaceComponent = (props: SpaceComponentProps) => {
                 position: 'absolute',
                 left: (avatar.x * scale) - 10,
                 top: (avatar.y * scale) - 20,
-                zIndex: MAX_Z_INDEX + 10000,
+                zIndex: MAX_Z_INDEX + 100,
                 color: avatar.color,
                 display: 'flex',
                 fontSize: 20,
