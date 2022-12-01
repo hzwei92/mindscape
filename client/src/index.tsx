@@ -14,6 +14,9 @@ import { getMainDefinition } from '@apollo/client/utilities';
 import { isPlatform } from '@ionic/react';
 import { setContext } from '@apollo/client/link/context';
 import { Preferences } from '@capacitor/preferences';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
+import { TouchBackend } from 'react-dnd-touch-backend';
 
 defineCustomElements(window);
 
@@ -90,7 +93,9 @@ ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
       <ApolloProvider client={client}>
-        <App />
+        <DndProvider backend={isPlatform('mobile') ? TouchBackend : HTML5Backend}>
+          <App />
+        </DndProvider>
       </ApolloProvider>
     </Provider>
   </React.StrictMode>,

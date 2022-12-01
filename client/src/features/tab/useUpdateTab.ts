@@ -1,15 +1,16 @@
 import { gql, useMutation } from "@apollo/client";
-import { useIonRouter } from "@ionic/react";
+import { useIonRouter, useIonToast } from "@ionic/react";
 import { useAppDispatch, useAppSelector } from "../../app/store";
 import { selectIdToArrow } from "../arrow/arrowSlice";
+import { setAuthIsInit, setAuthIsValid } from "../auth/authSlice";
 import { Tab } from "./tab";
 import { FULL_TAB_FIELDS } from "./tabFragments";
 import { mergeTabs, selectFocusTab, selectFrameTab } from "./tabSlice";
 
 
 const UPDATE_TAB = gql`
-  mutation UpdateTab($tabId: String!, $i: Int!, $isFrame: Boolean!, $isFocus: Boolean!) {
-    updateTab(tabId: $tabId, i: $i, isFrame: $isFrame, isFocus: $isFocus) {
+  mutation UpdateTab($tabId: String!, $isFrame: Boolean!, $isFocus: Boolean!) {
+    updateTab(tabId: $tabId, isFrame: $isFrame, isFocus: $isFocus) {
       ...FullTabFields
     }
   }
@@ -19,12 +20,21 @@ const UPDATE_TAB = gql`
 export default function useUpdateTab() {
   const dispatch = useAppDispatch();
 
+  const [present] = useIonToast();
+
   const focusTab = useAppSelector(selectFocusTab);
   const frameTab = useAppSelector(selectFrameTab);
 
   const [update] = useMutation(UPDATE_TAB, {
     onError: err => {
-      console.error(err);
+      present('Error updating tabs: ' + err.message, 3000);
+      if (err.message === 'Unauthorized') {
+        dispatch(setAuthIsInit(false));
+        dispatch(setAuthIsValid(false));
+      }
+      else {
+        console.error(err);
+      }
     },
     onCompleted: data  => {
       console.log(data);
@@ -38,7 +48,6 @@ export default function useUpdateTab() {
     update({
       variables: {
         tabId: tab.id,
-        i: tab.i,
         isFrame,
         isFocus,
       }

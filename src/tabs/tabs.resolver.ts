@@ -107,11 +107,20 @@ export class TabsResolver {
   async updateTab(
     @CurrentUser() user: UserEntity,
     @Args('tabId') tabId: string,
-    @Args('i', {type: () => Int}) i: number,
     @Args('isFrame') isFrame: boolean,
     @Args('isFocus') isFocus: boolean,
   ) {
-    return this.tabsService.updateTab(user, tabId, i, isFrame, isFocus);
+    return this.tabsService.updateTab(user, tabId, isFrame, isFocus);
+  }
+
+  @UseGuards(GqlAuthGuard)
+  @Mutation(() => [Tab], { name: 'moveTab' })
+  async moveTab(
+    @CurrentUser() user: UserEntity,
+    @Args('tabId') tabId: string,
+    @Args('i', {type: () => Int}) i: number,
+  ) {
+    return this.tabsService.moveTab(user, tabId, i);
   }
 
   @UseGuards(GqlAuthGuard)

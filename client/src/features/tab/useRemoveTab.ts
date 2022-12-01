@@ -1,6 +1,8 @@
 import { gql, useMutation } from "@apollo/client";
+import { useIonToast } from "@ionic/react";
 import { useDispatch } from "react-redux";
 import { useAppSelector } from "../../app/store";
+import { setAuthIsInit, setAuthIsValid } from "../auth/authSlice";
 import { mergeTabs } from "./tabSlice";
 
 const REMOVE_TAB = gql`
@@ -21,9 +23,18 @@ const REMOVE_TAB = gql`
 export default function useRemoveTab() {
   const dispatch = useDispatch();
 
+  const [present] = useIonToast();
+
   const [remove] = useMutation(REMOVE_TAB, {
     onError: err => {
-      console.error(err);
+      present('Error removing tab: ' + err.message, 3000);
+      if (err.message === 'Unauthorized') {
+        dispatch(setAuthIsInit(false));
+        dispatch(setAuthIsValid(false));
+      }
+      else {
+        console.error(err);
+      }
     },
     onCompleted: data  => {
       console.log(data);
