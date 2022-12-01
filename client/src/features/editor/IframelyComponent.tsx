@@ -16,7 +16,7 @@ export default function IframelyComponent(props: any) {
 
   useEffect(() => {
     if (props.blockProps && props.blockProps.url) {
-      fetch(`https://cdn.iframe.ly/api/iframely?url=${encodeURIComponent(props.blockProps.url)}&key=${key}&iframe=1&omit_script=1`)
+      fetch(`https://cdn.iframe.ly/api/iframely?url=${encodeURIComponent(props.blockProps.url)}&key=${key}&omit_script=1`)
         .then(res => res.json())
         .then(
           (res) => {

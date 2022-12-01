@@ -32,7 +32,7 @@ export default function usePublishAvatar() {
       }
     },
     onCompleted: data => {
-      console.log(data);
+      //console.log(data);
     }
   });
 
@@ -43,7 +43,7 @@ export default function usePublishAvatar() {
       setCount(count => (count + 1) % 10);
       if (count !== 0) return;
     }
-    
+
     const { scale } = abstractIdToSpaceData[abstractId];
 
     publish({
