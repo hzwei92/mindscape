@@ -12,7 +12,6 @@ import { Arrow } from '../arrow/arrow';
 import { selectArrowById } from '../arrow/arrowSlice';
 import { MenuMode } from '../menu/menu';
 import { Role } from '../role/role';
-import { selectIdToRole } from '../role/roleSlice';
 import LinkTwig from '../twig/LinkTwig';
 import LinkTwigMarker from '../twig/LinkTwigMarker';
 import PostTwig from '../twig/PostTwig';
@@ -30,15 +29,13 @@ import useTwigTree from '../twig/useTwigTree';
 import CurrentUserTag from './CurrentUserTag';
 import RemoveTwigModal from './RemoveTwigModal';
 import ReplyTwigModal from './ReplyTwigModal';
-import RolesPanel from './RolesPanel';
 import SettingsModal from './SettingsPanel';
 import { PosType } from './space';
 import SpaceControls from './SpaceControls';
 import SpaceNav from './SpaceNav';
-import { mergeIdToPos, moveTwigs, selectAbstractIdToData, selectIdToHeight, setCursor, setDrag, setScale, setScroll } from './spaceSlice';
+import { mergeIdToPos, moveTwigs, selectAbstractIdToData, setCursor, setDrag, setScale, setScroll } from './spaceSlice';
 import useInitSpace from './useInitSpace';
 import usePublishAvatar from './usePublishAvatar';
-import usePublishAvatarSub from './usePublishAvatarSub';
 
 export const SpaceContext = createContext({} as {
   abstractId: string;
@@ -76,8 +73,6 @@ const SpaceComponent = (props: SpaceComponentProps) => {
   useInitSpace(props.abstractId);
   useTwigTree(props.abstractId);
 
-  usePublishAvatarSub(props.abstractId);
-
   useReplyTwigSub(props.abstractId);
   usePasteTwigSub(props.abstractId);
 
@@ -94,7 +89,6 @@ const SpaceComponent = (props: SpaceComponentProps) => {
   const { moveTwig } = useMoveTwig(props.abstractId);
   const { graftTwig } = useGraftTwig(props.abstractId);
 
-  
   const adjustTwigIdToPos = useReactiveVar(adjustTwigIdToPosVar); 
 
   const abstractIdToData = useAppSelector(selectAbstractIdToData);

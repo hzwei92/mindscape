@@ -21,6 +21,7 @@ export type DragState = {
 
 export type AvatarType = {
   id: string;
+  abstractId: string;
   name: string;
   color: string;
   x: number;

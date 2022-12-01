@@ -246,7 +246,7 @@ type Subscription {
   moveTwig(abstractId: String!, sessionId: String!): [Twig!]!
   openTwig(abstractId: String!, sessionId: String!): Twig!
   pasteTwig(abstractId: String!, sessionId: String!): ReplyTwigResult!
-  publishAvatar(abstractId: String!, sessionId: String!): UserAvatar!
+  publishAvatar(abstractIds: [String!]!, sessionId: String!): UserAvatar!
   removeTwig(abstractId: String!, sessionId: String!): RemoveTwigResult!
   replyTwig(abstractId: String!, sessionId: String!): ReplyTwigResult!
   saveArrow(arrowIds: [String!]!, sessionId: String!, userId: String!): Arrow!
@@ -324,6 +324,7 @@ type User {
 }
 
 type UserAvatar {
+  abstractId: String!
   color: String!
   id: String!
   name: String!

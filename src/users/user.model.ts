@@ -70,6 +70,9 @@ export class UserAvatar {
   id: string;
 
   @Field()
+  abstractId: string;
+  
+  @Field()
   name: string;
 
   @Field()
