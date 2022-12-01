@@ -23,7 +23,7 @@ export default function useToken() {
   const [refresh] = useMutation(REFRESH_TOKEN, {
     onError: error => {
       if (error.message === 'Invalid refresh token') {
-        present('Your session has expired. Please log in again.');
+        present('Your session has expired. Please log in again.', 3000);
         
         console.log('Invalid refresh token');
         if (user?.id) {
@@ -90,9 +90,7 @@ export default function useToken() {
         dispatch(setAuthIsInit(true));
       }
     }, REFRESH_ACCESS_TOKEN_TIME);
-
-    dispatch(setAuthIsInit(true));
-    dispatch(setAuthIsValid(true));
+    
     dispatch(setTokenInterval(interval));
   }
   

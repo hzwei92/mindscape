@@ -128,7 +128,7 @@ export default function InitUserModal() {
               marginBottom: 10,
               textAlign: 'center',
             }}>
-              Choose a name and a color.
+              Choose a <b>name</b> and a <b>color</b>.
             </div>
             <div>
             <IonInput

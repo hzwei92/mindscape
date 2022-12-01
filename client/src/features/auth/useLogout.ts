@@ -19,16 +19,16 @@ export default function useLogout() {
     onError: error => {
       console.error(error);
     },
-    onCompleted: data => {
+    onCompleted: async data => {
       console.log(data);
+      await Preferences.remove({ key: ACCESS_TOKEN });
+      await Preferences.remove({ key: REFRESH_TOKEN });
     }
   });
 
   const logoutUser = async () => {
     logout();
     dispatch(setLogout());
-    await Preferences.remove({ key: ACCESS_TOKEN });
-    await Preferences.remove({ key: REFRESH_TOKEN });
   }
 
   return { logoutUser };
