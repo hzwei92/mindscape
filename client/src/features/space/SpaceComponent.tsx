@@ -431,11 +431,6 @@ const SpaceComponent = (props: SpaceComponentProps) => {
       const dy0 = touches.item(0).clientY - touches.item(1).clientY;
       const prevDiff = Math.sqrt(Math.pow(dx0, 2) + Math.pow(dy0, 2));
 
-      const clientX = (event.touches.item(0).clientX + event.touches.item(1).clientX) / 2;
-      const clientY = (event.touches.item(0).clientY + event.touches.item(1).clientY) / 2;
-      const x = clientX - (menuMode === MenuMode.NONE ? 50 : 10 + menuX);
-      const y = clientY + scroll.top - 32;
-
       if (Math.abs(currDiff - prevDiff) < 10) return;
 
       const scalar = currDiff < prevDiff
@@ -443,14 +438,14 @@ const SpaceComponent = (props: SpaceComponentProps) => {
         : -1;
         
       const center = {
-        x: x / scale,
-        y: y / scale,
+        x: (spaceEl.current.scrollLeft + (spaceEl.current.clientWidth / 2)) / scale,
+        y: (spaceEl.current.scrollTop + (spaceEl.current.clientHeight / 2)) / scale,
       };
 
       const scale1 = Math.min(Math.max(.03125, scale + scalar * -0.08), 4)
 
-      const left = (center.x * scale1) - (clientX - (menuMode === MenuMode.NONE ? 50 : 10 + menuX));
-      const top = center.y * scale1 - (clientY - 32);
+      const left = (center.x * scale1) - (spaceEl.current.clientWidth / 2);
+      const top = (center.y * scale1) - (spaceEl.current.clientHeight / 2);
       
       spaceEl.current.scrollTo({
         left,
