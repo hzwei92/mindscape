@@ -50,9 +50,8 @@ export default function useAuth() {
   }, [])
 
   useEffect(() => {
-    console.log(isInit, isValid, isComplete);
     if (!isInit || isComplete) return;
-    
+
     if (isValid) {
       setIsLoading(true);
       getUser();
