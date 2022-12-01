@@ -404,6 +404,13 @@ const SpaceComponent = (props: SpaceComponentProps) => {
 
   const handleTouchStart = (event: React.TouchEvent) => {
     setTouches(event.touches);
+    if (spaceEl.current) {
+      publishAvatar(
+        props.abstractId, 
+        spaceEl.current.scrollLeft + event.touches[0].clientX, 
+        spaceEl.current.scrollTop + event.touches[0].clientY
+      );
+    }
   }
  
   const handleTouchMove = (event: React.TouchEvent) => {

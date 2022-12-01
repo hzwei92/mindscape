@@ -30,7 +30,7 @@ export default function usePublishAvatarSub(abstractIds: string[]) {
       abstractIds,
     },
     onSubscriptionData: ({subscriptionData: {data: {publishAvatar}}}) => {
-      console.log(publishAvatar);
+      //console.log(publishAvatar);
       const { idToAvatar } = abstractIdToSpaceData[publishAvatar.abstractId];
 
       if (idToAvatar[publishAvatar.id]) {
