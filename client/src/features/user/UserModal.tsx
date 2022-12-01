@@ -1,5 +1,5 @@
 import { gql, useMutation } from "@apollo/client";
-import { IonAvatar, IonButtons, IonCard, IonCardContent, IonCardHeader, IonLabel, IonModal, useIonRouter } from "@ionic/react";
+import { IonAvatar, IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonIcon, IonLabel, IonModal, useIonRouter } from "@ionic/react";
 import md5 from "md5";
 import { useContext, useEffect, useRef, useState } from "react";
 import { AppContext } from "../../app/App";
@@ -11,6 +11,7 @@ import { User } from "./user";
 import { USER_FIELDS } from "./userFragments";
 import { selectIdToTab } from "../tab/tabSlice";
 import { getTimeString } from "../../utils";
+import { close } from "ionicons/icons";
  
 const GET_USER = gql`
   mutation GetUser($userId: String!) {
@@ -98,53 +99,66 @@ export default function UserModal() {
       }}>
         <IonCardHeader style={{
           display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'space-between',
         }}>
           <div style={{
             display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
           }}>
-            {
-              user1?.verifyEmailDate
-                ? <IonAvatar
-                    style={{
-                      width: 20,
-                      height: 20,
-                      marginRight: 8,
-                      display: 'inline-block',
-                      border: `1px solid ${user1.color}`
-                    }}
-                  >
-                    <img src={`https://www.gravatar.com/avatar/${md5(user1?.email)}?d=retro`}/>
-                  </IonAvatar>
-                : null
-            }
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+            }}>
+              {
+                user1?.verifyEmailDate
+                  ? <IonAvatar
+                      style={{
+                        width: 20,
+                        height: 20,
+                        marginRight: 8,
+                        display: 'inline-block',
+                        border: `1px solid ${user1.color}`
+                      }}
+                    >
+                      <img src={`https://www.gravatar.com/avatar/${md5(user1?.email)}?d=retro`}/>
+                    </IonAvatar>
+                  : null
+              }
+            </div>
+            <div>
+              <span  style={{
+                color: user1?.color,
+              }}>
+                {user1?.name}
+              </span>
+              &nbsp;
+              { user1?.id ? timeString: null }
+              <br/>
+              { 
+                user1
+                  ? user1.balance + ' points'
+                  : null
+              }
+            </div>
+            <div style={{
+              display: true || !user1?.id || user1?.id === user?.id
+                ? 'none'
+                : 'block',
+              marginLeft: 10,
+            }}>
+              <IonButtons>
+                <IonButton>
+                  FOLLOW
+                </IonButton>
+              </IonButtons>
+            </div>
           </div>
           <div>
-            <span  style={{
-              color: user1?.color,
-            }}>
-              {user1?.name}
-            </span>
-            &nbsp;
-            { user1?.id ? timeString: null }
-            <br/>
-            { 
-              user1
-                ? user1.balance + ' points'
-                : null
-            }
-          </div>
-          <div style={{
-            display: user1?.id === user?.id
-              ? 'none'
-              : 'block',
-            marginLeft: 10,
-          }}>
             <IonButtons>
-              {
-
-              }
+              <IonButton onClick={handleClose}>
+                <IonIcon icon={close}/>
+              </IonButton>
             </IonButtons>
           </div>
         </IonCardHeader>

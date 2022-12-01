@@ -30,7 +30,7 @@ import { User } from '../features/user/user';
 import { useAppSelector } from './store';
 import { selectCurrentUser, selectIdToUser } from '../features/user/userSlice';
 import { MenuMode } from '../features/menu/menu';
-import { APP_BAR_WIDTH, MENU_MIN_WIDTH } from '../constants';
+import { APP_BAR_WIDTH, MENU_MIN_WIDTH, MENU_WIDTH } from '../constants';
 import AppBar from './AppBar1';
 import CreateGraphModal from '../features/arrow/CreateGraphModal';
 import UserModal from '../features/user/UserModal';
@@ -118,7 +118,7 @@ const App: React.FC = () => {
   const [selectedUserId, setSelectedUserId] = useState('');
 
   const [menuMode, setMenuMode] = useState(MenuMode.NONE);
-  const [menuX, setMenuX] = useState(400);
+  const [menuX, setMenuX] = useState(MENU_WIDTH);
   const [menuIsResizing, setMenuIsResizing] = useState(false);
 
   const [showInitUserModal, setShowInitUserModal] = useState(false);
