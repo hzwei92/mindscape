@@ -69,6 +69,7 @@ function LogoutModal(props: LogoutModalProps) {
                     flexDirection: 'row',
                     justifyContent: 'center',
                     marginBottom: 20,
+                    textAlign: 'center',
                   }}>
                     You will not be able to recover this account if you logout now
                     without registering first.

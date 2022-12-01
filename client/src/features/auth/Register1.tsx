@@ -3,9 +3,9 @@ import React, { useContext, useState } from 'react';
 import GoogleButton from './GoogleButton';
 import { USER_FIELDS } from '../user/userFragments';
 import { useAppDispatch } from '../../app/store';
-import { EMAIL_REGEX } from '../../constants';
+import { EMAIL_REGEX, INPUT_WIDTH } from '../../constants';
 import { AppContext } from '../../app/App';
-import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonInput } from '@ionic/react';
+import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonInput, IonItem } from '@ionic/react';
 import { mergeUsers } from '../user/userSlice';
 
 const GET_USER_BY_EMAIL = gql`
@@ -119,35 +119,41 @@ export default function Register() {
       flexDirection: 'column',
       alignItems: 'center',
     }}>
-      <IonInput
-        type='email'
-        placeholder='Email'
-        value={email}
-        onIonChange={handleEmailChange}
-        style={{
-          border: '1px solid',
-          borderRadius: 5,
-          width: 300,
-          marginBottom: 10,
-        }}
-      />
-      <IonInput
-        type={showPass ? 'text' : 'password'}
-        placeholder='Password'
-        value={pass}
-        onIonChange={handlePassChange}
-        style={{
-          border: '1px solid',
-          borderRadius: 5,
-          width: 300,
-          marginBottom: 10,
-        }}
-      />
+      <IonItem style={{
+        width: INPUT_WIDTH,
+        marginBottom: 10,
+        border: '1px solid',
+        borderRadius: 5,
+      }}>
+        <IonInput
+          type='email'
+          placeholder='Email'
+          value={email}
+          onIonChange={handleEmailChange}
+          style={{
+          }}
+        />
+      </IonItem>
+      <IonItem style={{
+        width: INPUT_WIDTH,
+        marginBottom: 10,
+        border: '1px solid',
+        borderRadius: 5,
+      }}>
+        <IonInput
+          type={showPass ? 'text' : 'password'}
+          placeholder='Password'
+          value={pass}
+          onIonChange={handlePassChange}
+          style={{
+          }}
+        />
+      </IonItem>
       <div>
         {message}
       </div>
     <IonButtons style={{
-      marginBottom: 10,
+      marginBottom: 20,
     }}>
       <IonButton
         disabled={!isFormValid}

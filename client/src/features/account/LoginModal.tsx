@@ -1,6 +1,6 @@
 import React, { Dispatch, SetStateAction, useContext, useEffect, useRef, useState } from 'react';
 import { gql, useApolloClient, useMutation } from '@apollo/client';
-import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonIcon, IonInput, IonModal, IonPage } from '@ionic/react';
+import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonIcon, IonInput, IonItem, IonModal, IonPage } from '@ionic/react';
 import { eye, eyeOff } from 'ionicons/icons';
 import GoogleButton from '../auth/GoogleButton';
 import { FULL_USER_FIELDS } from '../user/userFragments';
@@ -8,7 +8,7 @@ import { setLogin } from '../auth/authSlice';
 import { useAppDispatch, useAppSelector } from '../../app/store';
 import { AppContext } from '../../app/App';
 import { Preferences } from '@capacitor/preferences';
-import { ACCESS_TOKEN, REFRESH_TOKEN } from '../../constants';
+import { ACCESS_TOKEN, INPUT_WIDTH, REFRESH_TOKEN } from '../../constants';
 
 const LOGIN_USER = gql`
   mutation LoginUser($email: String!, $pass: String!) {
@@ -78,10 +78,12 @@ const LoginModal = (props: LoginModalProps) => {
   }, [props.show]);
 
   const handleEmailChange = (e: any) => {
+    setMessage('')
     setEmail(e.target.value);
   };
 
   const handlePassChange = (e: any) => {
+    setMessage('');
     setPass(e.target.value);
   };
   const handleClickShowPass = () => {
@@ -117,7 +119,6 @@ const LoginModal = (props: LoginModalProps) => {
           justifyContent: 'center',
           fontSize: 80,
           textAlign: 'center',
-          marginBottom: 60,
         }}>
           Welcome back!
         </IonCardHeader>
@@ -127,43 +128,47 @@ const LoginModal = (props: LoginModalProps) => {
           justifyContent: 'center',
         }}>
           <div>
-          <IonInput
-            type='email'
-            placeholder='Email'
-            value={email}
-            onIonChange={handleEmailChange} 
-            style={{
+            <IonItem style={{
               marginBottom: 10,
               border: '1px solid',
               borderRadius: 5,
-              width: 300,
-            }}
-          />
-          <div style={{
-            display: 'flex',
-            flexDirection: 'row',
+              width: INPUT_WIDTH,
+            }}>
+              <IonInput
+                type='email'
+                placeholder='Email'
+                value={email}
+                onIonChange={handleEmailChange} 
+                style={{
+                }}
+              />
+            </IonItem>
+
+          <IonItem style={{
             border: '1px solid',
             borderRadius: 5,
             marginBottom: 10,
-            width: 300,
+            width: INPUT_WIDTH,
           }}>
             <IonInput
               type={showPass ? 'text' : 'password'}
               placeholder='Password'
               value={pass}
               onIonChange={handlePassChange}
+              style={{
+              }}
             />
             <IonButtons>
               <IonButton onClick={handleClickShowPass}>
                 <IonIcon icon={showPass ? eye : eyeOff} size='small'/>
               </IonButton>
             </IonButtons>
-          </div>
+          </IonItem>
           <div>
             { message }
           </div>
           <IonButtons style={{
-            marginBottom: 60,
+            marginBottom: 50,
             display: 'flex',
             flexDirection: 'row',
             justifyContent: 'center',
@@ -179,7 +184,16 @@ const LoginModal = (props: LoginModalProps) => {
           }}>
             <GoogleButton isRegistration={false} />
           </div>
-
+          <IonButtons style={{
+            marginTop: 50,
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'center',
+          }}>
+            <IonButton onClick={handleClose}>
+              CANCEL
+            </IonButton>
+          </IonButtons>
           </div>
         </IonCardContent>
       </IonCard>
