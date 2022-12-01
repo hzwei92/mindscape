@@ -407,6 +407,9 @@ const SpaceComponent = (props: SpaceComponentProps) => {
     }
   }
 
+  const handleTouchStart = (event: React.TouchEvent) => {
+    setTouches(event.touches);
+  }
  
   const handleTouchMove = (event: React.TouchEvent) => {
     console.log('touchMove');
@@ -414,8 +417,7 @@ const SpaceComponent = (props: SpaceComponentProps) => {
 
     if (!touches) return;
 
-    if (event.touches.length > 1 && touches.length > 1 && false) {
-      /* TODO mobile touch zoom
+    if (event.touches.length > 1 && touches.length > 1) {
       event.preventDefault();
       event.stopPropagation();
 
@@ -431,10 +433,8 @@ const SpaceComponent = (props: SpaceComponentProps) => {
 
       const clientX = (event.touches.item(0).clientX + event.touches.item(1).clientX) / 2;
       const clientY = (event.touches.item(0).clientY + event.touches.item(1).clientY) / 2;
-      const x = props.space === 'FRAME'
-        ? clientX + scroll.left - getAppbarWidth(width) - surveyorWidth1 - focusWidth1
-        : clientX + scroll.left - getAppbarWidth(width) - surveyorWidth1;
-      const y = clientY + scroll.top - SPACE_BAR_HEIGHT;
+      const x = clientX - (menuMode === MenuMode.NONE ? 50 : 10 + menuX);
+      const y = clientY + scroll.top - 32;
 
       if (Math.abs(currDiff - prevDiff) < 10) return;
 
@@ -449,10 +449,8 @@ const SpaceComponent = (props: SpaceComponentProps) => {
 
       const scale1 = Math.min(Math.max(.03125, scale + scalar * -0.08), 4)
 
-      const left = props.space === 'FRAME'
-        ? (center.x * scale1) - (clientX - getAppbarWidth(width) - surveyorWidth1 - focusWidth1)
-        : (center.x * scale1) - (clientX - getAppbarWidth(width) - surveyorWidth1);
-      const top = center.y * scale1 - (clientY - SPACE_BAR_HEIGHT);
+      const left = (center.x * scale1) - (clientX - (menuMode === MenuMode.NONE ? 50 : 10 + menuX));
+      const top = center.y * scale1 - (clientY - 32);
       
       spaceEl.current.scrollTo({
         left,
@@ -461,7 +459,10 @@ const SpaceComponent = (props: SpaceComponentProps) => {
 
       setIsScaling(true);
       updateScroll(left, top)
-      dispatch(setScale(scale1));*/
+      dispatch(setScale({
+        abstractId: props.abstractId,
+        scale: scale1
+      }));
     }
     else if (drag?.twigId) {
       const current = event.touches.item(0);
@@ -511,8 +512,6 @@ const SpaceComponent = (props: SpaceComponentProps) => {
 
       moveDrag(dx, dy)
     }
-
-   
   }
 
   const handleTouchEnd = (event: React.TouchEvent) => {
@@ -679,6 +678,7 @@ const SpaceComponent = (props: SpaceComponentProps) => {
         onMouseMove={handleMouseMove}
         onWheel={handleWheel}
         onScroll={handleScroll}
+        onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
         style={{
