@@ -174,7 +174,7 @@ export default function ReplyTwigModal() {
                 justifyContent: 'center',
               }}>
                 <IonButton onClick={handleSubscribeClick}>
-                  Subscribe + reply
+                  Subscribe / reply
                 </IonButton>
                 <IonButton onClick={handleClose}>
                   Cancel
