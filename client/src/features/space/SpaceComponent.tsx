@@ -35,7 +35,7 @@ import SpaceControls from './SpaceControls';
 import SpaceNav from './SpaceNav';
 import { mergeIdToPos, moveTwigs, selectAbstractIdToData, setCursor, setDrag, setScale, setScroll } from './spaceSlice';
 import useInitSpace from './useInitSpace';
-import usePublishAvatar from './usePublishAvatar';
+import usePublishAvatar from '../explorer/usePublishAvatar';
 
 export const SpaceContext = createContext({} as {
   abstractId: string;
@@ -85,7 +85,7 @@ const SpaceComponent = (props: SpaceComponentProps) => {
 
   useRemoveTwigSub(props.abstractId);
 
-  const { publishAvatar } = usePublishAvatar(props.abstractId);
+  const { publishAvatar } = usePublishAvatar();
   const { moveTwig } = useMoveTwig(props.abstractId);
   const { graftTwig } = useGraftTwig(props.abstractId);
 
@@ -225,6 +225,7 @@ const SpaceComponent = (props: SpaceComponentProps) => {
     }
     else {
       moveDrag(dx, dy);
+      publishAvatar(props.abstractId, x, y);  
     }
     
     setCursorClient({
@@ -239,8 +240,6 @@ const SpaceComponent = (props: SpaceComponentProps) => {
         y,
       },
     }));
-
-    publishAvatar(x, y);
 
     setMoveEvent(null);
 
@@ -274,6 +273,8 @@ const SpaceComponent = (props: SpaceComponentProps) => {
         y: cursor.y + dy,
       },
     }));
+
+    publishAvatar(props.abstractId, cursor.x + dx, cursor.y + dy);
   }
 
   const handleWheel = (event: React.WheelEvent) => {

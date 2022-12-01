@@ -1,8 +1,8 @@
 import { gql, useSubscription } from '@apollo/client'
 import { useAppDispatch, useAppSelector } from '../../app/store';
+import { ACTIVE_TIME } from '../../constants';
 import { selectSessionId } from '../auth/authSlice';
-import { AvatarType } from './space';
-import { addAvatar, removeAvatar, selectAbstractIdToData, selectIdToAvatar } from './spaceSlice';
+import { addAvatar, removeAvatar, selectAbstractIdToData } from '../space/spaceSlice';
 
 const PUBLISH_CURSOR = gql`
   subscription PublishAvatar($sessionId: String!, $abstractIds: [String!]!) {
@@ -30,11 +30,18 @@ export default function usePublishAvatarSub(abstractIds: string[]) {
       abstractIds,
     },
     onSubscriptionData: ({subscriptionData: {data: {publishAvatar}}}) => {
-      console.log(publishAvatar)
+      console.log(publishAvatar);
       const { idToAvatar } = abstractIdToSpaceData[publishAvatar.abstractId];
 
       if (idToAvatar[publishAvatar.id]) {
         clearTimeout(idToAvatar[publishAvatar.id].timeout);
+      }
+      if (publishAvatar.x === null || publishAvatar.y === null) {
+        dispatch(removeAvatar({
+          abstractId: publishAvatar.abstractId,
+          id: publishAvatar.id,
+        }));
+        return;
       }
 
       const timeout = setTimeout(() => {
@@ -42,7 +49,7 @@ export default function usePublishAvatarSub(abstractIds: string[]) {
           abstractId: publishAvatar.abstractId,
           id: publishAvatar.id,
         }));
-      }, 5000);
+      }, ACTIVE_TIME);
 
       publishAvatar.timeout = timeout;
 

@@ -32,7 +32,7 @@ import { useAppSelector } from './store';
 import { selectCurrentUser, selectIdToUser } from '../features/user/userSlice';
 import { MenuMode } from '../features/menu/menu';
 import { APP_BAR_WIDTH, MAX_Z_INDEX, MENU_MIN_WIDTH, MENU_WIDTH } from '../constants';
-import AppBar from './AppBar1';
+import AppBar from './AppBar';
 import CreateGraphModal from '../features/arrow/CreateGraphModal';
 import UserModal from '../features/user/UserModal';
 import MenuComponent from '../features/menu/MenuComponent';

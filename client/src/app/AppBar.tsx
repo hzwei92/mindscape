@@ -1,48 +1,53 @@
-import { IonAvatar, IonButton, IonButtons, IonHeader, IonIcon, IonImg, IonItem, IonList, IonPopover, IonToolbar, useIonRouter, isPlatform, getPlatforms } from "@ionic/react";
-import { add, menu, moon, personCircle, sunny } from "ionicons/icons";
-import md5 from "md5";
-import { useContext } from "react";
-import { selectIdToArrow } from "../features/arrow/arrowSlice";
+import { IonButton, IonButtons,useIonRouter, IonCard, IonIcon, IonPopover } from "@ionic/react";
+import { 
+  chatboxOutline, 
+  filterOutline, 
+  globeOutline, 
+  informationCircleOutline, 
+  mapOutline, 
+  moonOutline, 
+  peopleOutline, 
+  personCircleOutline, 
+  searchOutline, 
+  sunnyOutline
+} from "ionicons/icons";
+import { useContext, useState } from "react";
+import { MAX_Z_INDEX } from "../constants";
 import useLinkArrowsSub from "../features/arrow/useLinkArrowsSub";
 import useSaveArrowSub from "../features/arrow/useSaveArrowSub";
+import useAuth from "../features/auth/useAuth";
 import { MenuMode } from "../features/menu/menu";
-import { selectFocusTab, selectIdToTab } from "../features/tab/tabSlice";
 import useSetUserPalette from "../features/user/useSetUserPalette";
 import { AppContext } from "./App";
-import { useAppSelector } from "./store";
 import useAppRouter from "./useAppRouter";
 
 
 const AppBar = () => {
-  //console.log('appbar', getPlatforms());
-  useAppRouter();
-  useSaveArrowSub();
-  useLinkArrowsSub();
-
   const { setUserPalette } = useSetUserPalette();
 
   const { 
     user, 
     palette, 
-    setIsCreatingGraph, 
     menuMode,
     setMenuMode,
   } = useContext(AppContext);
 
-  const router = useIonRouter();
+  useAppRouter();
+  useAuth();
+  useSaveArrowSub();
+  useLinkArrowsSub();
 
-  const path = (router.routeInfo?.pathname || '').split('/');
-
-  const idToTab = useAppSelector(selectIdToTab);
-  const idToArrow = useAppSelector(selectIdToArrow);
-
-  const focusTab = useAppSelector(selectFocusTab);
+  const [label, setLabel] = useState(MenuMode.NONE);
 
   const handlePaletteClick = () => {
     setUserPalette(user?.palette === 'dark' ? 'light' : 'dark');
   }
-  const handleCreateGraphClick = () => {
-    setIsCreatingGraph(true);
+
+  const handleMenuMouseEnter = (mode: MenuMode) => () => {
+    setLabel(mode);
+  }
+  const handleMenuMouseLeave = () => {
+    setLabel(MenuMode.NONE);
   }
 
   const handleMenuClick = (mode: MenuMode) => () => {
@@ -54,194 +59,256 @@ const AppBar = () => {
     }
   }
 
+  const handleAgreeClick = () => {
+
+  }
+
   return (
-    <div style={{
-      marginTop: isPlatform('ios') && !isPlatform('mobileweb') ? 25 : 0
+    <IonCard style={{
+      margin: 0,
+      borderRadius: 0,
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'space-between',
+      height: '100%',
+      minHeight: '100%',
+      width: 50,
+      overflow: 'visible',
+      zIndex: MAX_Z_INDEX,
     }}>
-      <IonToolbar>
-        {
-          isPlatform('mobile')
-            ? <IonButtons slot='start'>
-                <IonButton id='mainMenuButton'>
-                  <IonIcon icon={menu} />
-                </IonButton>
-              </IonButtons>
-            : <IonButtons slot='start'>
-                <IonButton onClick={handleMenuClick(MenuMode.ABOUT)} style={{
-                  fontWeight: menuMode === MenuMode.ABOUT
-                    ? 900
-                    : 'normal',
-                  color: menuMode === MenuMode.ABOUT
-                    ? user?.color
-                    : null,
-                  fontSize: 12,
-                }}>
-                  ABOUT
-                </IonButton>
-                <IonButton onClick={handleMenuClick(MenuMode.SEARCH)} style={{
-                  fontWeight: menuMode === MenuMode.SEARCH
-                    ? 900
-                    : 'normal',
-                  color: menuMode === MenuMode.SEARCH
-                    ? user?.color
-                    : null,
-                  fontSize: 12,
-                }}>
-                  SEARCH
-                </IonButton>
-                <IonButton onClick={handleMenuClick(MenuMode.GRAPHS)} style={{
-                  fontWeight: menuMode === MenuMode.GRAPHS
-                    ? 900
-                    : 'normal',
-                  color: menuMode === MenuMode.GRAPHS
-                    ? user?.color
-                    : null,
-                  fontSize: 12,
-                }}>
-                  GRAPHS
-                </IonButton>
-                <IonButton onClick={handleMenuClick(MenuMode.CONTACTS)} style={{
-                  fontWeight: menuMode === MenuMode.CONTACTS
-                    ? 900
-                    : 'normal',
-                  color: menuMode === MenuMode.CONTACTS
-                    ? user?.color
-                    : null,
-                  fontSize: 12,
-                }}>
-                  CONTACTS
-                </IonButton>
-                <IonButton onClick={handleMenuClick(MenuMode.MAP)} style={{
-                  fontWeight: menuMode === MenuMode.MAP
-                    ? 900
-                    : 'normal',
-                  color: menuMode === MenuMode.MAP
-                    ? user?.color
-                    : null,
-                  fontSize: 12,
-                }}>
-                  MAP
-                </IonButton>
-                <IonButton onClick={handleMenuClick(MenuMode.FEED)} style={{
-                  fontWeight: menuMode === MenuMode.FEED
-                    ? 900
-                    : 'normal',
-                  color: menuMode === MenuMode.FEED
-                    ? user?.color
-                    : null,
-                  fontSize: 12,
-                }}>
-                  FEED
-                </IonButton>
-              </IonButtons>
-        }
+      <IonButtons style={{
+        display: 'flex',
+        flexDirection: 'column',
+        position: 'relative',
+        overflow: 'visible',
+      }}>
+        <IonButton 
+          onMouseEnter={handleMenuMouseEnter(MenuMode.ACCOUNT)}
+          onMouseLeave={handleMenuMouseLeave}
+          onClick={handleMenuClick(MenuMode.ACCOUNT)}
+          style={{
+            width: 50,
+            height: 50,
+            borderLeft: menuMode === MenuMode.ACCOUNT
+              ? `3px solid ${user?.color}`
+              : null,
 
-        <IonPopover trigger='mainMenuButton' triggerAction='click' dismissOnSelect={true}>
-          <IonList>
-            <IonItem routerLink='/about'>
-              ABOUT
-            </IonItem>
-            <IonItem routerLink='/search'>
-              SEARCH
-            </IonItem>
-            <IonItem routerLink='/graphs'>
-              GRAPHS
-            </IonItem>
-            <IonItem routerLink='/contacts'>
-              CONTACTS
-            </IonItem>
-            <IonItem routerLink='/map'>
-              MAP
-            </IonItem>
-            <IonItem routerLink='/feed'>
-              FEED
-            </IonItem>
-          </IonList>
-        </IonPopover>
-        <IonButtons slot='end'>
-          <IonButton onClick={handlePaletteClick}>
-            {
-              palette === 'dark'
-                ? <IonIcon icon={moon} size='small'/>
-                : <IonIcon icon={sunny} size='small'/>
-            }
-          </IonButton>
+          }}
+        >
+          <IonIcon icon={personCircleOutline} style={{
+            color: menuMode === MenuMode.ACCOUNT
+              ? user?.color
+              : null,
+          }}/>
+        </IonButton>
+        <IonCard style={{
+          display: label === MenuMode.ACCOUNT
+            ? 'block'
+            : 'none',
+          position: 'absolute',
+          left: 45,
+          top: -5,
+          padding: 10,
+        }}>
+          ACCOUNT
+        </IonCard>
+        <IonButton  
+          onMouseEnter={handleMenuMouseEnter(MenuMode.SEARCH)}
+          onMouseLeave={handleMenuMouseLeave}
+          onClick={handleMenuClick(MenuMode.SEARCH)}
+          style={{
+            width: 50,
+            height: 50,
+            borderLeft: menuMode === MenuMode.SEARCH
+              ? `3px solid ${user?.color}`
+              : null,
+          }}
+        >
+          <IonIcon icon={searchOutline} style={{
+            color: menuMode === MenuMode.SEARCH
+              ? user?.color
+              : null,
+          }}/>
+        </IonButton>
+        <IonCard style={{
+          display: label === MenuMode.SEARCH
+            ? 'block'
+            : 'none',
+          position: 'absolute',
+          left: 45,
+          top: 45,
+          padding: 10,
+        }}>
+          SEARCH
+        </IonCard>
+        <IonButton 
+          onMouseEnter={handleMenuMouseEnter(MenuMode.GRAPHS)}
+          onMouseLeave={handleMenuMouseLeave}
+          onClick={handleMenuClick(MenuMode.GRAPHS)} 
+          style={{
+            width: 50,
+            height: 50,
+            borderLeft: menuMode === MenuMode.GRAPHS
+              ? `3px solid ${user?.color}`
+              : null,
+          }}
+        >
+          <IonIcon icon={globeOutline} style={{
+            color: menuMode === MenuMode.GRAPHS
+              ? user?.color
+              : null,
+          }}/>
+        </IonButton>
+        
+        <IonCard style={{
+          display: label === MenuMode.GRAPHS
+            ? 'block'
+            : 'none',
+          position: 'absolute',
+          left: 45,
+          top: 95,
+          padding: 10,
+        }}>
+          GRAPHS
+        </IonCard>
+        <IonButton 
+          onMouseEnter={handleMenuMouseEnter(MenuMode.CONTACTS)}
+          onMouseLeave={handleMenuMouseLeave}
+          onClick={handleMenuClick(MenuMode.CONTACTS)}
+          style={{
+            height: 50,
+            width: 50,
+            borderLeft: menuMode === MenuMode.CONTACTS
+              ? `3px solid ${user?.color}`
+              : null,
+          }}
+        >
+          <IonIcon icon={peopleOutline} style={{
+            color: menuMode === MenuMode.CONTACTS
+              ? user?.color
+              : null,
+          }}/>
+        </IonButton>
+        <IonCard style={{
+          display: label === MenuMode.CONTACTS
+            ? 'block'
+            : 'none',
+          position: 'absolute',
+          left: 45,
+          top: 145,
+          padding: 10,
+        }}>
+          CONTACTS
+        </IonCard>
+        <IonButton 
+          onMouseEnter={handleMenuMouseEnter(MenuMode.MAP)}
+          onMouseLeave={handleMenuMouseLeave}
+          onClick={handleMenuClick(MenuMode.MAP)}
+          style={{
+            height: 50,
+            width: 50,
+            borderLeft: menuMode === MenuMode.MAP
+              ? `3px solid ${user?.color}`
+              : null,
+          }}
+        >
+          <IonIcon icon={mapOutline} style={{
+            color: menuMode === MenuMode.MAP
+              ? user?.color
+              : null,
+          }}/>
+        </IonButton>
+        <IonCard style={{
+          display: label === MenuMode.MAP
+            ? 'block'
+            : 'none',
+          position: 'absolute',
+          left: 45,
+          top: 195,
+          padding: 10,
+        }}>
+          MAP
+        </IonCard>
+        <IonButton 
+          onMouseEnter={handleMenuMouseEnter(MenuMode.FEED)}
+          onMouseLeave={handleMenuMouseLeave}
+          onClick={handleMenuClick(MenuMode.FEED)}
+          style={{
+            height: 50,
+            width: 50,
+            borderLeft: menuMode === MenuMode.FEED
+              ? `3px solid ${user?.color}`
+              : null,
+          }}
+        >
+          <IonIcon icon={filterOutline} style={{
+            color: menuMode === MenuMode.FEED
+              ? user?.color
+              : null,
+          }}/>
+        </IonButton>
+        <IonCard style={{
+          display: label === MenuMode.FEED
+            ? 'block'
+            : 'none',
+          position: 'absolute',
+          left: 45,
+          top: 245,
+          padding: 10,
+        }}>
+          FEED
+        </IonCard>
+        <IonButton 
+          id={'menu-info-button'}
+          onMouseEnter={handleMenuMouseEnter(MenuMode.ABOUT)}
+          onMouseLeave={handleMenuMouseLeave}
+          onClick={handleMenuClick(MenuMode.ABOUT)}
+          style={{
+            height: 50,
+            width: 50,
+            borderLeft: menuMode === MenuMode.ABOUT
+              ? `3px solid ${user?.color}`
+              : null,
+          }}
+        >
+          <IonIcon icon={informationCircleOutline} style={{
+            color: menuMode === MenuMode.ABOUT
+              ? user?.color
+              : null,
+          }}/>
+        </IonButton>
+        <IonCard style={{
+          display: label === MenuMode.ABOUT
+            ? 'block'
+            : 'none',
+          position: 'absolute',
+          left: 45,
+          top: 295,
+          padding: 10,
+        }}>
+          ABOUT
+        </IonCard>
+      </IonButtons>
+      <IonButtons style={{
+        display: 'flex',
+        flexDirection: 'column',
+      }}>
+        <IonButton onClick={handlePaletteClick} style={{
+          height: 50,
+          width: 50,
+        }}>
           {
-            Object.values(idToTab)
-            .filter(tab => !tab.deleteDate)
-            .sort((a, b) => a.i - b.i)
-            .map(tab => {
-              const arrow = idToArrow[tab.arrowId];
-              if (!arrow) return null;
-
-              const isFocus = focusTab?.id === tab.id && path[1] === 'g' && path[2] === arrow?.routeName;
-              
-              return  (
-                <IonButton key={'tab-'+tab.id} routerLink={`/g/${arrow.routeName}/0`} style={{
-                  border: isFocus
-                    ? `1px solid ${arrow.color}`
-                    : 'none',
-                  borderRadius: 5,
-                  color: arrow.color,
-                }}>
-                  { tab.i + 1 }
-                </IonButton>
-              );
-            })
+            palette === 'dark'
+              ? <IonIcon icon={moonOutline} size='small' style={{
+                  color: user?.color
+                }}/>
+              : <IonIcon icon={sunnyOutline} size='large' style={{
+                  color: user?.color
+                }}/>
           }
-          <IonButton onClick={handleCreateGraphClick}>
-            <IonIcon icon={add} size='small'/>
-          </IonButton>
-          <IonButton id='userMenuButton'>
-            {
-              user?.verifyEmailDate
-                ? <IonAvatar
-                    style={{
-                      display: 'inline-block',
-                      marginBottom: '-2px',
-                      marginRight: '4px',
-                      width: 17,
-                      height: 17,
-                      border: `1px solid ${user.color}`
-                    }}
-                  >
-                    <IonImg src={`https://www.gravatar.com/avatar/${md5(user.email)}?d=retro`}/>
-                  </IonAvatar>
-                : <IonIcon icon={personCircle} style={{
-                    color: user?.color
-                  }}/>
-            }
-          </IonButton>
-        </IonButtons>
-        <IonPopover trigger='userMenuButton' triggerAction='click' dismissOnSelect={true}>
-          <IonHeader>
-            <div style={{
-              padding: 10,
-              color: user?.color
-            }}>
-
-              { user?.name }
-            </div>
-            <div style={{
-              padding: 10,
-            }}>
-              { user?.balance } points
-            </div>
-          </IonHeader>
-          <IonList>
-            <IonItem routerLink='/account'>
-              ACCOUNT
-            </IonItem>
-            <IonItem routerLink='/login'>
-              LOGIN
-            </IonItem>
-            <IonItem routerLink='/logout'>
-              LOGOUT
-            </IonItem>
-          </IonList>
-        </IonPopover>
-      </IonToolbar>
-    </div>
+        </IonButton>
+      </IonButtons>
+    </IonCard>
   )
 }
 

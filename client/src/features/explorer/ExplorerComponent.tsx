@@ -8,11 +8,12 @@ import { Arrow } from "../arrow/arrow";
 import { selectIdToArrow } from "../arrow/arrowSlice";
 import SpaceComponent from "../space/SpaceComponent";
 import { selectAbstractIdToData } from "../space/spaceSlice";
-import usePublishAvatarSub from "../space/usePublishAvatarSub";
+import usePublishAvatarSub from "./usePublishAvatarSub";
 import { Tab } from "../tab/tab";
 import { selectFocusTab, selectIdToTab } from "../tab/tabSlice";
 import useRemoveTab from "../tab/useRemoveTab";
 import icon from './icon.png'
+import usePublishAvatar from "./usePublishAvatar";
 
 export default function ExplorerComponent() {
   const { menuX, width, palette, setIsCreatingGraph, setCreateGraphArrowId } = useContext(AppContext);
@@ -36,6 +37,20 @@ export default function ExplorerComponent() {
   }, [idToTab])
 
   usePublishAvatarSub(abstractIds);
+
+  const { publishAvatar} = usePublishAvatar();
+
+  const [abstractId, setAbstractId] = useState('');
+
+  useEffect(() => {
+    console.log('focusTab change', focusTab, abstractId)
+    if (focusTab?.id) {
+      if (abstractId) {
+        publishAvatar(abstractId, null, null);
+      }
+      setAbstractId(focusTab.arrowId);
+    }
+  }, [focusTab?.id])
 
   const handleTabClick = (arrow: Arrow) => (e: React.MouseEvent) => {
     e.stopPropagation();
