@@ -47,10 +47,5 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
-	<key>WKAppBoundDomains</key>
-	<array>
-		<string>localhost</string>
-		<string>www.mindscape.pub</string>
-	</array>
 </dict>
 </plist>

@@ -89,9 +89,10 @@ export default function RolesPanel(props: RolesPanelProps) {
 
   return (
     <IonCard style={{
+      margin: 10,
       marginLeft: 0,
       width: SPACE_PANEL_WIDTH,
-      height: 'calc(100% - 70px)',
+      height: 'calc(100% - 60px)',
       overflowY: 'scroll',
     }}>
       <IonCardContent>

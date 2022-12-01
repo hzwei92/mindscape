@@ -106,19 +106,17 @@ export default function SpaceControls(props: SpaceControlsProps) {
         ? 'none'
         : 'block',
       position: 'absolute',
-      right: props.showRoles || props.showSettings
-        ? isPlatform('mobile')
-          ? 140 + SPACE_PANEL_WIDTH + 10
-          : 165 + SPACE_PANEL_WIDTH + 10
-        : isPlatform('mobile')
-          ? 140
-          : 165,
+      right: 0,
       top: 0,
       height: '100%',
       zIndex: abstract?.twigZ ?? 0 + 100,
     }}>
       <div style={{
         position: 'fixed',
+        right: 0,
+        display:'flex',
+        flexDirection: 'row',
+        height: '100%',
       }}>
         <div style={{
           display: 'flex',
@@ -126,6 +124,7 @@ export default function SpaceControls(props: SpaceControlsProps) {
         }}>
           <IonCard color='light' style={{
             margin: 10,
+            marginBottom: 5,
             whiteSpace: 'nowrap',
             display: 'flex',
             flexDirection: 'row',
@@ -158,7 +157,7 @@ export default function SpaceControls(props: SpaceControlsProps) {
             textAlign: 'right',
           }}>
             <IonFab style={{
-              marginLeft: -60,
+              marginLeft: -55,
             }}>
               <IonFabButton title='Settings' size='small' color='light'  onClick={handleSettingsClick}>
                 <IonIcon icon={settingsOutline} size='small' style={{
@@ -185,15 +184,12 @@ export default function SpaceControls(props: SpaceControlsProps) {
             </IonFab>
           </div>    
         </div>
-      </div>
-      <div style={{
-        position: 'fixed',
-        top: 32,
-        right: 10,
-        height: '100%',
-      }}>
-        { props.showRoles && <RolesPanel showRoles={props.showRoles} setShowRoles={props.setShowRoles} /> }
-        { props.showSettings && <SettingsPanel showSettings={props.showSettings} setShowSettings={props.setShowSettings} /> }
+        <div style={{
+          height: '100%',
+        }}>
+          { props.showRoles && <RolesPanel showRoles={props.showRoles} setShowRoles={props.setShowRoles} /> }
+          { props.showSettings && <SettingsPanel showSettings={props.showSettings} setShowSettings={props.setShowSettings} /> }
+        </div>
       </div>
     </div>
   )
