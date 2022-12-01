@@ -66,7 +66,9 @@ export class AuthService {
   }
 
   async loginUser(prevUser: User, email: string, pass: string) {
-    await this.logoutUser(prevUser);
+    if (prevUser?.id) {
+      await this.logoutUser(prevUser);
+    }
 
     const user = await this.usersService.getUserByEmail(email);
     if (!user || !user.hashedPassword) {
@@ -99,7 +101,7 @@ export class AuthService {
   }
 
   async loginGoogleUser(prevUser: User, token: string) {
-    if (prevUser) {
+    if (prevUser?.id) {
       this.logoutUser(prevUser);
     }
     const email = await this.googleAuthenticate(token);

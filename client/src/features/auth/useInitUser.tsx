@@ -24,12 +24,12 @@ const INIT_USER = gql`
   ${FULL_USER_FIELDS}
 `;
 
-export default function useInitUser() {
+export default function useInitUser(onCompleted?: () => void) {
   const dispatch = useAppDispatch();
 
   const router = useIonRouter();
 
-  const { setMenuMode, setShowInitUserModal } = useContext(AppContext);
+  const { setMenuMode } = useContext(AppContext);
 
   const { refreshTokenInterval } = useToken();
 
@@ -64,7 +64,7 @@ export default function useInitUser() {
         return false;
       })
 
-      setShowInitUserModal(false);
+      onCompleted && onCompleted();
     }
   });
 

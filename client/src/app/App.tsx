@@ -38,6 +38,7 @@ import UserModal from '../features/user/UserModal';
 import MenuComponent from '../features/menu/MenuComponent';
 import ExplorerComponent from '../features/explorer/ExplorerComponent';
 import InitUserModal from '../features/auth/InitUserModal';
+import LoginModal from '../features/auth/LoginModal';
 
 setupIonicReact();
 
@@ -87,6 +88,9 @@ export const AppContext = createContext({} as {
 
   showInitUserModal: boolean;
   setShowInitUserModal: Dispatch<SetStateAction<boolean>>;
+
+  showLoginModal: boolean;
+  setShowLoginModal: Dispatch<SetStateAction<boolean>>;
 });
 
 const App: React.FC = () => {
@@ -124,6 +128,7 @@ const App: React.FC = () => {
   const [menuIsResizing, setMenuIsResizing] = useState(false);
 
   const [showInitUserModal, setShowInitUserModal] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
 
   useEffect(() => {
     const handleRotate = () => {
@@ -199,6 +204,9 @@ const App: React.FC = () => {
 
       showInitUserModal,
       setShowInitUserModal,
+
+      showLoginModal,
+      setShowLoginModal,
     };
   }, [
     user, 
@@ -214,6 +222,7 @@ const App: React.FC = () => {
     menuX,
     menuIsResizing,
     showInitUserModal,
+    showLoginModal,
   ]);
 
   const handleMouseMove = (event: React.MouseEvent) => {
@@ -296,6 +305,7 @@ const App: React.FC = () => {
             </div>
           </div>
           <InitUserModal />
+          <LoginModal />
           <CreateGraphModal />
           <UserModal />
         </IonReactRouter>

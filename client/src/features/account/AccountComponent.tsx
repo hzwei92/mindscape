@@ -10,7 +10,7 @@ import Register from "../auth/Register";
 import Verify from "../auth/Verify";
 import { mergeUsers } from "../user/userSlice";
 import useSetUserColor from "../user/useSetUserColor";
-import LoginModal from "./LoginModal";
+import LoginModal from "../auth/LoginModal";
 import LogoutModal from "./LogoutModal";
 
 const SET_USER_NAME = gql`
@@ -36,11 +36,10 @@ const GET_USER_BY_NAME = gql`
 const AccountComponent: React.FC = () => {
   const dispatch = useAppDispatch();
 
-  const { user, palette } = useContext(AppContext);
+  const { user, palette, showLoginModal, setShowLoginModal } = useContext(AppContext);
   
   const sessionId = useAppSelector(selectSessionId);
 
-  const [showLoginModal, setShowLoginModal] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   const [isEditingName, setIsEditingName] = useState(false);
@@ -256,7 +255,6 @@ const AccountComponent: React.FC = () => {
             />
           </IonCardContent>
         </IonCard>
-      <LoginModal show={showLoginModal} setShow={setShowLoginModal} />
       <LogoutModal show={showLogoutModal} setShow={setShowLogoutModal}/>
     </IonCard>
   );

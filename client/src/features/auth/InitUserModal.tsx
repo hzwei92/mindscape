@@ -17,7 +17,9 @@ const GET_USER_BY_NAME = gql`
 `;
 
 export default function InitUserModal() {
-  const { palette, showInitUserModal } = useContext(AppContext);
+  const { palette, showInitUserModal, setShowInitUserModal, setShowLoginModal } = useContext(AppContext);
+
+  const [isNewUser, setIsNewUser] = useState(false);
 
   const [name, setName] = useState('');
 
@@ -67,7 +69,9 @@ export default function InitUserModal() {
     }
   });
 
-  const { initUser } = useInitUser();
+  const { initUser } = useInitUser(() => {
+    setIsNewUser(false);
+  });
 
   const handleNameChange = (e: any) => {
     console.log('hi')
@@ -100,7 +104,13 @@ export default function InitUserModal() {
         color,
         palette,
       );
+      setShowInitUserModal(false);
     }
+  }
+
+  const handleReturningUserClick = () => {
+    setShowInitUserModal(false);
+    setShowLoginModal(true);
   }
 
   return (
@@ -111,74 +121,106 @@ export default function InitUserModal() {
         width: '100%',
       }}>
         <IonCardHeader style={{
-          fontSize: 80,
+          fontSize: 60,
           textAlign: 'center',
         }}>
           Welcome!
         </IonCardHeader>
-        <IonCardContent style={{
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'center',
-        }}>
-          <div style={{
-            display: 'flex',
-            flexDirection: 'column',
-          }}>
-            <div style={{
-              marginBottom: 10,
-              textAlign: 'center',
+        {
+        isNewUser
+          ? (
+            <IonCardContent style={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'center',
+              marginTop: -10,
             }}>
-              Choose a name and a color.
-            </div>
-            <div>
-              <IonItem style={{
-                width: INPUT_WIDTH,
-                marginBottom: 10,
-                border: '1px solid',
-                borderRadius: 5,
+              <div style={{
+                display: 'flex',
+                flexDirection: 'column',
               }}>
-                <IonInput
-                  placeholder="Name"
-                  value={name}
-                  onIonChange={handleNameChange}
-                  style={{
-                    width: 300,
-                  }}
-                />
-              </IonItem>
+                <div style={{
+                  marginBottom: 10,
+                  textAlign: 'center',
+                }}>
+                  Choose a name and a color.
+                </div>
+                <div>
+                  <IonItem style={{
+                    width: INPUT_WIDTH,
+                    marginBottom: 10,
+                    border: '1px solid',
+                    borderRadius: 5,
+                  }}>
+                    <IonInput
+                      placeholder="Name"
+                      value={name}
+                      onIonChange={handleNameChange}
+                      style={{
+                        width: 300,
+                      }}
+                    />
+                  </IonItem>
+    
+                {
+                  nameError
+                    ? <IonNote color={'danger'}>This name is already in use.</IonNote>
+                    : null
+                }
+                </div>
+                <div style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                }}>
+                  <ChromePicker
+                    color={color}
+                    disableAlpha={true} 
+                    onChange={handleColorChange} 
+                  />
+                </div>
+                <IonButtons style={{
+                  marginTop: 5,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                }}>
+                  <IonButton disabled={!!nameTimeout || nameError} onClick={handleSubmit} style={{
+                    marginBottom: 10,
+                  }}>
+                    START
+                  </IonButton>
+                  <IonButton onClick={() => setIsNewUser(false)} style={{
+                  }}>
+                    CANCEL
+                  </IonButton>
+                </IonButtons>
+              </div>
+            </IonCardContent>
+            )
+          : (
+            <IonCardContent style={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'center',
+            }}>
+              <IonButtons style={{
+                display: 'flex',
+                flexDirection: 'column',
+              }}>
+                <IonButton onClick={() => setIsNewUser(true)} style={{
+                  marginBottom: 20,
+                }}>
+                  NEW USER
+                </IonButton>
+                <IonButton onClick={handleReturningUserClick} >
+                  RETURNING USER
+                </IonButton>
+              </IonButtons>
+            </IonCardContent>
+            )
+      }
 
-            {
-              nameError
-                ? <IonNote color={'danger'}>This name is already in use.</IonNote>
-                : null
-            }
-            </div>
-            <div style={{
-              marginTop: 10,
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'center',
-            }}>
-              <ChromePicker
-                color={color}
-                disableAlpha={true} 
-                onChange={handleColorChange} 
-              />
-            </div>
-            <IonButtons style={{
-              marginTop: 15,
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'center',
-            }}>
-              <IonButton disabled={!!nameTimeout || nameError} onClick={handleSubmit} style={{
-              }}>
-                START
-              </IonButton>
-            </IonButtons>
-          </div>
-        </IonCardContent>
       </IonCard>
     </IonModal>
   )
