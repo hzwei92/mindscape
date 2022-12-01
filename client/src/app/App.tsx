@@ -264,7 +264,6 @@ const App: React.FC = () => {
                 : 'block',
               height: '100%',
               width: menuX - APP_BAR_WIDTH + 6,
-              zIndex: MAX_Z_INDEX + 10000,
             }}>
               <MenuComponent />
             </div>

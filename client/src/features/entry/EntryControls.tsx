@@ -278,9 +278,9 @@ export default function EntryControls(props: EntryControlsProps) {
             </div>
             <div style={{
               display: 'table-cell',
-              color: props.arrow?.user.color
+              color: arrowUser?.color
             }}>
-              {props.arrow?.user.name}
+              {arrowUser?.name}
             </div>
           </div>
           <div style={{
