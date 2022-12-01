@@ -17,13 +17,13 @@ export default function CurrentUserTag() {
       position: 'absolute',
       left: 0,
       top: 0,
-      height: '100%',
     }}>
       <div style={{
         position: 'fixed',
         zIndex: abstract?.twigZ ?? 0 + 10,
       }}>
         <IonCard color='light' style={{
+          margin: 10,
           padding: 10,
         }}>
           <UserTag user={user} fontSize={20} />

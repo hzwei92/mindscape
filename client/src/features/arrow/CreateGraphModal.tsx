@@ -46,19 +46,13 @@ export default function CreateGraphModal() {
 
   useEffect(() => {
     if (isCreatingGraph) {
-      if (createGraphArrowId) {
-        setName('');
-        setRouteName('');
-      }
-      else {
-        const name1 = uniqueNamesGenerator({
-          dictionaries: [adjectives, animals],
-          length: 2,
-          separator: '-'
-        }) + '-' + Math.round(Math.random() * 1000).toString().padStart(3, '0');
-        setName(name1);
-        setRouteName(name1);
-      }
+      const name1 = uniqueNamesGenerator({
+        dictionaries: [adjectives, animals],
+        length: 2,
+        separator: '-'
+      }) + '-' + Math.round(Math.random() * 1000).toString().padStart(3, '0');
+      setName(name1);
+      setRouteName(name1);
     }
   }, [isCreatingGraph]);
 
@@ -163,7 +157,7 @@ export default function CreateGraphModal() {
               marginBottom: 40,
               textAlign: 'center',
             }}>
-              Select a name for the graph and a route-name for its URL.
+              Select a <b>name</b> for the graph and a <b>route-name</b> for its URL.
             </div>
             <IonInput
               placeholder='Name'

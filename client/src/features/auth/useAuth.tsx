@@ -50,8 +50,8 @@ export default function useAuth() {
   }, [])
 
   useEffect(() => {
-    if (!isInit) return;
-    if (isComplete) return;
+    console.log(isInit, isValid, isComplete);
+    if (!isInit || isComplete) return;
     
     if (isValid) {
       setIsLoading(true);
@@ -60,5 +60,5 @@ export default function useAuth() {
     else {
       setShowInitUserModal(true);
     }
-  }, [isInit, isValid]);
+  }, [isInit, isValid, isComplete]);
 }

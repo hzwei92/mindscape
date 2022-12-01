@@ -57,6 +57,7 @@ const authSlice = createSlice({
       return {
         ...state,
         isValid: true,
+        isComplete: true,
       };
     },
     setLogout: (state) => {
