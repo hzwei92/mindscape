@@ -65,7 +65,7 @@ function TwigControls(props: TwigControlsProps) {
 
   const isSubbed = (
     user?.id && arrow?.userId === user?.id || 
-    !!role && role.type !== RoleType.OTHER
+    !!role && role?.type !== RoleType.OTHER
   );
 
   const handleMouseDown = (event: React.MouseEvent) => {

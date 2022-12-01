@@ -6,13 +6,14 @@ import { updateEntry } from './entrySlice';
 import { Arrow } from '../arrow/arrow';
 import useReplyEntry from './useReplyEntry';
 import { AppContext } from '../../app/App';
-import { IonButton, IonButtons, IonIcon, IonPopover } from '@ionic/react';
+import { IonButton, IonButtons, IonIcon, IonPopover, useIonRouter } from '@ionic/react';
 import { ellipsisVertical } from 'ionicons/icons';
 import { selectUserById } from '../user/userSlice';
 import usePasteEntry from './usePasteEntry';
 import { selectRoleByUserIdAndArrowId } from '../role/roleSlice';
 import { RoleType } from '../role/role';
 import useRequestRole from '../role/useRequestRole';
+import usePromoteEntry from './usePromotEntry';
 
 interface EntryControlsProps {
   entry: Entry;
@@ -24,12 +25,16 @@ interface EntryControlsProps {
 export default function EntryControls(props: EntryControlsProps) {
   const dispatch = useAppDispatch();
 
+  const router = useIonRouter();
+
   const {
     user,
     pendingLink,
     setPendingLink,
     clipboardArrowIds,
     setClipboardArrowIds,
+    setCreateGraphArrowId,
+    setIsCreatingGraph,
   } = useContext(AppContext);
 
   const arrowUser = useAppSelector(state => selectUserById(state, props.arrow.userId));
@@ -40,6 +45,8 @@ export default function EntryControls(props: EntryControlsProps) {
     !!role && role.type !== RoleType.OTHER
   );
 
+  const showOpen = !!props.arrow.rootTwigId || props.arrow.userId === user?.id;
+
   const [menuAnchorEl, setMenuAnchorEl] = useState(null as Element | null);
 
   const [isEditingRoute, setIsEditingRoute] = useState(false);
@@ -48,8 +55,19 @@ export default function EntryControls(props: EntryControlsProps) {
   const { pasteEntry } = usePasteEntry(props.entry.id);
   const { requestRole } = useRequestRole();
 
-  // const { promoteEntry } = usePromoteEntry();
+  const { promoteEntry } = usePromoteEntry();
 
+  const handleOpenClick = (event: React.MouseEvent) => {
+    event.stopPropagation();
+    if (props.arrow.rootTwigId) {
+      const route = `/g/${props.arrow.routeName}/0`;
+      router.push(route);
+    }
+    else {
+      setCreateGraphArrowId(props.arrow.id);
+      setIsCreatingGraph(true);
+    }
+  }
   const handleReplyClick = (event: React.MouseEvent) => {
     event.stopPropagation();
     replyEntry(props.entry);
@@ -115,6 +133,10 @@ export default function EntryControls(props: EntryControlsProps) {
     }
   }
 
+  const handlePromoteClick = (event: React.MouseEvent) => {
+    promoteEntry(props.entry);
+  }
+
   const handleCopyClick = () => {
     setClipboardArrowIds([props.arrow.id]);
 
@@ -171,6 +193,11 @@ export default function EntryControls(props: EntryControlsProps) {
           paddingTop: 5,
           paddingBottom: 10,
         }}>
+          <IonButtons>
+            <IonButton disabled={props.depth === 0} onClick={handlePromoteClick}>
+              MOVE TO TOP
+            </IonButton>
+          </IonButtons>
           <IonButtons>
             {
               isSubbed
@@ -278,11 +305,18 @@ export default function EntryControls(props: EntryControlsProps) {
         }}>
           {props.arrow.outCount} OUT
         </IonButton>
-        <IonButton style={{
-          fontSize: 10,
+        <div style={{
+          display: showOpen
+            ? 'inline-block'
+            : 'none',
         }}>
-          OPEN
-        </IonButton>
+          <IonButton onClick={handleOpenClick} style={{
+            fontSize: 10,
+          }}>
+            OPEN {props.arrow?.twigN ? `(${props.arrow?.twigN})` : ''}
+          </IonButton>
+        </div>
+
       </span>
     </IonButtons>
   )
