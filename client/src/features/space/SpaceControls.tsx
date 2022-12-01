@@ -113,10 +113,9 @@ export default function SpaceControls(props: SpaceControlsProps) {
     }}>
       <div style={{
         position: 'fixed',
-        right: 0,
-        display:'flex',
-        flexDirection: 'row',
-        height: '100%',
+        right: props.showSettings || props.showRoles
+          ? SPACE_PANEL_WIDTH + 20
+          : 0,
       }}>
         <div style={{
           display: 'flex',
@@ -124,7 +123,6 @@ export default function SpaceControls(props: SpaceControlsProps) {
         }}>
           <IonCard color='light' style={{
             margin: 10,
-            marginBottom: 5,
             whiteSpace: 'nowrap',
             display: 'flex',
             flexDirection: 'row',
@@ -157,7 +155,7 @@ export default function SpaceControls(props: SpaceControlsProps) {
             textAlign: 'right',
           }}>
             <IonFab style={{
-              marginLeft: -55,
+              marginLeft: -60,
             }}>
               <IonFabButton title='Settings' size='small' color='light'  onClick={handleSettingsClick}>
                 <IonIcon icon={settingsOutline} size='small' style={{
@@ -184,12 +182,15 @@ export default function SpaceControls(props: SpaceControlsProps) {
             </IonFab>
           </div>    
         </div>
-        <div style={{
-          height: '100%',
-        }}>
-          { props.showRoles && <RolesPanel showRoles={props.showRoles} setShowRoles={props.setShowRoles} /> }
-          { props.showSettings && <SettingsPanel showSettings={props.showSettings} setShowSettings={props.setShowSettings} /> }
-        </div>
+      </div>
+      <div style={{
+        position: 'fixed',
+        top: 32,
+        right: 10,
+        height: '100%',
+      }}>
+        { props.showRoles && <RolesPanel showRoles={props.showRoles} setShowRoles={props.setShowRoles} /> }
+        { props.showSettings && <SettingsPanel showSettings={props.showSettings} setShowSettings={props.setShowSettings} /> }
       </div>
     </div>
   )
