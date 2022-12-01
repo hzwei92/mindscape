@@ -30,10 +30,12 @@ export default function useRequestRole(onCompleted?: () => void) {
     onCompleted: data => {
       console.log(data);
       dispatch(mergeRoles([data.requestRole]));
-      dispatch(mergeSpaceRoles({
-        abstractId,
-        roles: [data.requestRole]
-      }));
+      if (abstractId) {
+        dispatch(mergeSpaceRoles({
+          abstractId,
+          roles: [data.requestRole]
+        }));
+      }
       onCompleted && onCompleted();
     },
   });
