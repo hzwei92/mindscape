@@ -1,8 +1,8 @@
 import { IonButton, IonButtons, IonCard, IonIcon, useIonRouter } from "@ionic/react";
-import { add, close } from "ionicons/icons";
+import { add, close, returnUpBackOutline } from "ionicons/icons";
 import React, { useContext, useEffect, useState } from "react";
 import { AppContext } from "../../app/App";
-import { useAppSelector } from "../../app/store";
+import { useAppDispatch, useAppSelector } from "../../app/store";
 import { OFF_WHITE } from "../../constants";
 import { Arrow } from "../arrow/arrow";
 import { selectIdToArrow } from "../arrow/arrowSlice";
@@ -10,13 +10,22 @@ import SpaceComponent from "../space/SpaceComponent";
 import { selectAbstractIdToData } from "../space/spaceSlice";
 import usePublishAvatarSub from "./usePublishAvatarSub";
 import { Tab } from "../tab/tab";
-import { selectFocusTab, selectIdToTab } from "../tab/tabSlice";
+import { mergeTabs, selectFocusTab, selectIdToTab } from "../tab/tabSlice";
 import useRemoveTab from "../tab/useRemoveTab";
 import icon from './icon.png'
 import usePublishAvatar from "./usePublishAvatar";
+import { IdToType } from "../../types";
+import TabComponent from "../tab/TabComponent";
 
 export default function ExplorerComponent() {
-  const { menuX, width, palette, setIsCreatingGraph, setCreateGraphArrowId } = useContext(AppContext);
+  const dispatch = useAppDispatch();
+  const { 
+    menuX, 
+    width, 
+    palette, 
+    setIsCreatingGraph, 
+    setCreateGraphArrowId,
+  } = useContext(AppContext);
 
   const idToTab = useAppSelector(selectIdToTab) ?? {};
   const idToArrow = useAppSelector(selectIdToArrow);
@@ -27,6 +36,8 @@ export default function ExplorerComponent() {
 
   const router = useIonRouter();
   const path = (router.routeInfo?.pathname || '').split('/');
+
+  const [dragTabId, setDragTabId] = useState('');
 
   const { removeTab } = useRemoveTab();
 
@@ -52,35 +63,60 @@ export default function ExplorerComponent() {
     }
   }, [focusTab?.id])
 
-  const handleTabClick = (arrow: Arrow) => (e: React.MouseEvent) => {
-    e.stopPropagation();
-    const twigId = abstractIdToData[arrow.id]?.selectedTwigId;
-    const twig = abstractIdToData[arrow.id]?.idToTwig[twigId];
-    router.push(`/g/${arrow.routeName}/${twig?.i ?? 0}`);
-  }
-
-  const handleTabCloseClick = (tab: Tab) => (e: React.MouseEvent) => {
-    e.stopPropagation();
-    removeTab(tab.id);
-    if (tab.id === focusTab?.id) {
-      const tabs = Object.values(idToTab)
-        .filter(t => !t.deleteDate && t.id !== tab.id)
-        .sort((a, b) => a.i - b.i)
-
-      if (tabs.length > 0) {
-        const twigId = abstractIdToData[tabs[0].arrowId].selectedTwigId;
-        const twig = abstractIdToData[tabs[0].arrowId].idToTwig[twigId];
-        router.push(`/g/${tabs[0].arrow.routeName}/${twig?.i ?? 0}`);
-      }
-      else {
-        router.push('/');
-      }
-    }
-  }
 
   const handleCreateGraphClick = () => {
     setCreateGraphArrowId(null);
     setIsCreatingGraph(true);
+  }
+
+  const handleDragOver = (dropIndex: number) => (e: React.DragEvent) => {
+    e.stopPropagation();
+
+    if (!dragTabId) return;
+
+    const tab = idToTab[dragTabId];
+
+    if (dropIndex < tab.i) {
+      const tabs = Object.values(idToTab).map(t => {
+        if (t.i < dropIndex) {
+          return t;
+        }
+        if (t.i < tab.i) {
+          return { 
+            ...t, 
+            i: t.i + 1 
+          };
+        }
+        if (t.id === tab.id) {
+          return { 
+            ...t, 
+            i: dropIndex 
+          };
+        }
+        return t;
+      })
+
+      dispatch(mergeTabs(tabs))
+    }
+    else {
+      const tabs = Object.values(idToTab).map(t => {
+        if (t.i > tab.i && t.i <= dropIndex) {
+          return { 
+            ...t, 
+            i: t.i - 1 
+          };
+        }
+        if (t.id === tab.id) {
+          return { 
+            ...t, 
+            i: dropIndex 
+          };
+        }
+        return t;
+      })
+
+      dispatch(mergeTabs(tabs))
+    }
   }
 
   return (
@@ -110,63 +146,8 @@ export default function ExplorerComponent() {
               .filter(tab => !tab.deleteDate)
               .sort((a, b) => a.i - b.i)
               .map(tab => {
-                const arrow = idToArrow[tab.arrowId];
-                if (!arrow) return null;
-
-                const isFocus = focusTab?.id === tab.id && path[1] === 'g' && path[2] === arrow?.routeName;
-                
                 return  (
-                  <IonCard key={'tab-'+tab.id} 
-                    onClick={handleTabClick(arrow)}
-                    style={{
-                      margin: 0,
-                      backgroundColor: isFocus
-                        ? palette === 'dark'
-                          ? 'black'
-                          : OFF_WHITE
-                        : null,
-                      borderBottomLeftRadius: 0,
-                      borderBottomRightRadius: 0,
-                      display: 'inline-flex',
-                      flexDirection: 'row',
-                      flexWrap: 'nowrap',
-                      cursor: 'pointer',
-                      flexShrink: 0,
-                    }}
-                  >
-                    <div style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      justifyContent: 'center',
-                      color: arrow.color,
-                      marginLeft: 10,
-                    }}>
-                      { arrow.title }
-                    </div>
-                    {
-                      Object.keys(abstractIdToData[arrow.id]?.idToAvatar ?? {}).length > 0 && (
-                        <div style={{
-                          display: 'flex',
-                          flexDirection: 'column',
-                          justifyContent: 'center',
-                          paddingLeft: 5,
-                        }}>
-                          ({ Object.keys(abstractIdToData[arrow.id]?.idToAvatar ?? {}).length })
-                        </div>
-                      )
-                    }
-                    <IonButtons style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      justifyContent: 'center',
-                    }}>
-                      <IonButton onClick={handleTabCloseClick(tab)} style={{
-                        padding: 0,
-                      }}>
-                        <IonIcon icon={close} />
-                      </IonButton>
-                    </IonButtons>
-                  </IonCard>
+                  <TabComponent key={'tab-' + tab.id} tab={tab} />
                 );
               })
             }

@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Arrow } from 'src/arrows/arrow.entity';
 import { ArrowsService } from 'src/arrows/arrows.service';
 import { User } from 'src/users/user.entity';
-import { In, MoreThan, Not, Repository } from 'typeorm';
+import { Between, Equal, In, MoreThan, Not, Repository } from 'typeorm';
 import { Tab } from './tab.entity';
 
 @Injectable()
@@ -78,14 +78,18 @@ export class TabsService {
 
     let sibs = await this.tabRepository.find({
       where: {
+        id: Not(Equal(tab.id)),
         userId: user.id,
-        i: MoreThan(tab.i),
       }
     });
-    sibs = sibs.map(sib => {
-      sib.i--;
-      return sib;
+
+    sibs = sibs.sort((a, b) => a.i - b.i).map((sib, i) => {
+      return {
+        ...sib,
+        i,
+      };
     });
+
     sibs = await this.tabRepository.save(sibs);
 
     return {
@@ -95,7 +99,7 @@ export class TabsService {
   }
 
 
-  async updateTab(user: User, tabId: string | null, i: number, isFrame: boolean, isFocus: boolean): Promise<Tab[]> {
+  async updateTab(user: User, tabId: string | null, isFrame: boolean, isFocus: boolean): Promise<Tab[]> {
     const tab = await this.tabRepository.findOne({
       where: {
         id: tabId,
@@ -109,15 +113,12 @@ export class TabsService {
       throw new BadRequestException('Insufficient permissions');
     }
 
-    tab.i = i;
-    tab.isFrame = isFrame;
-    tab.isFocus = isFocus;
 
     let tabs = []
-    if (tab.isFrame) {
+    if (isFrame && !tab.isFrame) {
       tabs = await this.tabRepository.find({
         where: {
-          id: Not(In([tab.id])),
+          id: Not(Equal(tab.id)),
           userId: user.id,
           isFrame: true,
         }
@@ -127,10 +128,10 @@ export class TabsService {
         return t;
       });
     }
-    else if (tab.isFocus) {
+    else if (isFocus && !tab.isFocus) {
       tabs = await this.tabRepository.find({
         where: {
-          id: Not(In([tab.id])),
+          id: Not(Equal(tab.id)),
           userId: user.id,
           isFocus: true,
         }
@@ -141,8 +142,68 @@ export class TabsService {
       });
     }
 
-    tabs.push(tab)
+    tab.isFrame = isFrame;
+    tab.isFocus = isFocus;
 
+    tabs.push(tab)
+    
     return this.tabRepository.save(tabs);
   }
+
+  async moveTab(user: User, tabId: string, i: number): Promise<Tab[]> {
+    const tab = await this.tabRepository.findOne({
+      where: {
+        id: tabId,
+      },
+    });
+
+    if (!tab) {
+      throw new BadRequestException('Tab not found');
+    }
+    if (tab.userId !== user.id) {
+      throw new BadRequestException('Insufficient permissions');
+    }
+
+    if (tab.i === i) return[];
+
+
+    let sibs = [];
+
+    if (i < tab.i) {
+      sibs = await this.tabRepository.find({
+        where: {
+          userId: user.id,
+          i: Between(i, tab.i - 1),
+        }
+      });
+
+      sibs = sibs.map(s => {
+        return {
+          ...s,
+          i: s.i + 1,
+        };
+      });
+    }
+    else {
+      sibs = await this.tabRepository.find({
+        where: {
+          userId: user.id,
+          i: Between(tab.i + 1, i),
+        }
+      });
+
+      sibs = sibs.map(s => {
+        return {
+          ...s,
+          i: s.i - 1,
+        };
+      });
+    }
+    
+    tab.i = i;
+    console.log('sibs', i, sibs);
+
+    return this.tabRepository.save([tab, ...sibs]);
+  }
+
 }

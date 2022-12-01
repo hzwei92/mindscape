@@ -60,3 +60,8 @@ export const INPUT_WIDTH = 300;
 
 
 export const ACTIVE_TIME = 60 * 1000;
+
+
+export const ItemTypes = {
+  TAB: 'tab',
+}
