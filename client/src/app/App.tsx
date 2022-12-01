@@ -216,6 +216,14 @@ const App: React.FC = () => {
     }
   }
 
+  const handleTouchStart = (event: React.TouchEvent) => {
+    if (isPlatform('mobile') && document.fullscreenElement !== document.body) {
+      document.body.requestFullscreen().catch(err => {
+        console.log(err);
+      });
+    }
+  }
+
   return (
     <AppContext.Provider value={appContextValue}>
       <IonApp>
@@ -248,6 +256,7 @@ const App: React.FC = () => {
             </defs>
           </svg>
           <div 
+            onTouchStart={handleTouchStart}
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp} 
             style={{
