@@ -29,4 +29,5 @@ export type User = {
   updateDate: Date;
   deleteDate: Date | null;
   __typename: string;
+  hasAgreedToReadQuickstart: boolean;
 };

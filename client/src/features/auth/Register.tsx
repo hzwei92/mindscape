@@ -5,7 +5,7 @@ import { USER_FIELDS } from '../user/userFragments';
 import { useAppDispatch } from '../../app/store';
 import { EMAIL_REGEX } from '../../constants';
 import { AppContext } from '../../app/App';
-import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonInput } from '@ionic/react';
+import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonInput, IonItem } from '@ionic/react';
 import { mergeUsers } from '../user/userSlice';
 
 const GET_USER_BY_EMAIL = gql`
@@ -121,18 +121,33 @@ export default function Register() {
           Email
         </IonCardHeader>
         <IonCardContent>
-          <IonInput
-            type='email'
-            placeholder='Email'
-            value={email}
-            onIonChange={handleEmailChange}
-          />
-          <IonInput
-            type={showPass ? 'text' : 'password'}
-            placeholder='Password'
-            value={pass}
-            onIonChange={handlePassChange}
-          />
+          <IonItem style={{
+            marginTop: 10,
+            marginBottom: 10,
+            width: 290,
+            border: '1px solid',
+            borderRadius: 5,
+          }}>
+            <IonInput
+              type='email'
+              placeholder='Email'
+              value={email}
+              onIonChange={handleEmailChange}
+            />
+          </IonItem>
+          <IonItem style={{
+            marginBottom: '10px',
+            width: 290,
+            border: '1px solid',
+            borderRadius: 5,
+          }}>
+            <IonInput
+              type={showPass ? 'text' : 'password'}
+              placeholder='Password'
+              value={pass}
+              onIonChange={handlePassChange}
+            />
+          </IonItem>
           <div>
             {message}
           </div>
@@ -144,7 +159,7 @@ export default function Register() {
             REGISTER WITH EMAIL
           </IonButton>
         </IonButtons>
-        <div>
+        <div style={{marginTop: 20}}>
           <GoogleButton isRegistration={true}/>
         </div>
         </IonCardContent>
