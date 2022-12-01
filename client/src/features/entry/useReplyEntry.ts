@@ -6,7 +6,7 @@ import { Entry } from './entry';
 import { FULL_ARROW_FIELDS } from '../arrow/arrowFragments';
 import { mergeUsers, selectCurrentUser } from '../user/userSlice';
 import { createArrow } from '../arrow/arrow';
-import { mergeArrows, selectArrowById } from '../arrow/arrowSlice';
+import { mergeArrows, selectArrowById, selectIdToArrow } from '../arrow/arrowSlice';
 import { selectFocusTab, selectFrameTab } from '../tab/tabSlice';
 import { selectSessionId } from '../auth/authSlice';
 
@@ -46,21 +46,17 @@ const REPLY_ARROW = gql`
   ${FULL_ARROW_FIELDS}
 `;
 
-export default function useReplyEntry(entryId: string) {
+export default function useReplyEntry() {
   const dispatch = useAppDispatch();
 
   const sessionId = useAppSelector(selectSessionId);
 
   const user = useAppSelector(selectCurrentUser);
-  const frameTab = useAppSelector(selectFrameTab);
-  const focusTab = useAppSelector(selectFocusTab);
 
   const idToEntry = useAppSelector(selectIdToEntry);
   const newEntryId = useAppSelector(selectNewEntryId);
 
-  const entry = idToEntry[entryId];
-
-  const arrow = useAppSelector(state => selectArrowById(state, entry.arrowId));
+  const idToArrow = useAppSelector(selectIdToArrow);
   
   const [reply] = useMutation(REPLY_ARROW, {
     onError: error => {
@@ -86,8 +82,10 @@ export default function useReplyEntry(entryId: string) {
     },
   });
 
-  const replyEntry = () => {
+  const replyEntry = (entry: Entry) => {
     if (!user || newEntryId) return;
+
+    const arrow = idToArrow[entry?.arrowId];
 
     const linkId = v4();
     const targetId = v4();
@@ -121,7 +119,7 @@ export default function useReplyEntry(entryId: string) {
     reply({
       variables: {
         sessionId,
-        sourceId: entry.arrowId,
+        sourceId: entry?.arrowId,
         linkId,
         targetId,
         linkDraft,
@@ -177,7 +175,7 @@ export default function useReplyEntry(entryId: string) {
     const linkEntry: Entry = {
       id: linkEntryId,
       userId: user.id,
-      parentId: entryId,
+      parentId: entry.id,
       arrowId: linkId,
       showIns: false,
       showOuts: false,
@@ -192,10 +190,10 @@ export default function useReplyEntry(entryId: string) {
     dispatch(addEntry(linkEntry));
 
     dispatch(updateEntry({
-      ...idToEntry[entryId],
+      ...entry,
       showIns: false,
       showOuts: true,
-      outIds: [linkEntryId, ...idToEntry[entryId].outIds]
+      outIds: [linkEntryId, ...idToEntry[entry.id].outIds]
     }));
 
   };

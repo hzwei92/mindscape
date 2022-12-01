@@ -10,8 +10,9 @@ export default function RemoveTwigModal() {
   const { 
     abstractId,
     abstract,
+    showRemoveTwigModal,
     removalTwigId, 
-    setRemovalTwigId,
+    setShowRemoveTwigModal,
     canEdit,
   } = useContext(SpaceContext);
 
@@ -29,16 +30,16 @@ export default function RemoveTwigModal() {
   const modalRef = useRef<HTMLIonModalElement>(null);
 
   useEffect(() => {
-    if (removalTwigId) {
+    if (showRemoveTwigModal) {
       modalRef.current?.present();
     } else {
       modalRef.current?.dismiss();
     }
-  }, [removalTwigId]);
+  }, [showRemoveTwigModal]);
 
 
   const handleClose = () => {
-    setRemovalTwigId('');
+    setShowRemoveTwigModal(false);
   };
 
   const handleRemoveSubtreeClick = (event: React.MouseEvent) => {
@@ -66,12 +67,19 @@ export default function RemoveTwigModal() {
           fontSize: 80,
           textAlign: 'center',
         }}>
-          Remove this { descIds.length ? 'tree' : 'twig' }...
+          Remove...
         </IonCardHeader>
         <IonCardContent>
           <div style={{
             textAlign: 'center',
           }}>
+            {
+              descIds.length > 0 && (<div style={{
+                marginBottom: 20,
+              }}>
+                This post has <b>{descIds.length} children</b> that will also be removed.
+              </div>)
+            }
             This does not delete posts or links, it merely detaches them from the graph.
             <br/>
             To delete a post or a link, access the More Option menu.

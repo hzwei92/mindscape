@@ -101,7 +101,7 @@ export default function SpaceNav() {
     event.preventDefault();
 
     const twig = twigs[index];
-    centerTwig(twig.id, true, 0);
+    centerTwig(twig?.id, true, 0);
   }
 
   const handleMouseMove = (e: React.MouseEvent) => {

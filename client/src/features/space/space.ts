@@ -1,5 +1,6 @@
 import React from "react";
 import { IdToType } from "../../types";
+import { Role } from "../role/role";
 import { Twig } from "../twig/twig";
 
 export type PosType = {
@@ -43,4 +44,5 @@ export type SpaceData = {
   idToChildIdToTrue: IdToType<IdToType<true>>;
   idToDescIdToTrue: IdToType<IdToType<true>>;
   idToAvatar: IdToType<AvatarType>;
+  idToRole: IdToType<Role>;
 };

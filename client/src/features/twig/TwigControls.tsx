@@ -17,6 +17,7 @@ import { RoleType } from '../role/role';
 import useRequestRole from '../role/useRequestRole';
 import { selectRoleByUserIdAndArrowId } from '../role/roleSlice';
 import { MenuMode } from '../menu/menu';
+import e from 'express';
 //import useCenterTwig from './useCenterTwig';
 
 interface TwigControlsProps {
@@ -45,7 +46,9 @@ function TwigControls(props: TwigControlsProps) {
   const {
     abstract,
     canPost,
-    canView
+    canView,
+    setReplyTwigId,
+    setShowReplyTwigModal,
   } = useContext(SpaceContext)
 
   const arrow = useAppSelector(state => selectArrowById(state, props.twig.detailId));
@@ -87,7 +90,13 @@ function TwigControls(props: TwigControlsProps) {
   const handleReplyClick = (event: React.MouseEvent) => {
     event.stopPropagation();
     if (!arrow) return;
-    replyTwig(props.twig, arrow);
+    if (canPost) {
+      replyTwig(props.twig, arrow);
+    }
+    else {
+      setReplyTwigId(props.twig.id);
+      setShowReplyTwigModal(true);
+    }
   }
 
   const handleLinkClick = (event: React.MouseEvent) => {
@@ -279,7 +288,6 @@ function TwigControls(props: TwigControlsProps) {
       flexDirection: 'row',
     }}>
       <IonButton
-        disabled={!canPost}
         onMouseDown={handleMouseDown} 
         onClick={handleReplyClick}
         style={{

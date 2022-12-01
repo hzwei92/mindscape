@@ -27,7 +27,9 @@ import usePasteTwigSub from '../twig/usePasteTwigSub';
 import useRemoveTwigSub from '../twig/useRemoveTwigSub';
 import useReplyTwigSub from '../twig/useReplyTwigSub';
 import useTwigTree from '../twig/useTwigTree';
+import CurrentUserTag from './CurrentUserTag';
 import RemoveTwigModal from './RemoveTwigModal';
+import ReplyTwigModal from './ReplyTwigModal';
 import RolesPanel from './RolesPanel';
 import SettingsModal from './SettingsPanel';
 import { PosType } from './space';
@@ -45,8 +47,17 @@ export const SpaceContext = createContext({} as {
   canView: boolean;
   canPost: boolean;
   canEdit: boolean;
+
   removalTwigId: string;
   setRemovalTwigId: Dispatch<SetStateAction<string>>;
+  showRemoveTwigModal: boolean;
+  setShowRemoveTwigModal: Dispatch<SetStateAction<boolean>>;
+
+  replyTwigId: string;
+  setReplyTwigId: Dispatch<SetStateAction<string>>;
+  showReplyTwigModal: boolean;
+  setShowReplyTwigModal: Dispatch<SetStateAction<boolean>>;
+
   touches: TouchList | null;
   setTouches: Dispatch<SetStateAction<TouchList | null>>;
 });
@@ -86,8 +97,6 @@ const SpaceComponent = (props: SpaceComponentProps) => {
   
   const adjustTwigIdToPos = useReactiveVar(adjustTwigIdToPosVar); 
 
-  const idToRole = useAppSelector(selectIdToRole);
-
   const abstractIdToData = useAppSelector(selectAbstractIdToData);
 
   const {
@@ -100,12 +109,13 @@ const SpaceComponent = (props: SpaceComponentProps) => {
     idToHeight,
     idToDescIdToTrue,
     idToAvatar,
+    idToRole,
   } = abstractIdToData[props.abstractId];
 
   const abstract = useAppSelector(state => selectArrowById(state, props.abstractId));
 
   let role = null as Role | null;
-  (abstract?.roles || []).some(role_i => {
+  Object.values(idToRole).some(role_i => {
     if (role_i.userId === user?.id && !role_i.deleteDate) {
       role = idToRole[role_i.id];
       return true;
@@ -131,6 +141,12 @@ const SpaceComponent = (props: SpaceComponentProps) => {
   const [cursorClient, setCursorClient] = useState({ x: 0, y: 0 });
 
 
+  const [removalTwigId, setRemovalTwigId] = useState('');
+  const [showRemoveTwigModal, setShowRemoveTwigModal] = useState(false);
+
+  const [replyTwigId, setReplyTwigId] = useState('');
+  const [showReplyTwigModal, setShowReplyTwigModal] = useState(false);
+
   useEffect(() => {
     if (!spaceEl?.current) return;
 
@@ -149,8 +165,6 @@ const SpaceComponent = (props: SpaceComponentProps) => {
     }
   }, [spaceEl?.current]);
 
-  const [removalTwigId, setRemovalTwigId] = useState('');
-
   const spaceContextValue = useMemo(() => {
     return {
       abstractId: props.abstractId,
@@ -159,12 +173,28 @@ const SpaceComponent = (props: SpaceComponentProps) => {
       canView,
       canPost, 
       canEdit,
+      
       removalTwigId, 
       setRemovalTwigId,
+      showRemoveTwigModal,
+      setShowRemoveTwigModal,
+
+      replyTwigId,
+      setReplyTwigId,
+      showReplyTwigModal,
+      setShowReplyTwigModal,
+
       touches,
       setTouches,
     };
-  }, [props.abstractId, abstract, role, canView, canPost, canEdit, removalTwigId, touches]);
+  }, [
+    props.abstractId, 
+    abstract, 
+    role, 
+    canView, canPost, canEdit, 
+    removalTwigId, showRemoveTwigModal, 
+    replyTwigId, showReplyTwigModal,
+    touches]);
 
   const moveDrag = (dx: number, dy: number) => {
     if (drag?.isScreen) {
@@ -705,6 +735,7 @@ const SpaceComponent = (props: SpaceComponentProps) => {
           })
         }
       </IonCard>
+      <CurrentUserTag />
       <SpaceControls 
         showRoles={showRoles}
         setShowRoles={setShowRoles}
@@ -717,6 +748,7 @@ const SpaceComponent = (props: SpaceComponentProps) => {
         setShowSettings={setShowSettings}
       />
       <RemoveTwigModal />
+      <ReplyTwigModal />
     </SpaceContext.Provider>
   );
 };

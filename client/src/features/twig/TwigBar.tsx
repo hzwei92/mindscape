@@ -30,6 +30,7 @@ function TwigBar(props: TwigBarProps) {
     abstract, 
     canEdit,
     setRemovalTwigId,
+    setShowRemoveTwigModal,
     setTouches,
   } = useContext(SpaceContext);
   
@@ -67,6 +68,7 @@ function TwigBar(props: TwigBarProps) {
   const handleRemoveClick = (event: React.MouseEvent) => {
     event.stopPropagation();
     setRemovalTwigId(props.twig.id);
+    setShowRemoveTwigModal(true);
   }
 
   const handleMouseDown = (event: React.MouseEvent) => {

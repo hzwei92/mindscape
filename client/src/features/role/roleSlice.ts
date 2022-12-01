@@ -2,7 +2,7 @@ import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from '../../app/store';
 import { IdToType } from "../../types";
 import { Role } from "./role";
-import { setInit, setLogout } from "../auth/authSlice";
+import { setInit, setLogin, setLogout } from "../auth/authSlice";
 import { mergeArrows } from "../arrow/arrowSlice";
 import { mergeTwigs } from "../space/spaceSlice";
 import { mergeTabs } from "../tab/tabSlice";
@@ -96,6 +96,24 @@ const authSlice = createSlice({
           idToRole,
         };
       })
+      .addCase(setLogin, (state, action) => {
+        const idToRole = (action.payload?.tabs || []).reduce((acc, tab) => {
+          (tab.arrow.roles || []).forEach(role => {
+            acc[role.id] = {
+              ...acc[role.id],
+              ...role
+            };
+          });
+          return acc;
+        }, { ...state.idToRole });
+        return {
+          ...state,
+          idToRole: {
+            ...state.idToRole,
+            ...idToRole,
+          },
+        };
+      });
   }
 });
 

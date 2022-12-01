@@ -9,6 +9,7 @@ import UserTag from '../user/UserTag';
 import { checkPermit } from '../../utils';
 import { useAppSelector } from '../../app/store';
 import { selectIdToRole } from '../role/roleSlice';
+import { selectAbstractIdToData, selectSpaceData } from './spaceSlice';
 
 
 interface RolesPanelProps {
@@ -21,11 +22,12 @@ export default function RolesPanel(props: RolesPanelProps) {
   } = useContext(AppContext);
 
   const {
+    abstractId,
     abstract,
     role,
   } = useContext(SpaceContext);
 
-  const idToRole = useAppSelector(selectIdToRole);
+  const { idToRole } = useAppSelector(selectSpaceData(abstractId));
 
   const admins: Role[] = [];
   const members: Role[] = [];
@@ -146,23 +148,6 @@ export default function RolesPanel(props: RolesPanelProps) {
         </div>
         {
           subscribers.map(role_i => {
-            return (
-              <div key={'role-'+role_i.id} style={{
-                padding: 5,
-              }}>
-                <UserTag user={role_i.user} fontSize={14} />
-              </div>
-            );
-          })
-        }
-        <div style={{
-          fontWeight: 'bold',
-          fontSize: 20,
-        }}>
-          Others - {others.length}
-        </div>
-        {
-          others.map(role_i => {
             return (
               <div key={'role-'+role_i.id} style={{
                 padding: 5,
