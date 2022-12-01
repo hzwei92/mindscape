@@ -184,7 +184,7 @@ const LoginModal = () => {
             flexDirection: 'row',
             justifyContent: 'center',
           }}>
-            <GoogleButton isRegistration={false} />
+            <GoogleButton isRegistration={false} onCompleted={() => {setShowLoginModal(false)}}/>
           </div>
           <IonButtons style={{
             marginTop: 50,
