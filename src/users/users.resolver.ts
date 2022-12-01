@@ -101,6 +101,7 @@ export class UsersResolver {
       abstractId,
       publishAvatar: {
         id: user.id,
+        abstractId,
         name: user.name,
         color: user.color,
         x,
@@ -182,12 +183,12 @@ export class UsersResolver {
   @Subscription(() => UserAvatar, {name: 'publishAvatar',
     filter: (payload, variables) => {
       if (payload.sessionId === variables.sessionId) return false;
-      return payload.abstractId === variables.abstractId;
+      return variables.abstractIds.some(abstractId => abstractId === payload.abstractId);
     }
   })
   publishAvatarSub(
     @Args('sessionId') sessionId: string,
-    @Args('abstractId') abstractId: string,
+    @Args('abstractIds', {type: () => [String]}) abstractId: string[],
   ) {
     console.log('publishAvatarSub')
     return this.pubSub.asyncIterator('publishAvatar')

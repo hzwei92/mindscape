@@ -1,6 +1,6 @@
 import { IonButton, IonButtons, IonCard, IonIcon, useIonRouter } from "@ionic/react";
 import { add, close } from "ionicons/icons";
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { AppContext } from "../../app/App";
 import { useAppSelector } from "../../app/store";
 import { OFF_WHITE } from "../../constants";
@@ -8,6 +8,7 @@ import { Arrow } from "../arrow/arrow";
 import { selectIdToArrow } from "../arrow/arrowSlice";
 import SpaceComponent from "../space/SpaceComponent";
 import { selectAbstractIdToData } from "../space/spaceSlice";
+import usePublishAvatarSub from "../space/usePublishAvatarSub";
 import { Tab } from "../tab/tab";
 import { selectFocusTab, selectIdToTab } from "../tab/tabSlice";
 import useRemoveTab from "../tab/useRemoveTab";
@@ -27,6 +28,14 @@ export default function ExplorerComponent() {
   const path = (router.routeInfo?.pathname || '').split('/');
 
   const { removeTab } = useRemoveTab();
+
+  const [abstractIds, setAbstractIds] = useState<string[]>([]);
+  
+  useEffect(() => {
+    setAbstractIds(Object.values(idToTab).map(tab => tab.arrowId));
+  }, [idToTab])
+
+  usePublishAvatarSub(abstractIds);
 
   const handleTabClick = (arrow: Arrow) => (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -119,6 +128,18 @@ export default function ExplorerComponent() {
                     }}>
                       { arrow.title }
                     </div>
+                    {
+                      Object.keys(abstractIdToData[arrow.id]?.idToAvatar ?? {}).length > 0 && (
+                        <div style={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          justifyContent: 'center',
+                          paddingLeft: 5,
+                        }}>
+                          ({ Object.keys(abstractIdToData[arrow.id]?.idToAvatar ?? {}).length })
+                        </div>
+                      )
+                    }
                     <IonButtons style={{
                       display: 'flex',
                       flexDirection: 'column',
