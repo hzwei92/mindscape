@@ -6,7 +6,7 @@ import { updateEntry } from './entrySlice';
 import { Arrow } from '../arrow/arrow';
 import useReplyEntry from './useReplyEntry';
 import { AppContext } from '../../app/App';
-import { IonButton, IonButtons, IonIcon, IonPopover, useIonRouter } from '@ionic/react';
+import { IonButton, IonButtons, IonIcon, IonPopover, isPlatform, useIonRouter } from '@ionic/react';
 import { ellipsisVertical } from 'ionicons/icons';
 import { selectUserById } from '../user/userSlice';
 import usePasteEntry from './usePasteEntry';
@@ -14,6 +14,7 @@ import { selectRoleByUserIdAndArrowId } from '../role/roleSlice';
 import { RoleType } from '../role/role';
 import useRequestRole from '../role/useRequestRole';
 import usePromoteEntry from './usePromotEntry';
+import { MenuMode } from '../menu/menu';
 
 interface EntryControlsProps {
   entry: Entry;
@@ -35,6 +36,7 @@ export default function EntryControls(props: EntryControlsProps) {
     setClipboardArrowIds,
     setCreateGraphArrowId,
     setIsCreatingGraph,
+    setMenuMode,
   } = useContext(AppContext);
 
   const arrowUser = useAppSelector(state => selectUserById(state, props.arrow.userId));
@@ -64,6 +66,9 @@ export default function EntryControls(props: EntryControlsProps) {
     if (props.arrow.rootTwigId) {
       const route = `/g/${props.arrow.routeName}/0`;
       router.push(route);
+      if (isPlatform('mobile')) {
+        setMenuMode(MenuMode.NONE);
+      }
     }
     else {
       setCreateGraphArrowId(props.arrow.id);
