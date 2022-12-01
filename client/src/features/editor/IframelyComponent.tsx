@@ -16,17 +16,21 @@ export default function IframelyComponent(props: any) {
 
   useEffect(() => {
     if (props.blockProps && props.blockProps.url) {
-      fetch(`https://cdn.iframe.ly/api/iframely?url=${encodeURIComponent(props.blockProps.url)}&key=${key}&omit_script=1`)
+      fetch(`https://cdn.iframe.ly/api/iframely?url=${encodeURIComponent(props.blockProps.url)}&key=${key}&iframe=1&omit_script=1`)
         .then(res => res.json())
         .then(
           (res) => {
+            console.log(res);
             setIsLoaded(true);
             if (res.html) {
               console.log(res);
-              setHtml({__html: res.html});
+              setHtml({__html: `<div>${res.url}${res.html}</div>`});
             } 
             else if (res.error) {
               setError({code: res.error, message: res.message});
+            }
+            else {
+              setHtml({__html: `<div>${res.url}</div>`});
             }
           },
           (error) => {
