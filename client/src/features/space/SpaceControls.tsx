@@ -111,10 +111,10 @@ export default function SpaceControls(props: SpaceControlsProps) {
           : 165,
       top: 0,
       height: '100%',
+      zIndex: abstract?.twigZ ?? 0 + 100,
     }}>
       <div style={{
         position: 'fixed',
-        zIndex: abstract?.twigZ ?? 0 + 100,
       }}>
         <div style={{
           display: 'flex',
