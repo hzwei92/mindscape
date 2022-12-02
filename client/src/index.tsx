@@ -93,7 +93,7 @@ ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
       <ApolloProvider client={client}>
-        <DndProvider backend={isPlatform('mobile') ? TouchBackend : HTML5Backend}>
+        <DndProvider backend={HTML5Backend}>
           <App />
         </DndProvider>
       </ApolloProvider>
