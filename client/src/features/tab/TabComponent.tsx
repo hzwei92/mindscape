@@ -159,11 +159,6 @@ export default function TabComponent(props: TabComponentProps) {
         }}
       >
         <div style={{
-          paddingLeft: 2,
-        }}>
-          { props.tab.i }
-        </div>
-        <div style={{
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center',

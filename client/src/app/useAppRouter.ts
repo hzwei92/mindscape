@@ -6,8 +6,7 @@ import { selectFocusTab, selectIdToTab } from "../features/tab/tabSlice";
 import useUpdateTab from "../features/tab/useUpdateTab";
 import { useAppDispatch, useAppSelector } from "./store";
 import { Arrow } from '../features/arrow/arrow';
-import { selectIdToPos, selectIdToTwig, selectIToTwigId, selectSelectedTwigId, setSelectedTwigId } from "../features/space/spaceSlice";
-import useCenterTwig from "../features/twig/useCenterTwig";
+import { selectIdToTwig, selectIToTwigId, selectSelectedTwigId, setSelectedTwigId } from "../features/space/spaceSlice";
 import useSelectTwig from "../features/twig/useSelectTwig";
 import { checkPermit } from "../utils";
 import { Role } from "../features/role/role";
@@ -45,7 +44,6 @@ const useAppRouter = () => {
 
   const canEdit = abstract?.userId === user?.id || checkPermit(abstract?.canEditLayout, role?.type)
 
-  const { centerTwig: focusCenterTwig } = useCenterTwig(focusTab?.arrowId || '');
   const { selectTwig: focusSelectTwig } = useSelectTwig(focusTab?.arrowId || '', canEdit);
 
   const { createTabByRouteName } = useCreateTab();
@@ -96,12 +94,12 @@ const useAppRouter = () => {
                   abstractId: tab.arrowId,
                   selectedTwigId: twig.id,
                 }));
-                focusCenterTwig(twigId, true, 0);
+                //focusCenterTwig(twigId, true, 0);
               }
               else {
                 console.log('select twig by provided index');
                 focusSelectTwig(tab.arrow, twig);
-                focusCenterTwig(twigId, true, 0);
+                //focusCenterTwig(twigId, true, 0);
               }
             }
             else if (path[3] !== '0') {

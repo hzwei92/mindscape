@@ -114,7 +114,7 @@ export default function SpaceControls(props: SpaceControlsProps) {
       <div style={{
         position: 'fixed',
         right: props.showSettings || props.showRoles
-          ? SPACE_PANEL_WIDTH + 20
+          ? SPACE_PANEL_WIDTH + 5
           : 0,
       }}>
         <div style={{
@@ -124,9 +124,10 @@ export default function SpaceControls(props: SpaceControlsProps) {
           <IonCard color='light' style={{
             margin: 10,
             whiteSpace: 'nowrap',
-            display: 'flex',
+            display: 'none',
             flexDirection: 'row',
             justifyContent: 'space-between'
+
           }}>
             <IonButtons>
               <IonButton 

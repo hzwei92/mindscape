@@ -3,7 +3,7 @@ import { add, close, returnUpBackOutline } from "ionicons/icons";
 import React, { useContext, useEffect, useState } from "react";
 import { AppContext } from "../../app/App";
 import { useAppDispatch, useAppSelector } from "../../app/store";
-import { OFF_WHITE } from "../../constants";
+import { OFF_WHITE, VIEW_RADIUS } from "../../constants";
 import { Arrow } from "../arrow/arrow";
 import { selectIdToArrow } from "../arrow/arrowSlice";
 import SpaceComponent from "../space/SpaceComponent";
@@ -16,6 +16,7 @@ import icon from './icon.png'
 import usePublishAvatar from "./usePublishAvatar";
 import { IdToType } from "../../types";
 import TabComponent from "../tab/TabComponent";
+import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 
 export default function ExplorerComponent() {
   const dispatch = useAppDispatch();
@@ -187,7 +188,7 @@ export default function ExplorerComponent() {
                   left={menuX}
                   right={width}
                 />
-              </div>
+              </div>  
             : <IonCard style={{
                 margin: 0,
                 borderRadius: 0,
