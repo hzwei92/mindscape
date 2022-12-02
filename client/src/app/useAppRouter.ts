@@ -1,4 +1,4 @@
-import { useIonRouter } from "@ionic/react";
+import { isPlatform, useIonRouter } from "@ionic/react";
 import { useContext, useEffect } from "react";
 import { selectIdToArrow } from "../features/arrow/arrowSlice";
 import { Tab } from "../features/tab/tab";
@@ -111,16 +111,21 @@ const useAppRouter = () => {
             }
           }
           else {
-            spaceRef.current?.zoomToElement('twig-'+ selectedTwig.id, 1, 200)
+            if (isPlatform('mobile')) {
+              spaceRef.current?.zoomToElement('twig-'+ selectedTwig.id, 1, 200);
+            }
           }
         }
         else {
           updateTab(tab, false, true);
         }
       }
-      else {
+      else if (path[2]) {
         createTabByRouteName(path[2], null, false, true);
       }
+    }
+    else {
+      router.push(`/g/${focusTab?.arrow?.routeName}/0`, undefined, 'replace');
     }
   }, [user?.id, router.routeInfo, Object.keys(idToPos).length, selectedTwigId])
 }
