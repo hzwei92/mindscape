@@ -3,7 +3,6 @@ import { FULL_TWIG_FIELDS } from '../twig/twigFragments';
 import { useEffect } from 'react';
 import { mergeIdToPos, mergeTwigs, selectIdToPos, selectSelectedTwigId } from './spaceSlice';
 import { useAppDispatch, useAppSelector } from '../../app/store';
-import useCenterTwig from '../twig/useCenterTwig';
 import { useIonToast } from '@ionic/react';
 import { IdToType } from '../../types';
 import { PosType } from './space';
@@ -26,8 +25,6 @@ export default function useInitSpace(abstractId: string) {
 
   const selectedTwigId = useAppSelector(selectSelectedTwigId(abstractId));
   const idToPos = useAppSelector(selectIdToPos(abstractId)) ?? {};
-
-  const { centerTwig } = useCenterTwig(abstractId);
 
   const [getTwigs] = useMutation(GET_DETAILS, {
     onError: error => {
@@ -66,7 +63,7 @@ export default function useInitSpace(abstractId: string) {
         idToPos1[selectedTwigId]?.x !== idToPos[selectedTwigId]?.x || 
         idToPos1[selectedTwigId]?.y !== idToPos[selectedTwigId]?.y
       ) {
-        centerTwig(selectedTwigId || '', true, 0);
+        //centerTwig(selectedTwigId || '', true, 0);
       }
     },
   });
@@ -80,7 +77,7 @@ export default function useInitSpace(abstractId: string) {
       }
     });
     if (idToPos[selectedTwigId]) {
-      centerTwig(selectedTwigId || '', true, 0);
+      //centerTwig(selectedTwigId || '', true, 0);
     }
   }, [abstractId])
 

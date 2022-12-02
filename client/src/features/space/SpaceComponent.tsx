@@ -36,6 +36,7 @@ import SpaceNav from './SpaceNav';
 import { mergeIdToPos, moveTwigs, selectAbstractIdToData, setCursor, setDrag, setScale, setScroll } from './spaceSlice';
 import useInitSpace from './useInitSpace';
 import usePublishAvatar from '../explorer/usePublishAvatar';
+import { TransformWrapper, TransformComponent, ReactZoomPanPinchRef } from 'react-zoom-pan-pinch';
 
 export const SpaceContext = createContext({} as {
   abstractId: string;
@@ -121,6 +122,7 @@ const SpaceComponent = (props: SpaceComponentProps) => {
   const canPost = abstract?.userId === user?.id || checkPermit(abstract?.canPost, role?.type)
   const canView = abstract?.userId === user?.id || checkPermit(abstract?.canView, role?.type)
 
+  const wrapperRef = useRef<ReactZoomPanPinchRef>(null);
   const spaceEl = useRef<HTMLIonCardElement>(null);
   
   const [showSettings, setShowSettings] = useState(false);
@@ -212,10 +214,12 @@ const SpaceComponent = (props: SpaceComponentProps) => {
   };
 
   useEffect(() => {
-    if (!moveEvent || !spaceEl?.current) return;
+    if (!moveEvent || !spaceEl.current || !wrapperRef.current) return;
 
-    const x = spaceEl.current.scrollLeft + moveEvent.clientX - (menuMode === MenuMode.NONE ? 50 : 10 + menuX);
-    const y = spaceEl.current.scrollTop + moveEvent.clientY - 32;
+    const{ scale } = wrapperRef.current.state;
+
+    const x = (spaceEl.current.scrollLeft + moveEvent.clientX - (menuMode === MenuMode.NONE ? 50 : 10 + menuX)) / scale;
+    const y = (spaceEl.current.scrollTop + moveEvent.clientY - 32) / scale;
 
     const dx = x - (cursor?.x ?? 0);
     const dy = y - (cursor?.y ?? 0);
@@ -673,17 +677,11 @@ const SpaceComponent = (props: SpaceComponentProps) => {
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}
         onMouseMove={handleMouseMove}
-        onWheel={handleWheel}
-        onScroll={handleScroll}
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
         style={{
           margin: 0,
           padding: 0,
           height: '100%',
           width: '100%',
-          overflow:'scroll',
           backgroundColor: palette === 'dark'
             ? '#000000'
             : OFF_WHITE,
@@ -694,24 +692,47 @@ const SpaceComponent = (props: SpaceComponentProps) => {
           position: 'relative',
         }}
       >
-        <div style={{
-          width: VIEW_RADIUS * 2 * (scale < 1 ? scale : 1),
-          height: VIEW_RADIUS * 2 * (scale < 1 ? scale : 1),
-          //zoom: scale,
-          transform: `scale(${scale})`,
-          transformOrigin: '0 0',
-        }}>
-          <svg viewBox={`0 0 ${VIEW_RADIUS * 2} ${VIEW_RADIUS * 2}`} style={{
-            width: VIEW_RADIUS * 2,
-            height: VIEW_RADIUS * 2,
-          }}>
-            {
-              twigMarkers
-            }
-          </svg>
-          { twigs }
-          { dropTargets }
-        </div>
+        <TransformWrapper
+          ref={wrapperRef}
+          initialScale={1}
+          minScale={.0625}
+          maxScale={4}
+          initialPositionX={VIEW_RADIUS}
+          initialPositionY={VIEW_RADIUS}
+          centerZoomedOut={false}
+          wheel={{
+            step: .08,
+          }}
+          centerOnInit={true}
+        >
+          {({ state, zoomIn, zoomOut, resetTransform, setTransform, ...rest}) => (
+            <React.Fragment>
+              <TransformComponent
+                wrapperStyle={{
+                  width: '100%',
+                  height: '100%',
+                }}
+                contentStyle={{
+                  width: 2 * VIEW_RADIUS,
+                  height: 2 * VIEW_RADIUS,
+                  backgroundColor: palette === 'dark'
+                    ? '#000000'
+                    : OFF_WHITE,
+                  outline: '10px solid',
+                }}
+              >
+                <svg viewBox={`0 0 ${VIEW_RADIUS * 2} ${VIEW_RADIUS * 2}`} style={{
+                  width: VIEW_RADIUS * 2,
+                  height: VIEW_RADIUS * 2,
+                }}>
+                  { twigMarkers }
+                </svg>
+                { twigs }
+                { dropTargets }
+              </TransformComponent>
+            </React.Fragment>
+          )}
+        </TransformWrapper>
         {
           Object.keys(idToAvatar || {}).map(id => {
             const avatar = idToAvatar[id];
@@ -739,7 +760,10 @@ const SpaceComponent = (props: SpaceComponentProps) => {
         showSettings={showSettings}
         setShowSettings={setShowSettings}
       />
-      <SpaceNav />
+      <SpaceNav 
+        spaceEl={spaceEl}
+        wrapperRef={wrapperRef}
+      />
       <SettingsModal 
         showSettings={showSettings}
         setShowSettings={setShowSettings}

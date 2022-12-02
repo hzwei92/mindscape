@@ -1,18 +1,22 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { SpaceContext } from './SpaceComponent';
 import { useAppSelector } from '../../app/store';
-import useCenterTwig from '../twig/useCenterTwig';
 import useSelectTwig from '../twig/useSelectTwig';
 import { Twig } from '../twig/twig';
-import { MAX_Z_INDEX } from '../../constants';
+import { MAX_Z_INDEX, VIEW_RADIUS } from '../../constants';
 import { selectIdToTwig, selectSelectedTwigId } from './spaceSlice';
 import { selectIdToUser } from '../user/userSlice';
 import { AppContext } from '../../app/App';
 import { IonFab, IonFabButton, IonIcon, isPlatform } from '@ionic/react';
 import { playBackOutline, playForwardOutline, playSkipBackOutline, playSkipForwardOutline, scanOutline } from 'ionicons/icons';
 import { MenuMode } from '../menu/menu';
+import { ReactZoomPanPinchRef } from 'react-zoom-pan-pinch';
 
-export default function SpaceNav() {
+interface SpaceNavProps {
+  spaceEl: React.RefObject<HTMLIonCardElement>;
+  wrapperRef: React.RefObject<ReactZoomPanPinchRef>;
+}
+export default function SpaceNav(props: SpaceNavProps) {
   const {
     palette,
     menuMode,
@@ -34,7 +38,6 @@ export default function SpaceNav() {
   const hasEarlier = index > 0;
   const hasLater = index < twigs.length - 1;
 
-  const { centerTwig } = useCenterTwig(abstractId);
   const { selectTwig } = useSelectTwig(abstractId, canEdit);
 
   useEffect(() => {
@@ -62,11 +65,20 @@ export default function SpaceNav() {
     });
   }, [selectedTwigId]);
 
+  const centerTwig = (twig: Twig) => {
+    if (props.wrapperRef.current && props.spaceEl.current) {
+      const { state } = props.wrapperRef.current;
+      const x = -1 *(twig.x + VIEW_RADIUS) * state.scale + props.spaceEl.current.clientWidth / 2;
+      const y = -1 * (twig.y + VIEW_RADIUS) * state.scale + props.spaceEl.current.clientHeight / 2;
+      props.wrapperRef.current?.setTransform(x, y, state.scale);
+    }
+  }
+
   const select = (twig: Twig, isInstant?: boolean) => {
     if (selectedTwigId !== twig.id) {
       selectTwig(abstract, twig);
     }
-    centerTwig(twig.id, !isInstant, 0);
+    centerTwig(twig);
     setIndex(twig.i);
   }
 
@@ -103,7 +115,7 @@ export default function SpaceNav() {
     event.preventDefault();
 
     const twig = twigs[index];
-    centerTwig(twig?.id, true, 0);
+    centerTwig(twig);
   }
 
   const handleMouseMove = (e: React.MouseEvent) => {
