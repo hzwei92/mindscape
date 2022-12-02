@@ -1,11 +1,8 @@
 import { gql, useMutation } from "@apollo/client";
 import { Preferences } from "@capacitor/preferences";
 import { useIonRouter } from "@ionic/react";
-import { useContext } from "react";
-import { AppContext } from "../../app/App";
 import { useAppDispatch } from "../../app/store";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../../constants";
-import { MenuMode } from "../menu/menu";
 import { Tab } from "../tab/tab";
 import { FULL_USER_FIELDS } from "../user/userFragments";
 import { setLogin } from "./authSlice";
@@ -29,8 +26,6 @@ export default function useInitUser(onCompleted?: () => void) {
 
   const router = useIonRouter();
 
-  const { setMenuMode } = useContext(AppContext);
-
   const { refreshTokenInterval } = useToken();
 
   const [init] = useMutation(INIT_USER, {
@@ -53,8 +48,6 @@ export default function useInitUser(onCompleted?: () => void) {
       refreshTokenInterval();
 
       dispatch(setLogin(data.initUser.user));
-
-      setMenuMode(MenuMode.ABOUT);
 
       data.initUser.user.tabs.some((t: Tab) => {
         if (t.isFocus) {

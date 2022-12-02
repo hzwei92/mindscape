@@ -18,6 +18,8 @@ interface SpaceControlsProps {
   setShowSettings: Dispatch<SetStateAction<boolean>>;
   showRoles: boolean;
   setShowRoles: Dispatch<SetStateAction<boolean>>;
+  isSynced: boolean;
+  setIsSynced: Dispatch<SetStateAction<boolean>>;
 }
 export default function SpaceControls(props: SpaceControlsProps) {
   const dispatch = useAppDispatch();
@@ -28,8 +30,6 @@ export default function SpaceControls(props: SpaceControlsProps) {
   const spaceEl = useReactiveVar(spaceElVar)
     
   const scale = useAppSelector(selectScale(abstractId)) ?? 1;
-
-  const isSynced = true;
 
   const handleScaleDownClick = (event: React.MouseEvent) => {
     event.stopPropagation();
@@ -93,9 +93,9 @@ export default function SpaceControls(props: SpaceControlsProps) {
   }
 
   const handleSyncClick = () => {
-    // dispatch(setFocusIsSynced(true));
-    // dispatch(setFocusShouldSync(true));
+    props.setIsSynced(true);
   };
+
   const handleMouseMove = (e: React.MouseEvent) => {
     e.preventDefault();
   }
@@ -169,7 +169,7 @@ export default function SpaceControls(props: SpaceControlsProps) {
                 }}/>
               </IonFabButton> 
               <div style={{
-                display: isSynced
+                display: props.isSynced
                   ? 'none'
                   : 'block'
               }}>

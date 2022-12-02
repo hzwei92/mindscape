@@ -1,5 +1,5 @@
 import { useReactiveVar } from '@apollo/client';
-import { IonCard, IonIcon } from '@ionic/react';
+import { IonCard, IonIcon, useIonToast } from '@ionic/react';
 import { navigateCircleOutline } from 'ionicons/icons';
 import React, { createContext, Dispatch, memo, MouseEvent, SetStateAction, TouchList, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { AppContext } from '../../app/App';
@@ -68,10 +68,14 @@ interface SpaceComponentProps {
 
 const SpaceComponent = (props: SpaceComponentProps) => {
   const dispatch = useAppDispatch();
+  
+  const [present] = useIonToast();
 
   const { user, palette, menuX, menuMode } = useContext(AppContext);
  
-  useInitSpace(props.abstractId);
+  const [isSynced, setIsSynced] = useState(true);
+
+  useInitSpace(props.abstractId, isSynced);
   useTwigTree(props.abstractId);
 
   useReplyTwigSub(props.abstractId);
@@ -131,11 +135,6 @@ const SpaceComponent = (props: SpaceComponentProps) => {
   const [touches, setTouches] = useState<TouchList | null>(null);
 
   const [moveEvent, setMoveEvent] = useState(null as MouseEvent | null);
-
-  const [isScaling, setIsScaling] = useState(false);
-
-  const [cursorClient, setCursorClient] = useState({ x: 0, y: 0 });
-
 
   const [removalTwigId, setRemovalTwigId] = useState('');
   const [showRemoveTwigModal, setShowRemoveTwigModal] = useState(false);
@@ -224,19 +223,9 @@ const SpaceComponent = (props: SpaceComponentProps) => {
     const dx = x - (cursor?.x ?? 0);
     const dy = y - (cursor?.y ?? 0);
 
-    if (drag?.isScreen) {
-      //spaceEl.current.scrollBy(cursorClient.x - moveEvent.clientX, cursorClient.y - moveEvent.clientY);
-    }
-    else {
-      moveDrag(dx, dy);
-      publishAvatar(props.abstractId, x, y);  
-    }
-    
-    setCursorClient({
-      x: moveEvent.clientX,
-      y: moveEvent.clientY,
-    });
-    
+    moveDrag(dx, dy);
+    publishAvatar(props.abstractId, x, y); 
+  
     dispatch(setCursor({
       abstractId: props.abstractId,
       cursor: {
@@ -281,43 +270,6 @@ const SpaceComponent = (props: SpaceComponentProps) => {
     publishAvatar(props.abstractId, cursor.x + dx, cursor.y + dy);
   }
 
-  const handleWheel = (event: React.WheelEvent) => {
-    if (event.ctrlKey || event.metaKey) {
-      if (!spaceEl.current) return;
-
-      const { scrollLeft, scrollTop } = spaceEl.current;
-
-      if (scroll?.left !== scrollLeft || scroll?.top !== scrollTop) {
-        spaceEl.current.scrollTo({
-          left: scroll?.left,
-          top: scroll?.top,
-        });
-      }
-
-      const center = {
-        x: (cursor.x) / scale,
-        y: (cursor.y) / scale,
-      };
-
-      const scale1 = Math.min(Math.max(.03125, scale + event.deltaY * -0.004), 4)
-
-      const left =  Math.round((center.x * scale1) - (event.clientX - (menuMode === MenuMode.NONE ? 50 : 10 + menuX)));
-      const top = Math.round(center.y * scale1 - (event.clientY - 32));
-      
-      spaceEl.current.scrollTo({
-        left,
-        top,
-      });
-
-      setIsScaling(true);
-      updateScroll(left, top)
-      dispatch(setScale({
-        abstractId: props.abstractId,
-        scale: scale1
-      }));
-    }
-  };
-
   const handleMouseDown = (event: React.MouseEvent) => {
     dispatch(setDrag({
       abstractId: props.abstractId,
@@ -351,7 +303,7 @@ const SpaceComponent = (props: SpaceComponentProps) => {
       }
     }
     else {
-      // dispatch(setFocusIsSynced(false));
+      setIsSynced(false)
     }
   };
 
@@ -375,12 +327,6 @@ const SpaceComponent = (props: SpaceComponentProps) => {
     if (!moveEvent) {
       setMoveEvent(event);
     }
-    else {
-      setCursorClient({
-        x: event.clientX,
-        y: event.clientY,
-      });
-    }
   }
 
   const handleTargetMouseMove = (targetId: string) => (event: React.MouseEvent) => {
@@ -395,15 +341,6 @@ const SpaceComponent = (props: SpaceComponentProps) => {
       }));
     }
     handleMouseMove(event, targetId);
-  }
-
-  const handleScroll = (event: React.UIEvent) => {
-    if (isScaling) {
-      setIsScaling(false);
-    }
-    else {
-      updateScroll(event.currentTarget.scrollLeft, event.currentTarget.scrollTop);
-    }
   }
 
   const handleTouchStart = (event: React.TouchEvent) => {
@@ -662,7 +599,7 @@ const SpaceComponent = (props: SpaceComponentProps) => {
             excluded: ['.no-pan'],
           }}
           wheel={{
-            step: .064,
+            step: .052,
           }}
           centerOnInit={true}
         >
@@ -720,6 +657,8 @@ const SpaceComponent = (props: SpaceComponentProps) => {
         setShowRoles={setShowRoles}
         showSettings={showSettings}
         setShowSettings={setShowSettings}
+        isSynced={isSynced}
+        setIsSynced={setIsSynced}
       />
       <SpaceNav 
         spaceEl={spaceEl}
