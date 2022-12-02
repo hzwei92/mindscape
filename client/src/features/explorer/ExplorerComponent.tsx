@@ -12,8 +12,7 @@ import TabComponent from "../tab/TabComponent";
 
 export default function ExplorerComponent() {
   const { 
-    menuX, 
-    width, 
+    menuX,
     palette, 
     setIsCreatingGraph, 
     setCreateGraphArrowId,
@@ -116,7 +115,7 @@ export default function ExplorerComponent() {
                 <SpaceComponent 
                   abstractId={focusTab?.arrowId}
                   left={menuX}
-                  right={width}
+                  right={0}
                 />
               </div>  
             : <IonCard style={{
