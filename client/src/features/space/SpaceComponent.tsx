@@ -701,7 +701,7 @@ const SpaceComponent = (props: SpaceComponentProps) => {
           initialPositionY={VIEW_RADIUS}
           centerZoomedOut={false}
           wheel={{
-            step: .07,
+            step: .064,
           }}
           centerOnInit={true}
         >
