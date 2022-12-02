@@ -134,7 +134,7 @@ export default function ArrowComponent(props: ArrowProps) {
             ? null
             : <span onClick={handleAbstractClick} style={{
                 color: arrowAbstract?.color,
-                cursor: 'pointer'
+                cursor: 'pointer',
               }}>
                 {arrowAbstract?.title}
               </span>
@@ -143,17 +143,20 @@ export default function ArrowComponent(props: ArrowProps) {
       <div>
         {
           arrow.title 
-            ? <div onClick={handleTitleClick} style={{
-                whiteSpace: 'pre-wrap',
-                wordWrap: 'break-word',
-                fontSize: 20,
-                fontWeight: 'bold',
-                cursor: 'pointer',
-                color: arrow.color,
+            ? <div style={{
                 paddingTop: 5,
-                textDecoration: 'underline',
               }}>
-                {arrow.title}
+                <span onClick={handleTitleClick} style={{
+                  whiteSpace: 'pre-wrap',
+                  wordWrap: 'break-word',
+                  fontSize: 20,
+                  fontWeight: 'bold',
+                  cursor: 'pointer',
+                  color: arrow.color,
+                  textDecoration: 'underline',
+                }}>
+                  {arrow.title}
+                </span>
               </div>
             : null
         }
