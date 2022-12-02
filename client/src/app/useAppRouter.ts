@@ -45,17 +45,17 @@ const useAppRouter = () => {
 
   const canEdit = abstract?.userId === user?.id || checkPermit(abstract?.canEditLayout, role?.type)
 
-  const { selectTwig: focusSelectTwig } = useSelectTwig(focusTab?.arrowId || '', canEdit);
+  const { selectTwig } = useSelectTwig(focusTab?.arrowId || '', canEdit);
 
   const { createTabByRouteName } = useCreateTab();
   const { updateTab } = useUpdateTab();
 
   useEffect(() => {
-    if (!user) return;
+    if (!user?.id) return;
     
     const path = router.routeInfo?.pathname.split('/') || [];
 
-    console.log('path', path)
+    console.log('path', path, user?.id, Object.keys(idToPos).length)
 
     if (path[1] === 'g') {
       let tab = null as Tab | null;
@@ -78,7 +78,8 @@ const useAppRouter = () => {
 
           const selectedTwig = idToTwig[selectedTwigId];
 
-          console.log(selectedTwig)
+          console.log('selectedTwig', selectedTwig);
+
           if (path[3] === '') {
             if (selectedTwig) {
               router.push(`/g/${path[2]}/${selectedTwig.i}`, undefined, 'replace');
@@ -100,7 +101,7 @@ const useAppRouter = () => {
               }
               else {
                 console.log('select twig by provided index');
-                focusSelectTwig(tab.arrow, twig);
+                selectTwig(tab.arrow, twig);
                 spaceRef.current?.zoomToElement('twig-'+ twig.id, 1, 200)
               }
             }
@@ -108,6 +109,9 @@ const useAppRouter = () => {
               console.log('select root twig bc provided index is invalid');
               router.push(`/g/${path[2]}/0`, undefined, 'replace');
             }
+          }
+          else {
+            spaceRef.current?.zoomToElement('twig-'+ selectedTwig.id, 1, 200)
           }
         }
         else {
@@ -118,7 +122,7 @@ const useAppRouter = () => {
         createTabByRouteName(path[2], null, false, true);
       }
     }
-  }, [user, router.routeInfo, Object.keys(idToPos).length])
+  }, [user?.id, router.routeInfo, Object.keys(idToPos).length, selectedTwigId])
 }
 
 export default useAppRouter;

@@ -20,7 +20,6 @@ export default function IframelyComponent(props: any) {
         .then(res => res.json())
         .then(
           (res) => {
-            console.log(res);
             setIsLoaded(true);
             if (res.html) {
               console.log(res);

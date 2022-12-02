@@ -21,7 +21,6 @@ function Hits(props: HitsProps) {
   });
 
   useEffect(() => {
-    console.log(props.hits);
     const idToEntry1: IdToType<Entry> = {};
     const entryIds: string[] = [];
     const userIds: string[] = [];
