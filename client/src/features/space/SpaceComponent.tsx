@@ -418,105 +418,59 @@ const SpaceComponent = (props: SpaceComponentProps) => {
   }
  
   const handleTouchMove = (event: React.TouchEvent) => {
-    console.log('touchMove');
-    setTouches(event.touches);
-
-    if (!touches) return;
-
-    event.preventDefault();
     event.stopPropagation();
-
-    if (event.touches.length > 1 && touches.length > 1) {
-      if (!spaceEl.current) return;
+    setTouches(event.touches);
+    if (!touches || !drag?.twigId) return;
     
-      const dx1 = event.touches.item(0).clientX - event.touches.item(1).clientX;
-      const dy1 = event.touches.item(0).clientY - event.touches.item(1).clientY;
-      const currDiff = Math.sqrt(Math.pow(dx1, 2) + Math.pow(dy1, 2));
+    const current = event.touches.item(0);
+    const dx = Math.round(current.clientX - touches.item(0).clientX);
+    const dy = Math.round(current.clientY - touches.item(0).clientY);
 
-      const dx0 = touches.item(0).clientX - touches.item(1).clientX;
-      const dy0 = touches.item(0).clientY - touches.item(1).clientY;
-      const prevDiff = Math.sqrt(Math.pow(dx0, 2) + Math.pow(dy0, 2));
+    const pos = idToPos[drag?.twigId];
 
-      if (Math.abs(currDiff - prevDiff) < 10) return;
+    let targetTwigId = '';
+    Object.keys(idToTwig).some(twigId => {
+      const targetTwig = idToTwig[twigId];
+      const targetPos = idToPos[twigId];
+      const targetHeight = idToHeight[twigId];
 
-      const scalar = currDiff < prevDiff
-        ? 1
-        : -1;
-        
-      const center = {
-        x: (spaceEl.current.scrollLeft + (spaceEl.current.clientWidth / 2)) / scale,
-        y: (spaceEl.current.scrollTop + (spaceEl.current.clientHeight / 2)) / scale,
-      };
-
-      const scale1 = Math.min(Math.max(.03125, scale + scalar * -0.08), 4)
-
-      const left = (center.x * scale1) - (spaceEl.current.clientWidth / 2);
-      const top = (center.y * scale1) - (spaceEl.current.clientHeight / 2);
-      
-      spaceEl.current.scrollTo({
-        left,
-        top,
-      });
-
-      setIsScaling(true);
-      updateScroll(left, top)
-      dispatch(setScale({
-        abstractId: props.abstractId,
-        scale: scale1
-      }));
-    }
-    else if (drag?.twigId) {
-      const current = event.touches.item(0);
-      const dx = Math.round(current.clientX - touches.item(0).clientX);
-      const dy = Math.round(current.clientY - touches.item(0).clientY);
-
-      const pos = idToPos[drag?.twigId];
-
-      let targetTwigId = '';
-      Object.keys(idToTwig).some(twigId => {
-        const targetTwig = idToTwig[twigId];
-        const targetPos = idToPos[twigId];
-        const targetHeight = idToHeight[twigId];
-
-        if (
-          !targetTwig.deleteDate &&
-          pos.x > targetPos.x &&
-          pos.y > targetPos.y &&
-          pos.x < targetPos.x + TWIG_WIDTH &&
-          pos.y < targetPos.y + targetHeight
-        ) {
-          targetTwigId = twigId
-        }
-        return !!targetTwigId;
-      })
-
-      if (targetTwigId !== drag?.targetTwigId) {
-        if (targetTwigId) {
-          dispatch(setDrag({
-            abstractId: props.abstractId,
-            drag: {
-              ...drag,
-              targetTwigId,
-            },
-          }));
-        }
-        else {
-          dispatch(setDrag({
-            abstractId: props.abstractId,
-            drag: {
-              ...drag,
-              targetTwigId: '',
-            },
-          }));
-        }
+      if (
+        !targetTwig.deleteDate &&
+        pos.x > targetPos.x &&
+        pos.y > targetPos.y &&
+        pos.x < targetPos.x + TWIG_WIDTH &&
+        pos.y < targetPos.y + targetHeight
+      ) {
+        targetTwigId = twigId
       }
+      return !!targetTwigId;
+    })
 
-      moveDrag(dx, dy)
+    if (targetTwigId !== drag?.targetTwigId) {
+      if (targetTwigId) {
+        dispatch(setDrag({
+          abstractId: props.abstractId,
+          drag: {
+            ...drag,
+            targetTwigId,
+          },
+        }));
+      }
+      else {
+        dispatch(setDrag({
+          abstractId: props.abstractId,
+          drag: {
+            ...drag,
+            targetTwigId: '',
+          },
+        }));
+      }
     }
+
+    moveDrag(dx, dy)
   }
 
   const handleTouchEnd = (event: React.TouchEvent) => {
-    console.log('touchEnd');
     endDrag();
   }
 
@@ -677,6 +631,9 @@ const SpaceComponent = (props: SpaceComponentProps) => {
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}
         onMouseMove={handleMouseMove}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
         style={{
           margin: 0,
           padding: 0,
@@ -700,6 +657,10 @@ const SpaceComponent = (props: SpaceComponentProps) => {
           initialPositionX={VIEW_RADIUS}
           initialPositionY={VIEW_RADIUS}
           centerZoomedOut={false}
+          panning={{
+            disabled: !!drag?.twigId,
+            excluded: ['.no-pan'],
+          }}
           wheel={{
             step: .064,
           }}

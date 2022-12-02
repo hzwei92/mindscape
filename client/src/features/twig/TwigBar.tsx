@@ -8,7 +8,6 @@ import useOpenTwig from './useOpenTwig';
 import { AppContext } from '../../app/App';
 import { IonButton, IonButtons, IonIcon, IonLabel } from '@ionic/react';
 import { addOutline, closeOutline, removeOutline } from 'ionicons/icons';
-import { userInfo } from 'os';
 
 interface TwigBarProps {
   twig: Twig;
@@ -38,12 +37,7 @@ function TwigBar(props: TwigBarProps) {
 
   const { openTwig } = useOpenTwig();
 
-  const color = palette === 'dark'
-    ? 'black'
-    : 'white';
-
   const beginDrag = () => {
-    console.log('begin drag');
     if (props.twig.id === abstract?.rootTwigId) return;
     dispatch(setDrag({
       abstractId,
@@ -84,6 +78,7 @@ function TwigBar(props: TwigBarProps) {
 
   return (
     <div
+      className='no-pan'
       title={props.twig.id}
       onMouseDown={handleMouseDown}
       onTouchStart={handleTouchStart}
