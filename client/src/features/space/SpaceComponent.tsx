@@ -545,13 +545,17 @@ const SpaceComponent = (props: SpaceComponentProps) => {
     }
     else {
       twigs.push(
-        <div key={`twig-${twigId}`} style={{
-          position: 'absolute',
-          left: pos.x + VIEW_RADIUS,
-          top: pos.y + VIEW_RADIUS,
-          zIndex: twig.z,
-          pointerEvents: 'none',
-        }}>
+        <div key={`twig-${twigId}`} 
+          id={'twig-' + twig.id}
+          style={{
+            position: 'absolute',
+            left: pos.x + VIEW_RADIUS - 80,
+            top: pos.y + VIEW_RADIUS - 80,
+            zIndex: twig.z,
+            pointerEvents: 'none',
+            padding: 80,
+          }}
+        >
           <PostTwig twigId={twig.id} />
         </div>
       );

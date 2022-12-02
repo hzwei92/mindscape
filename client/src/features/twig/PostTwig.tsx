@@ -114,7 +114,6 @@ function PostTwig(props: PostTwigProps) {
   return (
     <IonCard
       ref={cardEl}
-      id={'twig-' + twig.id}
       onMouseMove={handleMouseMove}
       onMouseDown={handleMouseDown}
       onClick={handleClick}

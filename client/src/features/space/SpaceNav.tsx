@@ -74,11 +74,17 @@ export default function SpaceNav(props: SpaceNavProps) {
     }
   }
 
+  const centerTwig1 = (twig: Twig) => {
+    if (props.wrapperRef.current) {
+      const { zoomToElement } = props.wrapperRef.current;
+      zoomToElement('twig-' + twig.id, undefined, 300);
+    }
+  }
   const select = (twig: Twig, isInstant?: boolean) => {
     if (selectedTwigId !== twig.id) {
       selectTwig(abstract, twig);
     }
-    centerTwig(twig);
+    centerTwig1(twig);
     setIndex(twig.i);
   }
 
@@ -115,7 +121,7 @@ export default function SpaceNav(props: SpaceNavProps) {
     event.preventDefault();
 
     const twig = twigs[index];
-    centerTwig(twig);
+    centerTwig1(twig);
   }
 
   const handleMouseMove = (e: React.MouseEvent) => {
@@ -146,8 +152,8 @@ export default function SpaceNav(props: SpaceNavProps) {
       <IonFabButton title='Previous' disabled={!hasEarlier} color={'light'} onClick={handleNavPrev} size='small'>
         <IonIcon icon={playBackOutline} />
       </IonFabButton>
-      <IonFabButton title='Selected' disabled={!selectedTwigId} color={'light'} onClick={handleNavFocus} size='small'>
-        <IonIcon icon={scanOutline}/>
+      <IonFabButton title='Selected' disabled={!selectedTwigId} color={'light'} onClick={handleNavFocus} size='small' onKeyDown={e => console.log(e.key)}>
+        { twigs[index]?.i }
       </IonFabButton>
       <IonFabButton title='Next' disabled={!hasLater} color={'light'} onClick={handleNavNext} size='small'>
         <IonIcon icon={playForwardOutline}/>
