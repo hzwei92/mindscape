@@ -1,5 +1,5 @@
 import { connectHits } from 'react-instantsearch-dom';
-import { v4 as uuidv4 } from 'uuid'; 
+import { v4 } from 'uuid'; 
 import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../app/store';
 import { searchRefresh, searchSpliceSlice, selectSearchSlice } from './searchSlice';
@@ -44,7 +44,7 @@ function Hits(props: HitsProps) {
           }
           else {
             const entry: Entry = {
-              id: uuidv4(),
+              id: v4(),
               userId: hit.userId,
               parentId: '',
               arrowId: hit.id,
