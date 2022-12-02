@@ -616,7 +616,7 @@ const SpaceComponent = (props: SpaceComponentProps) => {
                   backgroundColor: palette === 'dark'
                     ? '#000000'
                     : OFF_WHITE,
-                  borderRadius: 100,
+                  borderRadius: 200,
                   outline: '10px solid',
                 }}
               >
