@@ -599,7 +599,7 @@ const SpaceComponent = (props: SpaceComponentProps) => {
             excluded: ['.no-pan'],
           }}
           wheel={{
-            step: .06,
+            step: .08,
           }}
           centerOnInit={true}
         >
