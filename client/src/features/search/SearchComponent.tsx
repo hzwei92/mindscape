@@ -20,8 +20,6 @@ function SearchComponent() {
   const index = useAppSelector(selectSearchIndex);
   const slice = useAppSelector(selectSearchSlice);
 
-  console.log('slice', slice, stack, index);
-
   const shouldRefreshDraft = useAppSelector(selectSearchShouldRefresh);
   const [searchClient, setSearchClient] = useState(null as SearchClient | null);
 

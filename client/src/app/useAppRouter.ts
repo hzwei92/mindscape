@@ -6,7 +6,7 @@ import { selectFocusTab, selectIdToTab } from "../features/tab/tabSlice";
 import useUpdateTab from "../features/tab/useUpdateTab";
 import { useAppDispatch, useAppSelector } from "./store";
 import { Arrow } from '../features/arrow/arrow';
-import { selectIdToTwig, selectIToTwigId, selectSelectedTwigId, setSelectedTwigId } from "../features/space/spaceSlice";
+import { selectIdToPos, selectIdToTwig, selectIToTwigId, selectSelectedTwigId, setSelectedTwigId } from "../features/space/spaceSlice";
 import useSelectTwig from "../features/twig/useSelectTwig";
 import { checkPermit } from "../utils";
 import { Role } from "../features/role/role";
@@ -19,7 +19,7 @@ const useAppRouter = () => {
 
   const router = useIonRouter();
 
-  const { user, newTwigId } = useContext(AppContext);
+  const { user, newTwigId, spaceRef } = useContext(AppContext);
 
   const focusTab = useAppSelector(selectFocusTab);
   const idToTab = useAppSelector(selectIdToTab);
@@ -28,6 +28,7 @@ const useAppRouter = () => {
 
   const selectedTwigId = useAppSelector(selectSelectedTwigId(focusTab?.arrowId || ''));
 
+  const idToPos = useAppSelector(selectIdToPos(focusTab?.arrowId || '')) ?? {};
   const idToTwig = useAppSelector(selectIdToTwig(focusTab?.arrowId || '')) ?? {};
   const iToTwigId = useAppSelector(selectIToTwigId(focusTab?.arrowId || '')) ?? {};
 
@@ -72,6 +73,7 @@ const useAppRouter = () => {
 
       if (tab && arrow) {
         if (tab.isFocus) {
+          if (Object.keys(idToPos).length === 0) return;
           document.title = arrow.title ?? '';
 
           const selectedTwig = idToTwig[selectedTwigId];
@@ -94,12 +96,12 @@ const useAppRouter = () => {
                   abstractId: tab.arrowId,
                   selectedTwigId: twig.id,
                 }));
-                //focusCenterTwig(twigId, true, 0);
+                spaceRef.current?.zoomToElement('twig-'+ twig.id, spaceRef.current.state.scale, 200)
               }
               else {
                 console.log('select twig by provided index');
                 focusSelectTwig(tab.arrow, twig);
-                //focusCenterTwig(twigId, true, 0);
+                spaceRef.current?.zoomToElement('twig-'+ twig.id, 1, 200)
               }
             }
             else if (path[3] !== '0') {
@@ -116,7 +118,7 @@ const useAppRouter = () => {
         createTabByRouteName(path[2], null, false, true);
       }
     }
-  }, [user, router.routeInfo])
+  }, [user, router.routeInfo, Object.keys(idToPos).length])
 }
 
 export default useAppRouter;

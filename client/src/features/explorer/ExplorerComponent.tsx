@@ -1,25 +1,16 @@
-import { IonButton, IonButtons, IonCard, IonIcon, useIonRouter } from "@ionic/react";
-import { add, close, returnUpBackOutline } from "ionicons/icons";
-import React, { useContext, useEffect, useState } from "react";
+import { IonButton, IonButtons, IonCard, IonIcon } from "@ionic/react";
+import { add } from "ionicons/icons";
+import { useContext, useEffect, useState } from "react";
 import { AppContext } from "../../app/App";
-import { useAppDispatch, useAppSelector } from "../../app/store";
-import { OFF_WHITE, VIEW_RADIUS } from "../../constants";
-import { Arrow } from "../arrow/arrow";
-import { selectIdToArrow } from "../arrow/arrowSlice";
+import { useAppSelector } from "../../app/store";
 import SpaceComponent from "../space/SpaceComponent";
-import { selectAbstractIdToData } from "../space/spaceSlice";
 import usePublishAvatarSub from "./usePublishAvatarSub";
-import { Tab } from "../tab/tab";
-import { mergeTabs, selectFocusTab, selectIdToTab } from "../tab/tabSlice";
-import useRemoveTab from "../tab/useRemoveTab";
+import { selectFocusTab, selectIdToTab } from "../tab/tabSlice";
 import icon from './icon.png'
 import usePublishAvatar from "./usePublishAvatar";
-import { IdToType } from "../../types";
 import TabComponent from "../tab/TabComponent";
-import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 
 export default function ExplorerComponent() {
-  const dispatch = useAppDispatch();
   const { 
     menuX, 
     width, 
@@ -29,18 +20,8 @@ export default function ExplorerComponent() {
   } = useContext(AppContext);
 
   const idToTab = useAppSelector(selectIdToTab) ?? {};
-  const idToArrow = useAppSelector(selectIdToArrow);
 
   const focusTab = useAppSelector(selectFocusTab);
-
-  const abstractIdToData = useAppSelector(selectAbstractIdToData);
-
-  const router = useIonRouter();
-  const path = (router.routeInfo?.pathname || '').split('/');
-
-  const [dragTabId, setDragTabId] = useState('');
-
-  const { removeTab } = useRemoveTab();
 
   const [abstractIds, setAbstractIds] = useState<string[]>([]);
   
@@ -55,7 +36,6 @@ export default function ExplorerComponent() {
   const [abstractId, setAbstractId] = useState('');
 
   useEffect(() => {
-    console.log('focusTab change', focusTab, abstractId)
     if (focusTab?.id) {
       if (abstractId) {
         publishAvatar(abstractId, null, null);
@@ -68,56 +48,6 @@ export default function ExplorerComponent() {
   const handleCreateGraphClick = () => {
     setCreateGraphArrowId(null);
     setIsCreatingGraph(true);
-  }
-
-  const handleDragOver = (dropIndex: number) => (e: React.DragEvent) => {
-    e.stopPropagation();
-
-    if (!dragTabId) return;
-
-    const tab = idToTab[dragTabId];
-
-    if (dropIndex < tab.i) {
-      const tabs = Object.values(idToTab).map(t => {
-        if (t.i < dropIndex) {
-          return t;
-        }
-        if (t.i < tab.i) {
-          return { 
-            ...t, 
-            i: t.i + 1 
-          };
-        }
-        if (t.id === tab.id) {
-          return { 
-            ...t, 
-            i: dropIndex 
-          };
-        }
-        return t;
-      })
-
-      dispatch(mergeTabs(tabs))
-    }
-    else {
-      const tabs = Object.values(idToTab).map(t => {
-        if (t.i > tab.i && t.i <= dropIndex) {
-          return { 
-            ...t, 
-            i: t.i - 1 
-          };
-        }
-        if (t.id === tab.id) {
-          return { 
-            ...t, 
-            i: dropIndex 
-          };
-        }
-        return t;
-      })
-
-      dispatch(mergeTabs(tabs))
-    }
   }
 
   return (

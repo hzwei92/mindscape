@@ -14,12 +14,11 @@ import { ReactZoomPanPinchRef } from 'react-zoom-pan-pinch';
 
 interface SpaceNavProps {
   spaceEl: React.RefObject<HTMLIonCardElement>;
-  wrapperRef: React.RefObject<ReactZoomPanPinchRef>;
 }
 export default function SpaceNav(props: SpaceNavProps) {
   const {
-    palette,
     menuMode,
+    spaceRef,
   } = useContext(AppContext);
 
   const { 
@@ -31,15 +30,17 @@ export default function SpaceNav(props: SpaceNavProps) {
   const selectedTwigId = useAppSelector(selectSelectedTwigId(abstractId));
 
   const idToTwig = useAppSelector(selectIdToTwig(abstractId)) ?? {};
-  const idToUser = useAppSelector(selectIdToUser) ?? {};
 
   const [twigs, setTwigs] = useState([] as Twig[]);
   const [index, setIndex] = useState(0);
   const hasEarlier = index > 0;
   const hasLater = index < twigs.length - 1;
 
+  const [twigsAbstractId, setTwigsAbstractId] = useState('');
+
   const { selectTwig } = useSelectTwig(abstractId, canEdit);
 
+  
   useEffect(() => {
     const twigs1 = Object.keys(idToTwig).map(id => idToTwig[id])
       .filter(twig => (
@@ -51,10 +52,12 @@ export default function SpaceNav(props: SpaceNavProps) {
       .sort((a, b) => a.i < b.i ? -1 : 1);
       
     setTwigs(twigs1);
+    setTwigsAbstractId(abstractId);
+
   }, [idToTwig]);
 
   useEffect(() => {
-    if (!selectedTwigId) return;
+    if (!selectedTwigId || twigsAbstractId !== abstractId) return;
 
     twigs.some((twig, i) => {
       if (twig.id === selectedTwigId) {
@@ -63,28 +66,21 @@ export default function SpaceNav(props: SpaceNavProps) {
       }
       return false;
     });
-  }, [selectedTwigId]);
+  }, [selectedTwigId, twigs, twigsAbstractId]);
+
 
   const centerTwig = (twig: Twig) => {
-    if (props.wrapperRef.current && props.spaceEl.current) {
-      const { state } = props.wrapperRef.current;
-      const x = -1 *(twig.x + VIEW_RADIUS) * state.scale + props.spaceEl.current.clientWidth / 2;
-      const y = -1 * (twig.y + VIEW_RADIUS) * state.scale + props.spaceEl.current.clientHeight / 2;
-      props.wrapperRef.current?.setTransform(x, y, state.scale);
+    if (spaceRef.current) {
+      const { zoomToElement } = spaceRef.current;
+      zoomToElement('twig-' + twig.id, undefined, 200);
     }
   }
 
-  const centerTwig1 = (twig: Twig) => {
-    if (props.wrapperRef.current) {
-      const { zoomToElement } = props.wrapperRef.current;
-      zoomToElement('twig-' + twig.id, undefined, 300);
-    }
-  }
   const select = (twig: Twig, isInstant?: boolean) => {
     if (selectedTwigId !== twig.id) {
       selectTwig(abstract, twig);
     }
-    centerTwig1(twig);
+    centerTwig(twig);
     setIndex(twig.i);
   }
 
@@ -121,13 +117,12 @@ export default function SpaceNav(props: SpaceNavProps) {
     event.preventDefault();
 
     const twig = twigs[index];
-    centerTwig1(twig);
+    centerTwig(twig);
   }
 
   const handleMouseMove = (e: React.MouseEvent) => {
     e.preventDefault();
   }
-
   
   return (
     <div onMouseMove={handleMouseMove} style={{

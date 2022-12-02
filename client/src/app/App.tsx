@@ -39,6 +39,7 @@ import MenuComponent from '../features/menu/MenuComponent';
 import ExplorerComponent from '../features/explorer/ExplorerComponent';
 import InitUserModal from '../features/auth/InitUserModal';
 import LoginModal from '../features/auth/LoginModal';
+import { ReactZoomPanPinchRef } from 'react-zoom-pan-pinch';
 
 setupIonicReact();
 
@@ -91,6 +92,8 @@ export const AppContext = createContext({} as {
 
   showLoginModal: boolean;
   setShowLoginModal: Dispatch<SetStateAction<boolean>>;
+
+  spaceRef: React.RefObject<ReactZoomPanPinchRef>;
 });
 
 const App: React.FC = () => {
@@ -98,6 +101,8 @@ const App: React.FC = () => {
   const user = useAppSelector(selectCurrentUser);
 
   const idToUser = useAppSelector(selectIdToUser);
+  
+  const spaceRef = useRef<ReactZoomPanPinchRef>(null);
 
   const [width, setWidth] = useState(window.innerWidth);
   const [height, setHeight] = useState(window.innerHeight);
@@ -207,6 +212,8 @@ const App: React.FC = () => {
 
       showLoginModal,
       setShowLoginModal,
+
+      spaceRef,
     };
   }, [
     user, 
@@ -223,6 +230,7 @@ const App: React.FC = () => {
     menuIsResizing,
     showInitUserModal,
     showLoginModal,
+    spaceRef,
   ]);
 
   const handleMouseMove = (event: React.MouseEvent) => {
