@@ -24,8 +24,6 @@ export default function useInitSpace(abstractId: string, isSynced: boolean) {
 
   const [presentToast] = useIonToast();
 
-  const { spaceRef } = useContext(AppContext);
-
   const selectedTwigId = useAppSelector(selectSelectedTwigId(abstractId));
   const idToPos = useAppSelector(selectIdToPos(abstractId)) ?? {};
   const [getTwigs] = useMutation(GET_DETAILS, {
@@ -60,14 +58,6 @@ export default function useInitSpace(abstractId: string, isSynced: boolean) {
         abstractId,
         idToPos: idToPos1,
       }));
-
-      if (
-        idToPos1[selectedTwigId]?.x !== idToPos[selectedTwigId]?.x || 
-        idToPos1[selectedTwigId]?.y !== idToPos[selectedTwigId]?.y
-      ) {
-        console.log('scrolling to selected twig');
-        spaceRef.current?.zoomToElement('twig-' + selectedTwigId, 1, 200);
-      }
     },
   });
 
@@ -79,8 +69,6 @@ export default function useInitSpace(abstractId: string, isSynced: boolean) {
         abstractId,
       }
     });
-
-    spaceRef.current?.zoomToElement('twig-'+ selectedTwigId, 1, 200);
   }, [abstractId, isSynced]);
 
 }

@@ -111,9 +111,7 @@ const useAppRouter = () => {
             }
           }
           else {
-            if (isPlatform('mobile')) {
-              spaceRef.current?.zoomToElement('twig-'+ selectedTwig.id, 1, 200);
-            }
+            spaceRef.current?.zoomToElement('twig-'+ selectedTwig.id, 1, 200);
           }
         }
         else {
