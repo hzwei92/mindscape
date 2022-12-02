@@ -419,10 +419,10 @@ const SpaceComponent = (props: SpaceComponentProps) => {
 
     if (!touches) return;
 
-    if (event.touches.length > 1 && touches.length > 1) {
-      event.preventDefault();
-      event.stopPropagation();
+    event.preventDefault();
+    event.stopPropagation();
 
+    if (event.touches.length > 1 && touches.length > 1) {
       if (!spaceEl.current) return;
     
       const dx1 = event.touches.item(0).clientX - event.touches.item(1).clientX;

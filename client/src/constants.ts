@@ -59,7 +59,7 @@ export const SPACE_PANEL_WIDTH = 280;
 export const INPUT_WIDTH = 300;
 
 
-export const ACTIVE_TIME = 60 * 1000;
+export const ACTIVE_TIME = 10 * 1000;
 
 
 export const ItemTypes = {
