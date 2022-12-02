@@ -18,7 +18,7 @@ const GET_DETAILS = gql`
   ${FULL_TWIG_FIELDS}
 `;
 
-export default function useInitSpace(abstractId: string) {
+export default function useInitSpace(abstractId: string, isSynced: boolean) {
   const dispatch = useAppDispatch();
 
   const [presentToast] = useIonToast();
@@ -69,7 +69,7 @@ export default function useInitSpace(abstractId: string) {
   });
 
   useEffect(() => {
-    if (!abstractId) return;
+    if (!abstractId || !isSynced) return;
 
     getTwigs({
       variables: {
@@ -79,6 +79,6 @@ export default function useInitSpace(abstractId: string) {
     if (idToPos[selectedTwigId]) {
       //centerTwig(selectedTwigId || '', true, 0);
     }
-  }, [abstractId])
+  }, [abstractId, isSynced]);
 
 }

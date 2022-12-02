@@ -74,7 +74,6 @@ const AppBar = () => {
       minHeight: '100%',
       width: 50,
       overflow: 'visible',
-      zIndex: MAX_Z_INDEX,
     }}>
       <IonButtons style={{
         display: 'flex',
