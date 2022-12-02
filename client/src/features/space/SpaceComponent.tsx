@@ -225,7 +225,7 @@ const SpaceComponent = (props: SpaceComponentProps) => {
     const dy = y - (cursor?.y ?? 0);
 
     if (drag?.isScreen) {
-      spaceEl.current.scrollBy(cursorClient.x - moveEvent.clientX, cursorClient.y - moveEvent.clientY);
+      //spaceEl.current.scrollBy(cursorClient.x - moveEvent.clientX, cursorClient.y - moveEvent.clientY);
     }
     else {
       moveDrag(dx, dy);
@@ -701,7 +701,7 @@ const SpaceComponent = (props: SpaceComponentProps) => {
           initialPositionY={VIEW_RADIUS}
           centerZoomedOut={false}
           wheel={{
-            step: .08,
+            step: .07,
           }}
           centerOnInit={true}
         >
