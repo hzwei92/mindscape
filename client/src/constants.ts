@@ -44,8 +44,7 @@ export const CLOSED_LINK_TWIG_DIAMETER = 30;
 
 export const ROLES_MENU_WIDTH = 300;
 
-export const APP_BAR_WIDTH = 50;
-
+export const APP_BAR_X = 50;
 
 export const ACCESS_TOKEN = 'ACCESS_TOKEN';
 export const REFRESH_TOKEN = 'REFRESH_TOKEN';
@@ -61,6 +60,7 @@ export const INPUT_WIDTH = 300;
 
 export const ACTIVE_TIME = 10 * 1000;
 
+export const NOTCH_SIZE = 44;
 
 export const ItemTypes = {
   TAB: 'tab',

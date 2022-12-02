@@ -1,5 +1,6 @@
 import { useContext, useState } from "react";
 import { AppContext } from "../../app/App";
+import { APP_BAR_X } from "../../constants";
 import AboutComponent from "../about/AboutComponent";
 import AccountComponent from "../account/AccountComponent";
 import SearchComponent from "../search/SearchComponent";
@@ -7,7 +8,7 @@ import { MenuMode } from "./menu";
 
 
 export default function MenuComponent() {
-  const { user, palette, menuMode, setMenuIsResizing } = useContext(AppContext);
+  const { user, palette, menuMode, menuX, setMenuIsResizing } = useContext(AppContext);
 
   const [showResizer, setShowResizer] = useState(false);
 
@@ -26,13 +27,13 @@ export default function MenuComponent() {
   return (
     <div style={{
       height: '100%',
-      width: '100%',
+      width: menuX - APP_BAR_X,
       display: 'flex',
       flexDirection: 'row',
     }}>
       <div style={{
         height: '100%',
-        width: 'calc(100% - 5px)',
+        width: menuX - APP_BAR_X - 5,
       }}>
         { 
           menuMode === MenuMode.ACCOUNT

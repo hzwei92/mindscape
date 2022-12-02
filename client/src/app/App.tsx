@@ -31,7 +31,7 @@ import { User } from '../features/user/user';
 import { useAppSelector } from './store';
 import { selectCurrentUser, selectIdToUser } from '../features/user/userSlice';
 import { MenuMode } from '../features/menu/menu';
-import { APP_BAR_WIDTH, MAX_Z_INDEX, MENU_MIN_WIDTH, MENU_WIDTH } from '../constants';
+import { APP_BAR_X, MENU_MIN_WIDTH, MENU_WIDTH, NOTCH_SIZE } from '../constants';
 import AppBar from './AppBar';
 import CreateGraphModal from '../features/arrow/CreateGraphModal';
 import UserModal from '../features/user/UserModal';
@@ -54,9 +54,6 @@ export type PendingLinkType = {
 
 export const AppContext = createContext({} as {
   user: User | null;
-
-  width: number;
-  height: number;
 
   palette: 'dark' | 'light';
   setPalette: Dispatch<SetStateAction<'dark' | 'light'>>;
@@ -104,9 +101,7 @@ const App: React.FC = () => {
   
   const spaceRef = useRef<ReactZoomPanPinchRef>(null);
 
-  const [width, setWidth] = useState(window.innerWidth);
-  const [height, setHeight] = useState(window.innerHeight);
-  const [isPortrait, setIsPortrait] = useState(height > width);
+  const [isPortrait, setIsPortrait] = useState(window.innerHeight > window.innerWidth);
 
   const [palette, setPalette] = useState<'dark' | 'light'>('dark');
 
@@ -129,7 +124,7 @@ const App: React.FC = () => {
   const [selectedUserId, setSelectedUserId] = useState('');
 
   const [menuMode, setMenuMode] = useState(MenuMode.NONE);
-  const [menuX, setMenuX] = useState(isPlatform('mobile') ? (width - 6) : MENU_WIDTH);
+  const [menuX, setMenuX] = useState(MENU_WIDTH);
   const [menuIsResizing, setMenuIsResizing] = useState(false);
 
   const [showInitUserModal, setShowInitUserModal] = useState(false);
@@ -137,25 +132,12 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const handleRotate = () => {
-      setWidth(window.innerWidth);
-      setHeight(window.innerHeight);
-      setIsPortrait(window.innerHeight > window.innerWidth);
+      console.log('rotate', window.innerWidth, window.innerHeight);
+      setIsPortrait(val => !val);
     }
-
     window.matchMedia('(orientation: portrait)').addEventListener('change', handleRotate);
-
-    const handleResize = () => {
-      setWidth(window.innerWidth);
-      setHeight(window.innerHeight);
-    };
-
-    window.addEventListener('resize', handleResize);
-
-    window.scrollTo(0, 1);
-
     return () => {
       window.matchMedia('(orientation: portrait)').removeEventListener('change', handleRotate);
-      window.removeEventListener('resize', handleResize);
     }
   }, []);
 
@@ -175,9 +157,6 @@ const App: React.FC = () => {
   const appContextValue = useMemo(() => {
     return {
       user,
-
-      width,
-      height,
 
       palette,
       setPalette,
@@ -217,7 +196,6 @@ const App: React.FC = () => {
     };
   }, [
     user, 
-    width, height, 
     palette,
     newTwigId,
     pendingLink, 
@@ -284,13 +262,15 @@ const App: React.FC = () => {
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp} 
             style={{
-              width: '100%',
-              height: isPortrait && isPlatform('ios') && !isPlatform('mobileweb')
-                ? 'calc(100% - 44px)'
-                : '100%',
-              marginTop: isPortrait && isPlatform('ios') && !isPlatform('mobileweb')
-                ? 44
+              position: 'fixed',
+              left: !isPortrait && isPlatform('iphone') && !isPlatform('mobileweb')
+                ? NOTCH_SIZE
                 : 0,
+              top: isPortrait && isPlatform('iphone') && !isPlatform('mobileweb')
+                ? NOTCH_SIZE
+                : 0,
+              right: 0,
+              bottom: 0,
               display: 'flex',
               flexDirection: 'row',
             }}
@@ -301,13 +281,35 @@ const App: React.FC = () => {
                 ? 'none'
                 : 'block',
               height: '100%',
-              width: menuX - APP_BAR_WIDTH + 6,
+              position: 'fixed',
+              left: !isPortrait && isPlatform('iphone') && !isPlatform('mobileweb')
+                ? APP_BAR_X + NOTCH_SIZE
+                : APP_BAR_X,
+              right: isPlatform('mobile')
+                ? 0 
+                : menuX,
+              top: isPortrait && isPlatform('iphone') && !isPlatform('mobileweb')
+                ? NOTCH_SIZE
+                : 0,
+              bottom: 0,
             }}>
               <MenuComponent />
             </div>
             <div style={{
-              height: '100%',
-              width: width - (menuMode === MenuMode.NONE ? 50 : menuX + 6),
+              display: menuMode !== MenuMode.NONE && isPlatform('mobile')
+                ? 'none'
+                : 'block',
+              position: 'fixed',
+              left: menuMode === MenuMode.NONE
+                ? !isPortrait && isPlatform('iphone') && !isPlatform('mobileweb')
+                  ? APP_BAR_X + NOTCH_SIZE
+                  : APP_BAR_X
+                : menuX,
+              right: 0,
+              top: isPortrait && isPlatform('iphone') && !isPlatform('mobileweb')
+                ? NOTCH_SIZE
+                : 0,
+              bottom: 0,
             }}>
               <ExplorerComponent />
             </div>

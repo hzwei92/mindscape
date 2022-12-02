@@ -24,7 +24,6 @@ export default function EntryComponent(props: EntryComponentProps) {
   const dispatch = useAppDispatch();
 
   const {
-    width,
     pendingLink,
     setPendingLink,
   } = useContext(AppContext);
