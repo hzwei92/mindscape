@@ -1,6 +1,6 @@
 import { gql, useMutation } from '@apollo/client';
 import { FULL_TWIG_FIELDS } from '../twig/twigFragments';
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { mergeIdToPos, mergeTwigs, selectIdToPos, selectSelectedTwigId } from './spaceSlice';
 import { useAppDispatch, useAppSelector } from '../../app/store';
 import { useIonToast } from '@ionic/react';
@@ -8,6 +8,7 @@ import { IdToType } from '../../types';
 import { PosType } from './space';
 import { Twig } from '../twig/twig';
 import { setAuthIsInit, setAuthIsValid } from '../auth/authSlice';
+import { AppContext } from '../../app/App';
 
 const GET_DETAILS = gql`
   mutation GetTwigs($abstractId: String!) {
@@ -22,6 +23,8 @@ export default function useInitSpace(abstractId: string, isSynced: boolean) {
   const dispatch = useAppDispatch();
 
   const [presentToast] = useIonToast();
+
+  const { spaceRef } = useContext(AppContext);
 
   const selectedTwigId = useAppSelector(selectSelectedTwigId(abstractId));
   const idToPos = useAppSelector(selectIdToPos(abstractId)) ?? {};
@@ -63,7 +66,8 @@ export default function useInitSpace(abstractId: string, isSynced: boolean) {
         idToPos1[selectedTwigId]?.x !== idToPos[selectedTwigId]?.x || 
         idToPos1[selectedTwigId]?.y !== idToPos[selectedTwigId]?.y
       ) {
-        //centerTwig(selectedTwigId || '', true, 0);
+        console.log('yolo');
+        spaceRef.current?.zoomToElement('twig-' + selectedTwigId, 1, 200);
       }
     },
   });
@@ -76,9 +80,8 @@ export default function useInitSpace(abstractId: string, isSynced: boolean) {
         abstractId,
       }
     });
-    if (idToPos[selectedTwigId]) {
-      //centerTwig(selectedTwigId || '', true, 0);
-    }
+
+    spaceRef.current?.zoomToElement('twig-'+ selectedTwigId, 1, 200);
   }, [abstractId, isSynced]);
 
 }

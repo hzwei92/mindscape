@@ -71,7 +71,7 @@ const SpaceComponent = (props: SpaceComponentProps) => {
   
   const [present] = useIonToast();
 
-  const { user, palette, menuX, menuMode } = useContext(AppContext);
+  const { user, palette, menuX, menuMode, spaceRef } = useContext(AppContext);
  
   const [isSynced, setIsSynced] = useState(true);
 
@@ -126,7 +126,6 @@ const SpaceComponent = (props: SpaceComponentProps) => {
   const canPost = abstract?.userId === user?.id || checkPermit(abstract?.canPost, role?.type)
   const canView = abstract?.userId === user?.id || checkPermit(abstract?.canView, role?.type)
 
-  const wrapperRef = useRef<ReactZoomPanPinchRef>(null);
   const spaceEl = useRef<HTMLIonCardElement>(null);
   
   const [showSettings, setShowSettings] = useState(false);
@@ -213,9 +212,9 @@ const SpaceComponent = (props: SpaceComponentProps) => {
   };
 
   useEffect(() => {
-    if (!moveEvent || !spaceEl.current || !wrapperRef.current) return;
+    if (!moveEvent || !spaceEl.current || !spaceRef.current) return;
 
-    const{ scale } = wrapperRef.current.state;
+    const { scale } = spaceRef.current.state;
 
     const x = (spaceEl.current.scrollLeft + moveEvent.clientX - (menuMode === MenuMode.NONE ? 50 : 10 + menuX)) / scale;
     const y = (spaceEl.current.scrollTop + moveEvent.clientY - 32) / scale;
@@ -246,29 +245,6 @@ const SpaceComponent = (props: SpaceComponentProps) => {
       }));
     }
   }, [adjustTwigIdToPos]);
-
-  const updateScroll = (left: number, top: number) => {
-    dispatch(setScroll({
-      abstractId: props.abstractId,
-      scroll: {
-        left,
-        top,
-      },
-    }));
-
-    const dx = left - scroll?.left;
-    const dy = top - scroll?.top;
-
-    dispatch(setCursor({
-      abstractId: props.abstractId,
-      cursor: {
-        x: cursor.x + dx,
-        y: cursor.y + dy,
-      },
-    }));
-
-    publishAvatar(props.abstractId, cursor.x + dx, cursor.y + dy);
-  }
 
   const handleMouseDown = (event: React.MouseEvent) => {
     dispatch(setDrag({
@@ -591,7 +567,7 @@ const SpaceComponent = (props: SpaceComponentProps) => {
         }}
       >
         <TransformWrapper
-          ref={wrapperRef}
+          ref={spaceRef}
           initialScale={1}
           minScale={.03125}
           maxScale={4}
@@ -603,9 +579,8 @@ const SpaceComponent = (props: SpaceComponentProps) => {
             excluded: ['.no-pan'],
           }}
           wheel={{
-            step: Math.min(.08, .05 / (wrapperRef.current?.state?.scale ?? 1)),
+            step: 0.64,
           }}
-          centerOnInit={true}
         >
           {({ state, zoomIn, zoomOut, resetTransform, setTransform, ...rest}) => (
             <React.Fragment>
@@ -667,7 +642,6 @@ const SpaceComponent = (props: SpaceComponentProps) => {
       />
       <SpaceNav 
         spaceEl={spaceEl}
-        wrapperRef={wrapperRef}
       />
       <SettingsModal 
         showSettings={showSettings}
