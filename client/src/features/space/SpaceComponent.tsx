@@ -589,7 +589,7 @@ const SpaceComponent = (props: SpaceComponentProps) => {
         <TransformWrapper
           ref={wrapperRef}
           initialScale={1}
-          minScale={.0625}
+          minScale={.03125}
           maxScale={4}
           initialPositionX={VIEW_RADIUS}
           initialPositionY={VIEW_RADIUS}
@@ -616,6 +616,7 @@ const SpaceComponent = (props: SpaceComponentProps) => {
                   backgroundColor: palette === 'dark'
                     ? '#000000'
                     : OFF_WHITE,
+                  borderRadius: 100,
                   outline: '10px solid',
                 }}
               >

@@ -36,7 +36,7 @@ export const MENU_MIN_WIDTH = 400;
 
 export const SPACE_BAR_HEIGHT = 56;
 
-export const VIEW_RADIUS = 5000;
+export const VIEW_RADIUS = 10000;
 
 export const NOT_FOUND = 'NOT_FOUND';
 
