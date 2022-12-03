@@ -15,7 +15,7 @@ const useAppRouter = () => {
 
   const router = useIonRouter();
 
-  const { user, newTwigId, spaceRef } = useContext(AppContext);
+  const { user } = useContext(AppContext);
 
   const idToTab = useAppSelector(selectIdToTab);
   const idToArrow = useAppSelector(selectIdToArrow);

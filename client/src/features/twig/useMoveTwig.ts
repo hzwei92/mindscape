@@ -52,14 +52,19 @@ export default function useMoveTwig(abstractId: string) {
   });
 
   const moveTwig = (twigId: string, x: number, y: number, adjustPosTwigIds: string[]) => {
-    const adjustments = adjustPosTwigIds.map(id => {
+    const adjustments: any[] = [];
+    
+    adjustPosTwigIds.forEach(id => {
       const pos = idToPos[id];
-      return {
+      if (!pos) return;
+
+      adjustments.push({
         twigId: id,
         x: pos.x,
         y: pos.y,
-      }
+      });
     });
+    
     move({
       variables: {
         sessionId,
