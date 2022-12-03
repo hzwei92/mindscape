@@ -76,6 +76,7 @@ function LinkTwigMarker(props: LinkTwigMarkerProps) {
         markerEnd={`url(#marker-${link?.userId})`}
       />
       <line 
+        onClick={handleClick}
         style={{
           cursor: 'pointer',
           opacity: isSelected 
