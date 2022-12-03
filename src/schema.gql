@@ -135,7 +135,7 @@ type Mutation {
   logoutUser: User!
   moveTab(i: Int!, tabId: String!): [Tab!]!
   moveTwig(sessionId: String!, twigId: String!, x: Int!, y: Int!): MoveTwigResult!
-  openTwig(sessionId: String!, shouldOpen: Boolean!, twigId: String!): Twig!
+  openTwig(sessionId: String!, shouldOpen: Boolean!, twigId: String!): OpenTwigResult!
   pasteArrow(linkDraft: String!, linkId: String!, sessionId: String!, sourceId: String!, targetId: String!): ReplyArrowResult!
   pasteTwig(parentTwigId: String!, postId: String!, sessionId: String!, twigId: String!, x: Int!, y: Int!): ReplyTwigResult!
   publishAvatar(abstractId: String!, sessionId: String!, x: Int, y: Int): User!
@@ -161,6 +161,11 @@ type Mutation {
   updateTab(isFocus: Boolean!, isFrame: Boolean!, tabId: String!): [Tab!]!
   verifyUser(code: String!): User!
   voteArrow(arrowId: String!, sessionId: String!, weight: Int!): VoteArrowResult!
+}
+
+type OpenTwigResult {
+  role: Role
+  twig: Twig!
 }
 
 type Query {
