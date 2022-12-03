@@ -590,10 +590,9 @@ const SpaceComponent = (props: SpaceComponentProps) => {
           centerZoomedOut={false}
           panning={{
             disabled: !!drag?.twigId,
-            excluded: ['.no-pan'],
           }}
           wheel={{
-            step: 0.64,
+            step: 0.56,
           }}
         >
           {({ state, zoomIn, zoomOut, resetTransform, setTransform, ...rest}) => (

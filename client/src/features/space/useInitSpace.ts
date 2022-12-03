@@ -66,7 +66,6 @@ export default function useInitSpace(abstractId: string, isSynced: boolean, setI
         idToPos1[selectedTwigId]?.x !== idToPos[selectedTwigId]?.x || 
         idToPos1[selectedTwigId]?.y !== idToPos[selectedTwigId]?.y
       ) {
-        console.log('scrolling to selected twig');
         spaceRef.current?.zoomToElement('twig-' + selectedTwigId, 1, 200);
       }
     },
@@ -87,6 +86,8 @@ export default function useInitSpace(abstractId: string, isSynced: boolean, setI
         abstractId,
       }
     });
+
+    spaceRef.current?.zoomToElement('twig-' + selectedTwigId, 1, 200);
   }, [abstractId, isSynced]);
 
 }
