@@ -36,13 +36,6 @@ export default function useCreateTab() {
     onCompleted: data  => {
       console.log(data);
       dispatch(mergeTabs(data.createTabByRouteName));
-
-      data.createTabByRouteName.some((tab: Tab) => {
-        if (tab.isFocus) {
-          router.push(`/g/${tab.arrow.routeName}`);
-          return true;
-        }
-      })
     }
   });
 
@@ -53,13 +46,6 @@ export default function useCreateTab() {
     onCompleted: data  => {
       console.log(data);
       dispatch(mergeTabs(data.createTab));
-
-      data.createTab.some((tab: Tab) => {
-        if (tab.isFocus) {
-          router.push(`/g/${tab.arrow.routeName}`);
-          return true;
-        }
-      })
     }
   });
 
