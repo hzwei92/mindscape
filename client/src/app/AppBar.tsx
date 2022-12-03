@@ -101,7 +101,7 @@ const AppBar = () => {
             position: 'absolute',
             width: 30,
             height: 30,
-            backgroundColor: 'black',
+            backgroundColor: '#1e1e1e',
             opacity: .85,
             display: focusTab?.id 
               ? 'none'
