@@ -141,6 +141,8 @@ const SpaceComponent = (props: SpaceComponentProps) => {
   const [replyTwigId, setReplyTwigId] = useState('');
   const [showReplyTwigModal, setShowReplyTwigModal] = useState(false);
 
+  const [adjustPosTwigIds, setAdjustPosTwigIds] = useState<string[]>([]);
+
   useEffect(() => {
     if (selectedTwigId) {
       spaceRef.current?.zoomToElement('twig-'+ selectedTwigId, 1, 200);
@@ -218,13 +220,37 @@ const SpaceComponent = (props: SpaceComponentProps) => {
   }, [moveEvent, cursor]);
 
   useEffect(() => {
-    if (Object.keys(adjustTwigIdToPos).length) {
-      dispatch(mergeIdToPos({
-        abstractId: props.abstractId,
-        idToPos: adjustTwigIdToPos,
-      }));
-    }
-  }, [adjustTwigIdToPos]);
+    Object.keys(idToPos).forEach(twigId => {
+      const twig = idToTwig[twigId];
+      if (!twig?.sourceId || !twig?.targetId || twig.sourceId === twig.targetId) return;
+
+      const pos = idToPos[twigId];
+      const sourcePos = idToPos[twig.sourceId];
+      const targetPos = idToPos[twig.targetId];
+
+      const x = Math.round(((sourcePos?.x ?? 0) + (targetPos?.x ?? 0)) / 2);
+      const y = Math.round(((sourcePos?.y ?? 0) + (targetPos?.y ?? 0)) / 2);
+
+      if (pos.x !== x || pos.y !== y) {
+        const twigIds = [
+          twigId,
+          ...Object.keys(idToDescIdToTrue[twigId] || {}),
+        ];
+
+        setAdjustPosTwigIds(ids => [...ids, ...twigIds]);
+
+        dispatch(moveTwigs({
+          abstractId: props.abstractId,
+          twigIds: [
+            twigId,
+            ...Object.keys(idToDescIdToTrue[twigId] || {}),
+          ],
+          dx: x - pos.x,
+          dy: y - pos.y,
+        }));
+      }
+    });
+  }, [idToPos, adjustPosTwigIds])
 
   const handleMouseDown = (event: React.MouseEvent) => {
     dispatch(setDrag({
@@ -249,7 +275,7 @@ const SpaceComponent = (props: SpaceComponentProps) => {
         graftTwig(drag?.twigId, drag?.targetTwigId, pos.x, pos.y);
       }
       else {
-        moveTwig(drag?.twigId, pos.x, pos.y);
+        moveTwig(drag?.twigId, pos.x, pos.y, adjustPosTwigIds);
       }
     }
     else {
@@ -386,24 +412,92 @@ const SpaceComponent = (props: SpaceComponentProps) => {
 
     const parentTwig = idToTwig[twig.parent?.id];
 
-    if (parentTwig && !parentTwig.deleteDate) {
-      const parentPos = idToPos[twig.parent.id];
+    if (twig.sourceId !== twig.targetId) {
+      const sourceTwig = twig.sourceId
+        ? idToTwig[twig.sourceId]
+        : null;
+      const targetTwig = twig.targetId
+        ? idToTwig[twig.targetId]
+        : null;
 
       if (
-        parentPos &&
-        (pos.x !== 0 && pos.y !== 0)
-      ) {
-        twigMarkers.push(
-          <PostTwigMarker
-            key={`post-twig-marker-${twigId}`}
-            twig={twig}
-            pos={pos}
-            parentPos={parentPos}
-          />
-        );
-      }
-    }
+        !sourceTwig || 
+        sourceTwig.deleteDate || 
+        !targetTwig || 
+        targetTwig.deleteDate
+      ) return;
 
+      const sourcePos = twig.sourceId
+        ? idToPos[twig.sourceId]
+        : null;
+      const targetPos = twig.targetId
+        ? idToPos[twig.targetId]
+        : null;
+
+      const x = Math.round(((sourcePos?.x ?? 0) + (targetPos?.x ?? 0)) / 2);
+      const y = Math.round(((sourcePos?.y ?? 0) + (targetPos?.y ?? 0)) / 2);
+
+      twigMarkers.push(
+        <LinkTwigMarker
+          key={`link-twig-marker-${twigId}`}
+          twig={twig}
+          sourcePos={sourcePos}
+          targetPos={targetPos}
+        />
+      );
+
+      twigs.push(
+        <div key={`twig-${twigId}`} 
+          id={'twig-' + twig.id}
+          style={{
+            position: 'absolute',
+            left: x + VIEW_RADIUS,
+            top: y + VIEW_RADIUS,
+            zIndex: twig.z,
+            pointerEvents: 'none',
+            marginLeft: -80,
+            marginTop: -80,
+            padding: 80,
+          }}
+        >
+          <LinkTwig 
+            twigId={twig.id} 
+            setIsSynced={setIsSynced}
+          />
+        </div>
+      );
+    }
+    else if (parentTwig && !parentTwig.deleteDate) {
+      const parentPos = idToPos[twig.parent.id];
+      if (!parentPos) return;
+
+      twigMarkers.push(
+        <PostTwigMarker
+          key={`post-twig-marker-${twigId}`}
+          twig={twig}
+          pos={pos}
+          parentPos={parentPos}
+        />
+      );
+
+      twigs.push(
+        <div key={`twig-${twigId}`} 
+          id={'twig-' + twig.id}
+          style={{
+            position: 'absolute',
+            left: pos.x + VIEW_RADIUS,
+            top: pos.y + VIEW_RADIUS,
+            zIndex: twig.z,
+            pointerEvents: 'none',
+            marginLeft: -80,
+            marginTop: -80,
+            padding: 80,
+          }}
+        >
+          <PostTwig twigId={twig.id} />
+        </div>
+      );
+    }
 
     if (
       drag?.twigId &&
@@ -436,96 +530,6 @@ const SpaceComponent = (props: SpaceComponentProps) => {
             border: `2px solid ${twig.user.color}`,
           }}
         />
-      );
-    }
-
-    if (twig.sourceId !== twig.targetId) {
-      const sourceTwig = twig.sourceId
-        ? idToTwig[twig.sourceId]
-        : null;
-      const targetTwig = twig.targetId
-        ? idToTwig[twig.targetId]
-        : null;
-
-      if (
-        !sourceTwig || 
-        sourceTwig.deleteDate || 
-        !targetTwig || 
-        targetTwig.deleteDate
-      ) return;
-
-      const sourcePos = twig.sourceId
-        ? idToPos[twig.sourceId]
-        : null;
-      const targetPos = twig.targetId
-        ? idToPos[twig.targetId]
-        : null;
-
-      const x = Math.round(((sourcePos?.x ?? 0) + (targetPos?.x ?? 0)) / 2);
-      const y = Math.round(((sourcePos?.y ?? 0) + (targetPos?.y ?? 0)) / 2);
-
-      if (x !== pos.x || y !== pos.y) {
-        const dx = x - pos.x;
-        const dy = y - pos.y;
-        [
-          twigId, 
-          ...Object.keys(idToDescIdToTrue[twigId] || {})
-        ].forEach(descId => {
-          const descPos = idToPos[descId];
-
-          idToPos1[descId] = {
-            x: descPos.x + dx,
-            y: descPos.y + dy,
-          }
-        })
-      }
-      twigs.push(
-        <div key={`twig-${twigId}`} 
-          id={`twig-${twigId}`}
-          style={{
-            position: 'absolute',
-            left: x + VIEW_RADIUS,
-            top: y + VIEW_RADIUS,
-            zIndex: twig.z,
-            pointerEvents: 'none',
-            marginLeft: -80,
-            marginTop: -80,
-            padding: 80,
-          }}
-        >
-          <LinkTwig 
-            twigId={twig.id} 
-            setIsSynced={setIsSynced}
-          />
-        </div>
-      );
-
-      twigMarkers.push(
-        <LinkTwigMarker
-          key={`link-twig-marker-${twigId}`}
-          twig={twig}
-          sourcePos={sourcePos}
-          targetPos={targetPos}
-        />
-      );
-    }
-    else {
-      twigs.push(
-        <div key={`twig-${twigId}`} 
-          id={'twig-' + twig.id}
-          style={{
-            position: 'absolute',
-            left: pos.x + VIEW_RADIUS,
-            top: pos.y + VIEW_RADIUS,
-            zIndex: twig.z,
-            pointerEvents: 'none',
-            marginLeft: -80,
-            marginTop: -80,
-            padding: 80,
-          }}
-        >
-          <PostTwig twigId={twig.id} />
-        </div>
       );
     }
   });

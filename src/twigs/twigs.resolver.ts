@@ -20,6 +20,7 @@ import { CopyTwigResult } from './dto/copy-twig-result.dto';
 import { TransfersService } from 'src/transfers/transfers.service';
 import { CurrentUser, GqlAuthGuard } from 'src/auth/gql-auth.guard';
 import { User as UserEntity } from 'src/users/user.entity';
+import { TwigPosAdjustment } from './dto/twig-pos-adjustment';
 
 @Resolver(() => Twig)
 export class TwigsResolver {
@@ -229,11 +230,12 @@ export class TwigsResolver {
     @Args('twigId') twigId: string,
     @Args('x', {type: () => Int}) x: number,
     @Args('y', {type: () => Int}) y: number,
+    @Args('adjustments', {type: () => [TwigPosAdjustment]}) adjustments: TwigPosAdjustment[],
   ) {
     const {
       twigs, 
       role,
-    } = await this.twigsService.moveTwig(user, twigId, x, y);
+    } = await this.twigsService.moveTwig(user, twigId, x, y, adjustments);
 
     this.pubSub.publish('moveTwig', {
       sessionId,

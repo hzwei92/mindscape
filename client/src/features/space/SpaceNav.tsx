@@ -44,6 +44,8 @@ export default function SpaceNav() {
       const twigId = iToTwigId[index];
       const twig = idToTwig[twigId];
 
+      if (!twig) return;
+
       if (twig.sourceId !== twig.targetId && !twig.isOpen) return;
 
       const i = parseInt(index);
