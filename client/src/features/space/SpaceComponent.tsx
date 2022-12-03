@@ -469,18 +469,20 @@ const SpaceComponent = (props: SpaceComponentProps) => {
         </div>
       );
     }
-    else if (parentTwig && !parentTwig.deleteDate) {
-      const parentPos = idToPos[twig.parent.id];
-      if (!parentPos) return;
-
-      twigMarkers.push(
-        <PostTwigMarker
-          key={`post-twig-marker-${twigId}`}
-          twig={twig}
-          pos={pos}
-          parentPos={parentPos}
-        />
-      );
+    else {
+      if (parentTwig && !parentTwig.deleteDate) {
+        const parentPos = idToPos[twig.parent.id];
+        if (parentPos) {
+          twigMarkers.push(
+            <PostTwigMarker
+              key={`post-twig-marker-${twigId}`}
+              twig={twig}
+              pos={pos}
+              parentPos={parentPos}
+            />
+          );
+        }
+      }
 
       twigs.push(
         <div key={`twig-${twigId}`} 
