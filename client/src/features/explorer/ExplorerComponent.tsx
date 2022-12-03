@@ -61,18 +61,18 @@ export default function ExplorerComponent() {
         overflow: 'clip',
         height: TAB_HEIGHT,
       }}>
-      <div style={{
-        width: '100%',
-        scrollbarWidth: 'none',
-        backgroundColor: palette === 'dark'
-          ? ''
-          : '#dddddd',
-        whiteSpace: 'nowrap',
-        display: 'flex',
-        flexDirection: 'row',
-        overflowX: 'scroll',
-        paddingLeft: 1,
-      }}>
+        <div style={{
+          width: '100%',
+          scrollbarWidth: 'none',
+          backgroundColor: palette === 'dark'
+            ? '#0f0f0f'
+            : '#dddddd',
+          whiteSpace: 'nowrap',
+          display: 'flex',
+          flexDirection: 'row',
+          overflowX: 'scroll',
+          paddingLeft: 1,
+        }}>
           {
             Object.values(idToTab)
               .filter(tab => !tab.deleteDate)

@@ -166,7 +166,7 @@ export default function TabComponent(props: TabComponentProps) {
           color: arrow.color,
           marginLeft: 10,
           height: TAB_HEIGHT,
-          fontSize: 18,
+          fontSize: 16,
         }}>
           { arrow.title }
         </div>
