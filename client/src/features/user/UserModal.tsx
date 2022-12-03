@@ -3,15 +3,12 @@ import { IonAvatar, IonButton, IonButtons, IonCard, IonCardContent, IonCardHeade
 import md5 from "md5";
 import { useContext, useEffect, useRef, useState } from "react";
 import { AppContext } from "../../app/App";
-import { useAppSelector } from "../../app/store";
-import { Tab } from "../tab/tab";
 import { FULL_TAB_FIELDS } from "../tab/tabFragments";
-import useCreateTab from "../tab/useCreateTab";
 import { User } from "./user";
 import { USER_FIELDS } from "./userFragments";
-import { selectIdToTab } from "../tab/tabSlice";
 import { getTimeString } from "../../utils";
 import { close } from "ionicons/icons";
+import { Arrow } from "../arrow/arrow";
  
 const GET_USER = gql`
   mutation GetUser($userId: String!) {
@@ -30,13 +27,9 @@ const GET_USER = gql`
 export default function UserModal() {
   const { user, selectedUserId, setSelectedUserId } = useContext(AppContext);
 
-  const idToTab = useAppSelector(selectIdToTab);
-
   const modalRef = useRef<HTMLIonModalElement>(null);
 
   const [user1, setUser1] = useState(null as User | null);
-
-  const { createTab } = useCreateTab();
 
   const router = useIonRouter();
 
@@ -64,23 +57,8 @@ export default function UserModal() {
     }
   }, [selectedUserId]);
 
-  const handleArrowClick = (arrowId: string) => () => {
-    let arrowTab = null as Tab | null;
-    Object.values(idToTab)
-      .filter(tab => !tab.deleteDate)
-      .sort((a, b) => a.i - b.i)
-      .map(tab => {
-        if (tab.arrowId === arrowId) {
-          arrowTab = tab;
-        }
-        return !!arrowTab;
-      });
-    if (arrowTab) {
-      router.push(`/g/${arrowTab?.arrow.routeName}`);
-    }
-    else {
-      createTab(arrowId, null, false, true);
-    }
+  const handleArrowClick = (arrow: Arrow) => () => {
+    router.push(`/g/${arrow.routeName}`);
     handleClose();
   }
   const handleClose = () => {
@@ -173,7 +151,7 @@ export default function UserModal() {
                 return (
                   <IonCard key={tab.id}>
                     <IonCardHeader >
-                      <IonLabel onClick={handleArrowClick(tab.arrowId)} style={{
+                      <IonLabel onClick={handleArrowClick(tab.arrow)} style={{
                         cursor: 'pointer',
                       }}>
                         {i + 1}&nbsp;&nbsp;&nbsp;

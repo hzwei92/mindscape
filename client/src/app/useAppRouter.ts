@@ -66,7 +66,7 @@ const useAppRouter = () => {
       updateTab(tab, false, true);
     }
 
-    if (path[3] === '') {
+    if (isNaN(parseInt(path[3]))) {
       router.push(`/g/${path[2]}/0`, undefined, 'replace');
       return;
     }
