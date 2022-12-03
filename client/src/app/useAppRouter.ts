@@ -32,8 +32,6 @@ const useAppRouter = () => {
     
     const path = router.routeInfo?.pathname.split('/') || [];
 
-    console.log('useAppRouter', path);
-
     if (path[1] !== 'g') {
       router.push(`/g/${focusTab?.arrow?.routeName}/0`, undefined, 'replace');
       return;
