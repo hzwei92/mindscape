@@ -9,7 +9,7 @@ import { SpaceContext } from "./SpaceComponent";
 
 export default function CurrentUserTag() {
   const { user } = useContext(AppContext);
-  const { abstractId, abstract, canEdit } = useContext(SpaceContext);
+  const { abstract } = useContext(SpaceContext);
 
   const isValid = useAppSelector(selectAuthIsValid);
 
@@ -30,7 +30,7 @@ export default function CurrentUserTag() {
           margin: 10,
           padding: 10,
         }}>
-          <UserTag user={user} fontSize={16} />
+          <UserTag user={user} fontSize={14} />
         </IonCard>
       </div>
     </div>
