@@ -9,6 +9,7 @@ import { selectFocusTab, selectIdToTab } from "../tab/tabSlice";
 import icon from './icon.png'
 import usePublishAvatar from "./usePublishAvatar";
 import TabComponent from "../tab/TabComponent";
+import { TAB_HEIGHT } from "../../constants";
 
 export default function ExplorerComponent() {
   const { 
@@ -58,7 +59,7 @@ export default function ExplorerComponent() {
     }}>
       <div style={{
         overflow: 'clip',
-        height: '32px',
+        height: TAB_HEIGHT,
       }}>
       <div style={{
         width: '100%',
@@ -70,6 +71,7 @@ export default function ExplorerComponent() {
         display: 'flex',
         flexDirection: 'row',
         overflowX: 'scroll',
+        paddingLeft: 1,
       }}>
           {
             Object.values(idToTab)
@@ -98,6 +100,7 @@ export default function ExplorerComponent() {
               }}>
                 <IonButton onClick={handleCreateGraphClick} style={{
                   padding: 0,
+                  height: TAB_HEIGHT,
                 }}>
                   <IonIcon icon={add} />
                 </IonButton>
@@ -110,7 +113,7 @@ export default function ExplorerComponent() {
             ? <div style={{
                 position: 'relative',
                 width: '100%',
-                height: 'calc(100% - 32px)',
+                height: `calc(100% - ${TAB_HEIGHT}px)`,
               }}>
                 <SpaceComponent 
                   abstractId={focusTab?.arrowId}
@@ -121,7 +124,7 @@ export default function ExplorerComponent() {
             : <IonCard style={{
                 margin: 0,
                 borderRadius: 0,
-                height: 'calc(100% - 32px)',
+                height: `calc(100% - ${TAB_HEIGHT}px)`,
                 width: '100%',
                 backgroundColor: palette === 'dark'
                   ? 'black'

@@ -1,4 +1,4 @@
-import { MAX_Z_INDEX, SPACE_PANEL_WIDTH } from '../../constants';
+import { MAX_Z_INDEX, SPACE_PANEL_WIDTH, TAB_HEIGHT } from '../../constants';
 import { scaleDown, scaleUp } from '../../utils';
 import { Dispatch, SetStateAction, useContext } from 'react';
 import { SpaceContext } from './SpaceComponent';
@@ -186,7 +186,7 @@ export default function SpaceControls(props: SpaceControlsProps) {
       </div>
       <div style={{
         position: 'fixed',
-        top: 32,
+        top: TAB_HEIGHT,
         right: 10,
         height: '100%',
       }}>
