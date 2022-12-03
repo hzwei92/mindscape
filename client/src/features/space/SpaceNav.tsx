@@ -4,7 +4,7 @@ import { useAppSelector } from '../../app/store';
 import useSelectTwig from '../twig/useSelectTwig';
 import { Twig } from '../twig/twig';
 import { MAX_Z_INDEX, VIEW_RADIUS } from '../../constants';
-import { selectIdToTwig, selectSelectedTwigId } from './spaceSlice';
+import { selectIdToTwig, selectIToTwigId, selectSelectedTwigId } from './spaceSlice';
 import { selectIdToUser } from '../user/userSlice';
 import { AppContext } from '../../app/App';
 import { IonFab, IonFabButton, IonIcon, isPlatform } from '@ionic/react';
@@ -30,44 +30,56 @@ export default function SpaceNav(props: SpaceNavProps) {
   const selectedTwigId = useAppSelector(selectSelectedTwigId(abstractId));
 
   const idToTwig = useAppSelector(selectIdToTwig(abstractId)) ?? {};
+  const iToTwigId = useAppSelector(selectIToTwigId(abstractId)) ?? {};
 
-  const [twigs, setTwigs] = useState([] as Twig[]);
-  const [index, setIndex] = useState(0);
-  const hasEarlier = index > 0;
-  const hasLater = index < twigs.length - 1;
+  const selectedTwig = idToTwig[selectedTwigId];
 
-  const [twigsAbstractId, setTwigsAbstractId] = useState('');
+  const earliestTwigId = iToTwigId[0];
+  
+  const [earlierTwigId, setEarlierTwigId] = useState('');
+  const [laterTwigId, setLaterTwigId] = useState('');
+  const [latestTwigId, setLatestTwigId] = useState('');
+  
+  useEffect(() => {
+    if (!abstract || !selectedTwig) return;
+    
+    let latestI = 0;
+    let laterI = abstract?.twigN + 1;
+    let earlierI = -1;
+    Object.keys(iToTwigId).forEach(index => {
+      const twigId = iToTwigId[index];
+      const twig = idToTwig[twigId];
+
+      if (twig.sourceId !== twig.targetId) return;
+
+      const i = parseInt(index);
+
+      if (i > latestI) {
+        latestI = i;
+      }
+
+      if (i > selectedTwig.i && i < laterI) {
+        laterI = i;
+      }
+
+      if (i < selectedTwig.i && i > earlierI) {
+        earlierI = i;
+      }
+
+      console.log('latestI', latestI);
+      console.log('laterI', laterI);
+      console.log('earlierI', earlierI);
+    });
+
+
+    setEarlierTwigId(iToTwigId[earlierI]);
+    setLaterTwigId(iToTwigId[laterI]);
+    setLatestTwigId(iToTwigId[latestI]);
+  }, [iToTwigId, selectedTwig, abstract, idToTwig]);
 
   const { selectTwig } = useSelectTwig();
 
   
-  useEffect(() => {
-    const twigs1 = Object.keys(idToTwig).map(id => idToTwig[id])
-      .filter(twig => (
-        twig && 
-        !twig.deleteDate && 
-        twig.abstractId === abstract?.id
-      ))
-      .sort((a, b) => a.i < b.i ? -1 : 1);
-      
-    setTwigs(twigs1);
-    setTwigsAbstractId(abstractId);
-
-  }, [idToTwig]);
-
-  useEffect(() => {
-    if (!selectedTwigId || twigsAbstractId !== abstractId) return;
-
-    twigs.some((twig, i) => {
-      if (twig.id === selectedTwigId) {
-        setIndex(i);
-        return true;
-      }
-      return false;
-    });
-  }, [selectedTwigId, twigs, twigsAbstractId]);
-
-
   const centerTwig = (twig: Twig) => {
     if (spaceRef.current) {
       const { zoomToElement } = spaceRef.current;
@@ -75,62 +87,47 @@ export default function SpaceNav(props: SpaceNavProps) {
     }
   }
 
-  const select = (twig: Twig, isInstant?: boolean) => {
-    if (selectedTwigId !== twig.id) {
-      selectTwig(abstract, twig, canEdit);
+  const select = (twig: Twig) => {
+    if (twig?.id) {
+      if (selectedTwigId !== twig.id) {
+        selectTwig(abstract, twig, canEdit);
+      }
+      centerTwig(twig);
     }
-    centerTwig(twig);
   }
 
   const handleNavEarliest = (event: React.MouseEvent) => {
     event.stopPropagation();
     event.preventDefault();
-    const twig = twigs[0];
+    const twig = idToTwig[earliestTwigId];
     select(twig);
   }
 
   const handleNavPrev = (event: React.MouseEvent) => {
     event.stopPropagation();
     event.preventDefault();
-    let i = index - 1;
-    let twig = twigs[i];
-    while (i > 0 && twig.sourceId !== twig.targetId) {
-      i--;
-      twig = twigs[i];
-    }
+    const twig = idToTwig[earlierTwigId];
     select(twig);
   }
 
   const handleNavNext = (event: React.MouseEvent) => {
     event.stopPropagation();
     event.preventDefault();
-    let i = index + 1;
-    let twig = twigs[i];
-    while (i < twigs.length - 1 && twig.sourceId !== twig.targetId) {
-      i++;
-      twig = twigs[i];
-    }
+    const twig = idToTwig[laterTwigId];
     select(twig);
   }
 
   const handleNavLatest = (event: React.MouseEvent) => {
     event.stopPropagation();
     event.preventDefault();
-    let i = twigs.length - 1;
-    let twig = twigs[i];
-    while (i > 0 && twig.sourceId !== twig.targetId) {
-      i--;
-      twig = twigs[i];
-    }
+    const twig = idToTwig[latestTwigId];
     select(twig);
   }
 
   const handleNavFocus = (event: React.MouseEvent) => {
     event.stopPropagation();
     event.preventDefault();
-
-    const twig = twigs[index];
-    centerTwig(twig);
+    centerTwig(selectedTwig);
   }
 
   const handleMouseMove = (e: React.MouseEvent) => {
@@ -154,19 +151,19 @@ export default function SpaceNav(props: SpaceNavProps) {
       display: 'flex',
       flexDirection: 'row',
     }}>
-      <IonFabButton title='Earliest' disabled={!hasEarlier} color={'light'} onClick={handleNavEarliest} size='small'>
+      <IonFabButton title='Earliest' disabled={selectedTwigId === earliestTwigId} color={'light'} onClick={handleNavEarliest} size='small'>
         <IonIcon icon={playSkipBackOutline} />
       </IonFabButton>
-      <IonFabButton title='Previous' disabled={!hasEarlier} color={'light'} onClick={handleNavPrev} size='small'>
+      <IonFabButton title='Previous' disabled={!earlierTwigId} color={'light'} onClick={handleNavPrev} size='small'>
         <IonIcon icon={playBackOutline} />
       </IonFabButton>
       <IonFabButton title='Selected' disabled={!selectedTwigId} color={'light'} onClick={handleNavFocus} size='small' onKeyDown={e => console.log(e.key)}>
-        { twigs[index]?.i }
+        { selectedTwig?.i ?? 0 }
       </IonFabButton>
-      <IonFabButton title='Next' disabled={!hasLater} color={'light'} onClick={handleNavNext} size='small'>
+      <IonFabButton title='Next' disabled={!laterTwigId} color={'light'} onClick={handleNavNext} size='small'>
         <IonIcon icon={playForwardOutline}/>
       </IonFabButton>
-      <IonFabButton title='Latest' disabled={!hasLater} color={'light'} onClick={handleNavLatest} size='small'>
+      <IonFabButton title='Latest' disabled={selectedTwigId===latestTwigId} color={'light'} onClick={handleNavLatest} size='small'>
         <IonIcon icon={playSkipForwardOutline} />
       </IonFabButton>
     </IonFab>
