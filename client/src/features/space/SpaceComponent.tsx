@@ -276,6 +276,8 @@ const SpaceComponent = (props: SpaceComponentProps) => {
       }
       else {
         moveTwig(drag?.twigId, pos.x, pos.y, adjustPosTwigIds);
+
+        setAdjustPosTwigIds([]);
       }
     }
     else {
