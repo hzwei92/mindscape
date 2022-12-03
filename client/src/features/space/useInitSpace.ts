@@ -1,6 +1,6 @@
 import { gql, useMutation } from '@apollo/client';
 import { FULL_TWIG_FIELDS } from '../twig/twigFragments';
-import { useContext, useEffect } from 'react';
+import { Dispatch, SetStateAction, useContext, useEffect } from 'react';
 import { mergeIdToPos, mergeTwigs, selectIdToPos, selectSelectedTwigId } from './spaceSlice';
 import { useAppDispatch, useAppSelector } from '../../app/store';
 import { useIonToast } from '@ionic/react';
@@ -19,13 +19,16 @@ const GET_DETAILS = gql`
   ${FULL_TWIG_FIELDS}
 `;
 
-export default function useInitSpace(abstractId: string, isSynced: boolean) {
+export default function useInitSpace(abstractId: string, isSynced: boolean, setIsSynced: Dispatch<SetStateAction<boolean>>) {
   const dispatch = useAppDispatch();
 
   const [presentToast] = useIonToast();
 
+  const { spaceRef } = useContext(AppContext);
+
   const selectedTwigId = useAppSelector(selectSelectedTwigId(abstractId));
   const idToPos = useAppSelector(selectIdToPos(abstractId)) ?? {};
+
   const [getTwigs] = useMutation(GET_DETAILS, {
     onError: error => {
       presentToast('Error loading graph: ' + error.message, 3000);
@@ -39,7 +42,7 @@ export default function useInitSpace(abstractId: string, isSynced: boolean) {
       }
     },
     onCompleted: data => {
-      console.log(data);
+      console.log(data, selectedTwigId);
 
       const idToPos1 = data.getTwigs.reduce((acc: IdToType<PosType>, twig: Twig) => {
         acc[twig.id] = {
@@ -58,8 +61,23 @@ export default function useInitSpace(abstractId: string, isSynced: boolean) {
         abstractId,
         idToPos: idToPos1,
       }));
+
+      if (
+        idToPos1[selectedTwigId]?.x !== idToPos[selectedTwigId]?.x || 
+        idToPos1[selectedTwigId]?.y !== idToPos[selectedTwigId]?.y
+      ) {
+        console.log('scrolling to selected twig');
+        spaceRef.current?.zoomToElement('twig-' + selectedTwigId, 1, 200);
+      }
     },
   });
+
+  useEffect(() => {
+    if (abstractId) {
+
+      setIsSynced(true);
+    }
+  }, [abstractId]);
 
   useEffect(() => {
     if (!abstractId || !isSynced) return;

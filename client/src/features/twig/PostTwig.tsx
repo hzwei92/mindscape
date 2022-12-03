@@ -52,7 +52,7 @@ function PostTwig(props: PostTwigProps) {
     }
   }, [cardEl.current?.clientHeight])
 
-  const { selectTwig } = useSelectTwig(abstractId, canEdit);
+  const { selectTwig } = useSelectTwig();
   const { linkArrows } = useLinkArrows();
 
   const handleClick = (event: React.MouseEvent) => {
@@ -80,7 +80,7 @@ function PostTwig(props: PostTwigProps) {
   const handleMouseDown = (event: React.MouseEvent) => {
     event.stopPropagation();
     if (!isSelected) {
-      selectTwig(abstract, twig);
+      selectTwig(abstract, twig, canEdit);
     }
   }
 

@@ -40,7 +40,7 @@ export default function usePublishAvatar() {
     if (!abstractId) return;
 
     if (x || y) {
-      setCount(count => (count + 1) % 10);
+      setCount(count => (count + 1) % 4);
       if (count !== 0) return;
     }
 

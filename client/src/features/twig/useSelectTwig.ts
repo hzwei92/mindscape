@@ -5,7 +5,7 @@ import type { Twig } from './twig';
 import { useAppDispatch, useAppSelector } from '../../app/store';
 import { selectSessionId, setAuthIsInit, setAuthIsValid } from '../auth/authSlice';
 import { mergeArrows } from '../arrow/arrowSlice';
-import { mergeTwigs, selectIdToDescIdToTrue, selectIdToTwig, setSelectedTwigId } from '../space/spaceSlice';
+import { mergeTwigs, selectAbstractIdToData, selectIdToDescIdToTrue, selectIdToTwig, setSelectedTwigId } from '../space/spaceSlice';
 import { useIonRouter, useIonToast } from '@ionic/react';
 
 const SELECT_TWIG = gql`
@@ -24,7 +24,7 @@ const SELECT_TWIG = gql`
   }
 `;
 
-export default function useSelectTwig(abstractId: string, canEdit: boolean) {
+export default function useSelectTwig() {
   const dispatch = useAppDispatch();
 
   const [present] = useIonToast();
@@ -32,8 +32,7 @@ export default function useSelectTwig(abstractId: string, canEdit: boolean) {
 
   const sessionId = useAppSelector(selectSessionId);
 
-  const idToTwig = useAppSelector(selectIdToTwig(abstractId)) || {};
-  const idToDescIdToTrue = useAppSelector(selectIdToDescIdToTrue(abstractId)) || {};
+  const abstractIdToData = useAppSelector(selectAbstractIdToData);
 
   const [select] = useMutation(SELECT_TWIG, {
     onError: error => {
@@ -51,7 +50,7 @@ export default function useSelectTwig(abstractId: string, canEdit: boolean) {
     },
   });
 
-  const selectTwig = (abstract: Arrow | null, twig: Twig, dontNav?: boolean) => {
+  const selectTwig = (abstract: Arrow | null, twig: Twig, canEdit: boolean) => {
     if (!twig || !abstract) return;
     
     if (canEdit) {
@@ -64,9 +63,15 @@ export default function useSelectTwig(abstractId: string, canEdit: boolean) {
     }
 
     dispatch(setSelectedTwigId({
-      abstractId,
+      abstractId: abstract.id,
       selectedTwigId: twig.id,
     }));
+
+
+    const {
+      idToTwig,
+      idToDescIdToTrue
+    } = abstractIdToData[abstract.id];
 
     const twigs = [];
     Object.keys(idToDescIdToTrue[twig.id] || {})
@@ -86,7 +91,7 @@ export default function useSelectTwig(abstractId: string, canEdit: boolean) {
     twigs.push(twig1);
 
     dispatch(mergeTwigs({
-      abstractId,
+      abstractId: abstract.id,
       twigs,
     }));
     
@@ -96,10 +101,7 @@ export default function useSelectTwig(abstractId: string, canEdit: boolean) {
 
     dispatch(mergeArrows([abstract1]));
 
-    if (!dontNav) {
-      const route = `/g/${abstract.routeName}/${twig.i}`;
-      router.push(route);
-    }
+    router.push(`/g/${abstract.routeName}/${twig.i}`);
   };
 
   return { selectTwig };

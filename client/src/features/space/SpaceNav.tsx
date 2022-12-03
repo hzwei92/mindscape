@@ -38,7 +38,7 @@ export default function SpaceNav(props: SpaceNavProps) {
 
   const [twigsAbstractId, setTwigsAbstractId] = useState('');
 
-  const { selectTwig } = useSelectTwig(abstractId, canEdit);
+  const { selectTwig } = useSelectTwig();
 
   
   useEffect(() => {
@@ -78,7 +78,7 @@ export default function SpaceNav(props: SpaceNavProps) {
 
   const select = (twig: Twig, isInstant?: boolean) => {
     if (selectedTwigId !== twig.id) {
-      selectTwig(abstract, twig);
+      selectTwig(abstract, twig, canEdit);
     }
     centerTwig(twig);
     setIndex(twig.i);
