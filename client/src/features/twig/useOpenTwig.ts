@@ -6,6 +6,7 @@ import { SpaceContext } from '../space/SpaceComponent';
 import type { Twig } from './twig';
 import { mergeTwigs } from '../space/spaceSlice';
 import { useIonToast } from '@ionic/react';
+import { FULL_ROLE_FIELDS } from '../role/roleFragments';
 
 const OPEN_TWIG = gql`
   mutation OpenTwig($sessionId: String!, $twigId: String!, $shouldOpen: Boolean!) {
@@ -19,6 +20,7 @@ const OPEN_TWIG = gql`
       }
     }
   }
+  ${FULL_ROLE_FIELDS}
 `;
 
 const useOpenTwig = () => {
