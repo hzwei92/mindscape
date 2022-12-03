@@ -4,7 +4,7 @@ import { AppContext } from '../app/App';
 import { useAppSelector } from '../app/store';
 import { selectIdToArrow } from '../features/arrow/arrowSlice';
 import { Tab } from '../features/tab/tab';
-import { selectFocusTab, selectIdToTab } from '../features/tab/tabSlice';
+import { selectIdToTab } from '../features/tab/tabSlice';
 import useCreateTab from '../features/tab/useCreateTab';
 import { useHistory } from 'react-router';
 import { close } from 'ionicons/icons';
@@ -36,7 +36,6 @@ const GraphsPage: React.FC = () => {
   // const { requestRole } = useRequestRole();
   // const { removeRole } = useRemoveRole();
 
-  const { createTab } = useCreateTab();
   const { removeTab } = useRemoveTab();
 
   const handleJoinClick = (jamId: string) => (event: React.MouseEvent) => {
@@ -77,7 +76,7 @@ const GraphsPage: React.FC = () => {
       history.push(`/g/${arrowTab?.arrow.routeName}/0`);
     }
     else {
-      createTab(arrowId, null, false, true);
+      //createTab(arrowId, null, false, true);
     }
   }
 
