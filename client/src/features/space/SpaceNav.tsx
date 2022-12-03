@@ -151,14 +151,14 @@ export default function SpaceNav(props: SpaceNavProps) {
       display: 'flex',
       flexDirection: 'row',
     }}>
-      <IonFabButton title='Earliest' disabled={selectedTwigId === earliestTwigId} color={'light'} onClick={handleNavEarliest} size='small'>
+      <IonFabButton title='Earliest' disabled={!selectedTwigId || selectedTwigId === earliestTwigId} color={'light'} onClick={handleNavEarliest} size='small'>
         <IonIcon icon={playSkipBackOutline} />
       </IonFabButton>
       <IonFabButton title='Previous' disabled={!earlierTwigId} color={'light'} onClick={handleNavPrev} size='small'>
         <IonIcon icon={playBackOutline} />
       </IonFabButton>
       <IonFabButton title='Selected' disabled={!selectedTwigId} color={'light'} onClick={handleNavFocus} size='small' onKeyDown={e => console.log(e.key)}>
-        { selectedTwig?.i ?? 0 }
+        { selectedTwig?.i }
       </IonFabButton>
       <IonFabButton title='Next' disabled={!laterTwigId} color={'light'} onClick={handleNavNext} size='small'>
         <IonIcon icon={playForwardOutline}/>
