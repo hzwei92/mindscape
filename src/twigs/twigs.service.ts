@@ -12,6 +12,7 @@ import { checkPermit, IdToType } from 'src/utils';
 import { SheafsService } from 'src/sheafs/sheafs.service';
 import { v4 } from 'uuid';
 import { UsersService } from 'src/users/users.service';
+import { TwigPosAdjustment } from './dto/twig-pos-adjustment';
 
 @Injectable()
 export class TwigsService {
@@ -660,7 +661,7 @@ export class TwigsService {
     }
   }
 
-  async moveTwig(user: User, twigId: string, x: number, y: number) {
+  async moveTwig(user: User, twigId: string, x: number, y: number, adjustment: TwigPosAdjustment[]) {
     const twig = await this.getTwigById(twigId);
     if (!twig) {
       throw new BadRequestException('This twig does not exist');
@@ -697,7 +698,25 @@ export class TwigsService {
       }
       return desc
     })
-    twigs1 = await this.twigsRepository.save(descs);
+    
+    const adjMap = adjustment.reduce((acc, adj) => {
+      acc[adj.twigId] = adj;
+      return acc;
+    }, {});
+
+    let adjs = await this.twigsRepository.find({
+      where: {
+        id: In(adjustment.map(adj => adj.twigId)),
+      },
+    });
+
+    adjs = adjs.map(adj => {
+      adj.x = adjMap[adj.id].x;
+      adj.y = adjMap[adj.id].y;
+      return adj;
+    });
+
+    twigs1 = await this.twigsRepository.save([...descs, ...adjs]);
 
     return {
       twigs: twigs1,

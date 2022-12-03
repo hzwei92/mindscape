@@ -134,7 +134,7 @@ type Mutation {
   loginUser(email: String!, pass: String!): UserWithTokens!
   logoutUser: User!
   moveTab(i: Int!, tabId: String!): [Tab!]!
-  moveTwig(sessionId: String!, twigId: String!, x: Int!, y: Int!): MoveTwigResult!
+  moveTwig(adjustments: [TwigPosAdjustment!]!, sessionId: String!, twigId: String!, x: Int!, y: Int!): MoveTwigResult!
   openTwig(sessionId: String!, shouldOpen: Boolean!, twigId: String!): OpenTwigResult!
   pasteArrow(linkDraft: String!, linkId: String!, sessionId: String!, sourceId: String!, targetId: String!): ReplyArrowResult!
   pasteTwig(parentTwigId: String!, postId: String!, sessionId: String!, twigId: String!, x: Int!, y: Int!): ReplyTwigResult!
@@ -295,6 +295,12 @@ type Twig {
   x: Int!
   y: Int!
   z: Int!
+}
+
+input TwigPosAdjustment {
+  twigId: String!
+  x: Int!
+  y: Int!
 }
 
 type User {

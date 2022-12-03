@@ -1,13 +1,13 @@
 import { gql, useMutation } from '@apollo/client';
 import { FULL_ROLE_FIELDS } from '../role/roleFragments';
 import { selectSessionId, setAuthIsInit, setAuthIsValid } from '../auth/authSlice';
-import { mergeTwigs } from '../space/spaceSlice';
+import { mergeTwigs, selectIdToPos } from '../space/spaceSlice';
 import { useAppDispatch, useAppSelector } from '../../app/store';
 import { useIonToast } from '@ionic/react';
 
 const MOVE_TWIG = gql`
-  mutation MoveTwig($sessionId: String!, $twigId: String!, $x: Int!, $y: Int!) {
-    moveTwig(sessionId: $sessionId, twigId: $twigId, x: $x, y: $y) {
+  mutation MoveTwig($sessionId: String!, $twigId: String!, $x: Int!, $y: Int!, $adjustments: [TwigPosAdjustment!]!) {
+    moveTwig(sessionId: $sessionId, twigId: $twigId, x: $x, y: $y, adjustments: $adjustments) {
       twigs {
         id
         x
@@ -27,6 +27,8 @@ export default function useMoveTwig(abstractId: string) {
   const [present] = useIonToast();
 
   const sessionId = useAppSelector(selectSessionId);
+
+  const idToPos = useAppSelector(selectIdToPos(abstractId)) ?? {};
   
   const [move] = useMutation(MOVE_TWIG, {
     onError: error => {
@@ -49,13 +51,22 @@ export default function useMoveTwig(abstractId: string) {
     },
   });
 
-  const moveTwig = (twigId: string, x: number, y: number) => {
+  const moveTwig = (twigId: string, x: number, y: number, adjustPosTwigIds: string[]) => {
+    const adjustments = adjustPosTwigIds.map(id => {
+      const pos = idToPos[id];
+      return {
+        twigId: id,
+        x: pos.x,
+        y: pos.y,
+      }
+    });
     move({
       variables: {
         sessionId,
         twigId,
         x,
         y,
+        adjustments,
       },
     });
   }

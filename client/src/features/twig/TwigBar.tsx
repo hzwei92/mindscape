@@ -119,7 +119,7 @@ function TwigBar(props: TwigBarProps) {
                 ? 'black'
                 : 'white',
             }}>
-              {props.twig.i}
+              {props.twig.i}... {props.twig.x}, {props.twig.y}
             </IonLabel>
           </div>
         </div>

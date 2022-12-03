@@ -22,6 +22,7 @@ import { TwigsModule } from './twigs/twigs.module';
 import { SheafsModule } from './sheafs/sheafs.module';
 import { TabsModule } from './tabs/tabs.module';
 import { TransfersModule } from './transfers/transfers.module';
+import { AlertsModule } from './alerts/alerts.module';
 
 @Module({
   imports: [
@@ -114,6 +115,7 @@ import { TransfersModule } from './transfers/transfers.module';
     SheafsModule,
     TabsModule,
     TransfersModule,
+    AlertsModule,
   ],
 })
 export class AppModule {}
