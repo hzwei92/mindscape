@@ -22,6 +22,8 @@ import { AppContext } from "./App";
 import useAppRouter from "./useAppRouter";
 
 import icon from './favicon.png';
+import { useAppSelector } from "./store";
+import { selectFocusTab } from "../features/tab/tabSlice";
 
 const AppBar = () => {
   const { setUserPalette } = useSetUserPalette();
@@ -39,6 +41,8 @@ const AppBar = () => {
   useLinkArrowsSub();
 
   const [label, setLabel] = useState(MenuMode.NONE);
+
+  const focusTab = useAppSelector(selectFocusTab);
 
   const handlePaletteClick = () => {
     setUserPalette(user?.palette === 'dark' ? 'light' : 'dark');
@@ -81,15 +85,30 @@ const AppBar = () => {
         flexDirection: 'column',
         position: 'relative',
         overflow: 'visible',
+        padding: 0,
       }}>
         <IonButton style={{
           height: 50,
-          
+          width: 50,
         }}>
           <img src={icon} style={{
             transform: 'scale(.85)',
           }}/>
         </IonButton>
+        <div style={{
+            left: 8,
+            top: 8,
+            position: 'absolute',
+            width: 34,
+            height: 34,
+            backgroundColor: 'black',
+            opacity: .7,
+            display: focusTab?.id 
+              ? 'none'
+              : 'flex',
+            zIndex: MAX_Z_INDEX,
+            borderRadius: 25,
+          }}/>
         <IonButton 
           onMouseEnter={handleMenuMouseEnter(MenuMode.ACCOUNT)}
           onMouseLeave={handleMenuMouseLeave}
