@@ -6,7 +6,7 @@ import { selectFocusTab, selectIdToTab } from "../features/tab/tabSlice";
 import useUpdateTab from "../features/tab/useUpdateTab";
 import { useAppDispatch, useAppSelector } from "./store";
 import { Arrow } from '../features/arrow/arrow';
-import { selectIdToPos, selectIdToTwig, selectIToTwigId, selectSelectedTwigId, setSelectedTwigId } from "../features/space/spaceSlice";
+import { selectAbstractIdToData, selectIdToPos, selectIdToTwig, selectIToTwigId, selectSelectedTwigId, setSelectedTwigId } from "../features/space/spaceSlice";
 import useSelectTwig from "../features/twig/useSelectTwig";
 import { checkPermit } from "../utils";
 import { Role } from "../features/role/role";
@@ -21,31 +21,18 @@ const useAppRouter = () => {
 
   const { user, newTwigId, spaceRef } = useContext(AppContext);
 
-  const focusTab = useAppSelector(selectFocusTab);
   const idToTab = useAppSelector(selectIdToTab);
   const idToArrow = useAppSelector(selectIdToArrow);
   const idToRole = useAppSelector(selectIdToRole);
 
-  const selectedTwigId = useAppSelector(selectSelectedTwigId(focusTab?.arrowId || ''));
+  const abstractIdToData = useAppSelector(selectAbstractIdToData);
 
-  const idToPos = useAppSelector(selectIdToPos(focusTab?.arrowId || '')) ?? {};
-  const idToTwig = useAppSelector(selectIdToTwig(focusTab?.arrowId || '')) ?? {};
-  const iToTwigId = useAppSelector(selectIToTwigId(focusTab?.arrowId || '')) ?? {};
-
+  const focusTab = useAppSelector(selectFocusTab);
   const abstract = idToArrow[focusTab?.arrowId || ''];
 
-  let role = null as Role | null;
-  (abstract?.roles || []).some(role_i => {
-    if (role_i.userId === user?.id && !role_i.deleteDate) {
-      role = idToRole[role_i.id];
-      return true;
-    }
-    return false;
-  });
 
-  const canEdit = abstract?.userId === user?.id || checkPermit(abstract?.canEditLayout, role?.type)
 
-  const { selectTwig } = useSelectTwig(focusTab?.arrowId || '', canEdit);
+  const { selectTwig } = useSelectTwig();
 
   const { createTabByRouteName } = useCreateTab();
   const { updateTab } = useUpdateTab();
@@ -55,7 +42,7 @@ const useAppRouter = () => {
     
     const path = router.routeInfo?.pathname.split('/') || [];
 
-    console.log('path', path, user?.id, Object.keys(idToPos).length)
+    console.log('useAppRouter', path);
 
     if (path[1] === 'g') {
       let tab = null as Tab | null;
@@ -73,9 +60,17 @@ const useAppRouter = () => {
 
       if (tab && arrow) {
         if (tab.isFocus) {
-          if (Object.keys(idToPos).length === 0) return;
           document.title = arrow.title ?? '';
 
+          const {
+            idToTwig,
+            idToPos,
+            selectedTwigId,
+            iToTwigId,
+          } = abstractIdToData[arrow.id];
+
+          if (Object.keys(idToPos).length === 0) return;
+          
           const selectedTwig = idToTwig[selectedTwigId];
 
           console.log('selectedTwig', selectedTwig);
@@ -101,7 +96,18 @@ const useAppRouter = () => {
               }
               else {
                 console.log('select twig by provided index');
-                selectTwig(tab.arrow, twig);
+
+                let role = null as Role | null;
+                (abstract?.roles || []).some(role_i => {
+                  if (role_i.userId === user?.id && !role_i.deleteDate) {
+                    role = idToRole[role_i.id];
+                    return true;
+                  }
+                  return false;
+                });
+              
+                const canEdit = arrow?.userId === user?.id || checkPermit(arrow?.canEditLayout, role?.type)
+                selectTwig(tab.arrow, twig, canEdit);
                 spaceRef.current?.zoomToElement('twig-'+ twig.id, 1, 200)
               }
             }
@@ -125,7 +131,7 @@ const useAppRouter = () => {
     else {
       router.push(`/g/${focusTab?.arrow?.routeName}/0`, undefined, 'replace');
     }
-  }, [user?.id, router.routeInfo, Object.keys(idToPos).length, selectedTwigId])
+  }, [user?.id, router.routeInfo])
 }
 
 export default useAppRouter;

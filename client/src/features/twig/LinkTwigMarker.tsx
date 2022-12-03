@@ -27,7 +27,7 @@ function LinkTwigMarker(props: LinkTwigMarkerProps) {
   const [linkI, setLinkI] = useState(0);
   const [clickTimeout, setClickTimeout] = useState(null as ReturnType<typeof setTimeout> | null);
 
-  const { selectTwig } = useSelectTwig(abstractId, canEdit);
+  const { selectTwig } = useSelectTwig();
 
   
 
@@ -53,7 +53,7 @@ function LinkTwigMarker(props: LinkTwigMarkerProps) {
   const handleClick = (event: React.MouseEvent) => {
     event.stopPropagation();
     if (!isSelected) {
-      selectTwig(abstract, props.twig);
+      selectTwig(abstract, props.twig, canEdit);
     }
   }
 

@@ -1,11 +1,11 @@
 import { useReactiveVar } from '@apollo/client';
 import { IonCard, IonIcon, useIonToast } from '@ionic/react';
-import { navigateCircleOutline } from 'ionicons/icons';
+import { navigateCircleOutline, scale } from 'ionicons/icons';
 import React, { createContext, Dispatch, memo, MouseEvent, SetStateAction, TouchList, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { AppContext } from '../../app/App';
 import { useAppDispatch, useAppSelector } from '../../app/store';
 import { adjustTwigIdToPosVar, spaceElVar } from '../../cache';
-import { CLOSED_LINK_TWIG_DIAMETER, MAX_Z_INDEX, OFF_WHITE, TWIG_WIDTH, VIEW_RADIUS } from '../../constants';
+import { APP_BAR_X, CLOSED_LINK_TWIG_DIAMETER, MAX_Z_INDEX, OFF_WHITE, TWIG_WIDTH, VIEW_RADIUS } from '../../constants';
 import { IdToType } from '../../types';
 import { checkPermit } from '../../utils';
 import { Arrow } from '../arrow/arrow';
@@ -75,7 +75,7 @@ const SpaceComponent = (props: SpaceComponentProps) => {
  
   const [isSynced, setIsSynced] = useState(true);
 
-  useInitSpace(props.abstractId, isSynced);
+  useInitSpace(props.abstractId, isSynced, setIsSynced);
   useTwigTree(props.abstractId);
 
   useReplyTwigSub(props.abstractId);
@@ -99,8 +99,6 @@ const SpaceComponent = (props: SpaceComponentProps) => {
   const abstractIdToData = useAppSelector(selectAbstractIdToData);
 
   const {
-    scale,
-    scroll,
     cursor,
     drag,
     idToTwig,
@@ -190,40 +188,17 @@ const SpaceComponent = (props: SpaceComponentProps) => {
     replyTwigId, showReplyTwigModal,
     touches]);
 
-  const moveDrag = (dx: number, dy: number) => {
-    if (drag?.isScreen) {
-      return;
-    }
-
-    if (!drag?.twigId) return;
-
-    const dx1 = dx / scale;
-    const dy1 = dy / scale;
-
-    dispatch(moveTwigs({
-      abstractId: props.abstractId,
-      twigIds: [
-        drag?.twigId,
-        ...Object.keys(idToDescIdToTrue[drag?.twigId] || {}),
-      ],
-      dx: dx1,
-      dy: dy1,
-    }));
-  };
-
   useEffect(() => {
     if (!moveEvent || !spaceEl.current || !spaceRef.current) return;
 
-    const { scale } = spaceRef.current.state;
+    const {
+      positionX,
+      positionY,
+      scale,
+    } = spaceRef.current.state;
 
-    const x = (spaceEl.current.scrollLeft + moveEvent.clientX - (menuMode === MenuMode.NONE ? 50 : 10 + menuX)) / scale;
-    const y = (spaceEl.current.scrollTop + moveEvent.clientY - 32) / scale;
-
-    const dx = x - (cursor?.x ?? 0);
-    const dy = y - (cursor?.y ?? 0);
-
-    moveDrag(dx, dy);
-    publishAvatar(props.abstractId, x, y); 
+    const x = (moveEvent.clientX - (menuMode === MenuMode.NONE ? APP_BAR_X : menuX) - positionX) / scale;
+    const y = (moveEvent.clientY - 32 - positionY) / scale;
   
     dispatch(setCursor({
       abstractId: props.abstractId,
@@ -233,8 +208,26 @@ const SpaceComponent = (props: SpaceComponentProps) => {
       },
     }));
 
-    setMoveEvent(null);
+    const dx = x - (cursor?.x ?? 0);
+    const dy = y - (cursor?.y ?? 0);
 
+    if (drag?.twigId) {
+      dispatch(moveTwigs({
+        abstractId: props.abstractId,
+        twigIds: [
+          drag?.twigId,
+          ...Object.keys(idToDescIdToTrue[drag?.twigId] || {}),
+        ],
+        dx,
+        dy,
+      }));
+    }
+
+    if (dx > 0 || dy > 0) {
+      publishAvatar(props.abstractId, x, y); 
+    }
+
+    setMoveEvent(null);
   }, [moveEvent, cursor]);
 
   useEffect(() => {
@@ -321,66 +314,85 @@ const SpaceComponent = (props: SpaceComponentProps) => {
 
   const handleTouchStart = (event: React.TouchEvent) => {
     setTouches(event.touches);
-    if (spaceEl.current) {
-      publishAvatar(
-        props.abstractId, 
-        spaceEl.current.scrollLeft + event.touches[0].clientX, 
-        spaceEl.current.scrollTop + event.touches[0].clientY
-      );
-    }
+
+    if (!spaceRef.current) return;
+
+    const {
+      positionX,
+      positionY,
+      scale,
+    } = spaceRef.current.state;
+
+
+    const current = event.touches.item(0);
+    const x = (current.clientX - (menuMode === MenuMode.NONE ? APP_BAR_X : menuX) - positionX) / scale;
+    const y = (current.clientY - 32 - positionY) / scale;
+
+    publishAvatar(props.abstractId, x, y); 
   }
  
   const handleTouchMove = (event: React.TouchEvent) => {
     event.stopPropagation();
     setTouches(event.touches);
-    if (!touches || !drag?.twigId) return;
+
+    if (!touches) return;
     
     const current = event.touches.item(0);
     const dx = Math.round(current.clientX - touches.item(0).clientX);
     const dy = Math.round(current.clientY - touches.item(0).clientY);
 
-    const pos = idToPos[drag?.twigId];
+    if (drag?.twigId) {
+      const pos = idToPos[drag?.twigId];
 
-    let targetTwigId = '';
-    Object.keys(idToTwig).some(twigId => {
-      const targetTwig = idToTwig[twigId];
-      const targetPos = idToPos[twigId];
-      const targetHeight = idToHeight[twigId];
+      let targetTwigId = '';
+      Object.keys(idToTwig).some(twigId => {
+        const targetTwig = idToTwig[twigId];
+        const targetPos = idToPos[twigId];
+        const targetHeight = idToHeight[twigId];
 
-      if (
-        !targetTwig.deleteDate &&
-        pos.x > targetPos.x &&
-        pos.y > targetPos.y &&
-        pos.x < targetPos.x + TWIG_WIDTH &&
-        pos.y < targetPos.y + targetHeight
-      ) {
-        targetTwigId = twigId
-      }
-      return !!targetTwigId;
-    })
+        if (
+          !targetTwig.deleteDate &&
+          pos.x > targetPos.x &&
+          pos.y > targetPos.y &&
+          pos.x < targetPos.x + TWIG_WIDTH &&
+          pos.y < targetPos.y + targetHeight
+        ) {
+          targetTwigId = twigId
+        }
+        return !!targetTwigId;
+      })
 
-    if (targetTwigId !== drag?.targetTwigId) {
-      if (targetTwigId) {
-        dispatch(setDrag({
-          abstractId: props.abstractId,
-          drag: {
-            ...drag,
-            targetTwigId,
-          },
-        }));
+      if (targetTwigId !== drag?.targetTwigId) {
+        if (targetTwigId) {
+          dispatch(setDrag({
+            abstractId: props.abstractId,
+            drag: {
+              ...drag,
+              targetTwigId,
+            },
+          }));
+        }
+        else {
+          dispatch(setDrag({
+            abstractId: props.abstractId,
+            drag: {
+              ...drag,
+              targetTwigId: '',
+            },
+          }));
+        }
       }
-      else {
-        dispatch(setDrag({
-          abstractId: props.abstractId,
-          drag: {
-            ...drag,
-            targetTwigId: '',
-          },
-        }));
-      }
+
+      dispatch(moveTwigs({
+        abstractId: props.abstractId,
+        twigIds: [
+          drag?.twigId,
+          ...Object.keys(idToDescIdToTrue[drag?.twigId] || {}),
+        ],
+        dx,
+        dy,
+      }));
     }
-
-    moveDrag(dx, dy)
   }
 
   const handleTouchEnd = (event: React.TouchEvent) => {
@@ -525,10 +537,12 @@ const SpaceComponent = (props: SpaceComponentProps) => {
           id={'twig-' + twig.id}
           style={{
             position: 'absolute',
-            left: pos.x + VIEW_RADIUS - 80,
-            top: pos.y + VIEW_RADIUS - 80,
+            left: pos.x + VIEW_RADIUS,
+            top: pos.y + VIEW_RADIUS,
             zIndex: twig.z,
             pointerEvents: 'none',
+            marginLeft: -80,
+            marginTop: -80,
             padding: 80,
           }}
         >
@@ -619,15 +633,25 @@ const SpaceComponent = (props: SpaceComponentProps) => {
         {
           Object.keys(idToAvatar || {}).map(id => {
             const avatar = idToAvatar[id];
+
+            if (!spaceRef.current) return null;
+
+            const {
+              positionX,
+              positionY,
+              scale,
+            } = spaceRef.current.state;
+
             return (
               <div key={`cursor-${id}`} style={{
                 position: 'absolute',
-                left: (avatar.x * scale) - 10,
-                top: (avatar.y * scale) - 20,
+                left: avatar.x * scale + positionX,
+                top: avatar.y * scale + positionY,
                 zIndex: MAX_Z_INDEX + 100,
                 color: avatar.color,
                 display: 'flex',
                 fontSize: 20,
+                pointerEvents: 'none',
               }}>
                 <IonIcon icon={navigateCircleOutline} size='large'/>
                 {avatar.name}

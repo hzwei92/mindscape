@@ -24,7 +24,7 @@ export default function RemoveTwigModal() {
   const isLink = removalTwig?.sourceId !== removalTwig?.targetId;
 
   const { removeTwig } = useRemoveTwig();
-  const { selectTwig } = useSelectTwig(abstractId, canEdit);
+  const { selectTwig } = useSelectTwig();
 
 
   const modalRef = useRef<HTMLIonModalElement>(null);
@@ -47,7 +47,7 @@ export default function RemoveTwigModal() {
     if (!removalTwigId) return;
 
     if (!isLink && removalTwig.parent?.id) {
-      selectTwig(abstract, idToTwig[removalTwig.parent.id]);
+      selectTwig(abstract, idToTwig[removalTwig.parent.id], canEdit);
     }
 
     removeTwig(removalTwig, true);

@@ -60,7 +60,7 @@ function LinkTwig(props: LinkTwigProps) {
   }, [cardEl.current?.clientHeight])
 
   const { openTwig } = useOpenTwig();
-  const { selectTwig } = useSelectTwig(abstractId, canEdit);
+  const { selectTwig } = useSelectTwig();
   const { linkArrows } = useLinkArrows();
 
   const handleClick = (event: React.MouseEvent) => {
@@ -87,7 +87,7 @@ function LinkTwig(props: LinkTwigProps) {
   const handleMouseDown = (event: React.MouseEvent) => {
     event.stopPropagation();
     if (!isSelected) {
-      selectTwig(abstract, twig);
+      selectTwig(abstract, twig, canEdit);
     }
   }
 
@@ -116,7 +116,7 @@ function LinkTwig(props: LinkTwigProps) {
   const handleOpenClick = (event: React.MouseEvent) => {
     event.stopPropagation();
     if (!isSelected) {
-      selectTwig(abstract, twig);
+      selectTwig(abstract, twig, canEdit);
     }
     openTwig(twig, !twig.isOpen);
   }
