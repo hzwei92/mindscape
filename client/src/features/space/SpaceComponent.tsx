@@ -488,6 +488,9 @@ const SpaceComponent = (props: SpaceComponentProps) => {
             top: y + VIEW_RADIUS,
             zIndex: twig.z,
             pointerEvents: 'none',
+            marginLeft: -80,
+            marginTop: -80,
+            padding: 80,
           }}
         >
           <LinkTwig 
