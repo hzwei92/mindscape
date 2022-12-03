@@ -6,7 +6,7 @@ import { SpaceContext } from '../space/SpaceComponent';
 import { TWIG_WIDTH } from '../../constants';
 import useLinkArrows from '../arrow/useLinkArrows';
 import ArrowComponent from '../arrow/ArrowComponent';
-import { selectSelectedTwigId, mergeIdToHeight, selectHeightByTwigId, selectScale, selectTwigById } from '../space/spaceSlice';
+import { selectSelectedTwigId, mergeIdToHeight, selectHeightByTwigId, selectTwigById } from '../space/spaceSlice';
 import { selectUserById } from '../user/userSlice';
 import { useAppDispatch, useAppSelector } from '../../app/store';
 import { AppContext } from '../../app/App';
@@ -28,8 +28,6 @@ function PostTwig(props: PostTwigProps) {
     abstract,
     canEdit,
   } = useContext(SpaceContext);
-
-  const scale = useAppSelector(selectScale(abstractId));
   
   const twig = useAppSelector(state => selectTwigById(state, abstractId, props.twigId));
   const twigUser = useAppSelector(state => selectUserById(state, twig.userId));

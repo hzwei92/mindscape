@@ -61,13 +61,6 @@ export default function useInitSpace(abstractId: string, isSynced: boolean, setI
         abstractId,
         idToPos: idToPos1,
       }));
-
-      if (
-        idToPos1[selectedTwigId]?.x !== idToPos[selectedTwigId]?.x || 
-        idToPos1[selectedTwigId]?.y !== idToPos[selectedTwigId]?.y
-      ) {
-        spaceRef.current?.zoomToElement('twig-' + selectedTwigId, 1, 200);
-      }
     },
   });
 
@@ -86,8 +79,6 @@ export default function useInitSpace(abstractId: string, isSynced: boolean, setI
         abstractId,
       }
     });
-
-    spaceRef.current?.zoomToElement('twig-' + selectedTwigId, 1, 200);
   }, [abstractId, isSynced]);
 
 }

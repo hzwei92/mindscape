@@ -279,7 +279,7 @@ export class TwigsResolver {
   }
 
   @UseGuards(GqlAuthGuard)
-  @Mutation(() => OpenTwigResult, {name: 'openTwig'})
+  @Mutation(() => Twig, {name: 'openTwig'})
   async openTwig(
     @CurrentUser() user: UserEntity,
     @Args('sessionId') sessionId: string,

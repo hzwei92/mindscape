@@ -8,27 +8,24 @@ import { mergeTabs } from '../tab/tabSlice';
 import { Twig } from '../twig/twig';
 
 export interface SpaceState {
+  cursor: PosType;
+  drag: DragState;
   abstractIdToData: IdToType<SpaceData>;
 };
 
 const initialState: SpaceState = {
+  cursor: {
+    x: 0,
+    y: 0,
+  },
+  drag: {
+    isScreen: false,
+    twigId: '',
+    targetTwigId: '',
+  },
   abstractIdToData: {
     '': {
       selectedTwigId: '',
-      scale: 1,
-      scroll: {
-        left: 0,
-        top: 0,
-      },
-      cursor: {
-        x: 0,
-        y: 0,
-      },
-      drag: {
-        isScreen: false,
-        twigId: '',
-        targetTwigId: '',
-      },
       idToPos: {},
       idToHeight: {},
       idToTwig: {},
@@ -46,64 +43,28 @@ export const spaceSlice = createSlice({
   name: 'space',
   initialState,
   reducers: {
-    setSelectedTwigId: (state, action: PayloadAction<{abstractId: string, selectedTwigId: string}>) => {
+    setSelectedTwigId: (state, action: PayloadAction<{abstractId: string, twigId: string}>) => {
       return {
         ...state,
         abstractIdToData: {
           ...state.abstractIdToData,
           [action.payload.abstractId]: {
             ...state.abstractIdToData[action.payload.abstractId],
-            selectedTwigId: action.payload.selectedTwigId,
+            selectedTwigId: action.payload.twigId,
           },
         }
       };
     },
-    setScale: (state, action: PayloadAction<{abstractId: string, scale: number}>) => {
+    setCursor: (state, action: PayloadAction<PosType>) => {
       return {
         ...state,
-        abstractIdToData: {
-          ...state.abstractIdToData,
-          [action.payload.abstractId]: {
-            ...state.abstractIdToData[action.payload.abstractId],
-            scale: action.payload.scale,
-          },
-        }
+        cursor: action.payload,
       };
     },
-    setScroll: (state, action: PayloadAction<{abstractId: string, scroll: ScrollState}>) => {
+    setDrag: (state, action: PayloadAction<DragState>) => {
       return {
         ...state,
-        abstractIdToData: {
-          ...state.abstractIdToData,
-          [action.payload.abstractId]: {
-            ...state.abstractIdToData[action.payload.abstractId],
-            scroll: action.payload.scroll,
-          },
-        }
-      };
-    },
-    setCursor: (state, action: PayloadAction<{abstractId: string, cursor: PosType}>) => {
-      return {
-        ...state,
-        abstractIdToData: {
-          ...state.abstractIdToData,
-          [action.payload.abstractId]: {
-            ...state.abstractIdToData[action.payload.abstractId],
-            cursor: action.payload.cursor,
-          },
-        }
-      };
-    },
-    setDrag: (state, action: PayloadAction<{abstractId: string, drag: DragState}>) => {
-      return {
-        ...state,
-        abstractIdToData: {
-          ...state.abstractIdToData,
-          [action.payload.abstractId]: {
-            ...state.abstractIdToData[action.payload.abstractId],
-            drag: action.payload.drag,
-          },
-        }
+       drag: action.payload,
       };
     },
     mergeTwigs: (state, action: PayloadAction<{abstractId: string, twigs: Twig[]}>) => {
@@ -271,21 +232,7 @@ export const spaceSlice = createSlice({
       const abstractIdToData = (action.payload || []).reduce((acc, tab) => {
         if (tab.arrowId && !acc[tab?.arrowId]) {
           acc[tab.arrowId] = {
-            selectedTwigId: tab.arrow?.rootTwigId ?? '',
-            scale: 1,
-            scroll: {
-              left: 0,
-              top: 0,
-            },
-            cursor: {
-              x: 0,
-              y: 0,
-            },
-            drag: {
-              isScreen: false,
-              twigId: '',
-              targetTwigId: '',
-            },
+            selectedTwigId: '',
             idToPos: {},
             idToHeight: {},
             idToTwig: {},
@@ -304,31 +251,14 @@ export const spaceSlice = createSlice({
       }, { ...state.abstractIdToData });
       return {
         ...state, 
-        abstractIdToData: {
-          ...state.abstractIdToData,
-          ...abstractIdToData,
-        }
+        abstractIdToData,
       }
     })
     .addCase(setLogin, (state, action) => {
       const abstractIdToData = (action.payload?.tabs || []).reduce((acc: IdToType<SpaceData>, tab) => {
         if (tab.arrowId) {
           acc[tab.arrowId] = {
-            selectedTwigId: tab.arrow?.rootTwigId ?? '',
-            scale: 1,
-            scroll: {
-              left: 0,
-              top: 0,
-            },
-            cursor: {
-              x: 0,
-              y: 0,
-            },
-            drag: {
-              isScreen: false,
-              twigId: '',
-              targetTwigId: '',
-            },
+            selectedTwigId: '',
             idToPos: {},
             idToHeight: {},
             idToTwig: {},
@@ -358,8 +288,6 @@ export const spaceSlice = createSlice({
 
 export const {
   setSelectedTwigId,
-  setScale,
-  setScroll,
   setCursor,
   setDrag,
   mergeTwigs,
@@ -373,15 +301,13 @@ export const {
   mergeRoles,
 } = spaceSlice.actions;
 
+export const selectCursor = (state: RootState) => state.space.cursor;
+export const selectDrag = (state: RootState) => state.space.drag;
 
 export const selectAbstractIdToData = (state: RootState) => state.space.abstractIdToData;
 export const selectSpaceData = (abstractId: string) => (state: RootState) => state.space.abstractIdToData[abstractId];
 
 export const selectSelectedTwigId = (abstractId: string) => (state: RootState) => state.space.abstractIdToData[abstractId]?.selectedTwigId;
-export const selectScale = (abstractId: string) => (state: RootState) => state.space.abstractIdToData[abstractId]?.scale;
-export const selectScroll = (abstractId: string) => (state: RootState) => state.space.abstractIdToData[abstractId]?.scroll;
-export const selectCursor = (abstractId: string) => (state: RootState) => state.space.abstractIdToData[abstractId]?.cursor;
-export const selectDrag = (abstractId: string) => (state: RootState) => state.space.abstractIdToData[abstractId]?.drag;
 
 export const selectIdToTwig = (abstractId: string) => (state: RootState) => state.space.abstractIdToData[abstractId]?.idToTwig;
 export const selectIToTwigId = (abstractId: string) => (state: RootState) => state.space.abstractIdToData[abstractId]?.iToTwigId;

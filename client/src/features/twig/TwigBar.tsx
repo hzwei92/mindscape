@@ -33,20 +33,16 @@ function TwigBar(props: TwigBarProps) {
     setTouches,
   } = useContext(SpaceContext);
   
-  const drag = useAppSelector(selectDrag(abstractId)) ?? {};
+  const drag = useAppSelector(selectDrag);
 
   const { openTwig } = useOpenTwig();
 
   const beginDrag = () => {
     if (props.twig.id === abstract?.rootTwigId) return;
     dispatch(setDrag({
-      abstractId,
-      drag: {
-        ...drag,
-        isScreen: false,
-        twigId: props.twig.id,
-        targetTwigId: '',
-      }
+      isScreen: false,
+      twigId: props.twig.id,
+      targetTwigId: '',
     }));
   }
 

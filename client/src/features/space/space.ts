@@ -33,10 +33,6 @@ export type AvatarType = {
 
 export type SpaceData = {
   selectedTwigId: string;
-  scale: number;
-  scroll: ScrollState;
-  cursor: PosType;
-  drag: DragState;
   idToPos: IdToType<PosType>;
   idToHeight: IdToType<number>;
   idToTwig: IdToType<Twig>;
