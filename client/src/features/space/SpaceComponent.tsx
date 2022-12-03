@@ -646,9 +646,7 @@ const SpaceComponent = (props: SpaceComponentProps) => {
         isSynced={isSynced}
         setIsSynced={setIsSynced}
       />
-      <SpaceNav 
-        spaceEl={spaceEl}
-      />
+      <SpaceNav />
       <SettingsModal 
         showSettings={showSettings}
         setShowSettings={setShowSettings}

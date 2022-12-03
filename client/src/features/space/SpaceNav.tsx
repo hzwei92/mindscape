@@ -3,19 +3,13 @@ import { SpaceContext } from './SpaceComponent';
 import { useAppSelector } from '../../app/store';
 import useSelectTwig from '../twig/useSelectTwig';
 import { Twig } from '../twig/twig';
-import { MAX_Z_INDEX, VIEW_RADIUS } from '../../constants';
 import { selectIdToTwig, selectIToTwigId, selectSelectedTwigId } from './spaceSlice';
-import { selectIdToUser } from '../user/userSlice';
 import { AppContext } from '../../app/App';
 import { IonFab, IonFabButton, IonIcon, isPlatform } from '@ionic/react';
-import { playBackOutline, playForwardOutline, playSkipBackOutline, playSkipForwardOutline, scanOutline } from 'ionicons/icons';
+import { playBackOutline, playForwardOutline, playSkipBackOutline, playSkipForwardOutline } from 'ionicons/icons';
 import { MenuMode } from '../menu/menu';
-import { ReactZoomPanPinchRef } from 'react-zoom-pan-pinch';
 
-interface SpaceNavProps {
-  spaceEl: React.RefObject<HTMLIonCardElement>;
-}
-export default function SpaceNav(props: SpaceNavProps) {
+export default function SpaceNav() {
   const {
     menuMode,
     spaceRef,
@@ -50,7 +44,7 @@ export default function SpaceNav(props: SpaceNavProps) {
       const twigId = iToTwigId[index];
       const twig = idToTwig[twigId];
 
-      if (twig.sourceId !== twig.targetId) return;
+      if (twig.sourceId !== twig.targetId && !twig.isOpen) return;
 
       const i = parseInt(index);
 
@@ -65,10 +59,6 @@ export default function SpaceNav(props: SpaceNavProps) {
       if (i < selectedTwig.i && i > earlierI) {
         earlierI = i;
       }
-
-      console.log('latestI', latestI);
-      console.log('laterI', laterI);
-      console.log('earlierI', earlierI);
     });
 
 

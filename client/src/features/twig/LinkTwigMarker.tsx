@@ -8,6 +8,7 @@ import { SpaceContext } from '../space/SpaceComponent';
 import { selectSelectedTwigId } from '../space/spaceSlice';
 import { selectUserById } from '../user/userSlice';
 import type { Twig } from './twig';
+import useOpenTwig from './useOpenTwig';
 import useSelectTwig from './useSelectTwig';
 
 interface LinkTwigMarkerProps {
@@ -28,7 +29,7 @@ function LinkTwigMarker(props: LinkTwigMarkerProps) {
   const [clickTimeout, setClickTimeout] = useState(null as ReturnType<typeof setTimeout> | null);
 
   const { selectTwig } = useSelectTwig();
-
+  const { openTwig } = useOpenTwig();
   
 
   // useEffect(() => {
@@ -54,6 +55,9 @@ function LinkTwigMarker(props: LinkTwigMarkerProps) {
     event.stopPropagation();
     if (!isSelected) {
       selectTwig(abstract, props.twig, canEdit);
+    }
+    if (!props.twig.isOpen) {
+      openTwig(props.twig, true);
     }
   }
 
