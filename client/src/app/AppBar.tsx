@@ -96,13 +96,13 @@ const AppBar = () => {
           }}/>
         </IonButton>
         <div style={{
-            left: 8,
-            top: 8,
+            left: 10,
+            top: 10,
             position: 'absolute',
-            width: 34,
-            height: 34,
+            width: 30,
+            height: 30,
             backgroundColor: 'black',
-            opacity: .7,
+            opacity: .85,
             display: focusTab?.id 
               ? 'none'
               : 'flex',
