@@ -1,3 +1,4 @@
+import { isPlatform } from "@ionic/react";
 import { useContext, useState } from "react";
 import { AppContext } from "../../app/App";
 import { APP_BAR_X } from "../../constants";
@@ -6,8 +7,10 @@ import AccountComponent from "../account/AccountComponent";
 import SearchComponent from "../search/SearchComponent";
 import { MenuMode } from "./menu";
 
-
-export default function MenuComponent() {
+interface MenuComponentProps {
+  isPortrait: boolean;
+}
+export default function MenuComponent(props: MenuComponentProps) {
   const { user, palette, menuMode, menuX, setMenuIsResizing } = useContext(AppContext);
 
   const [showResizer, setShowResizer] = useState(false);
@@ -26,14 +29,17 @@ export default function MenuComponent() {
 
   return (
     <div style={{
+      position: 'relative',
       height: '100%',
-      width: menuX - APP_BAR_X,
+      width: isPlatform('mobile')
+        ? '100%'
+        : menuX - APP_BAR_X,
       display: 'flex',
       flexDirection: 'row',
     }}>
       <div style={{
         height: '100%',
-        width: menuX - APP_BAR_X - 5,
+        width: 'calc(100% - 5px)',
       }}>
         { 
           menuMode === MenuMode.ACCOUNT

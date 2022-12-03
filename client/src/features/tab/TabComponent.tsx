@@ -3,7 +3,7 @@ import { close } from "ionicons/icons";
 import { useContext } from "react";
 import { AppContext } from "../../app/App";
 import { useAppDispatch, useAppSelector } from "../../app/store";
-import { ItemTypes, OFF_WHITE } from "../../constants";
+import { ItemTypes, OFF_WHITE, TAB_HEIGHT } from "../../constants";
 import { selectArrowById } from "../arrow/arrowSlice";
 import { selectAbstractIdToData, selectIdToAvatar, selectIdToTwig, selectSelectedTwigId } from "../space/spaceSlice";
 import { Tab } from "./tab";
@@ -143,6 +143,7 @@ export default function TabComponent(props: TabComponentProps) {
         onClick={handleTabClick}
         style={{
           margin: 0,
+          marginRight: 1,
           backgroundColor: props.tab.isFocus
             ? palette === 'dark'
               ? 'black'
@@ -164,6 +165,8 @@ export default function TabComponent(props: TabComponentProps) {
           justifyContent: 'center',
           color: arrow.color,
           marginLeft: 10,
+          height: TAB_HEIGHT,
+          fontSize: 18,
         }}>
           { arrow.title }
         </div>

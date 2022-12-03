@@ -5,7 +5,7 @@ import React, { createContext, Dispatch, memo, MouseEvent, SetStateAction, Touch
 import { AppContext } from '../../app/App';
 import { useAppDispatch, useAppSelector } from '../../app/store';
 import { adjustTwigIdToPosVar, spaceElVar } from '../../cache';
-import { APP_BAR_X, CLOSED_LINK_TWIG_DIAMETER, MAX_Z_INDEX, OFF_WHITE, TWIG_WIDTH, VIEW_RADIUS } from '../../constants';
+import { APP_BAR_X, CLOSED_LINK_TWIG_DIAMETER, MAX_Z_INDEX, OFF_WHITE, TAB_HEIGHT, TWIG_WIDTH, VIEW_RADIUS } from '../../constants';
 import { IdToType } from '../../types';
 import { checkPermit } from '../../utils';
 import { Arrow } from '../arrow/arrow';
@@ -198,7 +198,7 @@ const SpaceComponent = (props: SpaceComponentProps) => {
     } = spaceRef.current.state;
 
     const x = (moveEvent.clientX - (menuMode === MenuMode.NONE ? APP_BAR_X : menuX) - positionX) / scale;
-    const y = (moveEvent.clientY - 32 - positionY) / scale;
+    const y = (moveEvent.clientY - TAB_HEIGHT - positionY) / scale;
   
     dispatch(setCursor({
       abstractId: props.abstractId,
@@ -326,7 +326,7 @@ const SpaceComponent = (props: SpaceComponentProps) => {
 
     const current = event.touches.item(0);
     const x = (current.clientX - (menuMode === MenuMode.NONE ? APP_BAR_X : menuX) - positionX) / scale;
-    const y = (current.clientY - 32 - positionY) / scale;
+    const y = (current.clientY - TAB_HEIGHT - positionY) / scale;
 
     publishAvatar(props.abstractId, x, y); 
   }

@@ -30,7 +30,7 @@ export default function CurrentUserTag() {
           margin: 10,
           padding: 10,
         }}>
-          <UserTag user={user} fontSize={20} />
+          <UserTag user={user} fontSize={16} />
         </IonCard>
       </div>
     </div>

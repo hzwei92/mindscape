@@ -293,7 +293,7 @@ const App: React.FC = () => {
                 : 0,
               bottom: 0,
             }}>
-              <MenuComponent />
+              <MenuComponent isPortrait={isPortrait} />
             </div>
             <div style={{
               display: menuMode !== MenuMode.NONE && isPlatform('mobile')

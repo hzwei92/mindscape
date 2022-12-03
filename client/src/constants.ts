@@ -62,6 +62,8 @@ export const ACTIVE_TIME = 10 * 1000;
 
 export const NOTCH_SIZE = 44;
 
+export const TAB_HEIGHT = 42;
+
 export const ItemTypes = {
   TAB: 'tab',
 }
