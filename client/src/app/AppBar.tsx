@@ -21,6 +21,7 @@ import useSetUserPalette from "../features/user/useSetUserPalette";
 import { AppContext } from "./App";
 import useAppRouter from "./useAppRouter";
 
+import icon from './favicon.png';
 
 const AppBar = () => {
   const { setUserPalette } = useSetUserPalette();
@@ -81,6 +82,14 @@ const AppBar = () => {
         position: 'relative',
         overflow: 'visible',
       }}>
+        <IonButton style={{
+          height: 50,
+          
+        }}>
+          <img src={icon} style={{
+            transform: 'scale(.85)',
+          }}/>
+        </IonButton>
         <IonButton 
           onMouseEnter={handleMenuMouseEnter(MenuMode.ACCOUNT)}
           onMouseLeave={handleMenuMouseLeave}
@@ -106,7 +115,7 @@ const AppBar = () => {
             : 'none',
           position: 'absolute',
           left: 45,
-          top: -5,
+          top: 45,
           padding: 10,
         }}>
           ACCOUNT
@@ -135,7 +144,7 @@ const AppBar = () => {
             : 'none',
           position: 'absolute',
           left: 45,
-          top: 45,
+          top: 95,
           padding: 10,
         }}>
           SEARCH
@@ -165,7 +174,7 @@ const AppBar = () => {
             : 'none',
           position: 'absolute',
           left: 45,
-          top: 95,
+          top: 145,
           padding: 10,
         }}>
           GRAPHS
@@ -194,7 +203,7 @@ const AppBar = () => {
             : 'none',
           position: 'absolute',
           left: 45,
-          top: 145,
+          top: 195,
           padding: 10,
         }}>
           CONTACTS
@@ -223,7 +232,7 @@ const AppBar = () => {
             : 'none',
           position: 'absolute',
           left: 45,
-          top: 195,
+          top: 245,
           padding: 10,
         }}>
           MAP
@@ -252,7 +261,7 @@ const AppBar = () => {
             : 'none',
           position: 'absolute',
           left: 45,
-          top: 245,
+          top: 295,
           padding: 10,
         }}>
           FEED
@@ -282,7 +291,7 @@ const AppBar = () => {
             : 'none',
           position: 'absolute',
           left: 45,
-          top: 295,
+          top: 345,
           padding: 10,
         }}>
           ABOUT
