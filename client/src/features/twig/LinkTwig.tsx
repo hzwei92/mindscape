@@ -1,7 +1,7 @@
-import React, { useContext, useEffect, useRef } from 'react';
+import React, { Dispatch, SetStateAction, useContext, useEffect, useRef } from 'react';
 import { SpaceContext } from '../space/SpaceComponent';
 import { CLOSED_LINK_TWIG_DIAMETER, TWIG_WIDTH } from '../../constants';
-import { mergeIdToHeight, selectHeightByTwigId, selectSelectedTwigId, selectTwigById } from '../space/spaceSlice';
+import { mergeIdToHeight, mergeTwigs, selectHeightByTwigId, selectSelectedTwigId, selectTwigById } from '../space/spaceSlice';
 import { selectUserById } from '../user/userSlice';
 import { useAppDispatch, useAppSelector } from '../../app/store';
 import { AppContext } from '../../app/App';
@@ -12,16 +12,18 @@ import { IonButton, IonButtons, IonCard, IonIcon } from '@ionic/react';
 import { close, remove } from 'ionicons/icons';
 import ArrowComponent from '../arrow/ArrowComponent';
 import TwigControls from './TwigControls';
+import { Twig } from './twig';
 
 interface LinkTwigProps {
   twigId: string;
+  setIsSynced: Dispatch<SetStateAction<boolean>>;
 }
  
 function LinkTwig(props: LinkTwigProps) {
   const dispatch = useAppDispatch();
 
   const { 
-    palette,
+    user,
     pendingLink, 
     setPendingLink,
   } = useContext(AppContext);
@@ -115,10 +117,20 @@ function LinkTwig(props: LinkTwigProps) {
 
   const handleOpenClick = (event: React.MouseEvent) => {
     event.stopPropagation();
-    if (!isSelected) {
-      selectTwig(abstract, twig, canEdit);
+    selectTwig(abstract, twig, canEdit);
+    if (twig.userId === user?.id || canEdit) {
+      openTwig(twig, !twig.isOpen);
     }
-    openTwig(twig, !twig.isOpen);
+    else {
+      dispatch(mergeTwigs({
+        abstractId,
+        twigs: [{
+          id: twig.id,
+          isOpen: !twig.isOpen,
+        } as Twig],
+      }))
+      props.setIsSynced(false);
+    }
   }
 
   const handleRemoveClick = (e: React.MouseEvent) => {
@@ -157,6 +169,7 @@ function LinkTwig(props: LinkTwigProps) {
       >
         <div style={{
           padding: 5,
+          paddingTop: 6,
           position: 'relative',
         }}>
           <IonButtons style={{
@@ -164,6 +177,12 @@ function LinkTwig(props: LinkTwigProps) {
             right: 0,
             top: 0,
           }}>
+            <IonButton style={{
+              height: 20,
+              fontSize: 6,
+            }}>
+              { twig.i }
+            </IonButton>
             <IonButton onClick={handleOpenClick} style={{
               height: 20,
             }}>

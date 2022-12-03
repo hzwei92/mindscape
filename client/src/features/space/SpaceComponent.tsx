@@ -1,10 +1,10 @@
 import { useReactiveVar } from '@apollo/client';
 import { IonCard, IonIcon, useIonToast } from '@ionic/react';
-import { navigateCircleOutline, scale } from 'ionicons/icons';
+import { navigateCircleOutline } from 'ionicons/icons';
 import React, { createContext, Dispatch, memo, MouseEvent, SetStateAction, TouchList, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { AppContext } from '../../app/App';
 import { useAppDispatch, useAppSelector } from '../../app/store';
-import { adjustTwigIdToPosVar, spaceElVar } from '../../cache';
+import { adjustTwigIdToPosVar } from '../../cache';
 import { APP_BAR_X, CLOSED_LINK_TWIG_DIAMETER, MAX_Z_INDEX, OFF_WHITE, TAB_HEIGHT, TWIG_WIDTH, VIEW_RADIUS } from '../../constants';
 import { IdToType } from '../../types';
 import { checkPermit } from '../../utils';
@@ -33,10 +33,10 @@ import SettingsModal from './SettingsPanel';
 import { PosType } from './space';
 import SpaceControls from './SpaceControls';
 import SpaceNav from './SpaceNav';
-import { mergeIdToPos, moveTwigs, selectAbstractIdToData, setCursor, setDrag, setScale, setScroll } from './spaceSlice';
+import { mergeIdToPos, moveTwigs, selectAbstractIdToData, selectCursor, selectDrag, setCursor, setDrag } from './spaceSlice';
 import useInitSpace from './useInitSpace';
 import usePublishAvatar from '../explorer/usePublishAvatar';
-import { TransformWrapper, TransformComponent, ReactZoomPanPinchRef } from 'react-zoom-pan-pinch';
+import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 
 export const SpaceContext = createContext({} as {
   abstractId: string;
@@ -96,17 +96,19 @@ const SpaceComponent = (props: SpaceComponentProps) => {
 
   const adjustTwigIdToPos = useReactiveVar(adjustTwigIdToPosVar); 
 
+  const cursor = useAppSelector(selectCursor);
+  const drag = useAppSelector(selectDrag);
+
   const abstractIdToData = useAppSelector(selectAbstractIdToData);
 
   const {
-    cursor,
-    drag,
     idToTwig,
     idToPos,
     idToHeight,
     idToDescIdToTrue,
     idToAvatar,
     idToRole,
+    selectedTwigId,
   } = abstractIdToData[props.abstractId];
 
   const abstract = useAppSelector(state => selectArrowById(state, props.abstractId));
@@ -140,22 +142,10 @@ const SpaceComponent = (props: SpaceComponentProps) => {
   const [showReplyTwigModal, setShowReplyTwigModal] = useState(false);
 
   useEffect(() => {
-    if (!spaceEl?.current) return;
-
-    spaceElVar(spaceEl);
-
-    const preventWheelDefault = (event: WheelEvent) => {
-      if (event.ctrlKey || event.metaKey) {
-        event.preventDefault();
-      }
+    if (selectedTwigId) {
+      spaceRef.current?.zoomToElement('twig-'+ selectedTwigId, 1, 200);
     }
-
-    spaceEl.current.addEventListener('wheel', preventWheelDefault);
-
-    return () => {
-      spaceEl.current?.removeEventListener('wheel', preventWheelDefault);
-    }
-  }, [spaceEl?.current]);
+  }, [selectedTwigId]);
 
   const spaceContextValue = useMemo(() => {
     return {
@@ -201,11 +191,8 @@ const SpaceComponent = (props: SpaceComponentProps) => {
     const y = (moveEvent.clientY - TAB_HEIGHT - positionY) / scale;
   
     dispatch(setCursor({
-      abstractId: props.abstractId,
-      cursor: {
-        x,
-        y,
-      },
+      x,
+      y,
     }));
 
     const dx = x - (cursor?.x ?? 0);
@@ -241,23 +228,17 @@ const SpaceComponent = (props: SpaceComponentProps) => {
 
   const handleMouseDown = (event: React.MouseEvent) => {
     dispatch(setDrag({
-      abstractId: props.abstractId,
-      drag: {
-        isScreen: true,
-        twigId: '',
-        targetTwigId: '',
-      }
+      isScreen: true,
+      twigId: '',
+      targetTwigId: '',
     }));
   }
 
   const endDrag = () => {
     dispatch(setDrag({
-      abstractId: props.abstractId,
-      drag: {
-        isScreen: false,
-        twigId: '',
-        targetTwigId: '',
-      }
+      isScreen: false,
+      twigId: '',
+      targetTwigId: '',
     }));
 
     if (!drag?.twigId) return;
@@ -286,11 +267,8 @@ const SpaceComponent = (props: SpaceComponentProps) => {
     }
     if (!targetId && drag?.targetTwigId && !drag?.isScreen) {
       dispatch(setDrag({
-        abstractId: props.abstractId,
-        drag: {
-          ...drag,
-          targetTwigId: '',
-        },
+        ...drag,
+        targetTwigId: '',
       }));
     }
     if (!moveEvent) {
@@ -302,11 +280,8 @@ const SpaceComponent = (props: SpaceComponentProps) => {
     event.stopPropagation();
     if (drag?.targetTwigId !== targetId) {
       dispatch(setDrag({
-        abstractId: props.abstractId,
-        drag: {
-          ...drag,
-          targetTwigId: targetId,
-        },
+        ...drag,
+        targetTwigId: targetId,
       }));
     }
     handleMouseMove(event, targetId);
@@ -365,20 +340,14 @@ const SpaceComponent = (props: SpaceComponentProps) => {
       if (targetTwigId !== drag?.targetTwigId) {
         if (targetTwigId) {
           dispatch(setDrag({
-            abstractId: props.abstractId,
-            drag: {
-              ...drag,
-              targetTwigId,
-            },
+            ...drag,
+            targetTwigId,
           }));
         }
         else {
           dispatch(setDrag({
-            abstractId: props.abstractId,
-            drag: {
-              ...drag,
-              targetTwigId: '',
-            },
+            ...drag,
+            targetTwigId: '',
           }));
         }
       }
@@ -511,14 +480,20 @@ const SpaceComponent = (props: SpaceComponentProps) => {
         })
       }
       twigs.push(
-        <div key={`twig-${twigId}`} style={{
-          position: 'absolute',
-          left: x + VIEW_RADIUS,
-          top: y + VIEW_RADIUS,
-          zIndex: twig.z,
-          pointerEvents: 'none',
-        }}>
-          <LinkTwig twigId={twig.id} />
+        <div key={`twig-${twigId}`} 
+          id={`twig-${twigId}`}
+          style={{
+            position: 'absolute',
+            left: x + VIEW_RADIUS,
+            top: y + VIEW_RADIUS,
+            zIndex: twig.z,
+            pointerEvents: 'none',
+          }}
+        >
+          <LinkTwig 
+            twigId={twig.id} 
+            setIsSynced={setIsSynced}
+          />
         </div>
       );
 

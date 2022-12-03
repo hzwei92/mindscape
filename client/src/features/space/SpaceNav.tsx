@@ -46,7 +46,6 @@ export default function SpaceNav(props: SpaceNavProps) {
       .filter(twig => (
         twig && 
         !twig.deleteDate && 
-        twig.sourceId === twig.targetId && 
         twig.abstractId === abstract?.id
       ))
       .sort((a, b) => a.i < b.i ? -1 : 1);
@@ -81,7 +80,6 @@ export default function SpaceNav(props: SpaceNavProps) {
       selectTwig(abstract, twig, canEdit);
     }
     centerTwig(twig);
-    setIndex(twig.i);
   }
 
   const handleNavEarliest = (event: React.MouseEvent) => {
@@ -94,21 +92,36 @@ export default function SpaceNav(props: SpaceNavProps) {
   const handleNavPrev = (event: React.MouseEvent) => {
     event.stopPropagation();
     event.preventDefault();
-    const twig = twigs[index - 1];
+    let i = index - 1;
+    let twig = twigs[i];
+    while (i > 0 && twig.sourceId !== twig.targetId) {
+      i--;
+      twig = twigs[i];
+    }
     select(twig);
   }
 
   const handleNavNext = (event: React.MouseEvent) => {
     event.stopPropagation();
     event.preventDefault();
-    const twig = twigs[index + 1];
+    let i = index + 1;
+    let twig = twigs[i];
+    while (i < twigs.length - 1 && twig.sourceId !== twig.targetId) {
+      i++;
+      twig = twigs[i];
+    }
     select(twig);
   }
 
   const handleNavLatest = (event: React.MouseEvent) => {
     event.stopPropagation();
     event.preventDefault();
-    const twig = twigs[twigs.length - 1];
+    let i = twigs.length - 1;
+    let twig = twigs[i];
+    while (i > 0 && twig.sourceId !== twig.targetId) {
+      i--;
+      twig = twigs[i];
+    }
     select(twig);
   }
 

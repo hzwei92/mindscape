@@ -47,6 +47,8 @@ export default function useSelectTwig() {
     },
     onCompleted: data => {
       console.log(data);
+
+      dispatch(mergeArrows([data.selectTwig.abstract]))
     },
   });
 
@@ -61,12 +63,6 @@ export default function useSelectTwig() {
         },
       });
     }
-
-    dispatch(setSelectedTwigId({
-      abstractId: abstract.id,
-      selectedTwigId: twig.id,
-    }));
-
 
     const {
       idToTwig,

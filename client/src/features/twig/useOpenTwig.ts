@@ -14,6 +14,9 @@ const OPEN_TWIG = gql`
         id
         isOpen
       }
+      role {
+        ...FullRoleFields
+      }
     }
   }
 `;
@@ -40,6 +43,11 @@ const useOpenTwig = () => {
     },
     onCompleted: data => {
       console.log(data);
+
+      dispatch(mergeTwigs({
+        abstractId,
+        twigs: [data.openTwig.twig],
+      }))
     }
   });
 
@@ -52,9 +60,10 @@ const useOpenTwig = () => {
       }
     });
 
-    const twig1 = Object.assign({}, twig, {
+    const twig1 = {
+      ...twig,
       isOpen: shouldOpen,
-    });
+    };
 
     dispatch(mergeTwigs({
       abstractId,

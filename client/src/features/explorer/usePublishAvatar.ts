@@ -44,14 +44,12 @@ export default function usePublishAvatar() {
       if (count !== 0) return;
     }
 
-    const { scale } = abstractIdToSpaceData[abstractId];
-
     publish({
       variables: {
         sessionId,
         abstractId,
-        x: x && Math.round(x / scale),
-        y: y && Math.round(y / scale),
+        x: Math.round(x ?? 0),
+        y: Math.round(y ?? 0),
       }
     });
   }
