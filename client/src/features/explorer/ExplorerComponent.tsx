@@ -66,7 +66,7 @@ export default function ExplorerComponent() {
         scrollbarWidth: 'none',
         backgroundColor: palette === 'dark'
           ? ''
-          : '#efefef',
+          : '#dddddd',
         whiteSpace: 'nowrap',
         display: 'flex',
         flexDirection: 'row',
