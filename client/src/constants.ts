@@ -50,7 +50,7 @@ export const ACCESS_TOKEN = 'ACCESS_TOKEN';
 export const REFRESH_TOKEN = 'REFRESH_TOKEN';
 
 
-export const OFF_WHITE = '#e0e0e0';
+export const OFF_WHITE = '#ededed';
 
 
 export const SPACE_PANEL_WIDTH = 280;
