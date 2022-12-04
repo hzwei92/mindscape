@@ -58,22 +58,25 @@ export default function useUpdateTab() {
       isFrame,
       isFocus,
     };
-    dispatch(mergeTabs([tab1]));
+    const tabs = [tab1];
 
     if (isFrame) {
       const frameTab1 = {
         ...frameTab,
         isFrame: false,
       } as Tab;
-      dispatch(mergeTabs([frameTab1]));
+      tabs.push(frameTab1);
     }
     else if (isFocus) {
       const focusTab1 = {
         ...focusTab,
         isFocus: false,
       } as Tab;
-      dispatch(mergeTabs([focusTab1]));
+      tabs.push(focusTab1);
     }
+
+    dispatch(mergeTabs(tabs));
+
   }
 
   return { updateTab };

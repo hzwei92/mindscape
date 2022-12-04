@@ -10,6 +10,7 @@ import icon from './icon.png'
 import usePublishAvatar from "./usePublishAvatar";
 import TabComponent from "../tab/TabComponent";
 import { TAB_HEIGHT } from "../../constants";
+import { Tab } from "../tab/tab";
 
 export default function ExplorerComponent() {
   const { 
@@ -20,13 +21,35 @@ export default function ExplorerComponent() {
   } = useContext(AppContext);
 
   const idToTab = useAppSelector(selectIdToTab) ?? {};
-
-  const focusTab = useAppSelector(selectFocusTab);
-
   const [abstractIds, setAbstractIds] = useState<string[]>([]);
   
+  const [focusTabId, setFocusTabId] = useState('');
+
+  const focusTab = idToTab[focusTabId];
+
   useEffect(() => {
-    setAbstractIds(Object.values(idToTab).map(tab => tab.arrowId));
+    let focusTab = null as Tab | null;
+    const ids: string[] = [];
+
+    Object.values(idToTab).forEach(tab => {
+      ids.push(tab.arrowId)
+      if (tab.isFocus) {
+        focusTab = tab;
+      }
+    })
+
+    if (focusTab?.id !== focusTabId) {
+      publishAvatar(abstractId, null, null);
+      setFocusTabId(focusTab?.id ?? '')
+      setAbstractId(focusTab?.arrowId ?? '')
+    }
+
+    if (
+      ids.length !== abstractIds.length ||
+      ids.some((id, i) => id !== abstractIds[i])
+    ) {
+      setAbstractIds(ids);
+    }
   }, [idToTab])
 
   usePublishAvatarSub(abstractIds);
@@ -36,16 +59,6 @@ export default function ExplorerComponent() {
   const [abstractId, setAbstractId] = useState('');
 
   const tabsRef = useRef<HTMLIonCardElement>(null);
-
-  useEffect(() => {
-    if (focusTab?.id) {
-      if (abstractId) {
-        publishAvatar(abstractId, null, null);
-      }
-      setAbstractId(focusTab.arrowId);
-    }
-  }, [focusTab?.id])
-
 
   const handleCreateGraphClick = () => {
     setCreateGraphArrowId(null);
@@ -119,7 +132,7 @@ export default function ExplorerComponent() {
           </IonCard>
         </div>
         {
-          focusTab
+          focusTab?.id
             ? <div style={{
                 position: 'relative',
                 width: '100%',
