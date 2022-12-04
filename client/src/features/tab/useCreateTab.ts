@@ -24,7 +24,7 @@ const CREATE_TAB_BY_ROUTENAME = gql`
   ${FULL_TAB_FIELDS}
 `
 
-export default function useCreateTab() {
+export default function useCreateTab(onCompleted?: () => void) {
   const dispatch = useAppDispatch();
 
   const router = useIonRouter();
@@ -36,6 +36,7 @@ export default function useCreateTab() {
     onCompleted: data  => {
       console.log(data);
       dispatch(mergeTabs(data.createTabByRouteName));
+      onCompleted && onCompleted();
     }
   });
 
@@ -46,6 +47,7 @@ export default function useCreateTab() {
     onCompleted: data  => {
       console.log(data);
       dispatch(mergeTabs(data.createTab));
+      onCompleted && onCompleted();
     }
   });
 
