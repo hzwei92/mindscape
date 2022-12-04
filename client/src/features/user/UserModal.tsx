@@ -147,7 +147,7 @@ export default function UserModal() {
                 {user1?.name}
               </span>
               &nbsp;
-              { user1?.id ? timeString: null }
+              { user1?.activeDate ? timeString: null }
               <br/>
               { 
                 user1?.balance !== undefined
