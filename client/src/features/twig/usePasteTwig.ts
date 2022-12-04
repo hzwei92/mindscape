@@ -150,8 +150,8 @@ export default function usePasteTwig() {
 
     console.log(dx, dy, dr);
     const twigId = v4();
-    const x = Math.round((300 * dx / dr) + pos.x);
-    const y = Math.round((300 * dy / dr) + pos.y);
+    const x = Math.round((300 * dx / dr) + pos.x + (100 * (Math.random() - 0.5)));
+    const y = Math.round((300 * dy / dr) + pos.y + (100 * (Math.random() - 0.5)));
 
     console.log(x, y)
 
