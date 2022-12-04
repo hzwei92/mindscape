@@ -88,7 +88,11 @@ export default function ArrowVoter(props: ArrowVoterProps) {
             fontSize: 10,
           }}
         >
-          { props.arrow.weight }
+          { 
+            props.arrow.weight > 1000
+              ? `${(props.arrow.weight / 1000).toFixed(1)}k`
+              : props.arrow.weight
+          }
         </IonButton>
         <IonButton
           onMouseDown={handleButtonMouseDown}

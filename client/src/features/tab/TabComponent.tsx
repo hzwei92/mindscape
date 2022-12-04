@@ -178,7 +178,7 @@ export default function TabComponent(props: TabComponentProps) {
               justifyContent: 'center',
               paddingLeft: 5,
             }}>
-              ({ Object.keys(idToAvatar).length })
+              ({ Object.keys(idToAvatar).length.toLocaleString() })
             </div>
           )
         }

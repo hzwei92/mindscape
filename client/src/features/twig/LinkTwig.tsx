@@ -242,7 +242,11 @@ function LinkTwig(props: LinkTwigProps) {
           justifyContent: 'center',
           fontSize: 12,
         }}>
-            {twig.detail.weight}
+          { 
+            twig.detail.weight > 1000
+              ? `${(twig.detail.weight / 1000).toFixed(1)}k`
+              : twig.detail.weight
+          }
         </div>
       </IonCard>
     </div>
