@@ -35,7 +35,12 @@ export default function SpaceNav() {
   const [latestTwigId, setLatestTwigId] = useState('');
   
   useEffect(() => {
-    if (!abstract || !selectedTwig) return;
+    if (!abstract || !selectedTwig) {
+      setEarlierTwigId('');
+      setLaterTwigId('');
+      setLatestTwigId('');
+      return;
+    };
     
     let latestI = 0;
     let laterI = abstract?.twigN + 1;
