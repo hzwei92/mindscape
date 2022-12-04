@@ -1,5 +1,5 @@
 import { useIonRouter } from "@ionic/react";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { selectIdToArrow } from "../features/arrow/arrowSlice";
 import { Tab } from "../features/tab/tab";
 import { selectFocusTab, selectIdToTab } from "../features/tab/tabSlice";
@@ -24,14 +24,20 @@ const useAppRouter = () => {
 
   const focusTab = useAppSelector(selectFocusTab);
 
-  const { createTabByRouteName } = useCreateTab();
+  const [creatingTabRoutname, setCreatingTabRoutname] = useState('');
+
+  const { createTabByRouteName } = useCreateTab(() => {
+    setCreatingTabRoutname('');
+  });
   const { updateTab } = useUpdateTab();
+
 
   useEffect(() => {
     if (!user?.id) return;
     
     const path = router.routeInfo?.pathname.split('/') || [];
-    
+    console.log(path);
+
     if (path[1] !== 'g') {
       router.push(`/g/${focusTab?.arrow?.routeName}/0`, undefined, 'replace');
       return;
@@ -56,7 +62,10 @@ const useAppRouter = () => {
       })
 
     if (!tab || !arrow) {
-      createTabByRouteName(path[2], null, false, true);
+      if (creatingTabRoutname !== path[2]) {
+        createTabByRouteName(path[2], null, false, true);
+        setCreatingTabRoutname(path[2]);
+      }
       return;
     }
 
