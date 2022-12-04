@@ -33,6 +33,7 @@ function LinkTwig(props: LinkTwigProps) {
     abstractId, 
     canEdit,
     setRemovalTwigId,
+    setShowRemoveTwigModal,
   } = useContext(SpaceContext);
   
   const twig = useAppSelector(state => selectTwigById(state, abstractId, props.twigId));
@@ -136,6 +137,7 @@ function LinkTwig(props: LinkTwigProps) {
   const handleRemoveClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     setRemovalTwigId(twig.id);
+    setShowRemoveTwigModal(true);
   }
 
   if (twig.isOpen) {
