@@ -16,11 +16,11 @@ const GET_INS = gql`
     getIns(arrowId: $arrowId, offset: $offset) {
       ...FullArrowFields
       source {
-        id
-        outCount
+        ...FullArrowFields
       }
       target {
-        ...FullArrowFields
+        id
+        inCount
       }
       votes {
         ...VoteFields
