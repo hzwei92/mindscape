@@ -1,14 +1,18 @@
 import { gql, useMutation } from "@apollo/client";
 import { IonAvatar, IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonIcon, IonLabel, IonModal, useIonRouter } from "@ionic/react";
 import md5 from "md5";
-import { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { AppContext } from "../../app/App";
 import { FULL_TAB_FIELDS } from "../tab/tabFragments";
-import { User } from "./user";
 import { USER_FIELDS } from "./userFragments";
 import { getTimeString } from "../../utils";
 import { close } from "ionicons/icons";
 import { Arrow } from "../arrow/arrow";
+import useFollowUser from "../lead/useFollowUser";
+import useUnfollowUser from "../lead/useUnfollowUser";
+import { mergeUsers, selectUserById } from "./userSlice";
+import { useAppDispatch, useAppSelector } from "../../app/store";
+import { selectIdToLead, selectLeaderIdToLeadId } from "../lead/leadSlice";
  
 const GET_USER = gql`
   mutation GetUser($userId: String!) {
@@ -25,13 +29,25 @@ const GET_USER = gql`
 
 
 export default function UserModal() {
+  const dispatch = useAppDispatch();
+
   const { user, selectedUserId, setSelectedUserId } = useContext(AppContext);
 
   const modalRef = useRef<HTMLIonModalElement>(null);
 
-  const [user1, setUser1] = useState(null as User | null);
+  const user1 = useAppSelector(state => selectUserById(state, selectedUserId));
+  console.log(user1);
+  const leaderIdToLeadId = useAppSelector(selectLeaderIdToLeadId);
+  const idToLead = useAppSelector(selectIdToLead);
+
+  const lead = idToLead[leaderIdToLeadId[selectedUserId]];
 
   const router = useIonRouter();
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  const { followUser } = useFollowUser();
+  const { unfollowUser } = useUnfollowUser();
 
   const [getUser] = useMutation(GET_USER, {
     onError: err => {
@@ -39,13 +55,15 @@ export default function UserModal() {
     },
     onCompleted: data => {
       console.log(data);
-      setUser1(data.getUser);
+      setIsLoading(false);
+      dispatch(mergeUsers([data.getUser]));
     }
   });
 
   useEffect(() => {
     if (selectedUserId) {
       modalRef.current?.present();
+      setIsLoading(true);
       getUser({
         variables: {
           userId: selectedUserId,
@@ -61,9 +79,23 @@ export default function UserModal() {
     router.push(`/g/${arrow.routeName}`);
     handleClose();
   }
+
+  const handleFollowClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (user1?.id) {
+      followUser(user1.id);
+    }
+  }
+
+  const handleUnfollowClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (lead?.id) {
+      unfollowUser(lead.id)
+    }
+  }
+
   const handleClose = () => {
     setSelectedUserId('');
-    setUser1(null);
   }
 
   const time = new Date(user1?.activeDate || Date.now()).getTime();
@@ -114,21 +146,27 @@ export default function UserModal() {
               { user1?.id ? timeString: null }
               <br/>
               { 
-                user1
-                  ? user1.balance + ' points'
+                user1?.balance !== undefined
+                  ? user1.balance.toLocaleString() + ' points'
                   : null
               }
             </div>
             <div style={{
-              display: true || !user1?.id || user1?.id === user?.id
+              display: !user1?.id || user1?.id === user?.id
                 ? 'none'
                 : 'block',
               marginLeft: 10,
             }}>
               <IonButtons>
-                <IonButton>
-                  FOLLOW
-                </IonButton>
+                {
+                  lead?.id && !lead.deleteDate
+                    ? <IonButton onClick={handleUnfollowClick}>
+                        UNFOLLOW
+                      </IonButton>
+                    : <IonButton onClick={handleFollowClick}>
+                        FOLLOW
+                      </IonButton>
+                }
               </IonButtons>
             </div>
           </div>
@@ -145,7 +183,7 @@ export default function UserModal() {
           overflowY: 'scroll',
         }}>
           {
-            (user1?.tabs || [])
+            (user1?.tabs || []).slice()
               .sort((a, b) => a.i - b.i)
               .map((tab, i) => {
                 return (

@@ -31,6 +31,11 @@ export default function CurrentUserTag() {
           padding: 10,
         }}>
           <UserTag user={user} fontSize={14} />
+          <div style={{
+            marginTop: 5,
+          }}>
+            {user?.balance.toLocaleString()} points
+          </div>
         </IonCard>
       </div>
     </div>

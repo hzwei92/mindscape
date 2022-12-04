@@ -1,5 +1,6 @@
 import { gql } from '@apollo/client';
 import { FULL_ARROW_FIELDS } from '../arrow/arrowFragments';
+import { LEAD_FIELDS } from '../lead/leadFragments';
 
 export const TWIG_FIELDS = gql`
   fragment TwigFields on Twig {
@@ -27,9 +28,11 @@ export const FULL_TWIG_FIELDS = gql`
     user {
       id
       name
-      email
       verifyEmailDate
       color
+      currentUserLead {
+        ...LeadFields
+      }
     }
     detail {
       ...FullArrowFields
@@ -43,4 +46,5 @@ export const FULL_TWIG_FIELDS = gql`
   }
   ${TWIG_FIELDS}
   ${FULL_ARROW_FIELDS}
+  ${LEAD_FIELDS}
 `;

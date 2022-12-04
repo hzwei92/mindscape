@@ -25,7 +25,6 @@ function TwigBar(props: TwigBarProps) {
   } = useContext(AppContext);
 
   const {
-    abstractId, 
     abstract, 
     canEdit,
     setRemovalTwigId,

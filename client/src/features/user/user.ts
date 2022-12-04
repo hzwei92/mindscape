@@ -28,6 +28,8 @@ export type User = {
   createDate: Date;
   updateDate: Date;
   deleteDate: Date | null;
+
+  currentUserLead: Lead | null;
+  
   __typename: string;
-  hasAgreedToReadQuickstart: boolean;
 };

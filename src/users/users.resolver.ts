@@ -53,6 +53,16 @@ export class UsersResolver {
     return this.tabsService.getTabsByUserId(user.id);
   }
 
+  @ResolveField(() => Lead, {name: 'currentUserLead', nullable: true})
+  async getCurrentUserLead(
+    @Parent() user: User,
+    @CurrentUser() currentUser: UserEntity,
+  ) {
+    if (user?.id && currentUser?.id && user.id !== currentUser.id) {
+      return this.leadsService.getLeadByFollowerIdAndLeaderId(currentUser.id, user.id);
+    }
+  }
+
   @UseGuards(GqlAuthGuard)
   @Mutation(() => User, {name: 'getCurrentUser'})
   async getCurrentUser(

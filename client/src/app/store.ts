@@ -3,6 +3,7 @@ import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import arrowSlice from '../features/arrow/arrowSlice';
 import authSlice from '../features/auth/authSlice';
 import entrySlice from '../features/entry/entrySlice';
+import leadSlice from '../features/lead/leadSlice';
 import roleSlice from '../features/role/roleSlice';
 import searchSlice from '../features/search/searchSlice';
 import sheafSlice from '../features/sheaf/sheafSlice';
@@ -16,6 +17,7 @@ export const store = configureStore({
     arrow: arrowSlice,
     auth: authSlice,
     entry: entrySlice,
+    lead: leadSlice,
     role: roleSlice,
     search: searchSlice,
     sheaf: sheafSlice,

@@ -15,7 +15,7 @@ const initialState: RoleState = {
   idToRole: {},
 };
 
-const authSlice = createSlice({
+const roleSlice = createSlice({
   name: 'role',
   initialState,
   reducers: {
@@ -119,7 +119,7 @@ const authSlice = createSlice({
 
 export const {
   mergeRoles,
-} = authSlice.actions;
+} = roleSlice.actions;
 
 export const selectIdToRole = (state: RootState) => state.role.idToRole
 
@@ -137,4 +137,4 @@ export const selectRoleByUserIdAndArrowId = createSelector(
 )
 
 
-export default authSlice.reducer;
+export default roleSlice.reducer;
