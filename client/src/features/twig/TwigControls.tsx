@@ -488,7 +488,7 @@ function TwigControls(props: TwigControlsProps) {
             height: 20,
           }}
         >
-          OPEN {arrow?.twigN ? `(${arrow?.twigN})` : ''}
+          OPEN {arrow?.twigN ? `(${arrow.twigN.toLocaleString()})` : ''}
         </IonButton>
       </div>
     </IonButtons>

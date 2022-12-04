@@ -339,7 +339,7 @@ export default function EntryControls(props: EntryControlsProps) {
           <IonButton onClick={handleOpenClick} style={{
             fontSize: 10,
           }}>
-            OPEN {props.arrow?.twigN ? `(${props.arrow?.twigN})` : ''}
+            OPEN {props.arrow?.twigN ? `(${props.arrow.twigN.toLocaleString()})` : ''}
           </IonButton>
         </div>
 
