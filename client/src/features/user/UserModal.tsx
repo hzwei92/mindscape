@@ -1,5 +1,5 @@
 import { gql, useMutation } from "@apollo/client";
-import { IonAvatar, IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonIcon, IonLabel, IonModal, useIonRouter } from "@ionic/react";
+import { IonAvatar, IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonIcon, IonLabel, IonModal, isPlatform, useIonRouter } from "@ionic/react";
 import md5 from "md5";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { AppContext } from "../../app/App";
@@ -13,6 +13,7 @@ import useUnfollowUser from "../lead/useUnfollowUser";
 import { mergeUsers, selectUserById } from "./userSlice";
 import { useAppDispatch, useAppSelector } from "../../app/store";
 import { selectIdToLead, selectLeaderIdToLeadId } from "../lead/leadSlice";
+import { NOTCH_SIZE } from "../../constants";
  
 const GET_USER = gql`
   mutation GetUser($userId: String!) {
@@ -111,6 +112,9 @@ export default function UserModal() {
           display: 'flex',
           flexDirection: 'row',
           justifyContent: 'space-between',
+          marginTop: isPlatform('iphone') && !isPlatform('mobileweb') 
+            ? NOTCH_SIZE 
+            : 0,
         }}>
           <div style={{
             display: 'flex',
