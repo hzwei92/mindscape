@@ -1,6 +1,6 @@
 import { IonButton, IonButtons, IonCard, IonIcon } from "@ionic/react";
 import { add } from "ionicons/icons";
-import { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { AppContext } from "../../app/App";
 import { useAppSelector } from "../../app/store";
 import SpaceComponent from "../space/SpaceComponent";
@@ -35,6 +35,8 @@ export default function ExplorerComponent() {
 
   const [abstractId, setAbstractId] = useState('');
 
+  const tabsRef = useRef<HTMLIonCardElement>(null);
+
   useEffect(() => {
     if (focusTab?.id) {
       if (abstractId) {
@@ -50,6 +52,12 @@ export default function ExplorerComponent() {
     setIsCreatingGraph(true);
   }
 
+  const handleWheel = (e: React.WheelEvent) => {
+    if (tabsRef.current) {
+      tabsRef.current.scrollLeft += e.deltaY;
+    }
+  }
+
   return (
     <div style={{
       width: '100%',
@@ -61,7 +69,9 @@ export default function ExplorerComponent() {
         overflow: 'clip',
         height: TAB_HEIGHT,
       }}>
-        <div style={{
+        <IonCard ref={tabsRef} onWheel={handleWheel} style={{
+          margin: 0,
+          borderRadius: 0,
           width: '100%',
           scrollbarWidth: 'none',
           backgroundColor: palette === 'dark'
@@ -106,7 +116,7 @@ export default function ExplorerComponent() {
                 </IonButton>
               </IonButtons>
             </IonCard>
-          </div>
+          </IonCard>
         </div>
         {
           focusTab
