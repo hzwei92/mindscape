@@ -58,9 +58,9 @@ export class LeadsResolver {
   @Mutation(() => Lead, {name: 'unfollowUser'})
   async unfollowUser(
     @CurrentUser() user: UserEntity,
-    @Args('userId') userId: string,
+    @Args('leadId') leadId: string,
   ) {
-    const lead = await this.leadsService.unfollowUser(user.id, userId);
+    const lead = await this.leadsService.unfollowUser(user.id, leadId);
     this.pubSub.publish('userLead', {
       leaderId: lead.leaderId,
       userLead: lead,

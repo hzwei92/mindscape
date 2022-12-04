@@ -157,7 +157,7 @@ type Mutation {
   setUserMap(lat: Float!, lng: Float!, zoom: Float!): User!
   setUserName(name: String!, sessionId: String!): User!
   setUserPalette(palette: String!, sessionId: String!): User!
-  unfollowUser(userId: String!): Lead!
+  unfollowUser(leadId: String!): Lead!
   updateTab(isFocus: Boolean!, isFrame: Boolean!, tabId: String!): [Tab!]!
   verifyUser(code: String!): User!
   voteArrow(arrowId: String!, sessionId: String!, weight: Int!): VoteArrowResult!
@@ -308,6 +308,7 @@ type User {
   balance: Float!
   color: String!
   createDate: DateTime!
+  currentUserLead: Lead
   deleteDate: DateTime
   description: String!
   email: String

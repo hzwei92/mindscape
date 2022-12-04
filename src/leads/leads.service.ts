@@ -13,6 +13,14 @@ export class LeadsService {
     private readonly usersService: UsersService,
   ) {}
 
+  async getLeadById(id: string) {
+    return this.leadsRepository.findOne({
+      where: {
+        id,
+      },
+    });
+  }
+  
   async getLeadsByFollowerId(followerId: string) {
     return this.leadsRepository.find({
       where: {
@@ -58,8 +66,8 @@ export class LeadsService {
     return this.leadsRepository.save(lead0);
   }
 
-  async unfollowUser(followerId: string, leaderId: string) {
-    const lead = await this.getLeadByFollowerIdAndLeaderId(followerId, leaderId);
+  async unfollowUser(followerId: string, leadId: string) {
+    const lead = await this.getLeadById(leadId);
     if (!lead) {
       throw new BadRequestException('This lead does not exist');
     }

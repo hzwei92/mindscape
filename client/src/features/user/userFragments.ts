@@ -1,6 +1,5 @@
 import { gql } from '@apollo/client';
 import { LEAD_FIELDS } from '../lead/leadFragments';
-import { FULL_ROLE_FIELDS } from '../role/roleFragments';
 import { FULL_TAB_FIELDS } from '../tab/tabFragments';
 
 export const USER_FIELDS = gql`
@@ -19,7 +18,11 @@ export const USER_FIELDS = gql`
     mapZoom
     activeDate
     deleteDate
+    currentUserLead {
+      ...LeadFields
+    }
   }
+  ${LEAD_FIELDS}
 `;
 
 

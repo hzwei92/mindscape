@@ -1,4 +1,5 @@
 import { gql } from '@apollo/client';
+import { LEAD_FIELDS } from '../lead/leadFragments';
 import { FULL_ROLE_FIELDS } from '../role/roleFragments';
 import { SHEAF_FIELDS } from '../sheaf/sheafFragments';
 import { VOTE_FIELDS } from '../vote/voteFragments';
@@ -61,9 +62,12 @@ export const FULL_ARROW_FIELDS = gql`
     user {
       id
       name
-      email
       verifyEmailDate
       color
+      email
+      currentUserLead {
+        ...LeadFields
+      }
     }
     currentUserRole {
       ...FullRoleFields
@@ -73,6 +77,7 @@ export const FULL_ARROW_FIELDS = gql`
   ${SHEAF_FIELDS}
   ${VOTE_FIELDS}
   ${FULL_ROLE_FIELDS}
+  ${LEAD_FIELDS}
 `;
 
 
