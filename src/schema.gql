@@ -123,6 +123,7 @@ type Mutation {
   getIns(arrowId: String!, offset: Int!): [Arrow!]!
   getLeaders(userId: String!): [Lead!]!
   getOuts(arrowId: String!, offset: Int!): [Arrow!]!
+  getRolesByArrowId(arrowId: String!): [Role!]!
   getTwigs(abstractId: String!): [Twig!]!
   getUser(userId: String!): User!
   getUserByName(name: String!): User

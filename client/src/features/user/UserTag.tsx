@@ -34,7 +34,8 @@ export default function UserTag(props: UserTagProps) {
   return(
     <div onMouseDown={handleMouseDown} style={{
       display: 'flex',
-      whiteSpace: 'nowrap',
+      flexDirection: 'row',
+      alignItems: 'center',
       fontSize: props.fontSize,
     }}>
       {
@@ -43,7 +44,6 @@ export default function UserTag(props: UserTagProps) {
               src={`https://www.gravatar.com/avatar/${md5(props.user.email)}?d=retro`}
               style={{
                 marginRight: 1,
-                marginTop: 1,
                 borderRadius: props.fontSize / 2,
                 border: `1px solid ${props.user.color}`,
                 width: props.fontSize,
@@ -52,27 +52,33 @@ export default function UserTag(props: UserTagProps) {
             />
           : null
       }
-      <span color={props.user?.color} onClick={handleUserClick}
+      <div color={props.user?.color} onClick={handleUserClick}
         style={{
           color: props.user?.color,
           cursor: 'pointer',
+          display: 'flex,',
           flexDirection: 'column',
           justifyContent: 'center',
           fontSize: props.fontSize,
         }}
       >
         {props.user?.name}
-      </span>
+      </div>
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+      }}>
       {
         isFollowing
           ? <IonIcon icon={checkmarkCircle} style={{
-              marginLeft: 2,
-              marginTop: 1,
+              marginLeft: 1,
               color: user?.color || null,
               fontSize: props.fontSize,
             }}/>
           : null
       }
+      </div>
     </div>
   )
 }

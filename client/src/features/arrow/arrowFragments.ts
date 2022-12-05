@@ -80,15 +80,3 @@ export const FULL_ARROW_FIELDS = gql`
   ${FULL_ROLE_FIELDS}
   ${LEAD_FIELDS}
 `;
-
-
-export const ABSTRACT_ARROW_FIELDS = gql`
-  fragment AbstractArrowFields on Arrow {
-    ...FullArrowFields
-    roles {
-      ...FullRoleFields
-    }
-  }
-  ${FULL_ARROW_FIELDS}
-  ${FULL_ROLE_FIELDS}
-`;

@@ -6,10 +6,11 @@ import { SPACE_BAR_HEIGHT, SPACE_PANEL_WIDTH } from '../../constants';
 import { AppContext } from '../../app/App';
 import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonModal, isPlatform } from '@ionic/react';
 import UserTag from '../user/UserTag';
-import { checkPermit } from '../../utils';
+import { checkPermit, getTimeString } from '../../utils';
 import { useAppSelector } from '../../app/store';
-import { selectIdToRole } from '../role/roleSlice';
-import { selectAbstractIdToData, selectSpaceData } from './spaceSlice';
+import { selectIdToRole } from './spaceSlice';
+import { selectIdToUser } from '../user/userSlice';
+import useGetRolesByArrowId from '../role/useGetRolesByArrowId';
 
 
 interface RolesPanelProps {
@@ -27,15 +28,23 @@ export default function RolesPanel(props: RolesPanelProps) {
     role,
   } = useContext(SpaceContext);
 
-  const { idToRole } = useAppSelector(selectSpaceData(abstractId));
+  const { getRolesByArrowId } = useGetRolesByArrowId();
+
+  useEffect(() => {
+    getRolesByArrowId(abstractId);
+  }, []);
+
+  const idToRole = useAppSelector(selectIdToRole(abstractId)) ?? {};
+
+  const idToUser = useAppSelector(selectIdToUser);
 
   const admins: Role[] = [];
   const members: Role[] = [];
   const subscribers: Role[] = [];
   const others: Role[] = [];
-  (abstract?.roles || [])
+  Object.values(idToRole || {})
     .filter(role_i => !role_i.deleteDate)
-    .sort((a, b) => a.updateDate < b.updateDate ? -1 : 1)
+    .sort((a, b) => a.user?.activeDate > b.user?.activeDate ? -1 : 1)
     .forEach(role_i => {
       const role1 = idToRole[role_i.id];
       if (!role1) return;
@@ -84,6 +93,8 @@ export default function RolesPanel(props: RolesPanelProps) {
     props.setShowRoles(false);
   };
 
+  const time = new Date(user?.activeDate ?? Date.now()).getTime()
+  const timeString = getTimeString(time);
 
   if (!abstract) return null;
 
@@ -105,8 +116,12 @@ export default function RolesPanel(props: RolesPanelProps) {
         </div>
         <div style={{
           padding: 5,
+          display: 'flex',
+          flexDirection: 'row',
         }}>
           <UserTag user={abstract.user} fontSize={14}/>
+          &nbsp;
+          { timeString }
         </div>
         <div style={{
           fontWeight: 'bold',
@@ -116,11 +131,18 @@ export default function RolesPanel(props: RolesPanelProps) {
         </div>
         {
           admins.map(role_i => {
+            const user1 = idToUser[role_i.userId];
+            const time1 = new Date(user1.activeDate).getTime()
+            const timeString1 = getTimeString(time1);
             return (
               <div key={'role-'+role_i.id} style={{
                 padding: 5,
+                display: 'flex',
+                flexDirection: 'row',
               }}>
-                <UserTag user={role_i.user} fontSize={14} />
+                <UserTag user={user1} fontSize={14} />
+                &nbsp;
+                { timeString1 }
               </div>
             );
           })
@@ -133,11 +155,18 @@ export default function RolesPanel(props: RolesPanelProps) {
         </div>
         {
           members.map(role_i => {
+            const user1 = idToUser[role_i.userId];
+            const time1 = new Date(user1.activeDate).getTime()
+            const timeString1 = getTimeString(time1);
             return (
               <div key={'role-'+role_i.id} style={{
                 padding: 5,
+                display: 'flex',
+                flexDirection: 'row',
               }}>
-                <UserTag user={role_i.user} fontSize={14} />
+                <UserTag user={user1} fontSize={14} />
+                &nbsp;
+                { timeString1 }
               </div>
             );
           })
@@ -150,11 +179,18 @@ export default function RolesPanel(props: RolesPanelProps) {
         </div>
         {
           subscribers.map(role_i => {
+            const user1 = idToUser[role_i.userId];
+            const time1 = new Date(user1.activeDate).getTime()
+            const timeString1 = getTimeString(time1);
             return (
               <div key={'role-'+role_i.id} style={{
                 padding: 5,
+                display: 'flex',
+                flexDirection: 'row',
               }}>
-                <UserTag user={role_i.user} fontSize={14} />
+                <UserTag user={user1} fontSize={14} />
+                &nbsp;
+                { timeString1 }
               </div>
             );
           })

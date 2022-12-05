@@ -138,6 +138,15 @@ export class RolesResolver {
     return role;
   }
 
+  @UseGuards(GqlAuthGuard)
+  @Mutation(() => [Role], {name: 'getRolesByArrowId'})
+  async getRolesByArrowId(
+    @CurrentUser() user: UserEntity,
+    @Args('arrowId') arrowId: string,
+  ) {
+    return this.rolesService.getRolesByArrowId(arrowId);
+  }
+
   @Subscription(() => Role, {name: 'userRole',
     filter: (payload, variables) => {
       if (payload.sessionId === variables.sessionId) return false;

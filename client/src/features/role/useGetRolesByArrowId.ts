@@ -1,8 +1,10 @@
 import { gql, useMutation } from "@apollo/client";
+import { useContext } from "react";
 import { useAppDispatch } from "../../app/store";
+import { SpaceContext } from "../space/SpaceComponent";
 import { FULL_ROLE_FIELDS } from "./roleFragments";
 import { mergeRoles } from "./roleSlice";
-
+import { mergeRoles as mergeSpaceRoles } from '../space/spaceSlice';
 
 const GET_ROLES_BY_ARROW_ID = gql`
   mutation GetRolesByArrowId($arrowId: String!) {
@@ -16,6 +18,8 @@ const GET_ROLES_BY_ARROW_ID = gql`
 export default function useGetRolesByArrowId() {
   const dispatch = useAppDispatch();
 
+  const { abstractId } = useContext(SpaceContext);
+
   const [getRoles] = useMutation(GET_ROLES_BY_ARROW_ID, {
     onError: err => {
       console.error(err);
@@ -23,6 +27,12 @@ export default function useGetRolesByArrowId() {
     onCompleted: data => {
       console.log(data);
       dispatch(mergeRoles(data.getRolesByArrowId));
+      if (abstractId) {
+        dispatch(mergeSpaceRoles({
+          abstractId,
+          roles: data.getRolesByArrowId
+        }));
+      }
     },
   });
 

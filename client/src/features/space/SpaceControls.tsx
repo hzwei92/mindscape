@@ -2,7 +2,7 @@ import { SPACE_PANEL_WIDTH, TAB_HEIGHT } from '../../constants';
 import { Dispatch, SetStateAction, useContext } from 'react';
 import { SpaceContext } from './SpaceComponent';
 import { IonFab, IonFabButton, IonIcon, isPlatform } from '@ionic/react';
-import { people, settingsOutline, sync } from 'ionicons/icons';
+import { people, peopleOutline, settingsOutline, sync } from 'ionicons/icons';
 import RolesPanel from './RolesPanel';
 import { AppContext } from '../../app/App';
 import SettingsPanel from './SettingsPanel';
@@ -62,7 +62,7 @@ export default function SpaceControls(props: SpaceControlsProps) {
                 <IonIcon icon={settingsOutline} size='small'/>
               </IonFabButton> 
               <IonFabButton title='Members' size='small'  color={props.showRoles ? 'primary' : 'light'} onClick={handleRolesClick}>
-                <IonIcon icon={people} size='small'/>
+                <IonIcon icon={peopleOutline} size='small'/>
               </IonFabButton> 
               <div style={{
                 display: props.isSynced
