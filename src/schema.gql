@@ -72,6 +72,11 @@ type DragTwigResult {
   twigId: String!
 }
 
+type GetUserLeadsResult {
+  followers: [Lead!]!
+  leaders: [Lead!]!
+}
+
 type GraftTwigResult {
   descs: [Twig!]!
   role: Role
@@ -121,12 +126,12 @@ type Mutation {
   getCurrentUser: User!
   getCurrentUserLeads: [Lead!]!
   getIns(arrowId: String!, offset: Int!): [Arrow!]!
-  getLeaders(userId: String!): [Lead!]!
   getOuts(arrowId: String!, offset: Int!): [Arrow!]!
   getRolesByArrowId(arrowId: String!): [Role!]!
   getTwigs(abstractId: String!): [Twig!]!
   getUser(userId: String!): User!
   getUserByName(name: String!): User
+  getUserLeads(userId: String!): GetUserLeadsResult!
   graftTwig(parentTwigId: String!, sessionId: String!, twigId: String!, x: Int!, y: Int!): GraftTwigResult!
   initUser(color: String!, name: String!, palette: String!): UserWithTokens!
   inviteRole(arrowId: String!, sessionId: String!, userName: String!): Role!
