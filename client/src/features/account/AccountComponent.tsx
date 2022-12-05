@@ -12,6 +12,7 @@ import { mergeUsers } from "../user/userSlice";
 import useSetUserColor from "../user/useSetUserColor";
 import LoginModal from "../auth/LoginModal";
 import LogoutModal from "./LogoutModal";
+import { OFF_WHITE } from "../../constants";
 
 const SET_USER_NAME = gql`
   mutation SetUserName($sessionId: String!, $name: String!) {
@@ -146,7 +147,7 @@ const AccountComponent: React.FC = () => {
     <IonCard style={{
       backgroundColor: palette === 'dark'
         ? '#000000'
-        : '#e0e0e0',
+        : OFF_WHITE,
       margin: 0,
       borderRadius: 0,
       height: '100%',
