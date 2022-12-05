@@ -1,19 +1,24 @@
 import { gql, useMutation } from '@apollo/client'
-import { useState } from 'react';
+import { useContext, useState } from 'react';
+import { AppContext } from '../../app/App';
 import { useAppDispatch, useAppSelector } from '../../app/store';
 import { selectSessionId, setAuthIsInit, setAuthIsValid } from '../auth/authSlice';
 import { selectAbstractIdToData } from '../space/spaceSlice';
+import { mergeUsers } from '../user/userSlice';
 
 const PUBLISH_AVATAR = gql`
   mutation PublishAvatar($sessionId: String!, $abstractId: String!, $x: Int, $y: Int) {
     publishAvatar(sessionId: $sessionId, abstractId: $abstractId, x: $x, y: $y) {
       id
+      activeDate
     }
   }
 `;
 
 export default function usePublishAvatar() {
   const dispatch = useAppDispatch();
+
+  const { user } = useContext(AppContext);
 
   const sessionId = useAppSelector(selectSessionId);
 
@@ -33,6 +38,9 @@ export default function usePublishAvatar() {
     },
     onCompleted: data => {
       //console.log(data);
+      if (user?.activeDate !== data.publishAvatar.activeDate) {
+        dispatch(mergeUsers([data.publishAvatar]));
+      }
     }
   });
 
