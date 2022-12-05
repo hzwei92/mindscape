@@ -43,7 +43,7 @@ export class UsersResolver {
   async getUserFollowers(
     @Parent() user: User,
   ) {
-    return this.leadsService.getLeadsByLeaderId(user.id, false);
+    return this.leadsService.getLeadsByLeaderId(user.id);
   }
 
   @ResolveField(() => [Tab], {name: 'tabs'})
