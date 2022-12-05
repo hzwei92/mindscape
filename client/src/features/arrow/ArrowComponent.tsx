@@ -1,5 +1,5 @@
 import { addInstance, removeInstance, selectArrowById, selectInstanceById } from './arrowSlice';
-import { useContext, useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../app/store';
 import { getTimeString } from '../../utils';
 import { selectUserById } from '../user/userSlice';
@@ -58,7 +58,8 @@ export default function ArrowComponent(props: ArrowProps) {
     router.push(`/g/${arrow.routeName}/0`)
   }
 
-  const handleAbstractClick = () => {
+  const handleAbstractClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
     if (isPlatform('mobile')) {
       setMenuMode(MenuMode.NONE);
     }
