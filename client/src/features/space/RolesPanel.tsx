@@ -93,7 +93,7 @@ export default function RolesPanel(props: RolesPanelProps) {
     props.setShowRoles(false);
   };
 
-  const time = new Date(user?.activeDate ?? Date.now()).getTime()
+  const time = new Date(abstract?.user?.activeDate ?? Date.now()).getTime()
   const timeString = getTimeString(time);
 
   if (!abstract) return null;
