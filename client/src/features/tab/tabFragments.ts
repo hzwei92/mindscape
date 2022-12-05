@@ -1,5 +1,5 @@
 import { gql } from "@apollo/client";
-import { ABSTRACT_ARROW_FIELDS } from "../arrow/arrowFragments";
+import { FULL_ARROW_FIELDS } from "../arrow/arrowFragments";
 
 
 export const TAB_FIELDS = gql`
@@ -18,9 +18,9 @@ export const FULL_TAB_FIELDS = gql`
   fragment FullTabFields on Tab {
     ...TabFields
     arrow {
-      ...AbstractArrowFields
+      ...FullArrowFields
     }
   }
   ${TAB_FIELDS}
-  ${ABSTRACT_ARROW_FIELDS}
+  ${FULL_ARROW_FIELDS}
 `;

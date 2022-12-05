@@ -26,7 +26,7 @@ export type AvatarType = {
   color: string;
   x: number;
   y: number;
-  date: Date;
+  activeDate: Date;
   timeout: ReturnType<typeof setTimeout>;
 };
 

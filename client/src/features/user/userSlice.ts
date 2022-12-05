@@ -4,7 +4,7 @@ import type { IdToType } from '../../types';
 import { mergeArrows } from '../arrow/arrowSlice';
 import { setInit, setLogin, setLogout } from '../auth/authSlice';
 import { mergeLeads } from '../lead/leadSlice';
-import { mergeTwigs } from '../space/spaceSlice';
+import { addAvatar, mergeTwigs } from '../space/spaceSlice';
 import type { User } from './user';
 
 export interface UserState {
@@ -121,6 +121,22 @@ const userSlice = createSlice({
           idToUser,
         };
       })
+      .addCase(addAvatar, (state, action) => {
+        const {id, activeDate} = action.payload.avatar;
+
+        const idToUser = {
+          ...state.idToUser,
+          [id]: {
+            ...state.idToUser[id],
+            activeDate,
+          },
+        };
+
+        return {
+          ...state,
+          idToUser,
+        };
+      });
   },
 });
 

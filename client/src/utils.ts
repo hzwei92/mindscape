@@ -25,8 +25,8 @@ export const getTimeString = (time: number) => {
             ? (dTime / hour).toFixed(0) + 'h'
             : dTime > minute 
               ? (dTime / minute).toFixed(0) + 'min'
-              : (dTime / second).toFixed(0) + 'sec'
-  )
+              : 'LIVE!'
+  );
 };
 
 

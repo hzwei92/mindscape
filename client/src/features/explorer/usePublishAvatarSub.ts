@@ -13,6 +13,7 @@ const PUBLISH_CURSOR = gql`
       color
       x
       y
+      activeDate
     }
   }
 `;

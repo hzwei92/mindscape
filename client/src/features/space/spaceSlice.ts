@@ -316,6 +316,7 @@ export const selectIdToChildIdToTrue = (abstractId: string) => (state: RootState
 export const selectIdToDescIdToTrue = (abstractId: string) => (state: RootState) => state.space.abstractIdToData[abstractId]?.idToDescIdToTrue;
 export const selectIdToPos = (abstractId: string) => (state: RootState) => state.space.abstractIdToData[abstractId]?.idToPos;
 export const selectIdToHeight = (abstractId: string) => (state: RootState) => state.space.abstractIdToData[abstractId]?.idToHeight;
+export const selectIdToRole = (abstractId: string) => (state: RootState) => state.space.abstractIdToData[abstractId]?.idToRole;
 
 export const selectIdToAvatar = (abstractId: string) => (state: RootState) => state.space.abstractIdToData[abstractId]?.idToAvatar;
 

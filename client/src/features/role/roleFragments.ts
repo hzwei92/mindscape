@@ -19,7 +19,8 @@ export const FULL_ROLE_FIELDS = gql`
       id
       name
       color
-      routeName
+      email
+      activeDate
     }
     arrow {
       id

@@ -31,6 +31,21 @@ export default function ContactsComponent() {
   const leaderIdToLeadId = useAppSelector(selectLeaderIdToLeadId);
   const followerIdToLeadId = useAppSelector(selectFollowerIdToLeadId);
 
+  const leaders = Object.values(leaderIdToLeadId)
+    .map(leadId => {
+      const lead = idToLead[leadId];
+      const leader = idToUser[lead.leaderId];
+      return {lead, leader};
+    })
+    .filter(({lead, leader}) => !!lead && !!leader);
+
+  const followers = Object.values(followerIdToLeadId)
+    .map(leadId => {
+      const lead = idToLead[leadId];
+      const follower = idToUser[lead.followerId];
+      return {lead, follower};
+    })
+    .filter(({lead, follower}) => !!lead && !!follower);
 
   const handleUserClick = (userId: string) => (event: React.MouseEvent) => {
     event.stopPropagation();
@@ -57,20 +72,15 @@ export default function ContactsComponent() {
       <IonCard style={{
         marginTop: 0,
       }}>
-        <IonCardHeader style={{
-          fontWeight: 'bold',
-        }}>
-          Leads
-        </IonCardHeader>
         <IonCardContent>
+          <div style={{
+            fontWeight: 'bold',
+            fontSize: 20,
+          }}>
+            Leads - {leaders.length}
+          </div>
           {
-            Object.values(leaderIdToLeadId)
-              .map(leadId => {
-                const lead = idToLead[leadId];
-                const leader = idToUser[lead.leaderId];
-                return {lead, leader};
-              })
-              .filter(({lead, leader}) => !!lead && !!leader)
+            leaders
               .sort((a, b) => a.leader.activeDate > b.leader.activeDate ? -1 : 1)
               .map(({lead, leader}) => {
                 const time = new Date(leader.activeDate).getTime()
@@ -80,56 +90,50 @@ export default function ContactsComponent() {
                     display: 'flex',
                     flexDirection: 'row',
                     alignItems: 'center',
+                    padding: 5,
                   }}>
-                    {
-                      leader.verifyEmailDate && leader.email
-                        ? <img 
-                            src={`https://www.gravatar.com/avatar/${md5(leader.email)}?d=retro`}
-                            style={{
-                              marginTop: -1,
-                              marginRight: 2,
-                              borderRadius: 7,
-                              border: `1px solid ${leader.color}`,
-                              width:14,
-                              height: 14,
-                            }}
-                          />
-                        : null
-                    }
-                    <div onClick={handleUserClick(leader.id)} style={{
-                      color: leader.color,
-                      fontSize: 14,
-                      cursor: 'pointer',
+                    <UserTag user={leader} fontSize={14} />
+                    <div style={{
+                      marginLeft: 3,
                     }}>
-                      { leader.name }
-                    </div>
-                    <IonIcon icon={checkmarkCircle} style={{
-                      marginTop: -1,
-                      marginLeft: 1,
-                      color: user?.color || null,
-                      fontSize: 14,
-                    }}/>
-                    <div>
-                      &nbsp;
-                      { timeString }
+                      { 
+                        timeString === '0sec'
+                          ? 'LIVE!'
+                          : timeString
+                      }
                     </div>
                   </div>
                 )
               })
           }
-        </IonCardContent>
-      </IonCard>
-      <IonCard style={{
-        marginTop: 0,
-      }}>
-        <IonCardHeader style={{
-          fontWeight: 'bold',
-        }}>
-          Followers
-        </IonCardHeader>
-        <IonCardContent>
+          <div style={{
+            fontWeight: 'bold',
+            fontSize: 20,
+          }}>
+            Followers - {followers.length}
+          </div>
           {
-            
+            followers
+              .sort((a, b) => a.follower.activeDate > b.follower.activeDate ? -1 : 1)
+              .map(({lead, follower}) => {
+                const time = new Date(follower.activeDate).getTime()
+                const timeString = getTimeString(time);
+                return (
+                  <div key={'lead-'+lead.id} style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    padding: 5,
+                  }}>
+                    <UserTag user={follower} fontSize={14} />
+                    <div style={{
+                      marginLeft: 3,
+                    }}>
+                      { timeString}
+                    </div>
+                  </div>
+                )
+              })
           }
         </IonCardContent>
       </IonCard>

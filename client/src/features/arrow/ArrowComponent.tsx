@@ -19,7 +19,7 @@ interface ArrowProps {
   showPostIcon: boolean;
   instanceId: string;
   fontSize: number;
-  tagFontSize: number;
+  tagFontSize: 10 | 14;
 }
 
 export default function ArrowComponent(props: ArrowProps) {
