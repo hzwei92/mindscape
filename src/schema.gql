@@ -334,6 +334,7 @@ type User {
 
 type UserAvatar {
   abstractId: String!
+  activeDate: DateTime!
   color: String!
   id: String!
   name: String!

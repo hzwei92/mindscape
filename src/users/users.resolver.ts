@@ -106,6 +106,7 @@ export class UsersResolver {
     @Args('x', {type: () => Int, nullable: true}) x: number,
     @Args('y', {type: () => Int, nullable: true}) y: number,
   ) {
+    const activeDate = new Date();
     this.pubSub.publish('publishAvatar', {
       sessionId,
       abstractId,
@@ -116,11 +117,11 @@ export class UsersResolver {
         color: user.color,
         x,
         y,
+        activeDate,
       }
     });
-    const date = new Date();
-    if (date.getTime() - user.updateDate.getTime() > ACTIVE_TIME) {
-      const user1 = await this.usersService.setUserActiveDate(user, date);
+    if (activeDate.getTime() - user.updateDate.getTime() > ACTIVE_TIME) {
+      const user1 = await this.usersService.setUserActiveDate(user, activeDate);
       this.pubSub.publish('updateUser', {
         sessionId,
         userId: user1.id,

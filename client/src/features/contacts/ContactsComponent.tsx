@@ -111,7 +111,11 @@ export default function ContactsComponent() {
                     }}/>
                     <div>
                       &nbsp;
-                      { timeString }
+                      { 
+                        timeString === '0sec'
+                          ? 'LIVE!'
+                          : timeString
+                      }
                     </div>
                   </div>
                 )

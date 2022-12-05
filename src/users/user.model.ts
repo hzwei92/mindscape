@@ -83,4 +83,7 @@ export class UserAvatar {
 
   @Field(() => Int, { nullable: true })
   y: number;
+
+  @Field()
+  activeDate: Date;
 }
