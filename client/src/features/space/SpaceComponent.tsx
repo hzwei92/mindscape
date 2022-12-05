@@ -397,7 +397,8 @@ const SpaceComponent = (props: SpaceComponentProps) => {
   }
 
 
-  const twigMarkers: JSX.Element[] = [];
+  const postTwigMarkers: JSX.Element[] = [];
+  const linkTwigMarkers: JSX.Element[] = [];
   const twigs: JSX.Element[] = [];
 
   const dropTargets: JSX.Element[] = [];
@@ -439,7 +440,7 @@ const SpaceComponent = (props: SpaceComponentProps) => {
       const x = Math.round(((sourcePos?.x ?? 0) + (targetPos?.x ?? 0)) / 2);
       const y = Math.round(((sourcePos?.y ?? 0) + (targetPos?.y ?? 0)) / 2);
 
-      twigMarkers.push(
+      linkTwigMarkers.push(
         <LinkTwigMarker
           key={`link-twig-marker-${twigId}`}
           twig={twig}
@@ -473,7 +474,7 @@ const SpaceComponent = (props: SpaceComponentProps) => {
       if (parentTwig && !parentTwig.deleteDate) {
         const parentPos = idToPos[twig.parent.id];
         if (parentPos) {
-          twigMarkers.push(
+          postTwigMarkers.push(
             <PostTwigMarker
               key={`post-twig-marker-${twigId}`}
               twig={twig}
@@ -607,7 +608,8 @@ const SpaceComponent = (props: SpaceComponentProps) => {
                   width: VIEW_RADIUS * 2,
                   height: VIEW_RADIUS * 2,
                 }}>
-                  { twigMarkers }
+                  { postTwigMarkers }
+                  { linkTwigMarkers }
                 </svg>
                 { twigs }
                 { dropTargets }
