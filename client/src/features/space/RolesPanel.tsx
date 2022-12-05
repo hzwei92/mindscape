@@ -32,7 +32,7 @@ export default function RolesPanel(props: RolesPanelProps) {
 
   useEffect(() => {
     getRolesByArrowId(abstractId);
-  }, []);
+  }, [abstractId]);
 
   const idToRole = useAppSelector(selectIdToRole(abstractId)) ?? {};
 
