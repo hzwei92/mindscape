@@ -132,7 +132,7 @@ export default function RolesPanel(props: RolesPanelProps) {
         {
           admins.map(role_i => {
             const user1 = idToUser[role_i.userId];
-            const time1 = new Date(user1.activeDate).getTime()
+            const time1 = new Date(user1?.activeDate ?? Date.now()).getTime()
             const timeString1 = getTimeString(time1);
             return (
               <div key={'role-'+role_i.id} style={{
@@ -156,7 +156,7 @@ export default function RolesPanel(props: RolesPanelProps) {
         {
           members.map(role_i => {
             const user1 = idToUser[role_i.userId];
-            const time1 = new Date(user1.activeDate).getTime()
+            const time1 = new Date(user1?.activeDate ?? Date.now()).getTime()
             const timeString1 = getTimeString(time1);
             return (
               <div key={'role-'+role_i.id} style={{
@@ -180,7 +180,7 @@ export default function RolesPanel(props: RolesPanelProps) {
         {
           subscribers.map(role_i => {
             const user1 = idToUser[role_i.userId];
-            const time1 = new Date(user1.activeDate).getTime()
+            const time1 = new Date(user1?.activeDate ?? Date.now()).getTime()
             const timeString1 = getTimeString(time1);
             return (
               <div key={'role-'+role_i.id} style={{
