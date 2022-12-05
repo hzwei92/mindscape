@@ -70,6 +70,7 @@ export default function ContactsComponent() {
                 const leader = idToUser[lead.leaderId];
                 return {lead, leader};
               })
+              .filter(({lead, leader}) => !!lead && !!leader)
               .sort((a, b) => a.leader.activeDate > b.leader.activeDate ? -1 : 1)
               .map(({lead, leader}) => {
                 const time = new Date(leader.activeDate).getTime()
