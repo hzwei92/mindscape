@@ -1,11 +1,8 @@
 import { SPACE_PANEL_WIDTH, TAB_HEIGHT } from '../../constants';
 import { Dispatch, SetStateAction, useContext } from 'react';
 import { SpaceContext } from './SpaceComponent';
-import { useAppDispatch } from '../../app/store';
-import { useReactiveVar } from '@apollo/client';
 import { IonFab, IonFabButton, IonIcon, isPlatform } from '@ionic/react';
-import { add, people, remove, settingsOutline, sync } from 'ionicons/icons';
-import { spaceElVar } from '../../cache';
+import { people, settingsOutline, sync } from 'ionicons/icons';
 import RolesPanel from './RolesPanel';
 import { AppContext } from '../../app/App';
 import SettingsPanel from './SettingsPanel';
@@ -20,9 +17,7 @@ interface SpaceControlsProps {
   setIsSynced: Dispatch<SetStateAction<boolean>>;
 }
 export default function SpaceControls(props: SpaceControlsProps) {
-  const dispatch = useAppDispatch();
-
-  const { user, menuMode } = useContext(AppContext);
+  const { menuMode } = useContext(AppContext);
   const { abstract } = useContext(SpaceContext);
 
   const handleSettingsClick = () => {
@@ -63,15 +58,11 @@ export default function SpaceControls(props: SpaceControlsProps) {
             <IonFab style={{
               marginLeft: -60,
             }}>
-              <IonFabButton title='Settings' size='small' color='light'  onClick={handleSettingsClick}>
-                <IonIcon icon={settingsOutline} size='small' style={{
-                  color: props.showSettings ? user?.color : null,
-                }}/>
+              <IonFabButton title='Settings' size='small' color={props.showSettings ? 'primary' : 'light'}  onClick={handleSettingsClick}>
+                <IonIcon icon={settingsOutline} size='small'/>
               </IonFabButton> 
-              <IonFabButton title='Members' size='small' color='light' onClick={handleRolesClick}>
-                <IonIcon icon={people} size='small' style={{
-                  color: props.showRoles ? user?.color : null
-                }}/>
+              <IonFabButton title='Members' size='small'  color={props.showRoles ? 'primary' : 'light'} onClick={handleRolesClick}>
+                <IonIcon icon={people} size='small'/>
               </IonFabButton> 
               <div style={{
                 display: props.isSynced
