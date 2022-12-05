@@ -121,7 +121,7 @@ export default function RolesPanel(props: RolesPanelProps) {
         }}>
           <UserTag user={abstract.user} fontSize={14}/>
           &nbsp;
-          { timeString }
+          { abstract.user ? timeString : null }
         </div>
         <div style={{
           fontWeight: 'bold',
@@ -132,6 +132,7 @@ export default function RolesPanel(props: RolesPanelProps) {
         {
           admins.map(role_i => {
             const user1 = idToUser[role_i.userId];
+            if (!user1) return null;
             const time1 = new Date(user1?.activeDate ?? Date.now()).getTime()
             const timeString1 = getTimeString(time1);
             return (
@@ -156,6 +157,9 @@ export default function RolesPanel(props: RolesPanelProps) {
         {
           members.map(role_i => {
             const user1 = idToUser[role_i.userId];
+
+            if (!user1) return null;
+
             const time1 = new Date(user1?.activeDate ?? Date.now()).getTime()
             const timeString1 = getTimeString(time1);
             return (
@@ -180,6 +184,7 @@ export default function RolesPanel(props: RolesPanelProps) {
         {
           subscribers.map(role_i => {
             const user1 = idToUser[role_i.userId];
+            if (!user1) return null;
             const time1 = new Date(user1?.activeDate ?? Date.now()).getTime()
             const timeString1 = getTimeString(time1);
             return (
