@@ -22,8 +22,6 @@ export default function usePublishAvatar() {
 
   const sessionId = useAppSelector(selectSessionId);
 
-  const abstractIdToSpaceData = useAppSelector(selectAbstractIdToData);
-
   const [count, setCount] = useState(0);
 
   const [publish] = useMutation(PUBLISH_AVATAR, {
