@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import { adjectives, animals, NumberDictionary, uniqueNamesGenerator } from 'unique-names-generator';
+import { NumberDictionary } from 'unique-names-generator';
 import { SearchService } from 'src/search/search.service';
 import { ArrowsService } from 'src/arrows/arrows.service';
 import { SheafsService } from 'src/sheafs/sheafs.service';
@@ -123,7 +123,7 @@ export class UsersService {
     }
     const user0 = new User();
     user0.id = userId;
-    user0.email = email;
+    user0.email = email.trim().toLowerCase();
 
     if (pass) {
       user0.hashedPassword = await bcrypt.hash(pass, 10);

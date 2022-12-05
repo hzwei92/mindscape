@@ -50,7 +50,8 @@ export default function ArrowComponent(props: ArrowProps) {
 
   if (!arrow) return null;
 
-  const handleTitleClick = () => {
+  const handleTitleClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
     if (isPlatform('mobile')) {
       setMenuMode(MenuMode.NONE);
     }
