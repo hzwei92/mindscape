@@ -8,7 +8,7 @@ import { useAppSelector } from "../../app/store";
 import { OFF_WHITE } from "../../constants";
 import { getTimeString } from "../../utils";
 import { selectIdToLead, selectLeaderIdToLeadId, selectFollowerIdToLeadId } from "../lead/leadSlice";
-import useGetLeaders from "../lead/useGetLeaders";
+import useGetUserLeads from "../lead/useGetUserLeads";
 import { selectIdToUser } from "../user/userSlice";
 import UserTag from "../user/UserTag";
 
@@ -16,11 +16,11 @@ import UserTag from "../user/UserTag";
 export default function ContactsComponent() {
   const { user, palette, setSelectedUserId } = useContext(AppContext);
 
-  const { getLeaders } = useGetLeaders();
+  const { getUserLeads } = useGetUserLeads();
 
   useEffect(() => {
     if (user?.id) {
-      getLeaders(user.id)
+      getUserLeads(user.id)
     }
   }, []);
 

@@ -30,16 +30,12 @@ export class LeadsService {
     });
   }
 
-  async getLeadsByLeaderId(leaderId: string, shouldGetFollower: boolean) {
-    const relations = shouldGetFollower
-      ? ['follower']
-      : [];
+  async getLeadsByLeaderId(leaderId: string) {
 
     return this.leadsRepository.find({
       where: {
         leaderId,
       },
-      relations,
     });
   }
   
@@ -52,13 +48,17 @@ export class LeadsService {
     });
   }
 
-  async getLeaders(user: User, userId: string) {
+  async getUserLeads(userId: string) {
     const user0 = await this.usersService.getUserById(userId);
     if (!user0) {
       throw new BadRequestException('This user does not exist');
     }
-    const leads = await this.getLeadsByFollowerId(userId);
-    return leads;
+    const leaders = await this.getLeadsByFollowerId(userId);
+    const followers = await this.getLeadsByLeaderId(userId);
+    return {
+      leaders,
+      followers,
+    };
   }
   
   async followUser(followerId: string, leaderId: string) {

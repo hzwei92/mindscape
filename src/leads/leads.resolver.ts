@@ -8,6 +8,7 @@ import { UsersService } from 'src/users/users.service';
 import { Lead } from './lead.model';
 import { LeadsService } from './leads.service';
 import { User as UserEntity } from 'src/users/user.entity';
+import { GetUserLeadsResult } from './dto/get-user-leads-result.dto';
 
 @Resolver(() => Lead)
 export class LeadsResolver {
@@ -41,14 +42,16 @@ export class LeadsResolver {
   }
 
   @UseGuards(GqlAuthGuard)
-  @Mutation(() => [Lead], {name: 'getLeaders'})
+  @Mutation(() => GetUserLeadsResult, {name: 'getUserLeads'})
   async getLeaders(
     @CurrentUser() user: UserEntity,
     @Args('userId') userId: string,
   ) {
-    const lead = await this.leadsService.getLeaders(user, userId);
-
-    return lead;
+    const { leaders, followers } = await this.leadsService.getUserLeads(userId);
+    return {
+      leaders,
+      followers,
+    };
   }
 
   
