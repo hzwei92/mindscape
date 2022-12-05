@@ -170,7 +170,7 @@ const AppBar = () => {
         <IonButton 
           onMouseEnter={handleMenuMouseEnter(MenuMode.GRAPHS)}
           onMouseLeave={handleMenuMouseLeave}
-          onClick={handleMenuClick(MenuMode.GRAPHS)} 
+          onClick={handleMenuClick(MenuMode.GRAPHS)}
           style={{
             width: 50,
             height: 50,

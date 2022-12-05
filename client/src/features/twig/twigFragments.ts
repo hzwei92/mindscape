@@ -28,8 +28,10 @@ export const FULL_TWIG_FIELDS = gql`
     user {
       id
       name
-      verifyEmailDate
       color
+      email
+      verifyEmailDate
+      activeDate
       currentUserLead {
         ...LeadFields
       }

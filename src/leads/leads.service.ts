@@ -1,5 +1,6 @@
 import { BadRequestException, forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { User } from 'src/users/user.entity';
 import { UsersService } from 'src/users/users.service';
 import { Repository } from 'typeorm';
 import { Lead } from './lead.entity';
@@ -49,6 +50,15 @@ export class LeadsService {
         leaderId,
       },
     });
+  }
+
+  async getLeaders(user: User, userId: string) {
+    const user0 = await this.usersService.getUserById(userId);
+    if (!user0) {
+      throw new BadRequestException('This user does not exist');
+    }
+    const leads = await this.getLeadsByFollowerId(userId);
+    return leads;
   }
   
   async followUser(followerId: string, leaderId: string) {

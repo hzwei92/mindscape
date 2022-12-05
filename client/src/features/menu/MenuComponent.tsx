@@ -1,9 +1,10 @@
 import { isPlatform } from "@ionic/react";
 import { useContext, useState } from "react";
 import { AppContext } from "../../app/App";
-import { APP_BAR_X } from "../../constants";
+import { APP_BAR_X, NOTCH_SIZE } from "../../constants";
 import AboutComponent from "../about/AboutComponent";
 import AccountComponent from "../account/AccountComponent";
+import ContactsComponent from "../contacts/ContactsComponent";
 import SearchComponent from "../search/SearchComponent";
 import { MenuMode } from "./menu";
 
@@ -30,7 +31,9 @@ export default function MenuComponent(props: MenuComponentProps) {
   return (
     <div style={{
       position: 'relative',
-      height: '100%',
+      height: isPlatform('iphone') && !isPlatform('mobileweb')
+        ? `calc(100% - ${NOTCH_SIZE}px`
+        : '100%',
       width: isPlatform('mobile')
         ? '100%'
         : menuX - APP_BAR_X,
@@ -47,6 +50,11 @@ export default function MenuComponent(props: MenuComponentProps) {
             : null
         }
         {
+          menuMode === MenuMode.CONTACTS
+            ? <ContactsComponent />
+            : null
+        }
+        {
           menuMode === MenuMode.ABOUT
             ? <AboutComponent />
             : null
@@ -56,7 +64,7 @@ export default function MenuComponent(props: MenuComponentProps) {
           width: '100%',
           display: menuMode === MenuMode.SEARCH
             ? 'block'
-            : 'none,'
+            : 'none',
         }}>
           <SearchComponent />
         </div>

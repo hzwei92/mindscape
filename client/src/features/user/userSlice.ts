@@ -3,6 +3,7 @@ import { RootState } from '../../app/store';
 import type { IdToType } from '../../types';
 import { mergeArrows } from '../arrow/arrowSlice';
 import { setInit, setLogin, setLogout } from '../auth/authSlice';
+import { mergeLeads } from '../lead/leadSlice';
 import { mergeTwigs } from '../space/spaceSlice';
 import type { User } from './user';
 
@@ -88,6 +89,28 @@ const userSlice = createSlice({
             acc[arrow.userId] = {
               ...acc[arrow.userId],
               ...arrow.user,
+            };
+          }
+          return acc;
+        }, { ...state.idToUser });
+
+        return {
+          ...state,
+          idToUser,
+        };
+      })
+      .addCase(mergeLeads, (state, action) => {
+        const idToUser = action.payload.reduce((acc, lead) => {
+          if (lead.leader) {
+            acc[lead.leaderId] = {
+              ...acc[lead.leaderId],
+              ...lead.leader,
+            };
+          }
+          if (lead.follower) {
+            acc[lead.followerId] = {
+              ...acc[lead.followerId],
+              ...lead.follower,
             };
           }
           return acc;

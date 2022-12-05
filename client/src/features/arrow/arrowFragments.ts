@@ -62,9 +62,10 @@ export const FULL_ARROW_FIELDS = gql`
     user {
       id
       name
-      verifyEmailDate
       color
       email
+      activeDate
+      verifyEmailDate
       currentUserLead {
         ...LeadFields
       }
