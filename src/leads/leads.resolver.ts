@@ -39,6 +39,18 @@ export class LeadsResolver {
   ) {
     return this.leadsService.getLeadsByFollowerId(user.id);
   }
+
+  @UseGuards(GqlAuthGuard)
+  @Mutation(() => [Lead], {name: 'getLeaders'})
+  async getLeaders(
+    @CurrentUser() user: UserEntity,
+    @Args('userId') userId: string,
+  ) {
+    const lead = await this.leadsService.getLeaders(user, userId);
+
+    return lead;
+  }
+
   
   @UseGuards(GqlAuthGuard)
   @Mutation(() => Lead, {name: 'followUser'})

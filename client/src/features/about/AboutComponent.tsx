@@ -1,6 +1,7 @@
 import { IonCard, IonCardContent, IonCardHeader } from "@ionic/react";
 import { useContext } from "react";
 import { AppContext } from "../../app/App";
+import { OFF_WHITE } from "../../constants";
 
 
 export default function AboutComponent() {
@@ -12,7 +13,7 @@ export default function AboutComponent() {
       borderRadius: 0,
       backgroundColor: palette === 'dark'
         ? '#000000'
-        : '#e0e0e0',
+        : OFF_WHITE,
       height: '100%',
       overflowY: 'scroll',
     }}>

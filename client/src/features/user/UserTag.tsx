@@ -33,7 +33,7 @@ export default function UserTag(props: UserTagProps) {
 
   return(
     <div onMouseDown={handleMouseDown} style={{
-      display: 'inline-flex',
+      display: 'flex',
       whiteSpace: 'nowrap',
       fontSize: props.fontSize,
     }}>
@@ -44,7 +44,7 @@ export default function UserTag(props: UserTagProps) {
               style={{
                 marginRight: 1,
                 marginTop: 1,
-                borderRadius: 5,
+                borderRadius: props.fontSize / 2,
                 border: `1px solid ${props.user.color}`,
                 width: props.fontSize,
                 height: props.fontSize,
