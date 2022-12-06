@@ -3,7 +3,7 @@ import algoliasearch, { SearchClient } from 'algoliasearch';
 import { memo, useContext, useEffect, useRef, useState } from 'react';
 import CustomSearchBox from './SearchBox';
 import CustomHits from './Hits';
-import { ALGOLIA_APP_ID, ALGOLIA_APP_KEY, ALGOLIA_INDEX_NAME } from '../../constants';
+import { ALGOLIA_APP_ID, ALGOLIA_APP_KEY, ALGOLIA_INDEX_NAME, OFF_WHITE } from '../../constants';
 import { useAppDispatch, useAppSelector } from '../../app/store';
 import { searchGoBack, searchGoForward, searchRefresh, selectSearchIndex, selectSearchShouldRefresh, selectSearchSlice, selectSearchStack } from './searchSlice';
 import EntryTree from '../entry/EntryTree';
@@ -71,7 +71,7 @@ function SearchComponent() {
       height: '100%',
       backgroundColor: palette === 'dark'
         ? '#000000'
-        : '#e0e0e0',
+        : OFF_WHITE,
     }}>
       <IonCardHeader style={{
         padding: 10,
