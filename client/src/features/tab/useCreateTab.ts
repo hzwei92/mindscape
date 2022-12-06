@@ -1,5 +1,5 @@
 import { gql, useMutation } from "@apollo/client";
-import { useIonRouter } from "@ionic/react";
+import { useIonRouter, useIonToast } from "@ionic/react";
 import { useAppDispatch } from "../../app/store";
 import { Tab } from "./tab";
 import { FULL_TAB_FIELDS } from "./tabFragments";
@@ -27,10 +27,16 @@ const CREATE_TAB_BY_ROUTENAME = gql`
 export default function useCreateTab(onCompleted?: () => void) {
   const dispatch = useAppDispatch();
 
+  const [present] = useIonToast();
+
   const router = useIonRouter();
 
   const [createByRouteName] = useMutation(CREATE_TAB_BY_ROUTENAME, {
     onError: err => {
+      if (err.message === 'Arrow not found') {
+        present(`Not found`, 5000);
+        return;
+      }
       console.error(err);
     },
     onCompleted: data  => {

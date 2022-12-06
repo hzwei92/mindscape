@@ -39,12 +39,16 @@ const useAppRouter = () => {
     console.log(path);
 
     if (path[1] !== 'g') {
-      router.push(`/g/${focusTab?.arrow?.routeName}/0`, undefined, 'replace');
+      if (focusTab?.arrow?.routeName) {
+        router.push(`/g/${focusTab.arrow.routeName}/0`, undefined, 'replace')
+      }
       return;
     }
 
     if (path[2] === '') {
-      router.push(`/g/${focusTab?.arrow?.routeName}/0`, undefined, 'replace');
+      if (focusTab?.arrow?.routeName) {
+        router.push(`/g/${focusTab.arrow.routeName}/0`, undefined, 'replace');
+      }
       return;
     }
 

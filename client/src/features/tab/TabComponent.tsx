@@ -126,6 +126,7 @@ export default function TabComponent(props: TabComponentProps) {
         .sort((a, b) => a.i - b.i)
 
       if (tabs.length > 0) {
+        console.log(tabs);
         const twigId = abstractIdToData[tabs[0].arrowId].selectedTwigId;
         const twig = abstractIdToData[tabs[0].arrowId].idToTwig[twigId];
         router.push(`/g/${tabs[0].arrow.routeName}/${twig?.i ?? 0}`);
