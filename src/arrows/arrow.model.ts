@@ -78,6 +78,9 @@ export class Arrow {
   @Field(() => Arrow)
   abstract: Arrow;
 
+  @Field({ nullable: true })
+  abstractI: number;
+
   @Field(() => [Arrow])
   details: Arrow[];
 

@@ -6,11 +6,15 @@ import {
   DeleteDateColumn,
   ManyToOne,
   JoinColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { User } from 'src/users/user.entity';
+import { Arrow } from 'src/arrows/arrow.entity';
+import { Lead } from 'src/leads/lead.entity';
+import { Role } from 'src/roles/role.entity';
 
 @Entity()
-export class Lead {
+export class Alert {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -21,15 +25,46 @@ export class Lead {
   @JoinColumn({ referencedColumnName: 'id' })
   user: User;
 
-  @Column()
-  followerId: string;
+  
+  @Column({nullable: true})
+  arrowId: string;
 
-  @ManyToOne(() => User)
+  @ManyToOne(() => Arrow, {nullable: true})
   @JoinColumn({ referencedColumnName: 'id' })
-  follower: User;
+  arrow: Arrow;
+
+
+  @Column({nullable: true})
+  leadId: string;
+
+  @ManyToOne(() => Lead, {nullable: true})
+  @JoinColumn({ referencedColumnName: 'id' })
+  lead: Lead;
+
+
+  @Column({nullable: true})
+  roleId: string;
+
+  @ManyToOne(() => Role, {nullable: true})
+  @JoinColumn({ referencedColumnName: 'id' })
+  role: Role;
+
+
+  @Column({nullable: true})
+  abstractRoleId: string;
+
+  @ManyToOne(() => Role, {nullable: true})
+  @JoinColumn({ referencedColumnName: 'id' })
+  abstractRole: Role;
+
+  @Column( { nullable: true })
+  readDate: Date;
 
   @CreateDateColumn()
   createDate: Date;
+
+  @UpdateDateColumn()
+  updateDate: Date;
 
   @DeleteDateColumn()
   deleteDate: Date;

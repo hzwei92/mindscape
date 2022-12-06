@@ -85,7 +85,6 @@ export class ArrowsResolver {
     @CurrentUser() user: UserEntity,
     @Parent() arrow: Arrow,
   ) {
-    console.log('user', user);
     if (user?.id) {
       return this.rolesService.getRoleByUserIdAndArrowId(user.id, arrow.id);
     }

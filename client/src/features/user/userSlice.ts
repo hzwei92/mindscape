@@ -1,6 +1,8 @@
 import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { logoAppleAppstore } from 'ionicons/icons';
 import { RootState } from '../../app/store';
 import type { IdToType } from '../../types';
+import { mergeAlerts } from '../alerts/alertSlice';
 import { mergeArrows } from '../arrow/arrowSlice';
 import { setInit, setLogin, setLogout } from '../auth/authSlice';
 import { mergeLeads } from '../lead/leadSlice';
@@ -111,6 +113,22 @@ const userSlice = createSlice({
             acc[lead.followerId] = {
               ...acc[lead.followerId],
               ...lead.follower,
+            };
+          }
+          return acc;
+        }, { ...state.idToUser });
+
+        return {
+          ...state,
+          idToUser,
+        };
+      })
+      .addCase(mergeAlerts, (state, action) => {
+        const idToUser = action.payload.reduce((acc, alert) => {
+          if (alert.arrow) {
+            acc[alert.arrow.userId] = {
+              ...acc[alert.arrow.userId],
+              ...alert.arrow.user,
             };
           }
           return acc;

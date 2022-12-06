@@ -103,6 +103,11 @@ export class Arrow {
   @JoinColumn({ name: 'abstractId', referencedColumnName: 'id' })
   abstract: Arrow;
 
+
+  @Column({ nullable: true})
+  abstractI: number;
+
+
   @OneToMany(() => Arrow, arrow => arrow.abstract)
   details: Arrow[];
 

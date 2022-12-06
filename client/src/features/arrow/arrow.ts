@@ -34,6 +34,8 @@ export type Arrow = {
   abstractId: string;
   abstract: Arrow | null;
 
+  abstractI: number | null;
+
   twigs: Arrow[];
   twigN: number;
   twigZ: number;
@@ -127,6 +129,8 @@ export const createArrow = (params: {
 
     abstractId: abstract?.id || id,
     abstract: null,
+    abstractI: null,
+
     twigs: [],
     twigN: 0,
     twigZ: 0,

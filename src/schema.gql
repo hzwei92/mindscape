@@ -2,8 +2,27 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Alert {
+  abstractRole: Role
+  abstractRoleId: String
+  arrow: Arrow
+  arrowId: String
+  createDate: DateTime!
+  deleteDate: DateTime
+  id: String!
+  lead: Lead
+  leadId: String
+  readDate: DateTime
+  role: Role
+  roleId: String
+  updateDate: DateTime!
+  user: User!
+  userId: String!
+}
+
 type Arrow {
   abstract: Arrow!
+  abstractI: Float
   abstractId: String!
   activeDate: DateTime!
   canAssignMemberRole: String!
@@ -129,6 +148,7 @@ type Mutation {
   getArrowByRouteName(routeName: String!): Arrow
   getArrows(arrowIds: [String!]!): [Arrow!]!
   getCurrentUser: User!
+  getCurrentUserAlerts: [Alert!]!
   getCurrentUserLeads: [Lead!]!
   getIns(arrowId: String!, offset: Int!): [Arrow!]!
   getOuts(arrowId: String!, offset: Int!): [Arrow!]!
