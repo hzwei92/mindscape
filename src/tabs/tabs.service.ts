@@ -1,9 +1,8 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Arrow } from 'src/arrows/arrow.entity';
-import { ArrowsService } from 'src/arrows/arrows.service';
 import { User } from 'src/users/user.entity';
-import { Between, Equal, In, MoreThan, Not, Repository } from 'typeorm';
+import { Between, Equal, Not, Repository } from 'typeorm';
 import { Tab } from './tab.entity';
 
 @Injectable()

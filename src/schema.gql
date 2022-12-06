@@ -61,6 +61,11 @@ type CopyTwigResult {
   twigs: [Twig!]!
 }
 
+type CreateGraphTabResult {
+  tabs: [Tab!]!
+  user: User!
+}
+
 """
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
@@ -116,7 +121,7 @@ type MoveTwigResult {
 
 type Mutation {
   copyTwig(parentTwigId: String!, twigId: String!): CopyTwigResult!
-  createGraphTab(arrowId: String, name: String!, routeName: String!): [Tab!]!
+  createGraphTab(arrowId: String, name: String!, routeName: String!): CreateGraphTabResult!
   createTab(arrowId: String!, i: Int, isFocus: Boolean!, isFrame: Boolean!): [Tab!]!
   createTabByRouteName(i: Int, isFocus: Boolean!, isFrame: Boolean!, routeName: String!): [Tab!]!
   dragTwig(abstractId: String!, dx: Int!, dy: Int!, sessionId: String!, twigId: String!): Twig!

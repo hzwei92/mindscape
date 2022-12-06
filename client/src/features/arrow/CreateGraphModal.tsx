@@ -7,6 +7,7 @@ import { AppContext } from "../../app/App";
 import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonInput, IonItem, IonLabel, IonModal, IonNote, useIonRouter } from "@ionic/react";
 import { uniqueNamesGenerator, adjectives } from "unique-names-generator";
 import { INPUT_WIDTH } from "../../constants";
+import { mergeUsers } from "../user/userSlice";
 
 const geography = [
   'abime', 
@@ -356,7 +357,13 @@ const geography = [
 const CREATE_GRAPH = gql`
   mutation CreateGraphTab($name: String!, $routeName: String!, $arrowId: String) {
     createGraphTab(name: $name, routeName: $routeName, arrowId: $arrowId) {
-      ...FullTabFields
+      user {
+        id
+        balance
+      }
+      tabs {
+        ...FullTabFields
+      }
     } 
   }
   ${FULL_TAB_FIELDS}
@@ -408,7 +415,9 @@ export default function CreateGraphModal() {
     },
     onCompleted: data => {
       console.log(data, routeName);
-      dispatch(mergeTabs(data.createGraphTab));
+      const { user, tabs } = data.createGraphTab;
+      dispatch(mergeUsers([user]))
+      dispatch(mergeTabs(tabs));
       router.push(`/g/${routeName}/0`);
       setRouteName('');
     }
