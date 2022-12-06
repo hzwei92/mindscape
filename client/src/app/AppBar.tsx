@@ -6,6 +6,8 @@ import {
   informationCircleOutline, 
   mapOutline, 
   moonOutline, 
+  notifications, 
+  notificationsOutline, 
   peopleOutline, 
   personCircleOutline, 
   searchOutline, 
@@ -168,6 +170,35 @@ const AppBar = () => {
           SEARCH
         </IonCard>
         <IonButton 
+          onMouseEnter={handleMenuMouseEnter(MenuMode.NOTIFICATIONS)}
+          onMouseLeave={handleMenuMouseLeave}
+          onClick={handleMenuClick(MenuMode.NOTIFICATIONS)}
+          style={{
+            width: 50,
+            height: 50,
+            borderLeft: menuMode === MenuMode.NOTIFICATIONS
+              ? `3px solid ${user?.color}`
+              : null,
+          }}
+        >
+          <IonIcon icon={notificationsOutline} style={{
+            color: menuMode === MenuMode.NOTIFICATIONS
+              ? user?.color
+              : null,
+          }}/>
+        </IonButton>
+        <IonCard style={{
+          display: label === MenuMode.NOTIFICATIONS
+            ? 'block'
+            : 'none',
+          position: 'absolute',
+          left: 45,
+          top: 145,
+          padding: 10,
+        }}>
+          NOTIFICATIONS
+        </IonCard>
+        <IonButton 
           onMouseEnter={handleMenuMouseEnter(MenuMode.GRAPHS)}
           onMouseLeave={handleMenuMouseLeave}
           onClick={handleMenuClick(MenuMode.GRAPHS)}
@@ -185,14 +216,13 @@ const AppBar = () => {
               : null,
           }}/>
         </IonButton>
-        
         <IonCard style={{
           display: label === MenuMode.GRAPHS
             ? 'block'
             : 'none',
           position: 'absolute',
           left: 45,
-          top: 145,
+          top: 195,
           padding: 10,
         }}>
           GRAPHS
@@ -221,7 +251,7 @@ const AppBar = () => {
             : 'none',
           position: 'absolute',
           left: 45,
-          top: 195,
+          top: 245,
           padding: 10,
         }}>
           CONTACTS
@@ -250,7 +280,7 @@ const AppBar = () => {
             : 'none',
           position: 'absolute',
           left: 45,
-          top: 245,
+          top: 295,
           padding: 10,
         }}>
           MAP
@@ -279,7 +309,7 @@ const AppBar = () => {
             : 'none',
           position: 'absolute',
           left: 45,
-          top: 295,
+          top: 345,
           padding: 10,
         }}>
           FEED
@@ -309,7 +339,7 @@ const AppBar = () => {
             : 'none',
           position: 'absolute',
           left: 45,
-          top: 345,
+          top: 395,
           padding: 10,
         }}>
           ABOUT

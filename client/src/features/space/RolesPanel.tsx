@@ -112,7 +112,7 @@ export default function RolesPanel(props: RolesPanelProps) {
           fontWeight: 'bold',
           fontSize: 20,
         }}>
-          Owner - 1 
+          Owners - 1 
         </div>
         <div style={{
           padding: 5,

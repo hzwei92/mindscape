@@ -159,6 +159,7 @@ const AccountComponent: React.FC = () => {
         ACCOUNT
       </IonCardHeader>
         <IonCard style={{
+          marginTop: 0,
           padding: 10,
         }}> 
             <IonButtons>

@@ -4,6 +4,7 @@ export enum MenuMode {
   NONE = 'NONE',
   ACCOUNT = 'ACCOUNT',
   SEARCH = 'SEARCH',
+  NOTIFICATIONS = 'NOTIFICATIONS',
   GRAPHS = 'GRAPHS',
   CONTACTS = 'CONTACTS',
   MAP = 'MAP',

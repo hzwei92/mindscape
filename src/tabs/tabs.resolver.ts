@@ -8,6 +8,8 @@ import { RemoveTabResult } from './dto/remove-tab-result.dto';
 import { SheafsService } from 'src/sheafs/sheafs.service';
 import { CurrentUser, GqlAuthGuard } from 'src/auth/gql-auth.guard';
 import { User as UserEntity } from 'src/users/user.entity';
+import { TransfersService } from 'src/transfers/transfers.service';
+import { CreateGraphTabResult } from './dto/create-graph-tab-result.dto';
 
 @Resolver(Tab)
 export class TabsResolver {
@@ -15,6 +17,7 @@ export class TabsResolver {
     private readonly tabsService: TabsService,
     private readonly arrowsService: ArrowsService,
     private readonly sheafsService: SheafsService,
+    private readonly transfersService: TransfersService,
   ) {}
 
   @ResolveField(() => Arrow, { name: 'arrow' })
@@ -25,7 +28,7 @@ export class TabsResolver {
   }
 
   @UseGuards(GqlAuthGuard)
-  @Mutation(() => [Tab], {name: 'createGraphTab'})
+  @Mutation(() => CreateGraphTabResult, {name: 'createGraphTab'})
   async createGraphTab(
     @CurrentUser() user: UserEntity,
     @Args('name') name: string,
@@ -38,28 +41,49 @@ export class TabsResolver {
         throw new BadRequestException('Arrow not found');
       }
       ({arrow} = await this.arrowsService.openArrow(user, arrow, name, routeName));
-      return this.tabsService.appendTab(user, arrow, false, true);
+
+      const tabs = await this.tabsService.appendTab(user, arrow, false, true);
+
+      return {
+        user, 
+        tabs,
+      }
     }
     else {
       let arrow = await this.arrowsService.getArrowByRouteName(routeName);
-      if (!arrow) {
-        const sheaf = await this.sheafsService.createSheaf(null, null, null);
-        ({ arrow } = await this.arrowsService.createArrow({
+      if (arrow) {
+        const tabs = await this.tabsService.appendTab(user, arrow, false, true);
+        return {
           user,
-          title: name,
-          routeName,
-          id: null,
-          sourceId: null,
-          targetId: null,
-          sheaf,
-          abstract: null,
-          draft: null,
-          url: null,
-          faviconUrl: null,
-        }));
-        ({ arrow } = await this.arrowsService.openArrow(user, arrow, name, routeName));
+          tabs,
+        }
       }
-      return this.tabsService.appendTab(user, arrow, false, true);
+
+      const sheaf = await this.sheafsService.createSheaf(null, null, null);
+      let vote;
+      ({ arrow, vote } = await this.arrowsService.createArrow({
+        user,
+        title: name,
+        routeName,
+        id: null,
+        sourceId: null,
+        targetId: null,
+        sheaf,
+        abstract: null,
+        draft: null,
+        url: null,
+        faviconUrl: null,
+      }));
+      ({ arrow } = await this.arrowsService.openArrow(user, arrow, name, routeName));
+      
+      const user1 = await this.transfersService.createGraphTransfer(user, vote, arrow);
+
+      const tabs = await this.tabsService.appendTab(user1, arrow, false, true);
+
+      return {
+        user: user1,
+        tabs,
+      }
     }
 
   }

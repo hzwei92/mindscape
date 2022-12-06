@@ -5,6 +5,7 @@ import { APP_BAR_X, NOTCH_SIZE } from "../../constants";
 import AboutComponent from "../about/AboutComponent";
 import AccountComponent from "../account/AccountComponent";
 import ContactsComponent from "../contacts/ContactsComponent";
+import NotificationsComponent from "../notifications/NotificationsComponent";
 import SearchComponent from "../search/SearchComponent";
 import { MenuMode } from "./menu";
 
@@ -44,9 +45,23 @@ export default function MenuComponent(props: MenuComponentProps) {
         height: '100%',
         width: 'calc(100% - 5px)',
       }}>
+        <div style={{
+          height: '100%',
+          width: '100%',
+          display: menuMode === MenuMode.SEARCH
+            ? 'block'
+            : 'none',
+        }}>
+          <SearchComponent />
+        </div>
         { 
           menuMode === MenuMode.ACCOUNT
             ? <AccountComponent />
+            : null
+        }
+        {
+          menuMode === MenuMode.NOTIFICATIONS
+            ? <NotificationsComponent />
             : null
         }
         {
@@ -59,15 +74,6 @@ export default function MenuComponent(props: MenuComponentProps) {
             ? <AboutComponent />
             : null
         }
-        <div style={{
-          height: '100%',
-          width: '100%',
-          display: menuMode === MenuMode.SEARCH
-            ? 'block'
-            : 'none',
-        }}>
-          <SearchComponent />
-        </div>
       </div>
       <div 
         onMouseEnter={handleResizeMouseEnter}
