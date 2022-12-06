@@ -132,7 +132,7 @@ export default function ExplorerComponent() {
           </IonCard>
         </div>
         {
-          focusTab?.id
+          !!focusTab?.id && !focusTab.deleteDate
             ? <div style={{
                 position: 'relative',
                 width: '100%',
