@@ -17,6 +17,7 @@ export const ARROW_FIELDS = gql`
     inCount
     outCount
     abstractId
+    abstractI
     sourceId
     targetId
     sheafId

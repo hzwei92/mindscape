@@ -1,6 +1,7 @@
 import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
 import { IdToType } from "../../types";
+import { mergeAlerts } from "../alerts/alertSlice";
 import { setInit, setLogin, setLogout } from "../auth/authSlice";
 import { mergeTwigs } from "../space/spaceSlice";
 import { mergeTabs } from "../tab/tabSlice";
@@ -180,6 +181,32 @@ const arrowSlice = createSlice({
             };
             if (tab.arrow.url) {
               acc.urlToArrowId[tab.arrow.url] = tab.arrow.id;
+            }
+          }
+          return acc;
+        }, {
+          idToArrow: { ...state.idToArrow },
+          urlToArrowId: { ...state.urlToArrowId },
+        });
+
+        return {
+          ...state,
+          idToArrow,
+          urlToArrowId,
+        }
+      })
+      .addCase(mergeAlerts, (state, action) => {
+        const {
+          idToArrow,
+          urlToArrowId,
+        } = action.payload.reduce((acc, alert) => {
+          if (alert.arrow?.id) {
+            acc.idToArrow[alert.arrow.id] = {
+              ...acc.idToArrow[alert.arrow.id], 
+              ...alert.arrow,
+            };
+            if (alert.arrow.url) {
+              acc.urlToArrowId[alert.arrow.url] = alert.arrow.id;
             }
           }
           return acc;

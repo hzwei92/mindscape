@@ -13,6 +13,7 @@ import { SheafsService } from 'src/sheafs/sheafs.service';
 import { v4 } from 'uuid';
 import { UsersService } from 'src/users/users.service';
 import { TwigPosAdjustment } from './dto/twig-pos-adjustment';
+import { AlertsService } from 'src/alerts/alerts.service';
 
 @Injectable()
 export class TwigsService {
@@ -25,6 +26,7 @@ export class TwigsService {
     private readonly arrowsService: ArrowsService,
     private readonly sheafsService: SheafsService,
     private readonly rolesService: RolesService,
+    private readonly alertsService: AlertsService,
   ) {}
 
   async getTwigById(id: string): Promise<Twig> {
@@ -173,11 +175,9 @@ export class TwigsService {
       throw new BadRequestException('This parent twig does not exist');
     }
 
-    let abstract = await this.arrowsService.getArrowById(parentTwig.abstractId);
-
     let role = await this.rolesService.getRoleByUserIdAndArrowId(user.id, parentTwig.abstractId);
     let role1 = null;
-    if (abstract.userId === user.id || checkPermit(parentTwig.abstract.canPost, role?.type)) {
+    if (parentTwig.abstract.userId === user.id || checkPermit(parentTwig.abstract.canPost, role?.type)) {
       if (!role) {
         role = await this.rolesService.createRole(user, parentTwig.abstract, RoleType.OTHER);
         role1 = role;
@@ -230,6 +230,9 @@ export class TwigsService {
       isOpen: true,
     });
 
+    parentTwig.abstract.twigN += 1;
+    parentTwig.abstract.twigZ += 1;
+
     const linkSheaf = await this.sheafsService.createSheaf(parentTwig.detail.sheafId, post.sheafId, null);
 
     const { 
@@ -257,19 +260,21 @@ export class TwigsService {
       twigId: null,
       sourceId: parentTwig.id,
       targetId: postTwig.id,
-      i: parentTwig.abstract.twigN + 2,
+      i: parentTwig.abstract.twigN + 1,
       x: Math.round((parentTwig.x + x) / 2),
       y: Math.round((parentTwig.y + y) / 2),
-      z: parentTwig.abstract.twigZ,
+      z: parentTwig.abstract.twigZ + 1,
       isOpen: false,
     });
 
     await this.arrowsService.incrementTwigN(parentTwig.abstractId, 2);
     await this.arrowsService.incrementTwigZ(parentTwig.abstractId, 2);
-    abstract = await this.arrowsService.getArrowById(parentTwig.abstractId);
+    const abstract = await this.arrowsService.getArrowById(parentTwig.abstractId);
 
     const source = await this.arrowsService.getArrowById(parentTwig.detailId);
 
+    const alerts = await this.alertsService.replyAlert(user, parentTwig.detail, post, abstract);
+    
     return {
       abstract,
       source,
@@ -279,6 +284,7 @@ export class TwigsService {
       targetArrow: post,
       targetVote: postVote,
       role: role1,
+      alerts,
     };
   }
 

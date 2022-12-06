@@ -11,6 +11,7 @@ import { PubSubModule } from 'src/pub-sub/pub-sub.module';
 import { TwigsModule } from 'src/twigs/twigs.module';
 import { SheafsModule } from 'src/sheafs/sheafs.module';
 import { TransfersModule } from 'src/transfers/transfers.module';
+import { AlertsModule } from 'src/alerts/alerts.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { TransfersModule } from 'src/transfers/transfers.module';
     VotesModule,
     PubSubModule,
     SearchModule,
+    AlertsModule,
   ],
   providers: [ArrowsService, ArrowsResolver],
   exports: [ArrowsService],

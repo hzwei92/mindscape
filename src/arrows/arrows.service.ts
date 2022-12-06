@@ -14,6 +14,7 @@ import { VotesService } from 'src/votes/votes.service';
 import { SheafsService } from 'src/sheafs/sheafs.service';
 import { Sheaf } from 'src/sheafs/sheaf.entity';
 import { convertFromRaw } from 'draft-js';
+import { AlertsService } from 'src/alerts/alerts.service';
 
 @Injectable()
 export class ArrowsService {
@@ -25,6 +26,7 @@ export class ArrowsService {
     private readonly twigsService: TwigsService,
     private readonly rolesService: RolesService,
     private readonly searchService: SearchService,
+    private readonly alertsService: AlertsService,
   ) {}
 
   async indexArrows() {
@@ -235,6 +237,7 @@ export class ArrowsService {
     arrow0.targetId = targetId;
     arrow0.userId = user.id;
     arrow0.abstractId = abstract?.id || arrow0.id;
+    arrow0.abstractI = abstract ? (abstract.twigN + 1) : 0;
     arrow0.sheafId = sheaf.id;
     arrow0.draft = draft || getEmptyDraft();
     arrow0.title = title;
@@ -396,12 +399,15 @@ export class ArrowsService {
       }
     });
 
+    const alerts = await this.alertsService.replyAlert(user, source1, target, null);
+    
     return {
       source: source1,
       target,
       targetVote,
       link,
       linkVote,
+      alerts,
     }
   }
 

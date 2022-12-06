@@ -14,9 +14,9 @@ import { MenuMode } from '../menu/menu';
 
 interface ArrowProps {
   arrowId: string;
-  showLinkLeftIcon: boolean;
-  showLinkRightIcon: boolean;
-  showPostIcon: boolean;
+  showLinkLeftIcon?: boolean;
+  showLinkRightIcon?: boolean;
+  showPostIcon?: boolean;
   instanceId: string;
   fontSize: number;
   tagFontSize: 10 | 14;
@@ -63,7 +63,7 @@ export default function ArrowComponent(props: ArrowProps) {
     if (isPlatform('mobile')) {
       setMenuMode(MenuMode.NONE);
     }
-    router.push(`/g/${arrowAbstract?.routeName}/0`)
+    router.push(`/g/${arrowAbstract?.routeName}/${arrow.abstractI ?? 0}`)
   }
 
   const time = new Date(arrow.removeDate || arrow.commitDate || arrow.saveDate || Date.now()).getTime();

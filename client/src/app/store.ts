@@ -1,5 +1,6 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
+import alertSlice from '../features/alerts/alertSlice';
 import arrowSlice from '../features/arrow/arrowSlice';
 import authSlice from '../features/auth/authSlice';
 import entrySlice from '../features/entry/entrySlice';
@@ -14,6 +15,7 @@ import voteSlice from '../features/vote/voteSlice';
 
 export const store = configureStore({
   reducer: {
+    alert: alertSlice,
     arrow: arrowSlice,
     auth: authSlice,
     entry: entrySlice,
