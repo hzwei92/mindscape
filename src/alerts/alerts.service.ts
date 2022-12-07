@@ -75,6 +75,7 @@ export class AlertsService {
       alert.sourceId = source.id;
       alert.linkId = link.id;
       alert.targetId = target.id;
+
       alert.userId = lead.followerId;
       alert.leadId = lead.id;
 
@@ -90,6 +91,7 @@ export class AlertsService {
       alert.sourceId = source.id;
       alert.linkId = link.id;
       alert.targetId = target.id;
+
       alert.userId = role.userId;
       alert.roleId = role.id;
 
@@ -106,6 +108,7 @@ export class AlertsService {
         alert.sourceId = source.id;
         alert.linkId = link.id;
         alert.targetId = target.id;
+
         alert.userId = role.userId;
         alert.abstractRoleId = role.id;
 
@@ -115,6 +118,7 @@ export class AlertsService {
 
 
     delete userIdToAlert[user.id];
+    console.log(user.id, userIdToAlert, Object.values(userIdToAlert));
 
     const alerts = Object.values(userIdToAlert);
 
