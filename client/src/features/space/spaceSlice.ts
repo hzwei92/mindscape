@@ -1,5 +1,6 @@
 import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
+import { VIEW_RADIUS } from '../../constants';
 import { IdToType } from '../../types';
 import { setLogin, setLogout } from '../auth/authSlice';
 import { Role } from '../role/role';
@@ -140,8 +141,8 @@ export const spaceSlice = createSlice({
     moveTwigs: (state, action: PayloadAction<{abstractId: string, twigIds: string[], dx: number, dy: number}>) => {
       const idToPos = action.payload.twigIds.reduce((acc: IdToType<PosType>, twigId: string) => {
         acc[twigId] = {
-          x: Math.round(acc[twigId].x + action.payload.dx),
-          y: Math.round(acc[twigId].y + action.payload.dy),
+          x: Math.min(VIEW_RADIUS, Math.max(-1 * VIEW_RADIUS, Math.round(acc[twigId].x + action.payload.dx))),
+          y: Math.min(VIEW_RADIUS, Math.max(-1 * VIEW_RADIUS, Math.round(acc[twigId].y + action.payload.dy))),
         };
         return acc;
       }, {  ...state.abstractIdToData[action.payload.abstractId].idToPos });
