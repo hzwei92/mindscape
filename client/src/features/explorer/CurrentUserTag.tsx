@@ -18,6 +18,7 @@ import { searchPushSlice } from "../search/searchSlice";
 import { gql, useMutation } from "@apollo/client";
 import { mergeUsers } from "../user/userSlice";
 import useAlertsSub from "../alerts/useAlertsSub";
+import { reloadOutline } from "ionicons/icons";
 
 const READ_ALERTS = gql`
   mutation ReadAlerts {
@@ -66,6 +67,10 @@ export default function CurrentUserTag() {
     getAlerts();
   }, []);
 
+  const handleGetAlertsClick = () => {
+    getAlerts();
+  };
+
   const handleAlertsClick = () => {
     markRead();
     const sourceIdToAlerts = alerts.reduce((acc, alert) => {
@@ -103,7 +108,7 @@ export default function CurrentUserTag() {
       const alerts = sourceIdToAlerts[sourceId];
       
       alerts.forEach(alert => {
-        const { link, target, lead, role, abstractRole, reason } = alert;
+        const { link, source, target, lead, role, abstractRole, reason } = alert;
 
         let linkBonus: string[] = [];
         let targetBonus: string[] = [];
@@ -112,7 +117,10 @@ export default function CurrentUserTag() {
           linkBonus.push('Written by a user you follow');
         }
 
-        if (role?.arrowId === sourceId) {
+        if (source?.userId === user?.id) {
+          linkBonus.push('In response to an arrow you wrote');
+        }
+        else if (role?.arrowId === sourceId) {
           linkBonus.push('In response to an arrow you subscribe to');
         }
 
@@ -231,21 +239,26 @@ export default function CurrentUserTag() {
               }
             </div>
             <div style={{
-              display: alerts.length === 0
-                ? 'none'
-                : 'block',
               marginRight: -5,
             }}>
               <IonButtons>
-                <IonButton onClick={handleAlertsClick}>
-                  <IonBadge color={'dark'} style={{
-                    bottom: 0,
-                    right: 0,
-                    fontSize: 10,
-                  }}>
-                    {alerts.length}
-                  </IonBadge>
-                </IonButton>
+                {
+                  alerts.length > 0
+                    ? <IonButton onClick={handleAlertsClick}>
+                        <IonBadge color={'dark'} style={{
+                          bottom: 0,
+                          right: 0,
+                          fontSize: 10,
+                        }}>
+                          {alerts.length}
+                        </IonBadge>
+                      </IonButton>
+                    : <IonButton onClick={handleGetAlertsClick}>
+                        <IonIcon icon={reloadOutline} style={{
+                          fontSize: 12
+                        }}/>
+                      </IonButton>
+                }
               </IonButtons>
             </div>
         </IonCard>

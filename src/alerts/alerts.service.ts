@@ -6,7 +6,7 @@ import { LeadsService } from 'src/leads/leads.service';
 import { RolesService } from 'src/roles/roles.service';
 import { Twig } from 'src/twigs/twig.entity';
 import { User } from 'src/users/user.entity';
-import { Repository } from 'typeorm';
+import { MoreThan, Repository } from 'typeorm';
 import { Alert } from './alert.entity';
 
 @Injectable()
@@ -24,8 +24,25 @@ export class AlertsService {
     });
   }
 
+  async getUserAlerts(user: User) {
+    return this.alertsRepository.find({
+      where: { 
+        userId: user.id,
+        createDate: MoreThan(user.checkAlertsDate),
+      },
+    });
+  }
+
   async linkAlert(user: User, source: Arrow, link: Arrow, target: Arrow, abstract: Arrow | null): Promise<Alert[]> {
-    const userIdToAlert = {};
+    const alert = new Alert();
+    alert.sourceId = source.id;
+    alert.linkId = link.id;
+    alert.targetId = target.id;
+    alert.userId = source.userId;
+
+    const userIdToAlert = {
+      [alert.userId]: alert, 
+    };
 
     const leads = await this.leadsService.getLeadsByLeaderId(user.id);
 
