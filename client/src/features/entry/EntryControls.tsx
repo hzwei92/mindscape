@@ -187,13 +187,13 @@ export default function EntryControls(props: EntryControlsProps) {
     }}>
       <IonButton onClick={handleReplyClick} style={{
         fontSize: 10,
-        height: 20,
+        height: 22,
       }}>
         REPLY
       </IonButton>
       <IonButton onClick={handleLinkClick} style={{
         fontSize: 10,
-        height: 20,
+        height: 22,
       }}>
         LINK
       </IonButton>
@@ -201,7 +201,7 @@ export default function EntryControls(props: EntryControlsProps) {
         color: isSubbed
           ? user?.color
           : null,
-        height: 20,
+        height: 22,
       }}>
         <IonIcon icon={ellipsisVertical} style={{
           fontSize: 10,
@@ -311,23 +311,29 @@ export default function EntryControls(props: EntryControlsProps) {
         whiteSpace: 'nowrap',
       }}>
         <IonButton onClick={handlePrevClick} style={{
-          border: props.entry.showIns
-            ? `1px solid ${arrowUser?.color}`
+          borderBottom: props.entry.showIns
+            ? `2px solid ${arrowUser?.color}`
             : null,
           borderRadius: 5,
           fontSize: 10,
-          height: 20,
+          height: 22,
+          color: props.entry.showIns
+            ? arrowUser?.color
+            : null,
         }}>
           {props.arrow.inCount} IN
         </IonButton>
         &nbsp;
         <IonButton onClick={handleNextClick} style={{
-          border: props.entry.showOuts
-            ? `1px solid ${arrowUser?.color}`
+          borderBottom: props.entry.showOuts
+            ? `2px solid ${arrowUser?.color}`
             : null,
           borderRadius: 5,
           fontSize: 10,
-          height: 20,
+          height: 22,
+          color: props.entry.showOuts
+            ? arrowUser?.color
+            : null,
         }}>
           {props.arrow.outCount} OUT
         </IonButton>

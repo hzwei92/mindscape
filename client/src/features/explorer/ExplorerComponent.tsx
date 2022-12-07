@@ -153,7 +153,7 @@ export default function ExplorerComponent() {
         }}>
           <div style={{
             display: 'flex',
-            minWidth: 41,
+            minWidth: 40,
             minHeight: TAB_HEIGHT,
           }}/>
           {
