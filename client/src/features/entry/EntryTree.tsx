@@ -91,7 +91,7 @@ export default function EntryTree(props: EntryTreeProps) {
           })
         }
         {
-          remaining > 0 && false
+          remaining > 0
             ? <div onClick={handleLoadClick} style={{
                 fontSize: 12,
                 marginTop: '5px',
