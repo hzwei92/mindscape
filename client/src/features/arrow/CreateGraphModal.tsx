@@ -4,10 +4,11 @@ import { gql, useMutation } from "@apollo/client";
 import { FULL_TAB_FIELDS } from "../tab/tabFragments";
 import { mergeTabs } from "../tab/tabSlice";
 import { AppContext } from "../../app/App";
-import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonInput, IonItem, IonLabel, IonModal, IonNote, useIonRouter } from "@ionic/react";
+import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonIcon, IonInput, IonItem, IonLabel, IonModal, IonNote, useIonRouter } from "@ionic/react";
 import { uniqueNamesGenerator, adjectives } from "unique-names-generator";
 import { INPUT_WIDTH } from "../../constants";
 import { mergeUsers } from "../user/userSlice";
+import { close, dice } from "ionicons/icons";
 
 const geography = [
   'abime', 
@@ -397,17 +398,21 @@ export default function CreateGraphModal() {
 
   const [isReady, setIsReady] = useState(false);
 
+  const randomizeName = () => {
+    const name1 = uniqueNamesGenerator({
+      dictionaries: [adjectives, geography],
+      length: 2,
+      separator: '-'
+    }) + '-' + Math.round(Math.random() * 1000).toString().padStart(3, '0');
+    setName(name1);
+    setRouteName(name1);
+  };
+
   useEffect(() => {
-    if (isCreatingGraph) {
-      const name1 = uniqueNamesGenerator({
-        dictionaries: [adjectives, geography],
-        length: 2,
-        separator: '-'
-      }) + '-' + Math.round(Math.random() * 1000).toString().padStart(3, '0');
-      setName(name1);
-      setRouteName(name1);
+    if (!isCreatingGraph) {
+      randomizeName();
     }
-  }, [isCreatingGraph]);
+  }, []);
 
   const [create] = useMutation(CREATE_GRAPH, {
     onError: err => {
@@ -419,7 +424,7 @@ export default function CreateGraphModal() {
       dispatch(mergeUsers([user]))
       dispatch(mergeTabs(tabs));
       router.push(`/g/${routeName}/0`);
-      setRouteName('');
+      randomizeName();
     }
   });
 
@@ -514,38 +519,69 @@ export default function CreateGraphModal() {
             }}>
               Choose a <b>name</b> for the graph and a <b style={{whiteSpace: 'nowrap'}}>route-name</b> for its URL.
             </div>
-            <IonItem style={{
-              width: INPUT_WIDTH,
-              borderRadius: 5,
-              marginBottom: 20,
-              border: '1px solid',
+            <div style={{
+              display: 'flex',
+              flexDirection: 'row',
             }}>
-              <IonInput
-                placeholder='Name'
-                value={name}
-                onIonChange={handleNameChange}
-                style={{
-                }}
-              />
-            </IonItem>
-            <IonItem style={{
-              width: INPUT_WIDTH,
-              borderRadius: 5,
-              marginBottom: 20,
-              border: '1px solid',
-            }}>
-              <IonInput
-                placeholder="route-name"
-                value={routeName}
-                onIonChange={handleRouteNameChange}
-                style={{
-                }}
-              />
-              <IonNote slot='error'>
-                { routeError }
-              </IonNote>
-            </IonItem>
-
+              <div style={{
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                marginTop: -20,
+                marginLeft: -20,
+                marginRight: 10,
+              }}>
+                <IonButtons>
+                  <IonButton onClick={() => randomizeName()}>
+                    <IonIcon icon={dice} />
+                  </IonButton>
+                </IonButtons>
+              </div>
+              <div>
+                <IonItem style={{
+                  width: INPUT_WIDTH,
+                  borderRadius: 5,
+                  marginBottom: 20,
+                  border: '1px solid',
+                }}>
+                  <IonInput
+                    placeholder='Name'
+                    value={name}
+                    onIonChange={handleNameChange}
+                    style={{
+                    }}
+                  />
+                  <IonButtons>
+                    <IonButton color='medium' onClick={() => setName('')}>
+                      <IonIcon icon={close} />
+                    </IonButton>
+                  </IonButtons>
+                </IonItem>
+                <IonItem style={{
+                  width: INPUT_WIDTH,
+                  borderRadius: 5,
+                  marginBottom: 20,
+                  border: '1px solid',
+                }}>
+                  <IonInput
+                    placeholder="route-name"
+                    value={routeName}
+                    onIonChange={handleRouteNameChange}
+                    style={{
+                    }}
+                  />
+                  <IonButtons>
+                    <IonButton color='medium' onClick={() => setRouteName('')}>
+                      <IonIcon icon={close} />
+                    </IonButton>
+                  </IonButtons>
+                  <IonNote slot='error'>
+                    { routeError }
+                  </IonNote>
+                </IonItem>
+                    
+                </div>
+            </div>
             <IonButtons style={{
               marginTop: 50,
             }}>

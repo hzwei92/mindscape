@@ -1,4 +1,4 @@
-import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonInput, IonItem, IonLabel, IonModal, IonNote } from "@ionic/react";
+import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonIcon, IonInput, IonItem, IonLabel, IonModal, IonNote, useIonToast } from "@ionic/react";
 import { useContext, useEffect, useRef, useState } from "react";
 import { ChromePicker } from "react-color";
 import { AppContext } from "../../app/App";
@@ -6,6 +6,7 @@ import useInitUser from "./useInitUser";
 import { gql, useMutation } from "@apollo/client";
 import { uniqueNamesGenerator, adjectives, animals } from "unique-names-generator";
 import { INPUT_WIDTH } from "../../constants";
+import { close, dice } from "ionicons/icons";
 
 const GET_USER_BY_NAME = gql`
   mutation GetUserByName($name: String!) {
@@ -17,6 +18,8 @@ const GET_USER_BY_NAME = gql`
 `;
 
 export default function InitUserModal() {
+  const [present] = useIonToast();
+
   const { palette, showInitUserModal, setShowInitUserModal, setShowLoginModal } = useContext(AppContext);
 
   const [isNewUser, setIsNewUser] = useState(false);
@@ -30,9 +33,7 @@ export default function InitUserModal() {
 
   const modalRef = useRef<HTMLIonModalElement>(null);
 
-  useEffect(() => {
-    if (!showInitUserModal) return;
-
+  const randomize = () => {
     const name1 = uniqueNamesGenerator({
       dictionaries: [adjectives, animals],
       length: 2,
@@ -43,6 +44,12 @@ export default function InitUserModal() {
 
     setName(name1);
     setColor(color1);
+  };
+
+  useEffect(() => {
+    if (!showInitUserModal) return;
+
+    randomize();
   }, [showInitUserModal]);
 
   useEffect(() => {
@@ -95,8 +102,8 @@ export default function InitUserModal() {
   };
 
   const handleSubmit = () => {
-    if (nameError) {
-      console.log(nameError);
+    if (name.trim().length === 0 || nameError || nameTimeout) {
+      present('Please choose a different name.', 2000);
     }
     else {
       initUser(
@@ -113,6 +120,7 @@ export default function InitUserModal() {
     setShowLoginModal(true);
   }
 
+  console.log(nameError )
   return (
     <IonModal ref={modalRef} canDismiss={!showInitUserModal}>
       <IonCard style={{
@@ -140,15 +148,25 @@ export default function InitUserModal() {
                 flexDirection: 'column',
               }}>
                 <div style={{
-                  marginBottom: 10,
                   textAlign: 'center',
                 }}>
                   Choose a name and a color.
                 </div>
-                <div>
+                <IonButtons style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  marginBottom: 10,
+                }}>
+                  <IonButton onClick={() => randomize()}>
+                    <IonIcon icon={dice} />
+                  </IonButton>
+                </IonButtons>
+                <div style={{
+                  marginBottom: 10,
+                }}>
                   <IonItem style={{
                     width: INPUT_WIDTH,
-                    marginBottom: 10,
                     border: '1px solid',
                     borderRadius: 5,
                   }}>
@@ -160,13 +178,14 @@ export default function InitUserModal() {
                         width: 300,
                       }}
                     />
+                    <IonButtons>
+                      <IonButton color='medium' onClick={() => setName('')}>
+                        <IonIcon icon={close} />
+                      </IonButton>
+                    </IonButtons>
                   </IonItem>
-    
-                {
-                  nameError
-                    ? <IonNote color={'danger'}>This name is already in use.</IonNote>
-                    : null
-                }
+                  <IonNote style={{
+                  }}>{ nameError && name.length ? 'Please choose a differerent name.' : null }</IonNote>
                 </div>
                 <div style={{
                   display: 'flex',
@@ -180,13 +199,12 @@ export default function InitUserModal() {
                   />
                 </div>
                 <IonButtons style={{
-                  marginTop: 10,
+                  marginTop: 20,
                   display: 'flex',
-                  flexDirection: 'column',
+                  flexDirection: 'row',
                   justifyContent: 'center',
                 }}>
-                  <IonButton disabled={!!nameTimeout || nameError} onClick={handleSubmit} style={{
-                    marginBottom: 10,
+                  <IonButton disabled={!!nameTimeout || nameError || !name.length} onClick={handleSubmit} style={{
                   }}>
                     START
                   </IonButton>

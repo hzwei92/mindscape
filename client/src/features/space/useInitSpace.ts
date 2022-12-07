@@ -1,7 +1,7 @@
 import { gql, useMutation } from '@apollo/client';
 import { FULL_TWIG_FIELDS } from '../twig/twigFragments';
 import { Dispatch, SetStateAction, useContext, useEffect } from 'react';
-import { mergeIdToPos, mergeTwigs, selectIdToPos, selectSelectedTwigId } from './spaceSlice';
+import { mergeIdToPos, mergeTwigs, selectIdToPos, selectSelectedTwigId, setSelectedTwigId } from './spaceSlice';
 import { useAppDispatch, useAppSelector } from '../../app/store';
 import { useIonToast } from '@ionic/react';
 import { IdToType } from '../../types';
@@ -9,6 +9,7 @@ import { PosType } from './space';
 import { Twig } from '../twig/twig';
 import { setAuthIsInit, setAuthIsValid } from '../auth/authSlice';
 import { AppContext } from '../../app/App';
+import { selectArrowById } from '../arrow/arrowSlice';
 
 const GET_DETAILS = gql`
   mutation GetTwigs($abstractId: String!) {
@@ -28,6 +29,8 @@ export default function useInitSpace(abstractId: string, isSynced: boolean, setI
 
   const selectedTwigId = useAppSelector(selectSelectedTwigId(abstractId));
   const idToPos = useAppSelector(selectIdToPos(abstractId)) ?? {};
+
+  const abstract = useAppSelector(state => selectArrowById(state, abstractId))
 
   const [getTwigs] = useMutation(GET_DETAILS, {
     onError: error => {
@@ -61,6 +64,13 @@ export default function useInitSpace(abstractId: string, isSynced: boolean, setI
         abstractId,
         idToPos: idToPos1,
       }));
+
+      if (!selectedTwigId && abstract?.rootTwigId) {
+        dispatch(setSelectedTwigId({
+          abstractId,
+          twigId: abstract.rootTwigId,
+        }))
+      }
     },
   });
 

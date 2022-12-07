@@ -154,6 +154,7 @@ export default function ExplorerComponent() {
           <div style={{
             display: 'flex',
             minWidth: 41,
+            minHeight: TAB_HEIGHT,
           }}/>
           {
             Object.values(idToTab)
