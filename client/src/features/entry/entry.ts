@@ -1,7 +1,7 @@
 export type Entry = {
   id: string;
   userId: string;
-  parentId: string;
+  parentId: string | null;
   arrowId: string;
   showIns: boolean;
   showOuts: boolean;
@@ -11,4 +11,5 @@ export type Entry = {
   targetId: string | null;
   shouldGetLinks: boolean;
   isDeleted: boolean;
+  bonusText?: string[];
 }

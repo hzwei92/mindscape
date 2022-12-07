@@ -200,13 +200,31 @@ const arrowSlice = createSlice({
           idToArrow,
           urlToArrowId,
         } = action.payload.reduce((acc, alert) => {
-          if (alert.arrow?.id) {
-            acc.idToArrow[alert.arrow.id] = {
-              ...acc.idToArrow[alert.arrow.id], 
-              ...alert.arrow,
+          if (alert.source?.id) {
+            acc.idToArrow[alert.source.id] = {
+              ...acc.idToArrow[alert.source.id], 
+              ...alert.source,
             };
-            if (alert.arrow.url) {
-              acc.urlToArrowId[alert.arrow.url] = alert.arrow.id;
+            if (alert.source.url) {
+              acc.urlToArrowId[alert.source.url] = alert.source.id;
+            }
+          }
+          if (alert.link?.id) {
+            acc.idToArrow[alert.link.id] = {
+              ...acc.idToArrow[alert.link.id], 
+              ...alert.link,
+            };
+            if (alert.link.url) {
+              acc.urlToArrowId[alert.link.url] = alert.link.id;
+            }
+          }
+          if (alert.target?.id) {
+            acc.idToArrow[alert.target.id] = {
+              ...acc.idToArrow[alert.target.id], 
+              ...alert.target,
+            };
+            if (alert.target.url) {
+              acc.urlToArrowId[alert.target.url] = alert.target.id;
             }
           }
           return acc;

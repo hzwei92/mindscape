@@ -57,7 +57,7 @@ export default function useLinkArrowsSub() {
         Object.keys(idToEntry).forEach(entryId => {
           const entry = idToEntry[entryId];
           if (entry.arrowId === link.id) {
-            const parent = idToEntry[entry.parentId];
+            const parent = idToEntry[entry.parentId ?? ''];
             
             idToEntry1[parent.id] = {
               ...parent,

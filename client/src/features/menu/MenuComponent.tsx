@@ -5,7 +5,6 @@ import { APP_BAR_X, NOTCH_SIZE } from "../../constants";
 import AboutComponent from "../about/AboutComponent";
 import AccountComponent from "../account/AccountComponent";
 import ContactsComponent from "../contacts/ContactsComponent";
-import NotificationsComponent from "../notifications/NotificationsComponent";
 import SearchComponent from "../search/SearchComponent";
 import { MenuMode } from "./menu";
 
@@ -57,11 +56,6 @@ export default function MenuComponent(props: MenuComponentProps) {
         { 
           menuMode === MenuMode.ACCOUNT
             ? <AccountComponent />
-            : null
-        }
-        {
-          menuMode === MenuMode.NOTIFICATIONS
-            ? <NotificationsComponent />
             : null
         }
         {

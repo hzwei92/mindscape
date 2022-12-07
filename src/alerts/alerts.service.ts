@@ -24,38 +24,47 @@ export class AlertsService {
     });
   }
 
-  async replyAlert(user: User, source: Arrow, target: Arrow, abstract: Arrow | null): Promise<Alert[]> {
-    const leads = await this.leadsService.getLeadsByLeaderId(user.id);
-    const roles = await this.rolesService.getRolesByArrowId(source.id);
-
+  async linkAlert(user: User, source: Arrow, link: Arrow, target: Arrow, abstract: Arrow | null): Promise<Alert[]> {
     const userIdToAlert = {};
+
+    const leads = await this.leadsService.getLeadsByLeaderId(user.id);
 
     leads.forEach(lead => {
       const alert = new Alert();
-      alert.arrowId = target.id;
+      alert.sourceId = source.id;
+      alert.linkId = link.id;
+      alert.targetId = target.id;
       alert.userId = lead.followerId;
       alert.leadId = lead.id;
+
       userIdToAlert[alert.userId] = alert; 
     })
 
+    const roles = await this.rolesService.getRolesByArrowId(source.id);
+
     roles.forEach(role => {
       if (role.type === RoleType.OTHER || role.type === RoleType.NONE) return;
+
       const alert = userIdToAlert[role.userId] || new Alert();
-      alert.arrowId = target.id;
+      alert.sourceId = source.id;
+      alert.linkId = link.id;
+      alert.targetId = target.id;
       alert.userId = role.userId;
       alert.roleId = role.id;
 
       userIdToAlert[alert.userId] = alert; 
     });
-
+    
     if (abstract) {
       const abstractRoles = await this.rolesService.getRolesByArrowId(abstract?.id);
 
-      console.log('abstractRoles', abstractRoles);
       abstractRoles.forEach(role => {
         if (role.type === RoleType.OTHER || role.type === RoleType.NONE) return;
+
         const alert = userIdToAlert[role.userId] || new Alert();
-        alert.arrowId = target.id;
+        alert.sourceId = source.id;
+        alert.linkId = link.id;
+        alert.targetId = target.id;
         alert.userId = role.userId;
         alert.abstractRoleId = role.id;
 
@@ -63,10 +72,12 @@ export class AlertsService {
       });
     }
 
+
     delete userIdToAlert[user.id];
 
     const alerts = Object.values(userIdToAlert);
 
     return this.alertsRepository.save(alerts);
   }
+
 }

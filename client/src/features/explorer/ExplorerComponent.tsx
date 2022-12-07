@@ -11,6 +11,7 @@ import usePublishAvatar from "./usePublishAvatar";
 import TabComponent from "../tab/TabComponent";
 import { TAB_HEIGHT } from "../../constants";
 import { Tab } from "../tab/tab";
+import CurrentUserTag from "./CurrentUserTag";
 
 export default function ExplorerComponent() {
   const { 
@@ -105,65 +106,66 @@ export default function ExplorerComponent() {
                   <TabComponent key={'tab-' + tab.id} tab={tab} />
                 );
               })
-            }
-            <IonCard
-              style={{
-                margin: 0,
-                borderBottomLeftRadius: 0,
-                borderBottomRightRadius: 0,
-                display: 'inline-flex',
-                cursor: 'pointer',
-                flexShrink: 0,
-              }}
-            >
-              <IonButtons style={{
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
+          }
+          <IonCard
+            style={{
+              margin: 0,
+              borderBottomLeftRadius: 0,
+              borderBottomRightRadius: 0,
+              display: 'inline-flex',
+              cursor: 'pointer',
+              flexShrink: 0,
+            }}
+          >
+            <IonButtons style={{
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+            }}>
+              <IonButton onClick={handleCreateGraphClick} style={{
+                padding: 0,
+                height: TAB_HEIGHT,
               }}>
-                <IonButton onClick={handleCreateGraphClick} style={{
-                  padding: 0,
-                  height: TAB_HEIGHT,
-                }}>
-                  <IonIcon icon={add} />
-                </IonButton>
-              </IonButtons>
-            </IonCard>
+                <IonIcon icon={add} />
+              </IonButton>
+            </IonButtons>
           </IonCard>
-        </div>
-        {
-          !!focusTab?.id && !focusTab.deleteDate
-            ? <div style={{
-                position: 'relative',
-                width: '100%',
-                height: `calc(100% - ${TAB_HEIGHT}px)`,
-              }}>
-                <SpaceComponent 
-                  abstractId={focusTab?.arrowId}
-                  left={menuX}
-                  right={0}
-                />
-              </div>  
-            : <IonCard style={{
-                margin: 0,
-                borderRadius: 0,
-                height: `calc(100% - ${TAB_HEIGHT}px)`,
-                width: '100%',
-                backgroundColor: palette === 'dark'
-                  ? 'black'
-                  : 'white',
+        </IonCard>
+      </div>
+      {
+        !!focusTab?.id && !focusTab.deleteDate
+          ? <div style={{
+              position: 'relative',
+              width: '100%',
+              height: `calc(100% - ${TAB_HEIGHT}px)`,
+            }}>
+              <CurrentUserTag />
+              <SpaceComponent 
+                abstractId={focusTab?.arrowId}
+                left={menuX}
+                right={0}
+              />
+            </div>  
+          : <IonCard style={{
+              margin: 0,
+              borderRadius: 0,
+              height: `calc(100% - ${TAB_HEIGHT}px)`,
+              width: '100%',
+              backgroundColor: palette === 'dark'
+                ? 'black'
+                : 'white',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+            }}>
+              <div style={{
                 display: 'flex',
-                flexDirection: 'column',
+                flexDirection: 'row',
                 justifyContent: 'center',
               }}>
-                <div style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  justifyContent: 'center',
-                }}>
-                  <img src={icon} />
-                </div>
-              </IonCard>
+                <img src={icon} />
+              </div>
+            </IonCard>
         }
     </div>
   );

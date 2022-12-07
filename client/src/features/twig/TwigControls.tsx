@@ -232,7 +232,6 @@ function TwigControls(props: TwigControlsProps) {
     if (arrow.sourceId !== arrow.targetId) {
       if (arrow.source) {
         sourceId = v4();
-
         dispatch(addEntry({
           id: sourceId,
           userId: arrow.source.userId,

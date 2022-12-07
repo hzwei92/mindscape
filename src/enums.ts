@@ -16,3 +16,9 @@ export enum PaletteMode {
   LIGHT = 'light',
   DARK = 'dark',
 }
+
+export enum AlertReason {
+  REPLY = 'REPLY',
+  LINK = 'LINK',
+  OTHER = 'OTHER',
+}

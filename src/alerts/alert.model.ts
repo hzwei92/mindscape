@@ -16,10 +16,23 @@ export class Alert {
   user: User;  
   
   @Field({nullable: true})
-  arrowId: string;
+  sourceId: string;
 
   @Field(() => Arrow, {nullable: true})
-  arrow: Arrow;
+  source: Arrow;
+
+  @Field({nullable: true})
+  linkId: string;
+
+  @Field(() => Arrow, {nullable: true})
+  link: Arrow;
+
+  @Field({nullable: true})
+  targetId: string;
+
+  @Field(() => Arrow, {nullable: true})
+  target: Arrow;
+
 
   @Field({nullable: true})
   leadId: string;
@@ -39,8 +52,9 @@ export class Alert {
   @Field(() => Role, {nullable: true})
   abstractRole: Role;
 
-  @Field({ nullable: true })
-  readDate: Date;
+
+  @Field()
+  reason: string;
 
   @Field()
   createDate: Date;

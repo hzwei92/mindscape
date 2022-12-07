@@ -168,6 +168,7 @@ export class ArrowsResolver {
       linkVote,
       target,
       targetVote,
+      alerts,
     } = await this.arrowsService.replyArrow(user, sourceId, linkId, targetId, linkDraft, targetDraft);
 
     const user1 = await this.transfersService.replyTransfer(user, targetVote, linkVote, source, target);
@@ -181,6 +182,14 @@ export class ArrowsResolver {
         votes: [linkVote, targetVote],
       },
     });
+
+    alerts.forEach(alert => {
+      this.pubSub.publish('alert', {
+        userId: alert.userId,
+        alert,
+      });
+    });
+  
     return {
       user: user1,
       source,
@@ -204,6 +213,7 @@ export class ArrowsResolver {
       link,
       linkVote,
       target,
+      alerts,
     } = await this.arrowsService.pasteArrow(user, sourceId, linkId, targetId, linkDraft);
 
     const user1 = await this.transfersService.linkTransfer(user, linkVote, link, source);
@@ -217,6 +227,13 @@ export class ArrowsResolver {
         votes: [linkVote],
       },
     });
+
+    alerts.forEach(alert => {
+      this.pubSub.publish('alert', {
+        userId: alert.userId,
+        alert,
+      });
+    })
 
     return {
       user: user1,
@@ -234,7 +251,13 @@ export class ArrowsResolver {
     @Args('sourceId') sourceId: string,
     @Args('targetId') targetId: string,
   ) {
-    const { arrow, vote, source, target } = await this.arrowsService.linkArrows(user, null, sourceId, targetId);
+    const { 
+      arrow, 
+      vote, 
+      source, 
+      target,
+      alerts,
+    } = await this.arrowsService.linkArrows(user, null, sourceId, targetId);
 
     const user1 = await this.transfersService.linkTransfer(user, vote, arrow, source);
 
@@ -248,6 +271,13 @@ export class ArrowsResolver {
       },
     });
 
+    alerts.forEach(alert => {
+      this.pubSub.publish('alert', {
+        userId: alert.userId,
+        alert,
+      });
+    });
+    
     return {
       user: user1,
       source,

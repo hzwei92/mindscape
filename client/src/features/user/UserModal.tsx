@@ -130,7 +130,7 @@ export default function UserModal() {
                       style={{
                         width: 20,
                         height: 20,
-                        marginRight: 8,
+                        marginRight: 4,
                         display: 'inline-block',
                         border: `1px solid ${user1.color}`
                       }}

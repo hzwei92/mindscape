@@ -26,14 +26,13 @@ import usePasteTwigSub from '../twig/usePasteTwigSub';
 import useRemoveTwigSub from '../twig/useRemoveTwigSub';
 import useReplyTwigSub from '../twig/useReplyTwigSub';
 import useTwigTree from '../twig/useTwigTree';
-import CurrentUserTag from './CurrentUserTag';
 import RemoveTwigModal from './RemoveTwigModal';
 import ReplyTwigModal from './ReplyTwigModal';
 import SettingsModal from './SettingsPanel';
 import { PosType } from './space';
 import SpaceControls from './SpaceControls';
 import SpaceNav from './SpaceNav';
-import { mergeIdToPos, moveTwigs, selectAbstractIdToData, selectCursor, selectDrag, setCursor, setDrag } from './spaceSlice';
+import { moveTwigs, selectAbstractIdToData, selectCursor, selectDrag, setCursor, setDrag } from './spaceSlice';
 import useInitSpace from './useInitSpace';
 import usePublishAvatar from '../explorer/usePublishAvatar';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
@@ -647,7 +646,6 @@ const SpaceComponent = (props: SpaceComponentProps) => {
           })
         }
       </IonCard>
-      <CurrentUserTag />
       <SpaceControls 
         showRoles={showRoles}
         setShowRoles={setShowRoles}

@@ -168,8 +168,8 @@ export default function ArrowEditor(props: ArrowEditorProps) {
         placeholder={
           isReadonly 
             ? props.arrow.sourceId === props.arrow.targetId
-              ? 'Empty post'
-              : 'Empty link'
+              ? ''
+              : ''
             : props.arrow.sourceId === props.arrow.targetId
               ? 'Post text...'
               : 'Link text...'}

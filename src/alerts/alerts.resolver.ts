@@ -1,4 +1,4 @@
-import { Mutation, Parent, ResolveField, Resolver } from '@nestjs/graphql';
+import { Args, Context, Mutation, Parent, ResolveField, Resolver, Subscription } from '@nestjs/graphql';
 import { Arrow } from 'src/arrows/arrow.model';
 import { ArrowsService } from 'src/arrows/arrows.service';
 import { CurrentUser, GqlAuthGuard } from 'src/auth/gql-auth.guard';
@@ -11,7 +11,9 @@ import { UsersService } from 'src/users/users.service';
 import { Alert } from './alert.model';
 import { AlertsService } from './alerts.service';
 import { User as UserEntity } from 'src/users/user.entity';
-import { UseGuards } from '@nestjs/common';
+import { Inject, UseGuards } from '@nestjs/common';
+import { RedisPubSub } from 'graphql-redis-subscriptions';
+import { PUB_SUB } from 'src/pub-sub/pub-sub.module';
 
 @Resolver(() => Alert)
 export class AlertsResolver {
@@ -21,6 +23,8 @@ export class AlertsResolver {
     private readonly arrowsService: ArrowsService,
     private readonly leadsService: LeadsService,
     private readonly rolesService: RolesService,
+    @Inject(PUB_SUB)
+    private readonly pubSub: RedisPubSub,
   ) {}
 
   @ResolveField(() => User, {name: 'user'})
@@ -30,11 +34,25 @@ export class AlertsResolver {
     return this.usersService.getUserById(alert.userId);
   }
 
-  @ResolveField(() => Arrow, {name: 'arrow', nullable: true})
+  @ResolveField(() => Arrow, {name: 'source', nullable: true})
+  async getArrowSource(
+    @Parent() alert: Alert,
+  ) {
+    return this.arrowsService.getArrowById(alert.sourceId);
+  }
+
+  @ResolveField(() => Arrow, {name: 'link', nullable: true})
   async getArrow(
     @Parent() alert: Alert,
   ) {
-    return this.arrowsService.getArrowById(alert.arrowId);
+    return this.arrowsService.getArrowById(alert.linkId);
+  }
+
+  @ResolveField(() => Arrow, {name: 'target', nullable: true})
+  async getArrowTarget(
+    @Parent() alert: Alert,
+  ) {
+    return this.arrowsService.getArrowById(alert.targetId);
   }
 
   @ResolveField(() => Lead, {name: 'lead', nullable: true})
@@ -64,5 +82,18 @@ export class AlertsResolver {
     @CurrentUser() user: UserEntity,
   ) {
     return this.alertsService.getAlertsByUserId(user.id);
+  }
+
+  @Subscription(() => Alert, {name: 'alert',
+    filter: (payload, variables) => {
+      return payload.userId === variables.userId;
+    },
+  })
+  saveArrowSub(
+    @Context() context: any,
+    @Args('userId') userId: string,
+  ) {
+    console.log('alertSub', context); // TODO check userId === context.user.id
+    return this.pubSub.asyncIterator('alert');
   }
 }

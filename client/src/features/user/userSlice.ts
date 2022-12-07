@@ -125,10 +125,22 @@ const userSlice = createSlice({
       })
       .addCase(mergeAlerts, (state, action) => {
         const idToUser = action.payload.reduce((acc, alert) => {
-          if (alert.arrow) {
-            acc[alert.arrow.userId] = {
-              ...acc[alert.arrow.userId],
-              ...alert.arrow.user,
+          if (alert.source) {
+            acc[alert.source.userId] = {
+              ...acc[alert.source.userId],
+              ...alert.source.user,
+            };
+          }
+          if (alert.link) {
+            acc[alert.link.userId] = {
+              ...acc[alert.link.userId],
+              ...alert.link.user,
+            };
+          }
+          if (alert.target) {
+            acc[alert.target.userId] = {
+              ...acc[alert.target.userId],
+              ...alert.target.user,
             };
           }
           return acc;

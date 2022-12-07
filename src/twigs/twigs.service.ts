@@ -273,7 +273,7 @@ export class TwigsService {
 
     const source = await this.arrowsService.getArrowById(parentTwig.detailId);
 
-    const alerts = await this.alertsService.replyAlert(user, parentTwig.detail, post, abstract);
+    const alerts = await this.alertsService.linkAlert(user, parentTwig.detail, link, post, abstract);
     
     return {
       abstract,
@@ -382,6 +382,8 @@ export class TwigsService {
 
     const source = await this.arrowsService.getArrowById(parentTwig.detailId);
 
+    const alerts = await this.alertsService.linkAlert(user, parentTwig.detail, link, existingArrow, abstract);
+
     return {
       abstract,
       source,
@@ -390,6 +392,7 @@ export class TwigsService {
       linkVote,
       target: postTwig,
       role: role1,
+      alerts,
     };
   }
 
@@ -656,6 +659,8 @@ export class TwigsService {
 
     const abstract1 = await this.arrowsService.getArrowById(abstract.id);
 
+    const alerts = await this.alertsService.linkAlert(user, source1, arrow, target1, abstract1);
+
     return {
       abstract: abstract1,
       twigs,
@@ -664,6 +669,7 @@ export class TwigsService {
       source: source1,
       target: target1,
       role: role1,
+      alerts,
     }
   }
 

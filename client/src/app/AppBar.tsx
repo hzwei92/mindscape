@@ -172,25 +172,25 @@ const AppBar = () => {
           SEARCH
         </IonCard>
         <IonButton 
-          onMouseEnter={handleMenuMouseEnter(MenuMode.NOTIFICATIONS)}
+          onMouseEnter={handleMenuMouseEnter(MenuMode.MAP)}
           onMouseLeave={handleMenuMouseLeave}
-          onClick={handleMenuClick(MenuMode.NOTIFICATIONS)}
+          onClick={handleMenuClick(MenuMode.MAP)}
           style={{
-            width: 50,
             height: 50,
-            borderLeft: menuMode === MenuMode.NOTIFICATIONS
+            width: 50,
+            borderLeft: menuMode === MenuMode.MAP
               ? `3px solid ${user?.color}`
               : null,
           }}
         >
-          <IonIcon icon={notificationsOutline} style={{
-            color: menuMode === MenuMode.NOTIFICATIONS
+          <IonIcon icon={mapOutline} style={{
+            color: menuMode === MenuMode.MAP
               ? user?.color
               : null,
           }}/>
         </IonButton>
         <IonCard style={{
-          display: label === MenuMode.NOTIFICATIONS
+          display: label === MenuMode.MAP
             ? 'block'
             : 'none',
           position: 'absolute',
@@ -198,36 +198,7 @@ const AppBar = () => {
           top: 145,
           padding: 10,
         }}>
-          NOTIFICATIONS
-        </IonCard>
-        <IonButton 
-          onMouseEnter={handleMenuMouseEnter(MenuMode.GRAPHS)}
-          onMouseLeave={handleMenuMouseLeave}
-          onClick={handleMenuClick(MenuMode.GRAPHS)}
-          style={{
-            width: 50,
-            height: 50,
-            borderLeft: menuMode === MenuMode.GRAPHS
-              ? `3px solid ${user?.color}`
-              : null,
-          }}
-        >
-          <IonIcon icon={globeOutline} style={{
-            color: menuMode === MenuMode.GRAPHS
-              ? user?.color
-              : null,
-          }}/>
-        </IonButton>
-        <IonCard style={{
-          display: label === MenuMode.GRAPHS
-            ? 'block'
-            : 'none',
-          position: 'absolute',
-          left: 45,
-          top: 195,
-          padding: 10,
-        }}>
-          GRAPHS
+          MAP
         </IonCard>
         <IonButton 
           onMouseEnter={handleMenuMouseEnter(MenuMode.CONTACTS)}
@@ -253,69 +224,12 @@ const AppBar = () => {
             : 'none',
           position: 'absolute',
           left: 45,
-          top: 245,
+          top: 195,
           padding: 10,
         }}>
           CONTACTS
         </IonCard>
-        <IonButton 
-          onMouseEnter={handleMenuMouseEnter(MenuMode.MAP)}
-          onMouseLeave={handleMenuMouseLeave}
-          onClick={handleMenuClick(MenuMode.MAP)}
-          style={{
-            height: 50,
-            width: 50,
-            borderLeft: menuMode === MenuMode.MAP
-              ? `3px solid ${user?.color}`
-              : null,
-          }}
-        >
-          <IonIcon icon={mapOutline} style={{
-            color: menuMode === MenuMode.MAP
-              ? user?.color
-              : null,
-          }}/>
-        </IonButton>
-        <IonCard style={{
-          display: label === MenuMode.MAP
-            ? 'block'
-            : 'none',
-          position: 'absolute',
-          left: 45,
-          top: 295,
-          padding: 10,
-        }}>
-          MAP
-        </IonCard>
-        <IonButton 
-          onMouseEnter={handleMenuMouseEnter(MenuMode.FEED)}
-          onMouseLeave={handleMenuMouseLeave}
-          onClick={handleMenuClick(MenuMode.FEED)}
-          style={{
-            height: 50,
-            width: 50,
-            borderLeft: menuMode === MenuMode.FEED
-              ? `3px solid ${user?.color}`
-              : null,
-          }}
-        >
-          <IonIcon icon={filterOutline} style={{
-            color: menuMode === MenuMode.FEED
-              ? user?.color
-              : null,
-          }}/>
-        </IonButton>
-        <IonCard style={{
-          display: label === MenuMode.FEED
-            ? 'block'
-            : 'none',
-          position: 'absolute',
-          left: 45,
-          top: 345,
-          padding: 10,
-        }}>
-          FEED
-        </IonCard>
+
         <IonButton 
           id={'menu-info-button'}
           onMouseEnter={handleMenuMouseEnter(MenuMode.ABOUT)}
@@ -341,7 +255,7 @@ const AppBar = () => {
             : 'none',
           position: 'absolute',
           left: 45,
-          top: 395,
+          top: 245,
           padding: 10,
         }}>
           ABOUT

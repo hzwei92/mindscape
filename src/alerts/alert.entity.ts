@@ -12,6 +12,7 @@ import { User } from 'src/users/user.entity';
 import { Arrow } from 'src/arrows/arrow.entity';
 import { Lead } from 'src/leads/lead.entity';
 import { Role } from 'src/roles/role.entity';
+import { AlertReason } from 'src/enums';
 
 @Entity()
 export class Alert {
@@ -27,11 +28,29 @@ export class Alert {
 
   
   @Column({nullable: true})
-  arrowId: string;
+  sourceId: string;
 
   @ManyToOne(() => Arrow, {nullable: true})
   @JoinColumn({ referencedColumnName: 'id' })
-  arrow: Arrow;
+  source: Arrow;
+
+    
+  @Column({nullable: true})
+  linkId: string;
+
+  @ManyToOne(() => Arrow, {nullable: true})
+  @JoinColumn({ referencedColumnName: 'id' })
+  link: Arrow;
+
+
+    
+  @Column({nullable: true})
+  targetId: string;
+
+  @ManyToOne(() => Arrow, {nullable: true})
+  @JoinColumn({ referencedColumnName: 'id' })
+  target: Arrow;
+
 
 
   @Column({nullable: true})
@@ -57,8 +76,12 @@ export class Alert {
   @JoinColumn({ referencedColumnName: 'id' })
   abstractRole: Role;
 
-  @Column( { nullable: true })
-  readDate: Date;
+  @Column({
+    type: 'enum',
+    enum: AlertReason,
+    default: AlertReason.OTHER,
+  })
+  reason: AlertReason;
 
   @CreateDateColumn()
   createDate: Date;
