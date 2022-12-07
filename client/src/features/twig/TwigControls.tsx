@@ -361,7 +361,7 @@ function TwigControls(props: TwigControlsProps) {
             }
           </IonButtons>
           <IonButtons>
-            <IonButton onClick={handleCopyClick}>
+            <IonButton disabled={!props.isPost} onClick={handleCopyClick}>
               COPY
             </IonButton>
             <IonButton disabled={clipboardArrowIds.length !== 1} onClick={handlePasteClick}>
