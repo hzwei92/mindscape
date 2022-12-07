@@ -93,8 +93,6 @@ const SpaceComponent = (props: SpaceComponentProps) => {
   const { moveTwig } = useMoveTwig(props.abstractId);
   const { graftTwig } = useGraftTwig(props.abstractId);
 
-  const adjustTwigIdToPos = useReactiveVar(adjustTwigIdToPosVar); 
-
   const cursor = useAppSelector(selectCursor);
   const drag = useAppSelector(selectDrag);
 
@@ -141,6 +139,8 @@ const SpaceComponent = (props: SpaceComponentProps) => {
   const [showReplyTwigModal, setShowReplyTwigModal] = useState(false);
 
   const [adjustPosTwigIds, setAdjustPosTwigIds] = useState<string[]>([]);
+
+  const [adjustCount, setAdjustCount] = useState(0);
 
   useEffect(() => {
     if (selectedTwigId) {
@@ -219,6 +219,11 @@ const SpaceComponent = (props: SpaceComponentProps) => {
   }, [moveEvent, cursor]);
 
   useEffect(() => {
+    let found = false;
+    if (adjustCount > 100) {
+      setAdjustCount(0);
+      return;
+    }
     Object.keys(idToPos).forEach(twigId => {
       const twig = idToTwig[twigId];
       if (!twig?.sourceId || !twig?.targetId || twig.sourceId === twig.targetId) return;
@@ -227,10 +232,13 @@ const SpaceComponent = (props: SpaceComponentProps) => {
       const sourcePos = idToPos[twig.sourceId];
       const targetPos = idToPos[twig.targetId];
 
+      if (!sourcePos || !targetPos) return;
+
       const x = Math.round(((sourcePos?.x ?? 0) + (targetPos?.x ?? 0)) / 2);
       const y = Math.round(((sourcePos?.y ?? 0) + (targetPos?.y ?? 0)) / 2);
 
       if (pos.x !== x || pos.y !== y) {
+        found = true;
         const twigIds = [
           twigId,
           ...Object.keys(idToDescIdToTrue[twigId] || {}),
@@ -249,6 +257,12 @@ const SpaceComponent = (props: SpaceComponentProps) => {
         }));
       }
     });
+    if (found) {
+      setAdjustCount(val => val + 1);
+    }
+    else {
+      setAdjustCount(0);
+    }
   }, [idToPos, adjustPosTwigIds])
 
   const handleMouseDown = (event: React.MouseEvent) => {
