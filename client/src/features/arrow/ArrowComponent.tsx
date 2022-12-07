@@ -88,7 +88,9 @@ export default function ArrowComponent(props: ArrowProps) {
         fontSize: props.tagFontSize,
       }}>
         <span style={{
-          display: 'flex',
+          display: props.showLinkLeftIcon || props.showLinkRightIcon || arrow.sourceId !== arrow.targetId
+            ? 'flex'
+            : 'none',
           flexDirection: 'column',
           justifyContent: 'center',
           paddingRight: 5,
