@@ -1,19 +1,22 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Arrow } from 'src/arrows/arrow.entity';
-import { RoleType } from 'src/enums';
+import { ArrowsService } from 'src/arrows/arrows.service';
+import { AlertReason, RoleType } from 'src/enums';
 import { LeadsService } from 'src/leads/leads.service';
 import { RolesService } from 'src/roles/roles.service';
-import { Twig } from 'src/twigs/twig.entity';
 import { User } from 'src/users/user.entity';
 import { MoreThan, Repository } from 'typeorm';
 import { Alert } from './alert.entity';
+import { v4 } from 'uuid';
 
 @Injectable()
 export class AlertsService {
   constructor(
     @InjectRepository(Alert)
     private readonly alertsRepository: Repository<Alert>, 
+    @Inject(forwardRef(() => ArrowsService))
+    private readonly arrowsService: ArrowsService,
     private readonly leadsService: LeadsService,
     private readonly rolesService: RolesService,
   ) {}
@@ -25,12 +28,33 @@ export class AlertsService {
   }
 
   async getUserAlerts(user: User) {
-    return this.alertsRepository.find({
+    const alerts = await this.alertsRepository.find({
       where: { 
         userId: user.id,
         createDate: MoreThan(user.checkAlertsDate),
       },
     });
+
+    if (alerts.length) return alerts;
+
+    return this.getUserFeed(user);
+  }
+
+  async getUserFeed(user: User, offset: number = 0) {
+    const arrows = await this.arrowsService.getFeedArrows(offset);
+    const alerts = arrows.map(arrow => {
+      const alert = new Alert();
+      alert.id = v4();
+      alert.sourceId = arrow.sourceId;
+      alert.linkId = arrow.id;
+      alert.targetId = arrow.targetId;
+      alert.userId = user.id;
+      alert.createDate = arrow.saveDate;
+      alert.reason = AlertReason.FEED;
+      return alert;
+    });
+
+    return alerts;
   }
 
   async linkAlert(user: User, source: Arrow, link: Arrow, target: Arrow, abstract: Arrow | null): Promise<Alert[]> {

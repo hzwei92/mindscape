@@ -9,7 +9,7 @@ import useGetAlerts from "../alerts/useGetAlerts";
 import { selectIdToAlert } from "../alerts/alertSlice";
 import { MenuMode } from "../menu/menu";
 import { IdToType } from "../../types";
-import { Alert, AlertReason } from "../alerts/alert";
+import { Alert } from "../alerts/alert";
 import { Entry } from "../entry/entry";
 import { selectIdToArrow } from "../arrow/arrowSlice";
 import { v4 } from "uuid";
@@ -54,7 +54,11 @@ export default function CurrentUserTag() {
 
   const alerts = user 
     ? Object.values(idToAlert)
-        .filter(alert => !!alert.id && !alert.deleteDate && alert.createDate > user.checkAlertsDate)
+        .filter(alert => 
+          !!alert.id && 
+          !alert.deleteDate && 
+          alert.createDate > user.checkAlertsDate
+        )
         .sort((a, b) => a.createDate < b.createDate ? -1 : 1)
     : [];
   const handleMouseMove = (e: React.MouseEvent) => {
@@ -87,6 +91,7 @@ export default function CurrentUserTag() {
     const entryIds: string[] = [];
     Object.keys(sourceIdToAlerts).forEach(sourceId => {
       const source = idToArrow[sourceId];
+      const alerts = sourceIdToAlerts[sourceId];
 
       const sourceEntry: Entry = {
         id: v4(),
@@ -94,7 +99,7 @@ export default function CurrentUserTag() {
         parentId: null,
         arrowId: source.id,
         showIns: false,
-        showOuts: true,
+        showOuts: !!alerts.length,
         inIds: [],
         outIds: [],
         sourceId: null,
@@ -105,7 +110,6 @@ export default function CurrentUserTag() {
 
       idToEntry[sourceEntry.id] = sourceEntry;
 
-      const alerts = sourceIdToAlerts[sourceId];
       
       alerts.forEach(alert => {
         const { link, source, target, lead, role, abstractRole, reason } = alert;
@@ -246,8 +250,6 @@ export default function CurrentUserTag() {
                   alerts.length > 0
                     ? <IonButton onClick={handleAlertsClick}>
                         <IonBadge color={'dark'} style={{
-                          bottom: 0,
-                          right: 0,
                           fontSize: 10,
                         }}>
                           {alerts.length}
