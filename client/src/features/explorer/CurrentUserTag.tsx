@@ -9,7 +9,7 @@ import useGetAlerts from "../alerts/useGetAlerts";
 import { selectIdToAlert } from "../alerts/alertSlice";
 import { MenuMode } from "../menu/menu";
 import { IdToType } from "../../types";
-import { Alert } from "../alerts/alert";
+import { Alert, AlertReason } from "../alerts/alert";
 import { Entry } from "../entry/entry";
 import { selectIdToArrow } from "../arrow/arrowSlice";
 import { v4 } from "uuid";
@@ -57,7 +57,8 @@ export default function CurrentUserTag() {
         .filter(alert => 
           !!alert.id && 
           !alert.deleteDate && 
-          alert.createDate > user.checkAlertsDate
+          alert.createDate > user.checkAlertsDate &&
+          alert.reason !== AlertReason.FEED
         )
         .sort((a, b) => a.createDate < b.createDate ? -1 : 1)
     : [];

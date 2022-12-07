@@ -1,6 +1,4 @@
 import { gql, useMutation } from "@apollo/client";
-import { isPlatform } from "@ionic/react";
-import { alertSharp } from "ionicons/icons";
 import { useContext, useState } from "react";
 import { v4 } from "uuid";
 import { AppContext } from "../../app/App";
@@ -109,7 +107,7 @@ export default function useGetAlerts() {
         return false;
       });
 
-      if (!isNotFeed && (isInit || !isPlatform('mobile'))) {
+      if (!isNotFeed) {
         if (
           slice.entryIds.length !== entryIds.length ||
           slice.entryIds.some((id, index) => idToEntry[id].arrowId !== idToEntry1[entryIds[index]].arrowId)
@@ -122,7 +120,9 @@ export default function useGetAlerts() {
             userIds: [],
           }))
 
-          setMenuMode(MenuMode.SEARCH);
+          if (isInit) {
+            setMenuMode(MenuMode.SEARCH);
+          }
         }
       }
       setIsInit(true);
