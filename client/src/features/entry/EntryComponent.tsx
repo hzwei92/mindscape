@@ -6,14 +6,16 @@ import useSelectTwig from '../twig/useSelectTwig';
 import { selectArrowById, selectIdToArrow } from '../arrow/arrowSlice';
 import ArrowComponent from '../arrow/ArrowComponent';
 import EntryControls from './EntryControls';
-import useGetOuts from '../arrow/useGetOuts';
-import useGetIns from '../arrow/useGetIns';
+import useGetOuts from './useGetOuts';
+import useGetIns from './useGetIns';
 import { AppContext } from '../../app/App';
-import { IonCard } from '@ionic/react';
+import { IonCard, IonIcon } from '@ionic/react';
 import useLinkArrows from '../arrow/useLinkArrows';
 import { selectUserById } from '../user/userSlice';
 import { selectIdToTwig, selectSelectedTwigId } from '../space/spaceSlice';
 import { selectFocusTab } from '../tab/tabSlice';
+import useGetEndpoints from './useGetEndpoints';
+import { returnDownForward, returnDownForwardOutline, returnUpBack } from 'ionicons/icons';
 
 interface EntryComponentProps {
   entry: Entry;
@@ -29,7 +31,6 @@ export default function EntryComponent(props: EntryComponentProps) {
   } = useContext(AppContext);
 
   const arrow = useAppSelector(state => selectArrowById(state, props.entry.arrowId));
-  console.log(arrow);
   const arrowUser = useAppSelector(state => selectUserById(state, arrow?.userId));
 
   const focusTab = useAppSelector(selectFocusTab);
@@ -56,6 +57,7 @@ export default function EntryComponent(props: EntryComponentProps) {
   const [clickTimeout, setClickTimeout] = useState(null as ReturnType<typeof setTimeout> | null);
   const [isLoading, setIsLoading] = useState(false);
 
+  const { getEndpoints } = useGetEndpoints(props.entry.id, props.entry.arrowId);
   const { getIns } = useGetIns(props.entry.id, props.entry.arrowId);
   const { getOuts } = useGetOuts(props.entry.id, props.entry.arrowId);
 
@@ -80,6 +82,14 @@ export default function EntryComponent(props: EntryComponentProps) {
       shouldGetLinks: false,
     }));
   }, [props.entry.shouldGetLinks]);
+
+
+  useEffect(() => {
+    if (props.entry.showOuts || props.entry.showIns) return;
+    if (arrow?.sourceId === arrow?.targetId) return;
+    if (props.entry.sourceId && props.entry.targetId) return;
+    getEndpoints();
+  }, [props.entry.showOuts, props.entry.showIns]);
 
   const handleClick = (event: React.MouseEvent) => {
     if (clickTimeout) {
@@ -152,19 +162,19 @@ export default function EntryComponent(props: EntryComponentProps) {
         cursor: pendingLink.sourceArrowId
           ? 'crosshair'
           : null, 
-        borderLeft: props.entry.sourceId && props.entry.targetId
-          ? null
-          : `4px solid ${arrowUser?.color}`,
+        borderLeft: arrow.sourceId === arrow.targetId
+          ? `4px solid ${arrowUser?.color}`
+          : null,
         padding: 10,
         paddingLeft: 5,
+        position: 'relative',
       }}
     >
+      <div>
       <ArrowComponent
         arrowId={props.entry.arrowId}
         instanceId={props.entry.id}
-        showLinkRightIcon={!!props.entry.targetId && props.entry.targetId !== props.entry.parentId}
-        showLinkLeftIcon={!!props.entry.sourceId && props.entry.sourceId !== props.entry.parentId}
-        showPostIcon={!props.entry.sourceId && !props.entry.targetId}
+        showLinkLeftIcon={!!props.entry.targetId && props.entry.targetId === props.entry.parentId}
         fontSize={14}
         tagFontSize={14}
       />
@@ -191,6 +201,7 @@ export default function EntryComponent(props: EntryComponentProps) {
           </div>
         )
       }
+      </div>
     </IonCard>
   )
 }

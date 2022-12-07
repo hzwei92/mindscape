@@ -88,19 +88,17 @@ export default function ArrowComponent(props: ArrowProps) {
         fontSize: props.tagFontSize,
       }}>
         <span style={{
-          display: 'none',
+          display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center',
           paddingRight: 5,
         }}>
             {
-              props.showLinkRightIcon
+             props.showLinkLeftIcon
+              ? <IonIcon icon={returnUpBack} />
+              : props.showLinkRightIcon || arrow.sourceId !== arrow.targetId
                 ? <IonIcon icon={returnDownForwardOutline} />
-                : props.showLinkLeftIcon
-                  ? <IonIcon icon={returnUpBack} />
-                  : props.showPostIcon
-                    ? <IonIcon icon={reloadOutline} />
-                    : null
+                : null
             }
         </span>
         <span style={{

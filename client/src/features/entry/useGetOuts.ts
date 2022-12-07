@@ -4,23 +4,23 @@ import { v4 } from 'uuid';
 import { useAppDispatch, useAppSelector } from '../../app/store';
 import { IdToType } from '../../types';
 import { setAuthIsInit, setAuthIsValid } from '../auth/authSlice';
-import { Entry } from '../entry/entry';
-import { mergeEntries, selectIdToEntry } from '../entry/entrySlice';
+import { Entry } from './entry';
+import { mergeEntries, selectIdToEntry } from './entrySlice';
 import { VOTE_FIELDS } from '../vote/voteFragments';
-import { Arrow } from './arrow';
-import { FULL_ARROW_FIELDS } from './arrowFragments';
-import { mergeArrows } from './arrowSlice';
+import { Arrow } from '../arrow/arrow';
+import { FULL_ARROW_FIELDS } from '../arrow/arrowFragments';
+import { mergeArrows } from '../arrow/arrowSlice';
 
-const GET_INS = gql`
-  mutation GetIns($arrowId: String!, $offset: Int!) {
-    getIns(arrowId: $arrowId, offset: $offset) {
+const GET_OUTS = gql`
+  mutation GetOuts($arrowId: String!, $offset: Int!) {
+    getOuts(arrowId: $arrowId, offset: $offset) {
       ...FullArrowFields
       source {
-        ...FullArrowFields
+        id
+        outCount
       }
       target {
-        id
-        inCount
+        ...FullArrowFields
       }
       votes {
         ...VoteFields
@@ -31,14 +31,14 @@ const GET_INS = gql`
   ${VOTE_FIELDS}
 `;
 
-export default function useGetIns(entryId: string, arrowId: string) {
+export default function useGetOuts(entryId: string, arrowId: string) {
   const dispatch = useAppDispatch();
 
   const [present] = useIonToast();
 
   const idToEntry = useAppSelector(selectIdToEntry);
 
-  const [getInArrows] = useMutation(GET_INS, {
+  const [getOutArrows] = useMutation(GET_OUTS, {
     onError: error => {
       present('Error gettings arrows: ' + error.message, 3000);
       if (error.message === 'Unauthorized') {
@@ -56,15 +56,15 @@ export default function useGetIns(entryId: string, arrowId: string) {
 
       const idToEntry1: IdToType<Entry> = {};
 
-      data.getIns.forEach((link: Arrow) => {
-        if (!link.source) return;
+      data.getOuts.forEach((link: Arrow) => {
+        if (!link.target) return;
 
         arrows.push(link);
-        arrows.push(link.source);
+        arrows.push(link.target);
 
         let existingEntry = null as Entry | null;
 
-        idToEntry[entryId].inIds.some(id => {
+        idToEntry[entryId].outIds.some(id => {
           if (idToEntry[id].arrowId === link.id) {
             existingEntry = idToEntry[id];
           }
@@ -73,8 +73,8 @@ export default function useGetIns(entryId: string, arrowId: string) {
 
         if (!existingEntry) {
           const linkEntryId = v4();
-          const sourceEntryId = v4();
-
+          const targetEntryId = v4();
+          
           const linkEntry: Entry = {
             id: linkEntryId,
             userId: link.userId,
@@ -84,18 +84,18 @@ export default function useGetIns(entryId: string, arrowId: string) {
             showOuts: false,
             inIds: [],
             outIds: [],
-            sourceId: sourceEntryId,
-            targetId: entryId,
+            sourceId: entryId,
+            targetId: targetEntryId,
             shouldGetLinks: false,
             isDeleted: false,
           };
           idToEntry1[linkEntry.id] = linkEntry;
 
-          const sourceEntry: Entry = {
-            id: sourceEntryId,
-            userId: link.source.userId,
+          const targetEntry: Entry = {
+            id: targetEntryId,
+            userId: link.target.userId,
             parentId: linkEntryId,
-            arrowId: link.source.id,
+            arrowId: link.target.id,
             showIns: false,
             showOuts: false,
             inIds: [],
@@ -104,24 +104,24 @@ export default function useGetIns(entryId: string, arrowId: string) {
             targetId: null,
             shouldGetLinks: false,
             isDeleted: false,
-          };
-          idToEntry1[sourceEntry.id] = sourceEntry;
+          }
+          idToEntry1[targetEntry.id] = targetEntry;
 
 
           if (idToEntry1[entryId]) {
-            idToEntry1[entryId].inIds = [...idToEntry1[entryId].inIds, linkEntry.id];
+            idToEntry1[entryId].outIds = [...idToEntry1[entryId].outIds, linkEntry.id];
           }
           else {
             idToEntry1[entryId] = {
               ...idToEntry[entryId],
-              inIds: [...idToEntry[entryId].inIds, linkEntry.id],
-              showIns: true,
-              showOuts: false,
+              outIds: [...idToEntry[entryId].outIds, linkEntry.id],
+              showOuts: true,
+              showIns: false,
               shouldGetLinks: false,
             }
           }
         }
-      });
+      })
 
       dispatch(mergeArrows(arrows));
       dispatch(mergeEntries(idToEntry1));
@@ -129,13 +129,13 @@ export default function useGetIns(entryId: string, arrowId: string) {
     fetchPolicy: 'network-only',
   });
 
-  const getIns = (offset: number) => {
-    getInArrows({
+  const getOuts = (offset: number) => {
+    getOutArrows({
       variables: {
         arrowId,
         offset,
       }
     });
   }
-  return { getIns }
+  return { getOuts }
 }
