@@ -1,5 +1,5 @@
-import { IonButton, IonButtons, IonCard, IonIcon } from "@ionic/react";
-import { add } from "ionicons/icons";
+import { IonButton, IonButtons, IonCard, IonIcon, IonPopover } from "@ionic/react";
+import { add, caretBack } from "ionicons/icons";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { AppContext } from "../../app/App";
 import { useAppSelector } from "../../app/store";
@@ -78,7 +78,29 @@ export default function ExplorerComponent() {
       height: '100%',
       display: 'flex',
       flexDirection: 'column',
+      position:'relative',
     }}>
+      <div style={{
+        display: 'none',
+        position: 'absolute',
+        left: 0,
+        top: 0,
+        zIndex: 10,
+      }}>
+        <IonCard color='dark' style={{
+          padding: 10,
+          paddingLeft: 0,
+          display: 'flex',
+        }}>
+          <IonIcon icon={caretBack} />
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+          }}>
+            Hello
+          </div>
+        </IonCard>
+      </div>
       <div style={{
         overflow: 'clip',
         height: TAB_HEIGHT,
@@ -97,24 +119,17 @@ export default function ExplorerComponent() {
           overflowX: 'scroll',
           paddingLeft: 1,
         }}>
-          {
-            Object.values(idToTab)
-              .filter(tab => !tab.deleteDate)
-              .sort((a, b) => a.i - b.i)
-              .map(tab => {
-                return  (
-                  <TabComponent key={'tab-' + tab.id} tab={tab} />
-                );
-              })
-          }
-          <IonCard
+          <IonCard id={'new-tab-button'} 
             style={{
               margin: 0,
+              marginRight: 1,
               borderBottomLeftRadius: 0,
               borderBottomRightRadius: 0,
+              borderTopLeftRadius: 0,
               display: 'inline-flex',
               cursor: 'pointer',
               flexShrink: 0,
+              position: 'relative',
             }}
           >
             <IonButtons style={{
@@ -130,22 +145,31 @@ export default function ExplorerComponent() {
               </IonButton>
             </IonButtons>
           </IonCard>
+          {
+            Object.values(idToTab)
+              .filter(tab => !tab.deleteDate)
+              .sort((a, b) => b.i - a.i)
+              .map(tab => {
+                return  (
+                  <TabComponent key={'tab-' + tab.id} tab={tab} />
+                );
+              })
+          }
         </IonCard>
       </div>
       <div style={{
-              position: 'relative',
-              width: '100%',
-              height: `calc(100% - ${TAB_HEIGHT}px)`,
-            }}>
-            <CurrentUserTag />
+        position: 'relative',
+        width: '100%',
+        height: `calc(100% - ${TAB_HEIGHT}px)`,
+      }}>
+      <CurrentUserTag />
       {
         !!focusTab?.id && !focusTab.deleteDate
-          ? 
-              <SpaceComponent 
-                abstractId={focusTab?.arrowId}
-                left={menuX}
-                right={0}
-              />
+          ? <SpaceComponent 
+              abstractId={focusTab?.arrowId}
+              left={menuX}
+              right={0}
+            />
           : <IonCard style={{
               margin: 0,
               borderRadius: 0,
@@ -166,8 +190,8 @@ export default function ExplorerComponent() {
                 <img src={icon} />
               </div>
             </IonCard>
-        }
-        </div>  
+      }
+      </div>
     </div>
   );
 }

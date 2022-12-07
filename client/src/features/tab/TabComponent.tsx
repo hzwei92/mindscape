@@ -119,21 +119,7 @@ export default function TabComponent(props: TabComponentProps) {
 
   const handleTabCloseClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    removeTab(props.tab.id);
-    if (props.tab.isFocus) {
-      const tabs = Object.values(idToTab)
-        .filter(t => !t.deleteDate && t.id !== props.tab.id)
-        .sort((a, b) => a.i - b.i)
-
-      if (tabs.length > 0) {
-        const twigId = abstractIdToData[tabs[0].arrowId].selectedTwigId;
-        const twig = abstractIdToData[tabs[0].arrowId].idToTwig[twigId];
-        router.push(`/g/${tabs[0].arrow.routeName}/${twig?.i ?? 0}`);
-      }
-      else {
-        router.push('/');
-      }
-    }
+    removeTab(props.tab);
   }
 
   return (
