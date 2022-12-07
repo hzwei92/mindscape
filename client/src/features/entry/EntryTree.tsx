@@ -94,8 +94,8 @@ export default function EntryTree(props: EntryTreeProps) {
           remaining > 0
             ? <div onClick={handleLoadClick} style={{
                 fontSize: 12,
-                marginTop: '5px',
-                marginLeft: '10px',
+                marginTop: 5,
+                marginLeft: 5,
                 textAlign: 'left',
                 cursor: 'pointer',
               }}>
