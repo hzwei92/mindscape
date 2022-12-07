@@ -8,16 +8,26 @@ export type Alert = {
   id: string;
   userId: string;
   user: User;
-  arrowId: string | null;
-  arrow: Arrow | null;
+  sourceId: string | null;
+  source: Arrow | null;
+  linkId: string | null;
+  link: Arrow | null;
+  targetId: string | null;
+  target: Arrow | null;
   leadId: string | null;
   lead: Lead | null;
   roleId: string | null;
   role: Role | null;
   abstractRoleId: string | null;
   abstractRole: Role | null;
-  readDate: Date | null;
+  reason: string;
   createDate: Date;
   updateDate: Date;
   deleteDate: Date | null;
+}
+
+export enum AlertReason {
+  REPLY = 'REPLY',
+  LINK = 'LINK',
+  OTHER = 'OTHER',
 }

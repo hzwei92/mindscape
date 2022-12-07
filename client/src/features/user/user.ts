@@ -1,5 +1,4 @@
 import { Lead } from '../lead/lead';
-import { Arrow } from '../arrow/arrow';
 import { Role } from '../role/role';
 import { Tab } from '../tab/tab';
 
@@ -25,6 +24,7 @@ export type User = {
   verifyEmailDate: Date | null;
   isRegisteredWithGoogle: boolean;
   activeDate: Date;
+  checkAlertsDate: Date;
   createDate: Date;
   updateDate: Date;
   deleteDate: Date | null;

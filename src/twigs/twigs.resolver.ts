@@ -98,6 +98,13 @@ export class TwigsResolver {
       replyTwig: result,
     });
 
+    result.alerts.forEach(alert => {
+      this.pubSub.publish('alert', {
+        userId: alert.userId,
+        alert,
+      });
+    });
+
     return {
       ...result,
       user: user1,
@@ -123,6 +130,13 @@ export class TwigsResolver {
       sessionId,
       abstractId: result.abstract.id,
       pasteTwig: result,
+    });
+
+    result.alerts.forEach(alert => {
+      this.pubSub.publish('alert', {
+        userId: alert.userId,
+        alert,
+      });
     });
 
     return {
@@ -151,6 +165,13 @@ export class TwigsResolver {
         ...result,
         user: user1,
       },
+    });
+
+    result.alerts.forEach(alert => {
+      this.pubSub.publish('alert', {
+        userId: alert.userId,
+        alert,
+      });
     });
 
     return {

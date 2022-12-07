@@ -55,6 +55,9 @@ export class User {
   activeDate: Date;
 
   @Field()
+  checkAlertsDate: Date;
+
+  @Field()
   createDate: Date;
 
   @Field()

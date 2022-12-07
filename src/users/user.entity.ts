@@ -83,6 +83,9 @@ export class User {
   @Column({default: 'NOW()'})
   activeDate: Date;
 
+  @Column({default: 'NOW()'})
+  checkAlertsDate: Date;
+
   @CreateDateColumn()
   createDate: Date;
 

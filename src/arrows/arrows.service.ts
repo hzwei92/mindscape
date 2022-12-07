@@ -399,7 +399,7 @@ export class ArrowsService {
       }
     });
 
-    const alerts = await this.alertsService.replyAlert(user, source1, target, null);
+    const alerts = await this.alertsService.linkAlert(user, source1, link, target, null);
     
     return {
       source: source1,
@@ -456,11 +456,14 @@ export class ArrowsService {
       }
     });
 
+    const alerts = await this.alertsService.linkAlert(user, source1, link, target, null);
+
     return {
       source: source1,
       target,
       link,
       linkVote,
+      alerts,
     }
   }
 
@@ -483,63 +486,38 @@ export class ArrowsService {
       throw new BadRequestException('This target arrow does not exist');
     }
 
-    let arrow = await this.arrowsRepository.findOne({
-      where: {
-        userId: user.id,
-        sourceId,
-        targetId,
-      },
-    });
-
-    let isPreexisting;
-    let vote;
     let sheaf = await this.sheafsService.getSheafBySourceIdAndTargetId(source.sheafId, target.sheafId)
-    if (arrow) {
-      isPreexisting = true;
 
-      if (sheaf) {
-        sheaf = await this.sheafsService.incrementWeight(sheaf, 1);
-      }
-      else {
-        sheaf = await this.sheafsService.createSheaf(source.sheafId, target.sheafId, null);
-      }
-      
-      arrow.weight += 1;
-      arrow = await this.arrowsRepository.save(arrow);
-
-      vote = await this.votesService.createVote(user, arrow, 1);
+    if (sheaf) {
+      sheaf = await this.sheafsService.incrementWeight(sheaf, 1);
     }
     else {
-      isPreexisting = false;
-
-      if (sheaf) {
-        sheaf = await this.sheafsService.incrementWeight(sheaf, 1);
-      }
-      else {
-        sheaf = await this.sheafsService.createSheaf(source.sheafId, target.sheafId, null);
-      }
-
-      ({ arrow, vote } = await this.createArrow({
-        user, 
-        id: null, 
-        sourceId, 
-        targetId, 
-        abstract, 
-        sheaf, 
-        draft: null, 
-        title: null, 
-        url: null,
-        faviconUrl: null,
-        routeName: null,
-      }));
+      sheaf = await this.sheafsService.createSheaf(source.sheafId, target.sheafId, null);
     }
+
+    const { arrow, vote } = await this.createArrow({
+      user, 
+      id: null, 
+      sourceId, 
+      targetId, 
+      abstract, 
+      sheaf, 
+      draft: null, 
+      title: null, 
+      url: null,
+      faviconUrl: null,
+      routeName: null,
+    });
+
+    const alerts = await this.alertsService.linkAlert(user, source, arrow, target, null);
+
     return {
       source, 
       target,
       sheaf,
       arrow,
       vote,
-      isPreexisting,
+      alerts,
     }
   }
 

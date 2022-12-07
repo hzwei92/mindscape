@@ -7,6 +7,7 @@ import { RolesModule } from 'src/roles/roles.module';
 import { LeadsModule } from 'src/leads/leads.module';
 import { UsersModule } from 'src/users/users.module';
 import { ArrowsModule } from 'src/arrows/arrows.module';
+import { PubSubModule } from 'src/pub-sub/pub-sub.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { ArrowsModule } from 'src/arrows/arrows.module';
     forwardRef(() => ArrowsModule),
     LeadsModule,
     forwardRef(() => RolesModule),
+    PubSubModule,
   ],
   providers: [AlertsService, AlertsResolver],
   exports: [AlertsService],

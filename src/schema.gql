@@ -5,16 +5,20 @@
 type Alert {
   abstractRole: Role
   abstractRoleId: String
-  arrow: Arrow
-  arrowId: String
   createDate: DateTime!
   deleteDate: DateTime
   id: String!
   lead: Lead
   leadId: String
-  readDate: DateTime
+  link: Arrow
+  linkId: String
+  reason: String!
   role: Role
   roleId: String
+  source: Arrow
+  sourceId: String
+  target: Arrow
+  targetId: String
   updateDate: DateTime!
   user: User!
   userId: String!
@@ -171,6 +175,7 @@ type Mutation {
   pasteArrow(linkDraft: String!, linkId: String!, sessionId: String!, sourceId: String!, targetId: String!): ReplyArrowResult!
   pasteTwig(parentTwigId: String!, postId: String!, sessionId: String!, twigId: String!, x: Int!, y: Int!): ReplyTwigResult!
   publishAvatar(abstractId: String!, sessionId: String!, x: Int, y: Int): User!
+  readAlerts: User!
   refreshToken(refreshToken: String!): String!
   registerGoogleUser(token: String!): UserWithTokens!
   registerUser(email: String!, pass: String!): UserWithTokens!
@@ -271,6 +276,7 @@ type Sheaf {
 }
 
 type Subscription {
+  alert(userId: String!): Alert!
   arrowRole(arrowId: String!, sessionId: String!): Role!
   dragTwig(abstractId: String!, sessionId: String!): DragTwigResult!
   graftTwig(abstractId: String!, sessionId: String!): GraftTwigResult!
@@ -338,6 +344,7 @@ input TwigPosAdjustment {
 type User {
   activeDate: DateTime!
   balance: Float!
+  checkAlertsDate: DateTime!
   color: String!
   createDate: DateTime!
   currentUserLead: Lead

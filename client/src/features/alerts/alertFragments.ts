@@ -8,10 +8,13 @@ export const ALERT_FIELDS = gql`
   fragment AlertFields on Alert {
     id
     userId
-    arrowId
+    sourceId
+    linkId
+    targetId
     leadId
     roleId
     abstractRoleId
+    reason
     createDate
     deleteDate
   }
@@ -21,7 +24,29 @@ export const ALERT_FIELDS = gql`
 export const FULL_ALERT_FIELDS = gql`
   fragment FullAlertFields on Alert {
     ...AlertFields
-    arrow {
+    source {
+      ...ArrowFields
+      user {
+        id
+        name
+        email
+        color
+        verifyEmailDate
+        activeDate
+      }
+    }
+    link {
+      ...ArrowFields
+      user {
+        id
+        name
+        email
+        color
+        verifyEmailDate
+        activeDate
+      }
+    }
+    target {
       ...ArrowFields
       user {
         id

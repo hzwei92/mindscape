@@ -32,6 +32,7 @@ export const USER_FIELDS = gql`
     mapLat
     mapZoom
     activeDate
+    checkAlertsDate
     deleteDate
     currentUserLead {
       ...LeadFields

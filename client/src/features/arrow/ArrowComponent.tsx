@@ -88,9 +88,7 @@ export default function ArrowComponent(props: ArrowProps) {
         fontSize: props.tagFontSize,
       }}>
         <span style={{
-          display: isEntry
-            ? 'flex'
-            : 'none',
+          display: 'none',
           flexDirection: 'column',
           justifyContent: 'center',
           paddingRight: 5,
@@ -106,7 +104,7 @@ export default function ArrowComponent(props: ArrowProps) {
             }
         </span>
         <span style={{
-          paddingRight: 5,
+          paddingRight: 2,
         }}>
           <UserTag user={arrowUser} fontSize={props.tagFontSize}/>
         </span>
@@ -137,6 +135,7 @@ export default function ArrowComponent(props: ArrowProps) {
             : <span onClick={handleAbstractClick} style={{
                 color: arrowAbstract?.color,
                 cursor: 'pointer',
+                textDecoration: 'underline',
               }}>
                 {arrowAbstract?.title}
               </span>

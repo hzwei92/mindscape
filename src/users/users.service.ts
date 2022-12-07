@@ -233,6 +233,11 @@ export class UsersService {
     return this.getUserById(user.id);
   }
 
+  async readAlerts(user: User) {
+    user.checkAlertsDate = new Date();
+    return this.usersRepository.save(user);
+  }
+
   async incrementUserBalance(user: User, amount: number) {
     await this.usersRepository.increment({
       id: user.id,

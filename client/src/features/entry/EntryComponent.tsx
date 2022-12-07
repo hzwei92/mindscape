@@ -151,8 +151,11 @@ export default function EntryComponent(props: EntryComponentProps) {
         cursor: pendingLink.sourceArrowId
           ? 'crosshair'
           : null, 
-        border: null,
+        borderLeft: props.entry.sourceId && props.entry.targetId
+          ? null
+          : `4px solid ${arrowUser?.color}`,
         padding: 10,
+        paddingLeft: 5,
       }}
     >
       <ArrowComponent
@@ -170,6 +173,23 @@ export default function EntryComponent(props: EntryComponentProps) {
         setIsLoading={setIsLoading} 
         depth={props.depth}
       />
+      {
+        props.entry.bonusText && (
+          <div style={{
+            marginLeft: 14,
+            marginTop: 10,
+            fontSize: 10,
+          }}>
+            {props.entry.bonusText && props.entry.bonusText.map((text, i) => {
+              return (
+                <div key={i}>
+                  {text}
+                </div>
+              )
+            })}
+          </div>
+        )
+      }
     </IonCard>
   )
 }
