@@ -81,7 +81,7 @@ export class AlertsResolver {
   async getAlertsByUserId(
     @CurrentUser() user: UserEntity,
   ) {
-    return this.alertsService.getAlertsByUserId(user.id);
+    return this.alertsService.getUserAlerts(user);
   }
 
   @Subscription(() => Alert, {name: 'alert',
