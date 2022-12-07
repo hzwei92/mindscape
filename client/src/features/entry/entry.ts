@@ -9,7 +9,8 @@ export type Entry = {
   outIds: string[];
   sourceId: string | null;
   targetId: string | null;
-  shouldGetLinks: boolean;
-  isDeleted: boolean;
+  shouldRefreshArrow?: boolean;
+  shouldGetLinks?: boolean;
+  isDeleted?: boolean;
   bonusText?: string[];
 }

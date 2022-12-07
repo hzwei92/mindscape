@@ -132,20 +132,20 @@ export default function ExplorerComponent() {
           </IonCard>
         </IonCard>
       </div>
-      {
-        !!focusTab?.id && !focusTab.deleteDate
-          ? <div style={{
+      <div style={{
               position: 'relative',
               width: '100%',
               height: `calc(100% - ${TAB_HEIGHT}px)`,
             }}>
-              <CurrentUserTag />
+            <CurrentUserTag />
+      {
+        !!focusTab?.id && !focusTab.deleteDate
+          ? 
               <SpaceComponent 
                 abstractId={focusTab?.arrowId}
                 left={menuX}
                 right={0}
               />
-            </div>  
           : <IonCard style={{
               margin: 0,
               borderRadius: 0,
@@ -167,6 +167,7 @@ export default function ExplorerComponent() {
               </div>
             </IonCard>
         }
+        </div>  
     </div>
   );
 }

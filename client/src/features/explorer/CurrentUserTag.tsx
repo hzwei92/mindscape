@@ -11,7 +11,7 @@ import { MenuMode } from "../menu/menu";
 import { IdToType } from "../../types";
 import { Alert, AlertReason } from "../alerts/alert";
 import { Entry } from "../entry/entry";
-import { selectIdToArrow } from "../arrow/arrowSlice";
+import { mergeArrows, selectArrowIdToInstanceIds, selectIdToArrow, selectIdToInstance, updateInstance } from "../arrow/arrowSlice";
 import { v4 } from "uuid";
 import { mergeEntries } from "../entry/entrySlice";
 import { searchPushSlice } from "../search/searchSlice";
@@ -19,14 +19,22 @@ import { gql, useMutation } from "@apollo/client";
 import { mergeUsers } from "../user/userSlice";
 import useAlertsSub from "../alerts/useAlertsSub";
 import { reloadOutline } from "ionicons/icons";
+import { FULL_ARROW_FIELDS } from "../arrow/arrowFragments";
+import { Arrow } from "../arrow/arrow";
 
 const READ_ALERTS = gql`
-  mutation ReadAlerts {
-    readAlerts {
-      id
-      checkAlertsDate
+  mutation ReadAlerts($arrowIds: [String!]!) {
+    readAlerts(arrowIds: $arrowIds) {
+      user {
+        id
+        checkAlertsDate
+      }
+      arrows {
+        ...FullArrowFields
+      }
     }
   }
+  ${FULL_ARROW_FIELDS}
 `;
 
 export default function CurrentUserTag() {
@@ -39,6 +47,8 @@ export default function CurrentUserTag() {
 
   const isValid = useAppSelector(selectAuthIsValid);
 
+  const idToInstance = useAppSelector(selectIdToInstance);
+  const arrowIdToInstanceIds = useAppSelector(selectArrowIdToInstanceIds);
   const idToArrow = useAppSelector(selectIdToArrow);
   const idToAlert = useAppSelector(selectIdToAlert);
 
@@ -48,7 +58,20 @@ export default function CurrentUserTag() {
     },
     onCompleted: data => {
       console.log(data);
-      dispatch(mergeUsers([data.readAlerts]));
+      const { user, arrows } = data.readAlerts;
+      dispatch(mergeUsers([user]));
+      dispatch(mergeArrows(arrows));
+
+      arrows.forEach((arrow: Arrow) => {
+        const instanceIds = arrowIdToInstanceIds[arrow.id];
+
+        instanceIds.forEach(id => {
+          dispatch(updateInstance({
+            ...idToInstance[id],
+            shouldRefreshDraft: true,
+          }))
+        });
+      });
     },
   });
 
@@ -77,7 +100,25 @@ export default function CurrentUserTag() {
   };
 
   const handleAlertsClick = () => {
-    markRead();
+    const arrowIds: string[] = [];
+    alerts.forEach(alert => {
+      if (alert.sourceId) {
+        arrowIds.push(alert.sourceId);
+      }
+      if (alert.linkId) {
+        arrowIds.push(alert.linkId);
+      }
+      if (alert.targetId) {
+        arrowIds.push(alert.targetId);
+      }
+    });
+
+    markRead({
+      variables: {
+        arrowIds,
+      },
+    });
+
     const sourceIdToAlerts = alerts.reduce((acc, alert) => {
       if (alert.source?.id) {
         acc[alert.source.id] = [
@@ -196,6 +237,7 @@ export default function CurrentUserTag() {
 
   return (
     <div onMouseMove={handleMouseMove} style={{
+      display: user ? 'flex' : 'none',
       position: 'absolute',
       left: 0,
       top: 0,

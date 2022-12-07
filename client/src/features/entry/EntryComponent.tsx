@@ -29,6 +29,7 @@ export default function EntryComponent(props: EntryComponentProps) {
   } = useContext(AppContext);
 
   const arrow = useAppSelector(state => selectArrowById(state, props.entry.arrowId));
+  console.log(arrow);
   const arrowUser = useAppSelector(state => selectUserById(state, arrow?.userId));
 
   const focusTab = useAppSelector(selectFocusTab);

@@ -43,6 +43,15 @@ export class ArrowsService {
     });
   }
 
+  async getArrowsByIds(ids: string[]) {
+    return this.arrowsRepository.find({
+      where: {
+        id: In(ids),
+      },
+    });
+  }
+  
+
   async getArrowByUserIdAndUrl(userId: string, url: string) {
     return this.arrowsRepository.findOne({
       where: {
