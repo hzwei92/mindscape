@@ -50,7 +50,7 @@ export class ArrowsService {
       },
     });
   }
-  
+
 
   async getArrowByUserIdAndUrl(userId: string, url: string) {
     return this.arrowsRepository.findOne({
@@ -531,6 +531,9 @@ export class ArrowsService {
       faviconUrl: null,
       routeName: null,
     });
+
+    source.outCount++;
+    target.inCount++;
 
     const alerts = await this.alertsService.linkAlert(user, source, arrow, target, null);
 
