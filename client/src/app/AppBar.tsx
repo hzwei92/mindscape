@@ -98,20 +98,20 @@ const AppBar = () => {
           }}/>
         </IonButton>
         <div style={{
-            left: 10,
-            top: 10,
-            position: 'absolute',
-            width: 30,
-            height: 30,
-            backgroundColor: palette === 'dark'
-              ? 'black'
-              : 'lavender',
-            display: focusTab?.id 
-              ? 'none'
-              : 'flex',
-            zIndex: MAX_Z_INDEX,
-            borderRadius: 25,
-          }}/>
+          left: 10,
+          top: 10,
+          position: 'absolute',
+          width: 30,
+          height: 30,
+          backgroundColor: palette === 'dark'
+            ? 'black'
+            : 'lavender',
+          display: focusTab?.id 
+            ? 'none'
+            : 'flex',
+          zIndex: MAX_Z_INDEX,
+          borderRadius: 25,
+        }}/>
         <IonButton 
           onMouseEnter={handleMenuMouseEnter(MenuMode.ACCOUNT)}
           onMouseLeave={handleMenuMouseLeave}

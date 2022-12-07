@@ -104,7 +104,38 @@ export default function ExplorerComponent() {
       <div style={{
         overflow: 'clip',
         height: TAB_HEIGHT,
+        position: 'relative',
       }}>
+          <div style={{
+            position: 'absolute',
+            left: 0,
+            top: 0,
+            zIndex: 10,
+          }}>
+            <IonCard id={'new-tab-button'} 
+              style={{
+                margin: 0,
+                marginLeft: 1,
+                display: 'inline-flex',
+                cursor: 'pointer',
+                flexShrink: 0,
+                position: 'fixed',
+                height: TAB_HEIGHT - 1,
+              }}
+            >
+              <IonButtons style={{
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+              }}>
+                <IonButton onClick={handleCreateGraphClick} style={{
+                  padding: 0,
+                }}>
+                  <IonIcon icon={add} />
+                </IonButton>
+              </IonButtons>
+            </IonCard>
+          </div>
         <IonCard ref={tabsRef} onWheel={handleWheel} style={{
           margin: 0,
           borderRadius: 0,
@@ -118,33 +149,12 @@ export default function ExplorerComponent() {
           flexDirection: 'row',
           overflowX: 'scroll',
           paddingLeft: 1,
+          bottomShadow: 'none',
         }}>
-          <IonCard id={'new-tab-button'} 
-            style={{
-              margin: 0,
-              marginRight: 1,
-              borderBottomLeftRadius: 0,
-              borderBottomRightRadius: 0,
-              borderTopLeftRadius: 0,
-              display: 'inline-flex',
-              cursor: 'pointer',
-              flexShrink: 0,
-              position: 'relative',
-            }}
-          >
-            <IonButtons style={{
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-            }}>
-              <IonButton onClick={handleCreateGraphClick} style={{
-                padding: 0,
-                height: TAB_HEIGHT,
-              }}>
-                <IonIcon icon={add} />
-              </IonButton>
-            </IonButtons>
-          </IonCard>
+          <div style={{
+            display: 'flex',
+            minWidth: 41,
+          }}/>
           {
             Object.values(idToTab)
               .filter(tab => !tab.deleteDate)
