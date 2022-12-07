@@ -180,7 +180,7 @@ export default function InitUserModal() {
                   />
                 </div>
                 <IonButtons style={{
-                  marginTop: 5,
+                  marginTop: 10,
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'center',

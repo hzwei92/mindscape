@@ -73,12 +73,14 @@ export class TabsService {
       throw new BadRequestException('Insufficient permissions');
     }
     tab.deleteDate = new Date();
-    tab = await this.tabRepository.save(tab);
 
     let sibs = await this.tabRepository.find({
       where: {
         id: Not(Equal(tab.id)),
         userId: user.id,
+      },
+      order: {
+        i: 'ASC',
       }
     });
 
@@ -89,6 +91,12 @@ export class TabsService {
       };
     });
 
+    if (tab.isFocus && sibs.length > 0) {
+      tab.isFocus = false;
+      sibs[sibs.length - 1].isFocus = true;
+    }
+
+    tab = await this.tabRepository.save(tab);
     sibs = await this.tabRepository.save(sibs);
 
     return {

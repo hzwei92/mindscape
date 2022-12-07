@@ -36,7 +36,7 @@ const useAppRouter = () => {
     if (!user?.id) return;
     
     const path = router.routeInfo?.pathname.split('/') || [];
-    console.log(path);
+    console.log(path, focusTab?.arrowId);
 
     if (path[1] !== 'g') {
       if (focusTab?.arrow?.routeName) {

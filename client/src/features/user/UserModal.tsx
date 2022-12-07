@@ -37,7 +37,6 @@ export default function UserModal() {
   const modalRef = useRef<HTMLIonModalElement>(null);
 
   const user1 = useAppSelector(state => selectUserById(state, selectedUserId));
-  console.log(user1);
   const leaderIdToLeadId = useAppSelector(selectLeaderIdToLeadId);
   const idToLead = useAppSelector(selectIdToLead);
 
