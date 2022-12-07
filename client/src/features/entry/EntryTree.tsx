@@ -4,8 +4,8 @@ import { useAppSelector } from '../../app/store';
 import { selectIdToEntry } from './entrySlice';
 import { selectIdToArrow } from '../arrow/arrowSlice';
 import EntryComponent from './EntryComponent';
-import useGetOuts from '../arrow/useGetOuts';
-import useGetIns from '../arrow/useGetIns';
+import useGetOuts from './useGetOuts';
+import useGetIns from './useGetIns';
 import { IonLabel } from '@ionic/react';
 
 interface EntryTreeProps {
@@ -18,12 +18,13 @@ export default function EntryTree(props: EntryTreeProps) {
   const entry = idToEntry[props.entryId];
   
   const idToArrow = useAppSelector(selectIdToArrow);
-  const arrow = idToArrow[entry.arrowId];
   
   const { getIns } = useGetIns(props.entryId, entry?.arrowId);
   const { getOuts } = useGetOuts(props.entryId, entry?.arrowId);
 
   if (!entry || entry.isDeleted) return null;
+
+  const arrow = idToArrow[entry.arrowId];
 
   const handleLoadClick = (event: React.MouseEvent) => {
     if (entry.showIns) {

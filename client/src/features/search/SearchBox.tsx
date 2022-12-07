@@ -2,6 +2,7 @@ import { IonButton, IonButtons, IonIcon, IonInput } from '@ionic/react';
 import { search } from 'ionicons/icons';
 import React, { useContext } from 'react';
 import { connectSearchBox } from 'react-instantsearch-dom';
+import { AppContext } from '../../app/App';
 import { useAppDispatch, useAppSelector } from '../../app/store';
 import { searchPushSlice, searchSpliceSlice, selectSearchSlice } from './searchSlice';
 
@@ -12,7 +13,7 @@ interface SearchBoxProps {
 }
 
 function SearchBox(props: SearchBoxProps) {
-
+  const { palette } = useContext(AppContext);
   const slice = useAppSelector(selectSearchSlice);
   const dispatch = useAppDispatch();
 
@@ -54,6 +55,7 @@ function SearchBox(props: SearchBoxProps) {
           height: 40,
           fontSize: 20,
           width: 'calc(100%)',
+          color: palette === 'dark' ? 'white' : 'black',
         }}
         type={'text'}
         placeholder={'Search...'}
