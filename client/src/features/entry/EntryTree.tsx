@@ -28,10 +28,10 @@ export default function EntryTree(props: EntryTreeProps) {
 
   const handleLoadClick = (event: React.MouseEvent) => {
     if (entry.showIns) {
-      getIns(entry.inIds.length);
+      getIns(entry.inIds.length >= LOAD_LIMIT ? entry.inIds.length : 0);
     }
     else if (entry.showOuts) {
-      getOuts(entry.outIds.length);
+      getOuts(entry.outIds.length >= LOAD_LIMIT ? entry.outIds.length : 0);
     }
   }
 
@@ -95,7 +95,7 @@ export default function EntryTree(props: EntryTreeProps) {
             ? <div onClick={handleLoadClick} style={{
                 fontSize: 12,
                 marginTop: 5,
-                marginLeft: 5,
+                marginLeft: 4,
                 textAlign: 'left',
                 cursor: 'pointer',
               }}>
