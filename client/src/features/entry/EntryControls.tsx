@@ -243,7 +243,7 @@ export default function EntryControls(props: EntryControlsProps) {
             }
           </IonButtons>
           <IonButtons>
-            <IonButton onClick={handleCopyClick}>
+            <IonButton disabled={props.arrow.sourceId !== props.arrow.targetId} onClick={handleCopyClick}>
               COPY
             </IonButton>
             <IonButton disabled={clipboardArrowIds.length !== 1} onClick={handlePasteClick}>
