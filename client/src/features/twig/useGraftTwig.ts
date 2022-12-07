@@ -60,8 +60,12 @@ export default function useGraftTwig(abstractId: string) {
 
   const graftTwig = (twigId: string, parentTwigId: string, x: number, y: number) => {
     const twig = idToTwig[twigId];
-
-    if (twig.parent?.id === parentTwigId) return;
+    const parentTwig = idToTwig[parentTwigId];
+    if (
+      twig.parent?.id === parentTwigId ||
+      parentTwig.sourceId === twigId ||
+      parentTwig.targetId === twigId
+    ) return;
 
     graft({
       variables: {

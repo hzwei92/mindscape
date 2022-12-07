@@ -15,7 +15,6 @@ import { SheafsService } from 'src/sheafs/sheafs.service';
 import { Sheaf } from 'src/sheafs/sheaf.entity';
 import { convertFromRaw } from 'draft-js';
 import { AlertsService } from 'src/alerts/alerts.service';
-import { skip } from 'rxjs';
 
 @Injectable()
 export class ArrowsService {
