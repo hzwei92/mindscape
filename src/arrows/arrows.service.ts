@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/users/user.entity';
-import { In, Repository } from 'typeorm';
+import { In, IsNull, Not, Repository } from 'typeorm';
 import { Arrow } from './arrow.entity';
 import { v4 } from 'uuid'; 
 import { getEmptyDraft } from 'src/utils';
@@ -15,6 +15,7 @@ import { SheafsService } from 'src/sheafs/sheafs.service';
 import { Sheaf } from 'src/sheafs/sheaf.entity';
 import { convertFromRaw } from 'draft-js';
 import { AlertsService } from 'src/alerts/alerts.service';
+import { skip } from 'rxjs';
 
 @Injectable()
 export class ArrowsService {
@@ -158,6 +159,20 @@ export class ArrowsService {
       .limit(LOAD_LIMIT)
       .offset(offset)
       .getMany()
+  }
+
+  async getFeedArrows(offset: number) {
+    return this.arrowsRepository.find({
+      where: {
+        sourceId: Not(IsNull()),
+        targetId: Not(IsNull()),
+      },
+      order: {
+        saveDate: 'DESC',
+      },
+      take: LOAD_LIMIT,
+      skip: offset,
+    });
   }
 
   async getStartArrow() {

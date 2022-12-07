@@ -152,7 +152,7 @@ function LinkTwig(props: LinkTwigProps) {
           display: 'flex',
           flexDirection: 'column',
           width: TWIG_WIDTH,
-          opacity: .8,
+          opacity: .9,
           outline: isSelected
             ? `5px solid ${twigUser?.color}`
             : null,
@@ -178,6 +178,8 @@ function LinkTwig(props: LinkTwigProps) {
             position: 'absolute',
             right: 0,
             top: 0,
+            display: 'flex',
+            flexDirection: 'row',
           }}>
             <IonButton style={{
               height: 20,

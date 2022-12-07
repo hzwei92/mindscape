@@ -21,4 +21,5 @@ export enum AlertReason {
   REPLY = 'REPLY',
   LINK = 'LINK',
   OTHER = 'OTHER',
+  FEED = 'FEED',
 }
