@@ -38,6 +38,7 @@ export default function useGetAlerts() {
     onCompleted: data => {
       console.log(data);
 
+      setIsInit(true);
       dispatch(mergeAlerts(data.getCurrentUserAlerts));
 
       const entryIds: string[] = [];
@@ -120,12 +121,11 @@ export default function useGetAlerts() {
             userIds: [],
           }))
 
-          if (isInit) {
-            setMenuMode(MenuMode.SEARCH);
-          }
+        }
+        if (isInit) {
+          setMenuMode(MenuMode.SEARCH);
         }
       }
-      setIsInit(true);
     }
   });
 
