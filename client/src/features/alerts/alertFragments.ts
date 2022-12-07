@@ -34,6 +34,12 @@ export const FULL_ALERT_FIELDS = gql`
         verifyEmailDate
         activeDate
       }
+      abstract {
+        id
+        title
+        color
+        routeName
+      }
     }
     link {
       ...ArrowFields
@@ -45,6 +51,12 @@ export const FULL_ALERT_FIELDS = gql`
         verifyEmailDate
         activeDate
       }
+      abstract {
+        id
+        title
+        color
+        routeName
+      }
     }
     target {
       ...ArrowFields
@@ -55,6 +67,12 @@ export const FULL_ALERT_FIELDS = gql`
         color
         verifyEmailDate
         activeDate
+      }
+      abstract {
+        id
+        title
+        color
+        routeName
       }
     }
     lead {
