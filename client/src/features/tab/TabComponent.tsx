@@ -135,8 +135,12 @@ export default function TabComponent(props: TabComponentProps) {
               ? 'black'
               : OFF_WHITE
             : null,
-          borderBottomLeftRadius: 0,
-          borderBottomRightRadius: 0,
+          borderBottomLeftRadius: props.tab.isFocus
+            ? 0
+            : null,
+          borderBottomRightRadius: props.tab.isFocus
+            ? 0
+            : null,
           display: 'inline-flex',
           flexDirection: 'row',
           flexWrap: 'nowrap',
@@ -149,9 +153,22 @@ export default function TabComponent(props: TabComponentProps) {
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center',
+          marginLeft: 10,
+        }}>
+
+        {
+          props.tab.i + 1
+        }
+        </div>
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
           color: arrow.color,
           marginLeft: 10,
-          height: TAB_HEIGHT,
+          height: props.tab.isFocus
+            ? TAB_HEIGHT 
+            : TAB_HEIGHT - 1,
           fontSize: 16,
         }}>
           { arrow.title }
