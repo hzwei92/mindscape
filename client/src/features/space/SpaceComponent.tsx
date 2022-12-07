@@ -220,7 +220,7 @@ const SpaceComponent = (props: SpaceComponentProps) => {
 
   useEffect(() => {
     let found = false;
-    if (adjustCount > 100) {
+    if (adjustCount > 20) {
       setAdjustCount(0);
       return;
     }
@@ -232,7 +232,18 @@ const SpaceComponent = (props: SpaceComponentProps) => {
       const sourcePos = idToPos[twig.sourceId];
       const targetPos = idToPos[twig.targetId];
 
-      if (!sourcePos || !targetPos) return;
+      if (
+        !sourcePos || 
+        !targetPos || 
+        sourcePos.x > VIEW_RADIUS ||
+        sourcePos.x < -1 * VIEW_RADIUS ||
+        sourcePos.y > VIEW_RADIUS || 
+        sourcePos.y < -1 * VIEW_RADIUS ||
+        targetPos.x > VIEW_RADIUS || 
+        targetPos.x < -1 * VIEW_RADIUS ||
+        targetPos.y > VIEW_RADIUS ||
+        targetPos.y < -1 * VIEW_RADIUS
+      ) return
 
       const x = Math.round(((sourcePos?.x ?? 0) + (targetPos?.x ?? 0)) / 2);
       const y = Math.round(((sourcePos?.y ?? 0) + (targetPos?.y ?? 0)) / 2);
