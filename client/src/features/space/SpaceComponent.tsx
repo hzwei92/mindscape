@@ -603,7 +603,7 @@ const SpaceComponent = (props: SpaceComponentProps) => {
             disabled: !!drag?.twigId,
           }}
           wheel={{
-            step: 0.56,
+            step: 0.46,
           }}
         >
           {({ state, zoomIn, zoomOut, resetTransform, setTransform, ...rest}) => (
