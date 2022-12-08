@@ -295,7 +295,7 @@ function TwigControls(props: TwigControlsProps) {
   return (
     <IonButtons style={{
       marginLeft: 5,
-      marginTop: 5,
+      marginTop: 0,
       marginBottom: -5,
       display: 'flex',
       flexDirection: 'row',

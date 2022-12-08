@@ -90,6 +90,8 @@ export class TwigsResolver {
   ) {
     const result = await this.twigsService.replyTwig(user, parentTwigId, twigId, postId, x, y, draft);
   
+    await this.usersService.incrementUserReplyN(user);
+    
     const user1 = await this.transfersService.replyTransfer(user, result.targetVote, result.linkVote, result.source, result.targetArrow);
     
     this.pubSub.publish('replyTwig', {

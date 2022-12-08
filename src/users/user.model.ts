@@ -30,6 +30,9 @@ export class User {
   @Field(() => Float)
   balance: number;
 
+  @Field(() => Int)
+  replyN: number;
+
   @Field(() => Float, { nullable: true })
   mapLng: number;
 
@@ -56,6 +59,15 @@ export class User {
 
   @Field()
   checkAlertsDate: Date;
+
+  @Field({nullable: true})
+  createGraphDate: Date;
+
+  @Field({nullable: true})
+  navigateGraphDate: Date;
+
+  @Field({ nullable: true })
+  togglePaletteDate: Date;
 
   @Field()
   createDate: Date;

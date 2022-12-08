@@ -166,7 +166,7 @@ export default function EntryComponent(props: EntryComponentProps) {
           ? `4px solid ${arrowUser?.color}`
           : null,
         padding: 10,
-        paddingLeft: 5,
+        paddingLeft: 7,
         position: 'relative',
       }}
     >

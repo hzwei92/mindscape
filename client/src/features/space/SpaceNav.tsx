@@ -8,9 +8,12 @@ import { AppContext } from '../../app/App';
 import { IonFab, IonFabButton, IonIcon, isPlatform } from '@ionic/react';
 import { playBackOutline, playForwardOutline, playSkipBackOutline, playSkipForwardOutline } from 'ionicons/icons';
 import { MenuMode } from '../menu/menu';
+import { userInfo } from 'os';
+import useSetUserNavDate from '../user/useSetUserNavDate';
 
 export default function SpaceNav() {
   const {
+    user,
     menuMode,
     spaceRef,
   } = useContext(AppContext);
@@ -34,6 +37,16 @@ export default function SpaceNav() {
   const [laterTwigId, setLaterTwigId] = useState('');
   const [latestTwigId, setLatestTwigId] = useState('');
   
+  const [navCount, setNavCount] = useState(0);
+
+  const { setUserNavDate } = useSetUserNavDate(); 
+
+  useEffect(() => {
+    if (navCount > 3) {
+      setUserNavDate();
+    }
+  }, [navCount > 3])
+
   useEffect(() => {
     if (!abstract || !selectedTwig) {
       setEarlierTwigId('');
@@ -98,6 +111,10 @@ export default function SpaceNav() {
     event.preventDefault();
     const twig = idToTwig[earliestTwigId];
     select(twig);
+
+    if (!user?.navigateGraphDate) {
+      setNavCount(val => val + 1);
+    }
   }
 
   const handleNavPrev = (event: React.MouseEvent) => {
@@ -105,6 +122,10 @@ export default function SpaceNav() {
     event.preventDefault();
     const twig = idToTwig[earlierTwigId];
     select(twig);
+
+    if (!user?.navigateGraphDate) {
+      setNavCount(val => val + 1);
+    }
   }
 
   const handleNavNext = (event: React.MouseEvent) => {
@@ -112,6 +133,10 @@ export default function SpaceNav() {
     event.preventDefault();
     const twig = idToTwig[laterTwigId];
     select(twig);
+
+    if (!user?.navigateGraphDate) {
+      setNavCount(val => val + 1);
+    }
   }
 
   const handleNavLatest = (event: React.MouseEvent) => {
@@ -119,12 +144,20 @@ export default function SpaceNav() {
     event.preventDefault();
     const twig = idToTwig[latestTwigId];
     select(twig);
+
+    if (!user?.navigateGraphDate) {
+      setNavCount(val => val + 1);
+    }
   }
 
   const handleNavFocus = (event: React.MouseEvent) => {
     event.stopPropagation();
     event.preventDefault();
     centerTwig(selectedTwig);
+
+    if (!user?.navigateGraphDate) {
+      setNavCount(val => val + 1);
+    }
   }
 
   const handleMouseMove = (e: React.MouseEvent) => {

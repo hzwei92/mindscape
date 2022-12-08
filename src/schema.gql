@@ -193,6 +193,7 @@ type Mutation {
   setUserColor(color: String!, sessionId: String!): User!
   setUserMap(lat: Float!, lng: Float!, zoom: Float!): User!
   setUserName(name: String!, sessionId: String!): User!
+  setUserNavDate: User!
   setUserPalette(palette: String!, sessionId: String!): User!
   unfollowUser(leadId: String!): Lead!
   updateTab(isFocus: Boolean!, isFrame: Boolean!, tabId: String!): [Tab!]!
@@ -352,6 +353,7 @@ type User {
   checkAlertsDate: DateTime!
   color: String!
   createDate: DateTime!
+  createGraphDate: DateTime
   currentUserLead: Lead
   deleteDate: DateTime
   description: String!
@@ -367,10 +369,13 @@ type User {
   mapLng: Float
   mapZoom: Float
   name: String!
+  navigateGraphDate: DateTime
   palette: String!
+  replyN: Int!
   roles: [Role!]!
   routeName: String!
   tabs: [Tab!]!
+  togglePaletteDate: DateTime
   updateDate: DateTime!
   verifyEmailDate: DateTime
 }

@@ -2,8 +2,8 @@ import type { User } from './user';
 import md5 from 'md5';
 import { useContext } from 'react';
 import { AppContext } from '../../app/App';
-import { IonAvatar, IonButton, IonIcon } from '@ionic/react';
-import { checkmarkCircle, checkmarkCircleOutline, ellipseOutline } from 'ionicons/icons';
+import { IonIcon } from '@ionic/react';
+import { checkmarkCircle } from 'ionicons/icons';
 import { useAppSelector } from '../../app/store';
 import { selectIdToLead, selectLeaderIdToLeadId } from '../lead/leadSlice';
 

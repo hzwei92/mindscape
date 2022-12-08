@@ -226,7 +226,8 @@ export default function InitUserModal() {
                 flexDirection: 'column',
               }}>
                 <IonButton onClick={() => setIsNewUser(true)} style={{
-                  marginBottom: 20,
+                  marginTop: 30,
+                  marginBottom: 30,
                 }}>
                   NEW USER
                 </IonButton>

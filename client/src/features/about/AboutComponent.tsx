@@ -25,26 +25,6 @@ export default function AboutComponent() {
       <IonCard style={{
         marginTop: 0,
       }}>
-      <IonCardHeader style={{
-
-        fontWeight: 'bold',
-      }}>
-        Quickstart
-      </IonCardHeader>
-        <ul style={{
-          marginTop: 0,
-          paddingRight: 10,
-        }}>
-          <li>
-            An account has been generated for you.
-            Register an <b>email</b> via the Account menu to secure access to it.
-          </li>
-          <li>
-            Use the button in the bottom left to toggle <b>day/night mode</b>.
-          </li>
-        </ul>
-      </IonCard>
-      <IonCard>
         <IonCardHeader style={{
           fontWeight: 'bold',
         }}>

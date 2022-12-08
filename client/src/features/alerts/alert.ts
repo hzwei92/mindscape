@@ -21,9 +21,9 @@ export type Alert = {
   abstractRoleId: string | null;
   abstractRole: Role | null;
   reason: string;
-  createDate: Date;
-  updateDate: Date;
-  deleteDate: Date | null;
+  createDate: string;
+  updateDate: string;
+  deleteDate: string | null;
 }
 
 export enum AlertReason {

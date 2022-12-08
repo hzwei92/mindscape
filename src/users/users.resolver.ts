@@ -191,6 +191,15 @@ export class UsersResolver {
     return user1;
   }
 
+  @UseGuards(GqlAuthGuard)
+  @Mutation(() => User, {name: 'setUserNavDate'})
+  async setUserNavDate(
+    @CurrentUser() user: UserEntity,
+  ) {
+    return this.usersService.setNavDate(user);
+  }
+
+
   @Subscription(() => UserAvatar, {name: 'publishAvatar',
     filter: (payload, variables) => {
       if (payload.sessionId === variables.sessionId) return false;

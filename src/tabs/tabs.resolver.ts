@@ -10,11 +10,13 @@ import { CurrentUser, GqlAuthGuard } from 'src/auth/gql-auth.guard';
 import { User as UserEntity } from 'src/users/user.entity';
 import { TransfersService } from 'src/transfers/transfers.service';
 import { CreateGraphTabResult } from './dto/create-graph-tab-result.dto';
+import { UsersService } from 'src/users/users.service';
 
 @Resolver(Tab)
 export class TabsResolver {
   constructor(
     private readonly tabsService: TabsService,
+    private readonly usersService: UsersService,
     private readonly arrowsService: ArrowsService,
     private readonly sheafsService: SheafsService,
     private readonly transfersService: TransfersService,
@@ -76,10 +78,13 @@ export class TabsResolver {
       }));
       ({ arrow } = await this.arrowsService.openArrow(user, arrow, name, routeName));
       
-      const user1 = await this.transfersService.createGraphTransfer(user, vote, arrow);
-
+      let user1 = await this.transfersService.createGraphTransfer(user, vote, arrow);
+      
       const tabs = await this.tabsService.appendTab(user1, arrow, false, true);
 
+      if (!user1.createGraphDate) {
+        user1 = await this.usersService.createGraph(user1);
+      }
       return {
         user: user1,
         tabs,

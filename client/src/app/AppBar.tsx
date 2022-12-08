@@ -4,6 +4,8 @@ import {
   filterOutline, 
   globeOutline, 
   informationCircleOutline, 
+  invertMode, 
+  invertModeOutline, 
   mapOutline, 
   moonOutline, 
   notifications, 
@@ -269,15 +271,14 @@ const AppBar = () => {
           height: 50,
           width: 50,
         }}>
-          {
-            palette === 'dark'
-              ? <IonIcon icon={moonOutline} size='small' style={{
-                  color: user?.color
-                }}/>
-              : <IonIcon icon={sunnyOutline} size='large' style={{
-                  color: user?.color
-                }}/>
-          }
+          <IonIcon 
+            icon={palette === 'dark' ? moonOutline : sunnyOutline} 
+            style={{
+              transform: palette === 'dark'
+                ? 'scale(.75)'
+                : null,
+            }}
+          />
         </IonButton>
       </IonButtons>
     </IonCard>

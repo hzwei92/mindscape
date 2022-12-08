@@ -31,6 +31,7 @@ const REPLY_ARROW = gql`
       user {
         id
         balance
+        replyN
       }
       source {
         id

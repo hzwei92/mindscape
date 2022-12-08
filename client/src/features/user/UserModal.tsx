@@ -187,7 +187,7 @@ export default function UserModal() {
         }}>
           {
             (user1?.tabs || []).slice()
-              .sort((a, b) => a.i - b.i)
+              .sort((a, b) => b.i - a.i)
               .map((tab, i) => {
                 return (
                   <IonCard key={tab.id}>
@@ -195,7 +195,7 @@ export default function UserModal() {
                       <IonLabel onClick={handleArrowClick(tab.arrow)} style={{
                         cursor: 'pointer',
                       }}>
-                        {i + 1}&nbsp;&nbsp;&nbsp;
+                        {tab.i + 1}&nbsp;&nbsp;&nbsp;
                         <span style={{
                           color: tab.arrow.color,
                         }}>

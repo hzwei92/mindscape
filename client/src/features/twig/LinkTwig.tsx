@@ -182,20 +182,20 @@ function LinkTwig(props: LinkTwigProps) {
             flexDirection: 'row',
           }}>
             <IonButton style={{
-              height: 20,
+              height: 16,
               fontSize: 6,
             }}>
               { twig.i }
             </IonButton>
             <IonButton onClick={handleOpenClick} style={{
-              height: 20,
+              height: 16,
             }}>
               <IonIcon icon={remove}style={{
                 fontSize: 10,
               }}/>
             </IonButton>
             <IonButton  onClick={handleRemoveClick} style={{
-              height: 20,
+              height: 16,
             }}>
               <IonIcon icon={close}style={{
                 fontSize: 10,

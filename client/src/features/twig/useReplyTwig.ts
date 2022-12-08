@@ -38,6 +38,7 @@ const REPLY_TWIG = gql`
       user {
         id
         balance
+        replyN
       }
       abstract {
         id

@@ -9,6 +9,7 @@ export type User = {
   followers: Lead[];
   tabs: Tab[];
   email: string;
+  isRegisteredWithGoogle: boolean;
   name: string;
   lowercaseName: string;
   routeName: string;
@@ -16,18 +17,21 @@ export type User = {
   color: string;
   palette: string;
   balance: number;
+  replyN: number;
   lng: number | null;
   lat: number | null;
   mapLng: number | null;
   mapLat: number | null;
   mapZoom: number | null;
   verifyEmailDate: Date | null;
-  isRegisteredWithGoogle: boolean;
-  activeDate: Date;
-  checkAlertsDate: Date;
-  createDate: Date;
-  updateDate: Date;
-  deleteDate: Date | null;
+  activeDate: string;
+  checkAlertsDate: string;
+  createGraphDate: string | null;
+  navigateGraphDate: string | null;
+  togglePaletteDate: string | null;
+  createDate: string;
+  updateDate: string;
+  deleteDate: string | null;
 
   currentUserLead: Lead | null;
   
