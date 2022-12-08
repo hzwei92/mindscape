@@ -32,10 +32,19 @@ const useAppRouter = () => {
   const { updateTab } = useUpdateTab();
 
 
+  const [syncPath, setSyncPath] = useState<string[]>([]);
+
   useEffect(() => {
     if (!user?.id) return;
     
     const path = router.routeInfo?.pathname.split('/') || [];
+
+    if (path.length === syncPath.length && !path.some((p, i) => p !== syncPath[i])) {
+      return;
+    }
+
+    setSyncPath(path);
+    
     console.log(path, focusTab?.arrowId);
 
     if (path[1] !== 'g') {

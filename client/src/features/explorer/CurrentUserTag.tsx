@@ -1,4 +1,4 @@
-import { IonAvatar, IonBadge, IonButton, IonButtons, IonCard, IonIcon } from "@ionic/react";
+import { IonAvatar, IonBadge, IonButton, IonButtons, IonCard, IonCardHeader, IonIcon } from "@ionic/react";
 import md5 from "md5";
 import { useContext, useEffect } from "react";
 import { AppContext } from "../../app/App";
@@ -246,7 +246,10 @@ export default function CurrentUserTag() {
         position: 'fixed',
         zIndex: abstract?.twigZ ?? 0 + 10,
       }}>
-        <IonCard color={isValid ? 'light' : 'danger'} style={{
+        <IonCard color={isValid ? undefined : 'danger'} style={{
+          position: 'absolute',
+          left: 0,
+          top: 0,
           margin: 10,
           padding: 10,
           display: 'flex',
@@ -275,6 +278,7 @@ export default function CurrentUserTag() {
             <div>
               <span  style={{
                 color: user?.color,
+                whiteSpace: 'nowrap',
               }}>
                 {user?.name}
               </span>
@@ -306,6 +310,28 @@ export default function CurrentUserTag() {
                 }
               </IonButtons>
             </div>
+        </IonCard>
+        <IonCard style={{
+          display: 'none',
+          position: 'absolute',
+          top: 64,
+          left: 0,
+          padding: 10,
+          whiteSpace: 'nowrap',
+        }}>
+          Hello traveler, let's get you acquainted with your new equipment.
+          <div style={{
+            marginTop: 5,
+            marginLeft: 10,
+          }}>
+            Quest: <b style={{ color: user?.color }}>Attain the Tabula rasa</b>
+            <br/>
+            Reward: 1,000 points
+            <br/>
+            Hint: "Tabula rasa" is Latin for "blank slate"
+            <br/>
+            Hint: Use the + button in the tab bar
+          </div>
         </IonCard>
       </div>
     </div>
