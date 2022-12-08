@@ -275,7 +275,9 @@ export default function CurrentUserTag() {
                   : null
               }
             </div>
-            <div>
+            <div style={{
+              whiteSpace: 'nowrap',
+            }}>
               <span  style={{
                 color: user?.color,
                 whiteSpace: 'nowrap',

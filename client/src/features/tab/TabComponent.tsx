@@ -147,6 +147,9 @@ export default function TabComponent(props: TabComponentProps) {
           flexShrink: 0,
           cursor: 'default',
           opacity: isOver ? 0.2 : 1,
+          boxShadow: props.tab.isFocus
+            ? 'none'
+            : null,
         }}
       >
         <div style={{
@@ -167,7 +170,7 @@ export default function TabComponent(props: TabComponentProps) {
           color: arrow.color,
           marginLeft: 10,
           height: props.tab.isFocus
-            ? TAB_HEIGHT 
+            ? TAB_HEIGHT + 1
             : TAB_HEIGHT - 1,
           fontSize: 16,
         }}>

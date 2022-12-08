@@ -1,4 +1,4 @@
-import { IonButton, IonButtons, IonCard, IonIcon, IonPopover } from "@ionic/react";
+import { IonButton, IonButtons, IonCard, IonIcon, IonPopover, isPlatform } from "@ionic/react";
 import { add, caretBack } from "ionicons/icons";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { AppContext } from "../../app/App";
@@ -81,35 +81,16 @@ export default function ExplorerComponent() {
       position:'relative',
     }}>
       <div style={{
-        display: 'none',
-        position: 'absolute',
-        left: 0,
-        top: 0,
-        zIndex: 10,
-      }}>
-        <IonCard style={{
-          padding: 10,
-          paddingLeft: 0,
-          display: 'flex',
-        }}>
-          <IonIcon icon={caretBack} />
-          <div style={{
-            display: 'flex',
-            flexDirection: 'column',
-          }}>
-            Hello
-          </div>
-        </IonCard>
-      </div>
-      <div style={{
         overflow: 'clip',
-        height: TAB_HEIGHT,
+        height: isPlatform('iphone')
+          ? TAB_HEIGHT + 1
+          : TAB_HEIGHT + 2,
         position: 'relative',
       }}>
           <div style={{
             position: 'absolute',
             left: 0,
-            top: 0,
+            top: 1,
             zIndex: 10,
           }}>
             <IonCard id={'new-tab-button'} 
@@ -136,7 +117,7 @@ export default function ExplorerComponent() {
               </IonButtons>
             </IonCard>
           </div>
-        <IonCard color='light' ref={tabsRef} onWheel={handleWheel} style={{
+        <IonCard ref={tabsRef} onWheel={handleWheel} style={{
           margin: 0,
           borderRadius: 0,
           width: '100%',
@@ -148,7 +129,8 @@ export default function ExplorerComponent() {
           display: 'flex',
           flexDirection: 'row',
           overflowX: 'scroll',
-          paddingLeft: 1.5,
+          paddingTop: 1,
+          paddingLeft: isPlatform('iphone') ? 1 : 2,
           bottomShadow: 'none',
         }}>
           <div style={{
@@ -171,7 +153,7 @@ export default function ExplorerComponent() {
       <div style={{
         position: 'relative',
         width: '100%',
-        height: `calc(100% - ${TAB_HEIGHT}px)`,
+        height: `calc(100% - ${isPlatform('iphone') ? TAB_HEIGHT : TAB_HEIGHT + 1}px)`,
       }}>
       <CurrentUserTag />
       {
