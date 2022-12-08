@@ -148,19 +148,19 @@ export default function SpaceNav() {
       display: 'flex',
       flexDirection: 'row',
     }}>
-      <IonFabButton title='Earliest' disabled={!selectedTwigId || selectedTwigId === earliestTwigId} color={'light'} onClick={handleNavEarliest} size='small'>
+      <IonFabButton title='Earliest' disabled={!selectedTwigId || selectedTwigId === earliestTwigId} color={'secondary'} onClick={handleNavEarliest} size='small'>
         <IonIcon icon={playSkipBackOutline} />
       </IonFabButton>
-      <IonFabButton title='Previous' disabled={!earlierTwigId} color={'light'} onClick={handleNavPrev} size='small'>
+      <IonFabButton title='Previous' disabled={!earlierTwigId} color={'secondary'} onClick={handleNavPrev} size='small'>
         <IonIcon icon={playBackOutline} />
       </IonFabButton>
-      <IonFabButton title='Selected' disabled={!selectedTwigId} color={'light'} onClick={handleNavFocus} size='small' onKeyDown={e => console.log(e.key)}>
+      <IonFabButton title='Selected' disabled={!selectedTwigId} color={'secondary'} onClick={handleNavFocus} size='small' onKeyDown={e => console.log(e.key)}>
         { selectedTwig?.i }
       </IonFabButton>
-      <IonFabButton title='Next' disabled={!laterTwigId} color={'light'} onClick={handleNavNext} size='small'>
+      <IonFabButton title='Next' disabled={!laterTwigId} color={'secondary'} onClick={handleNavNext} size='small'>
         <IonIcon icon={playForwardOutline}/>
       </IonFabButton>
-      <IonFabButton title='Latest' disabled={selectedTwigId===latestTwigId} color={'light'} onClick={handleNavLatest} size='small'>
+      <IonFabButton title='Latest' disabled={selectedTwigId===latestTwigId} color={'secondary'} onClick={handleNavLatest} size='small'>
         <IonIcon icon={playSkipForwardOutline} />
       </IonFabButton>
     </IonFab>

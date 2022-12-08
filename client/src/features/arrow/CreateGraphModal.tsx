@@ -421,9 +421,12 @@ export default function CreateGraphModal() {
     onCompleted: data => {
       console.log(data, routeName);
       const { user, tabs } = data.createGraphTab;
+      
       dispatch(mergeUsers([user]))
       dispatch(mergeTabs(tabs));
+
       router.push(`/g/${routeName}/0`);
+
       randomizeName();
     }
   });

@@ -5,7 +5,7 @@ import { AppContext } from "../../app/App";
 import { useAppSelector } from "../../app/store";
 import SpaceComponent from "../space/SpaceComponent";
 import usePublishAvatarSub from "./usePublishAvatarSub";
-import { selectFocusTab, selectIdToTab } from "../tab/tabSlice";
+import { selectIdToTab } from "../tab/tabSlice";
 import icon from './icon.png'
 import usePublishAvatar from "./usePublishAvatar";
 import TabComponent from "../tab/TabComponent";
@@ -87,7 +87,7 @@ export default function ExplorerComponent() {
         top: 0,
         zIndex: 10,
       }}>
-        <IonCard color='dark' style={{
+        <IonCard style={{
           padding: 10,
           paddingLeft: 0,
           display: 'flex',
@@ -136,19 +136,19 @@ export default function ExplorerComponent() {
               </IonButtons>
             </IonCard>
           </div>
-        <IonCard ref={tabsRef} onWheel={handleWheel} style={{
+        <IonCard color='light' ref={tabsRef} onWheel={handleWheel} style={{
           margin: 0,
           borderRadius: 0,
           width: '100%',
           scrollbarWidth: 'none',
           backgroundColor: palette === 'dark'
-            ? '#0f0f0f'
+            ? '#444444'
             : '#dddddd',
           whiteSpace: 'nowrap',
           display: 'flex',
           flexDirection: 'row',
           overflowX: 'scroll',
-          paddingLeft: 1,
+          paddingLeft: 1.5,
           bottomShadow: 'none',
         }}>
           <div style={{

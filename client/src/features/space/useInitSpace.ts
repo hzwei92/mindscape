@@ -1,6 +1,6 @@
 import { gql, useMutation } from '@apollo/client';
 import { FULL_TWIG_FIELDS } from '../twig/twigFragments';
-import { Dispatch, SetStateAction, useContext, useEffect } from 'react';
+import { Dispatch, SetStateAction, useContext, useEffect, useState } from 'react';
 import { mergeIdToPos, mergeTwigs, selectIdToPos, selectSelectedTwigId, setSelectedTwigId } from './spaceSlice';
 import { useAppDispatch, useAppSelector } from '../../app/store';
 import { useIonToast } from '@ionic/react';
@@ -30,7 +30,9 @@ export default function useInitSpace(abstractId: string, isSynced: boolean, setI
   const selectedTwigId = useAppSelector(selectSelectedTwigId(abstractId));
   const idToPos = useAppSelector(selectIdToPos(abstractId)) ?? {};
 
-  const abstract = useAppSelector(state => selectArrowById(state, abstractId))
+  const abstract = useAppSelector(state => selectArrowById(state, abstractId));
+
+  const [syncAbstractId, setSyncAbstractId] = useState(abstractId);
 
   const [getTwigs] = useMutation(GET_DETAILS, {
     onError: error => {
@@ -75,19 +77,17 @@ export default function useInitSpace(abstractId: string, isSynced: boolean, setI
   });
 
   useEffect(() => {
-    if (abstractId) {
+    if (!abstractId) return;
+
+    if (abstractId !== syncAbstractId || isSynced) {
+      getTwigs({
+        variables: {
+          abstractId,
+        }
+      });
       setIsSynced(true);
+      setSyncAbstractId(abstractId);
     }
-  }, [abstractId]);
-
-  useEffect(() => {
-    if (!abstractId || !isSynced) return;
-
-    getTwigs({
-      variables: {
-        abstractId,
-      }
-    });
   }, [abstractId, isSynced]);
 
 }

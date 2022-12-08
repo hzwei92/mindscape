@@ -17,7 +17,7 @@ interface SpaceControlsProps {
   setIsSynced: Dispatch<SetStateAction<boolean>>;
 }
 export default function SpaceControls(props: SpaceControlsProps) {
-  const { menuMode } = useContext(AppContext);
+  const { palette, menuMode } = useContext(AppContext);
   const { abstract } = useContext(SpaceContext);
 
   const handleSettingsClick = () => {
@@ -58,10 +58,15 @@ export default function SpaceControls(props: SpaceControlsProps) {
             <IonFab style={{
               marginLeft: -60,
             }}>
-              <IonFabButton title='Settings' size='small' color={props.showSettings ? 'primary' : 'light'}  onClick={handleSettingsClick}>
+              <IonFabButton 
+                title='Settings' 
+                size='small' 
+                color={props.showSettings ? 'primary' : 'secondary'}  
+                onClick={handleSettingsClick}
+              >
                 <IonIcon icon={settingsOutline} size='small'/>
               </IonFabButton> 
-              <IonFabButton title='Members' size='small'  color={props.showRoles ? 'primary' : 'light'} onClick={handleRolesClick}>
+              <IonFabButton title='Members' size='small'  color={props.showRoles ? 'primary' : 'secondary'} onClick={handleRolesClick}>
                 <IonIcon icon={peopleOutline} size='small'/>
               </IonFabButton> 
               <div style={{

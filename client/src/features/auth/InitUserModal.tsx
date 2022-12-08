@@ -120,7 +120,6 @@ export default function InitUserModal() {
     setShowLoginModal(true);
   }
 
-  console.log(nameError )
   return (
     <IonModal ref={modalRef} canDismiss={!showInitUserModal}>
       <IonCard style={{
