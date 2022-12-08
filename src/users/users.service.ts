@@ -82,20 +82,21 @@ export class UsersService {
       : PaletteMode.LIGHT;
     const user1 = await this.usersRepository.save(user0);
 
-    const startArrow1 = await this.arrowsService.getArrowById(START_ARROW_1_ID);
-    if (startArrow1) {
-      const tab1 = await this.tabsService.appendTab(user1, startArrow1, false, true);
-    }
+    // const startArrow1 = await this.arrowsService.getArrowById(START_ARROW_1_ID);
+    // if (startArrow1) {
+    //   const tab1 = await this.tabsService.appendTab(user1, startArrow1, false, true);
+    // }
 
-    const startArrow2 = await this.arrowsService.getArrowById(START_ARROW_2_ID);
-    if (startArrow2) {
-      const tab2 = await this.tabsService.appendTab(user1, startArrow2, false, !startArrow1);
-    }
+    // const startArrow2 = await this.arrowsService.getArrowById(START_ARROW_2_ID);
+    // if (startArrow2) {
+    //   const tab2 = await this.tabsService.appendTab(user1, startArrow2, false, !startArrow1);
+    // }
 
-    let startArrow = await this.arrowsService.getStartArrow();
-    if (!startArrow) {
-      startArrow = await this.arrowsService.createStartArrow(user1);
-    }
+    // let startArrow = await this.arrowsService.getStartArrow();
+    // if (!startArrow) {
+    //   startArrow = await this.arrowsService.createStartArrow(user1);
+    // }
+    // const tab = await this.tabsService.appendTab(user1, startArrow, false, !startArrow1 && !startArrow2);
 
     let reserveUser = await this.getReserveUser();
     if (!reserveUser) {
@@ -103,7 +104,6 @@ export class UsersService {
       await this.usersRepository.save(user1);
     }
 
-    const tab = await this.tabsService.appendTab(user1, startArrow, false, !startArrow1 && !startArrow2);
 
     const user2 = await this.getUserById(user1.id);
 
@@ -198,6 +198,7 @@ export class UsersService {
       ? PaletteMode.DARK
       : PaletteMode.LIGHT;
 
+    user.togglePaletteDate = user.togglePaletteDate ?? new Date();
     const user1 = await this.usersRepository.save(user);
 
     this.searchService.partialUpdateUsers([user1]);
@@ -235,12 +236,28 @@ export class UsersService {
 
   async readAlerts(user: User) {
     user.checkAlertsDate = new Date();
-    return  this.usersRepository.save(user);
+    return this.usersRepository.save(user);
   }
 
   async incrementUserBalance(user: User, amount: number) {
     await this.usersRepository.increment({
       id: user.id,
     }, 'balance', amount);
+  }
+
+  async createGraph(user: User) {
+    user.createGraphDate = new Date();
+    return this.usersRepository.save(user);
+  }
+
+  async setNavDate(user: User) {
+    user.navigateGraphDate = new Date();
+    return this.usersRepository.save(user);
+  }
+
+  async incrementUserReplyN(user: User) {
+    await this.usersRepository.increment({
+      id: user.id,
+    }, 'replyN', 1);
   }
 }

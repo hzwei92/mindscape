@@ -171,6 +171,8 @@ export class ArrowsResolver {
       alerts,
     } = await this.arrowsService.replyArrow(user, sourceId, linkId, targetId, linkDraft, targetDraft);
 
+    await this.usersService.incrementUserReplyN(user);
+
     const user1 = await this.transfersService.replyTransfer(user, targetVote, linkVote, source, target);
 
     this.pubSub.publish('linkArrows', {

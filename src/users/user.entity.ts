@@ -46,6 +46,9 @@ export class User {
 
   @Column('double precision', { default: 0})
   balance: number;
+
+  @Column({ default: 0})
+  replyN: number;
   
   @Column('double precision', { nullable: true })
   mapLng: number;
@@ -85,6 +88,15 @@ export class User {
 
   @Column({default: 'NOW()'})
   checkAlertsDate: Date;
+
+  @Column({nullable: true})
+  createGraphDate: Date;
+  
+  @Column({nullable: true})
+  navigateGraphDate: Date;
+
+  @Column({nullable: true})
+  togglePaletteDate: Date;
 
   @CreateDateColumn()
   createDate: Date;

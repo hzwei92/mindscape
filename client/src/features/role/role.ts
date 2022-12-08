@@ -10,9 +10,9 @@ export type Role = {
   type: RoleType;
   isInvited: boolean;
   isRequested: boolean;
-  createDate: Date;
-  updateDate: Date;
-  deleteDate: Date | null;
+  createDate: string;
+  updateDate: string;
+  deleteDate: string | null;
   __typename: string;
 }
 

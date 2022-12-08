@@ -6,7 +6,7 @@ export type Lead = {
   leader: User;
   followerId: string;
   follower: User;
-  createDate: Date;
-  deleteDate: Date | null;
+  createDate: string;
+  deleteDate: string | null;
   __typename: string;
 }

@@ -129,7 +129,7 @@ export default function ExplorerComponent() {
           display: 'flex',
           flexDirection: 'row',
           overflowX: 'scroll',
-          paddingTop: 1,
+          padding: 1,
           paddingLeft: isPlatform('iphone') ? 1 : 2,
           bottomShadow: 'none',
         }}>
@@ -164,9 +164,10 @@ export default function ExplorerComponent() {
               right={0}
             />
           : <IonCard style={{
+              
               margin: 0,
               borderRadius: 0,
-              height: `calc(100% - ${TAB_HEIGHT}px)`,
+              height: `calc(100%)`,
               width: '100%',
               backgroundColor: palette === 'dark'
                 ? 'black'

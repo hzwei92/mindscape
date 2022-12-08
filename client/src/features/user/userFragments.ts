@@ -26,13 +26,17 @@ export const USER_FIELDS = gql`
     email
     color
     palette
-    verifyEmailDate
     balance
+    replyN
     mapLng
     mapLat
     mapZoom
     activeDate
+    verifyEmailDate
     checkAlertsDate
+    createGraphDate
+    navigateGraphDate
+    togglePaletteDate
     deleteDate
     currentUserLead {
       ...LeadFields

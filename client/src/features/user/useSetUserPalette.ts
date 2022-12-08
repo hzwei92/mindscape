@@ -10,6 +10,7 @@ const SET_PALETTE = gql`
     setUserPalette(sessionId: $sessionId, palette: $palette) {
       id
       palette
+      togglePaletteDate
     }
   }
 `;
