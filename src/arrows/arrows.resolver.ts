@@ -110,6 +110,16 @@ export class ArrowsResolver {
   }
 
   @UseGuards(GqlAuthGuard)
+  @Mutation(() => Arrow, {name: 'setArrowTitle'})
+  async setArrowTitle(
+    @CurrentUser() user: UserEntity,
+    @Args('arrowId') arrowId: string,
+    @Args('title') title: string,
+  ) {
+    return this.arrowsService.setArrowTitle(user, arrowId, title);
+  }
+
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => Arrow, {name: 'setArrowColor'})
   async setArrowColor(
     @CurrentUser() user: UserEntity,

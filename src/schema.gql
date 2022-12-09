@@ -190,6 +190,7 @@ type Mutation {
   selectTwig(sessionId: String!, twigId: String!): SelectTwigResult!
   setArrowColor(arrowId: String!, color: String!): Arrow!
   setArrowPermissions(arrowId: String!, canAssignMemberRole: String, canEditLayout: String, canPost: String): Arrow!
+  setArrowTitle(arrowId: String!, title: String!): Arrow!
   setUserColor(color: String!, sessionId: String!): User!
   setUserMap(lat: Float!, lng: Float!, zoom: Float!): User!
   setUserName(name: String!, sessionId: String!): User!
