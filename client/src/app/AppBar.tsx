@@ -1,4 +1,4 @@
-import { IonButton, IonButtons,useIonRouter, IonCard, IonIcon, IonPopover } from "@ionic/react";
+import { IonButton, IonButtons,useIonRouter, IonCard, IonIcon, IonPopover, isPlatform } from "@ionic/react";
 import { 
   chatboxOutline, 
   filterOutline, 
@@ -121,10 +121,14 @@ const AppBar = () => {
           style={{
             width: 50,
             height: 50,
-            borderLeft: menuMode === MenuMode.ACCOUNT
+            borderLeft: menuMode === MenuMode.ACCOUNT && !isPlatform('mobile')
               ? `3px solid ${user?.color}`
               : null,
-
+            backgroundColor: menuMode === MenuMode.ACCOUNT && isPlatform('mobile')
+              ? palette === 'dark'
+                ? 'white'
+                : 'black'
+              : null,
           }}
         >
           <IonIcon icon={personCircleOutline} style={{
@@ -133,17 +137,6 @@ const AppBar = () => {
               : null,
           }}/>
         </IonButton>
-        <IonCard style={{
-          display: label === MenuMode.ACCOUNT
-            ? 'block'
-            : 'none',
-          position: 'absolute',
-          left: 45,
-          top: 45,
-          padding: 10,
-        }}>
-          ACCOUNT
-        </IonCard>
         <IonButton  
           onMouseEnter={handleMenuMouseEnter(MenuMode.SEARCH)}
           onMouseLeave={handleMenuMouseLeave}
@@ -151,8 +144,13 @@ const AppBar = () => {
           style={{
             width: 50,
             height: 50,
-            borderLeft: menuMode === MenuMode.SEARCH
+            borderLeft: menuMode === MenuMode.SEARCH && !isPlatform('mobile')
               ? `3px solid ${user?.color}`
+              : null,
+            backgroundColor: menuMode === MenuMode.SEARCH && isPlatform('mobile')
+              ? palette === 'dark'
+                ? 'white'
+                : 'black'
               : null,
           }}
         >
@@ -162,17 +160,6 @@ const AppBar = () => {
               : null,
           }}/>
         </IonButton>
-        <IonCard style={{
-          display: label === MenuMode.SEARCH
-            ? 'block'
-            : 'none',
-          position: 'absolute',
-          left: 45,
-          top: 95,
-          padding: 10,
-        }}>
-          SEARCH
-        </IonCard>
         <IonButton 
           onMouseEnter={handleMenuMouseEnter(MenuMode.MAP)}
           onMouseLeave={handleMenuMouseLeave}
@@ -180,8 +167,13 @@ const AppBar = () => {
           style={{
             height: 50,
             width: 50,
-            borderLeft: menuMode === MenuMode.MAP
+            borderLeft: menuMode === MenuMode.MAP && !isPlatform('mobile')
               ? `3px solid ${user?.color}`
+              : null,
+            backgroundColor: menuMode === MenuMode.MAP && isPlatform('mobile')
+              ? palette === 'dark'
+                ? 'white'
+                : 'black'
               : null,
           }}
         >
@@ -191,17 +183,6 @@ const AppBar = () => {
               : null,
           }}/>
         </IonButton>
-        <IonCard style={{
-          display: label === MenuMode.MAP
-            ? 'block'
-            : 'none',
-          position: 'absolute',
-          left: 45,
-          top: 145,
-          padding: 10,
-        }}>
-          MAP
-        </IonCard>
         <IonButton 
           onMouseEnter={handleMenuMouseEnter(MenuMode.CONTACTS)}
           onMouseLeave={handleMenuMouseLeave}
@@ -209,8 +190,13 @@ const AppBar = () => {
           style={{
             height: 50,
             width: 50,
-            borderLeft: menuMode === MenuMode.CONTACTS
+            borderLeft: menuMode === MenuMode.CONTACTS && !isPlatform('mobile')
               ? `3px solid ${user?.color}`
+              : null,
+            backgroundColor: menuMode === MenuMode.CONTACTS && isPlatform('mobile')
+              ? palette === 'dark'
+                ? 'white'
+                : 'black'
               : null,
           }}
         >
@@ -220,18 +206,6 @@ const AppBar = () => {
               : null,
           }}/>
         </IonButton>
-        <IonCard style={{
-          display: label === MenuMode.CONTACTS
-            ? 'block'
-            : 'none',
-          position: 'absolute',
-          left: 45,
-          top: 195,
-          padding: 10,
-        }}>
-          CONTACTS
-        </IonCard>
-
         <IonButton 
           id={'menu-info-button'}
           onMouseEnter={handleMenuMouseEnter(MenuMode.ABOUT)}
@@ -240,8 +214,13 @@ const AppBar = () => {
           style={{
             height: 50,
             width: 50,
-            borderLeft: menuMode === MenuMode.ABOUT
+            borderLeft: menuMode === MenuMode.ABOUT && !isPlatform('mobile')
               ? `3px solid ${user?.color}`
+              : null,
+            backgroundColor: menuMode === MenuMode.ABOUT && isPlatform('mobile')
+              ? palette === 'dark'
+                ? 'white'
+                : 'black'
               : null,
           }}
         >
@@ -251,17 +230,6 @@ const AppBar = () => {
               : null,
           }}/>
         </IonButton>
-        <IonCard style={{
-          display: label === MenuMode.ABOUT
-            ? 'block'
-            : 'none',
-          position: 'absolute',
-          left: 45,
-          top: 245,
-          padding: 10,
-        }}>
-          ABOUT
-        </IonCard>
       </IonButtons>
       <IonButtons style={{
         display: 'flex',
@@ -281,6 +249,61 @@ const AppBar = () => {
           />
         </IonButton>
       </IonButtons>
+      <IonCard style={{
+          display: label === MenuMode.ACCOUNT
+            ? 'block'
+            : 'none',
+          position: 'absolute',
+          left: 45,
+          top: 45,
+          padding: 10,
+        }}>
+          ACCOUNT
+        </IonCard>
+        <IonCard style={{
+          display: label === MenuMode.SEARCH
+            ? 'block'
+            : 'none',
+          position: 'absolute',
+          left: 45,
+          top: 95,
+          padding: 10,
+        }}>
+          SEARCH
+        </IonCard>
+        <IonCard style={{
+          display: label === MenuMode.MAP
+            ? 'block'
+            : 'none',
+          position: 'absolute',
+          left: 45,
+          top: 145,
+          padding: 10,
+        }}>
+          MAP
+        </IonCard>
+        <IonCard style={{
+          display: label === MenuMode.CONTACTS
+            ? 'block'
+            : 'none',
+          position: 'absolute',
+          left: 45,
+          top: 195,
+          padding: 10,
+        }}>
+          CONTACTS
+        </IonCard>
+        <IonCard style={{
+          display: label === MenuMode.ABOUT
+            ? 'block'
+            : 'none',
+          position: 'absolute',
+          left: 45,
+          top: 245,
+          padding: 10,
+        }}>
+          ABOUT
+        </IonCard>
     </IonCard>
   )
 }
