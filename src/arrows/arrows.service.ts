@@ -295,6 +295,24 @@ export class ArrowsService {
     return this.arrowsRepository.save(arrows);
   }
 
+  async setArrowTitle(user: User, arrowId: string, title: string) {
+    const arrow = await this.arrowsRepository.findOne({ 
+      where: {
+        id: arrowId 
+      }
+    });
+
+    if (!arrow) {
+      throw new BadRequestException('This arrow does not exist');
+    }
+    if (arrow.userId !== user.id) {
+      throw new BadRequestException('You do not have permission to edit this arrow');
+    }
+
+    arrow.title = title.trim();
+    return this.arrowsRepository.save(arrow);
+  }
+
   async setArrowColor(user: User, arrowId: string, color: string) {
     const arrow = await this.arrowsRepository.findOne({ 
       where: {

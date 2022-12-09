@@ -107,6 +107,9 @@ export default function RolesPanel(props: RolesPanelProps) {
       height: 'calc(100% - 60px)',
       overflowY: 'scroll',
     }}>
+      <IonCardHeader>
+        PEOPLE
+      </IonCardHeader>
       <IonCardContent>
         <div style={{
           fontWeight: 'bold',

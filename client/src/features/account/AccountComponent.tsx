@@ -1,5 +1,5 @@
 import { gql, useMutation } from "@apollo/client";
-import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonIcon, IonInput } from "@ionic/react"
+import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonIcon, IonInput, IonItem } from "@ionic/react"
 import { createOutline, send } from "ionicons/icons";
 import { useContext, useEffect, useState } from "react";
 import { ChromePicker } from "react-color";
@@ -204,11 +204,10 @@ const AccountComponent: React.FC = () => {
               </IonButtons>
               { nameError || null }
             </div>
-            <div style={{
+            <IonItem style={{
               display: isEditingName
                 ? 'flex'
                 : 'none',
-              flexDirection: 'row',
             }}>
               <IonInput 
                 value={name}
@@ -223,7 +222,7 @@ const AccountComponent: React.FC = () => {
                   <IonIcon icon={send} size='small'/>
                 </IonButton>
               </IonButtons>
-            </div>
+            </IonItem>
           </IonCardContent>
         </IonCard>
         {

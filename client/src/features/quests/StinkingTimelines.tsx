@@ -27,7 +27,7 @@ export default function StinkingTimelines(props: StinkingTimelinesProps) {
         based on when the posts were created.
         <br/>
         <br/>
-        Try messing around with the nav buttons.
+        Try playing around with the nav buttons.
         <br/>
         <br/>
         Hint: links are skipped over unless they are opened.

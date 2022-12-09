@@ -4,10 +4,11 @@ import { SpaceContext } from './SpaceComponent';
 import { ChromePicker } from 'react-color';
 import useSetArrowColor from '../arrow/useSetArrowColor';
 import { AppContext } from '../../app/App';
-import { IonCard, IonCardContent, IonCardHeader, IonCheckbox, IonItem, IonLabel, IonModal } from '@ionic/react';
+import { IonCard, IonCardContent, IonCardHeader, IonCheckbox, IonInput, IonItem, IonLabel, IonModal } from '@ionic/react';
 import { SPACE_PANEL_WIDTH } from '../../constants';
 import useSetArrowPermissions from '../arrow/useSetArrowPermissions';
 import { checkPermit } from '../../utils';
+import useSetArrowTitle from '../arrow/useSetArrowTitle';
 
 interface SettingsPanelProps {
   showSettings: boolean;
@@ -26,9 +27,31 @@ export default function SettingsPanel(props: SettingsPanelProps) {
 
   const modalRef = useRef<HTMLIonModalElement>(null);
 
+  const { setArrowTitle } = useSetArrowTitle();
   const { setArrowColor } = useSetArrowColor();
-
   const { setArrowPermissions } = useSetArrowPermissions();
+
+  useEffect(() => {
+    if (!abstract?.color) return;
+
+    setColor(abstract.color);
+  }, [abstract?.color])
+
+
+  useEffect(() => {
+    if (props.showSettings) {
+      modalRef.current?.present();
+    }
+    else {
+      modalRef.current?.dismiss();
+    }
+  }, [props.showSettings]);
+
+  const [name, setName] = useState(abstract?.title ?? '');
+  const [nameTimeout, setNameTimeout] = useState<ReturnType<typeof setTimeout>>();
+
+  const [color, setColor] = useState(abstract?.color);
+  const [colorTimeout, setColorTimeout] = useState<ReturnType<typeof setTimeout> | null>(null);
 
   const admins: Role[] = [];
   const members: Role[] = [];
@@ -50,26 +73,25 @@ export default function SettingsPanel(props: SettingsPanelProps) {
       }
     });
 
-  const [color, setColor] = useState(abstract?.color);
-  const [colorTimeout, setColorTimeout] = useState<ReturnType<typeof setTimeout> | null>(null);
   const isAdmin = abstract?.userId === user?.id || role?.type === 'ADMIN';
 
 
-  useEffect(() => {
-    if (!abstract?.color) return;
+  const handleNameChange = (e: any) => {
+    if (!isAdmin) return;
 
-    setColor(abstract.color);
-  }, [abstract?.color])
+    setName(e.target.value);
 
-
-  useEffect(() => {
-    if (props.showSettings) {
-      modalRef.current?.present();
+    if (nameTimeout) {
+      clearTimeout(nameTimeout);
     }
-    else {
-      modalRef.current?.dismiss();
-    }
-  }, [props.showSettings]);
+    const timeout = setTimeout(() => {
+      if (!abstract) return;
+      setArrowTitle(abstract.id, e.target.value);
+      setNameTimeout(undefined);
+    }, 500);
+
+    setNameTimeout(timeout);
+  }
 
   const handleColorChange = (color: any) => {
     if (!isAdmin) return; 
@@ -266,7 +288,22 @@ export default function SettingsPanel(props: SettingsPanelProps) {
       height: 'calc(100% - 60px)',
       overflowY: 'scroll',
     }}>
+      <IonCardHeader>
+        SETTINGS
+      </IonCardHeader>
       <IonCardContent>
+        <div style={{
+          fontWeight: 'bold',
+          fontSize: 20,
+        }}>
+          Name
+        </div>
+        <IonItem>
+          <IonInput 
+            value={name}
+            onIonChange={handleNameChange}
+          />
+        </IonItem>
         <div style={{
           fontWeight: 'bold',
           fontSize: 20,
