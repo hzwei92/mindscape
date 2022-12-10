@@ -21,7 +21,8 @@ export default function Twigs() {
         The twig is visualized as a solid line between two arrows.
         Twigs define the tree shaped layout of posts in a graph.
         <br/><br/>
-        <b>Drag</b> one post on top of another to graft it into a different spot in the tree.
+        <b>Drag</b> one post on top of another
+        to graft it into a different spot in the tree.
         <br/><br/>
         Hint: On mobile, you want drag the post's top left corner to be over the target.
         <br/><br/>

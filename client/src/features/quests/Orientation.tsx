@@ -20,7 +20,8 @@ export default function Orientation() {
         Mindscape platform. 
         <br/>
         <br/>
-        Notice you can pan and zoom the view.
+        Notice you can pan and zoom the view. 
+        On mobile, if you zoom out too far the app will crash.
         <br/>
         <br/>
         Use the buttons at the bottom of the space to 

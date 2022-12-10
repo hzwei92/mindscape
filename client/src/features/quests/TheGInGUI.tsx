@@ -20,7 +20,7 @@ export default function TheGInGUI() {
         textAlign: 'center',
         flexDirection: 'column',
       }}>
-        More to follow on INs and OUTs, tabs, and more.
+        More to follow on INs and OUTs, tabs, COPY/PASTE, and more.
       </IonCardContent>
     </div>
   )
