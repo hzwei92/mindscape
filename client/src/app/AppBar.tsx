@@ -132,7 +132,7 @@ const AppBar = () => {
           }}
         >
           <IonIcon icon={personCircleOutline} style={{
-            color: menuMode === MenuMode.ACCOUNT
+            color: menuMode === MenuMode.ACCOUNT && !isPlatform('mobile')
               ? user?.color
               : null,
           }}/>
@@ -155,7 +155,7 @@ const AppBar = () => {
           }}
         >
           <IonIcon icon={searchOutline} style={{
-            color: menuMode === MenuMode.SEARCH
+            color: menuMode === MenuMode.SEARCH && !isPlatform('mobile')
               ? user?.color
               : null,
           }}/>
@@ -178,7 +178,7 @@ const AppBar = () => {
           }}
         >
           <IonIcon icon={mapOutline} style={{
-            color: menuMode === MenuMode.MAP
+            color: menuMode === MenuMode.MAP && !isPlatform('mobile')
               ? user?.color
               : null,
           }}/>
@@ -201,7 +201,7 @@ const AppBar = () => {
           }}
         >
           <IonIcon icon={peopleOutline} style={{
-            color: menuMode === MenuMode.CONTACTS
+            color: menuMode === MenuMode.CONTACTS && !isPlatform('mobile')
               ? user?.color
               : null,
           }}/>
@@ -225,7 +225,7 @@ const AppBar = () => {
           }}
         >
           <IonIcon icon={informationCircleOutline} style={{
-            color: menuMode === MenuMode.ABOUT
+            color: menuMode === MenuMode.ABOUT && !isPlatform('mobile')
               ? user?.color
               : null,
           }}/>
