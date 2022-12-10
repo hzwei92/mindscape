@@ -115,24 +115,40 @@ const AppBar = () => {
           borderRadius: 25,
         }}/>
         <IonButton 
+          onMouseEnter={handleMenuMouseEnter(MenuMode.NONE)}
+          onMouseLeave={handleMenuMouseLeave}
+          onClick={handleMenuClick(MenuMode.NONE)}
+          style={{
+            display: isPlatform('mobile')
+              ? null
+              : 'none',
+            width: 50,
+            height: 50,
+            borderLeft: menuMode === MenuMode.NONE
+              ? `3px solid ${user?.color}`
+              : null,
+          }}
+        >
+          <IonIcon icon={globeOutline} style={{
+            color: menuMode === MenuMode.NONE
+              ? user?.color
+              : null,
+          }}/>
+        </IonButton>
+        <IonButton 
           onMouseEnter={handleMenuMouseEnter(MenuMode.ACCOUNT)}
           onMouseLeave={handleMenuMouseLeave}
           onClick={handleMenuClick(MenuMode.ACCOUNT)}
           style={{
             width: 50,
             height: 50,
-            borderLeft: menuMode === MenuMode.ACCOUNT && !isPlatform('mobile')
+            borderLeft: menuMode === MenuMode.ACCOUNT
               ? `3px solid ${user?.color}`
-              : null,
-            backgroundColor: menuMode === MenuMode.ACCOUNT && isPlatform('mobile')
-              ? palette === 'dark'
-                ? 'white'
-                : 'black'
               : null,
           }}
         >
           <IonIcon icon={personCircleOutline} style={{
-            color: menuMode === MenuMode.ACCOUNT && !isPlatform('mobile')
+            color: menuMode === MenuMode.ACCOUNT
               ? user?.color
               : null,
           }}/>
@@ -144,18 +160,13 @@ const AppBar = () => {
           style={{
             width: 50,
             height: 50,
-            borderLeft: menuMode === MenuMode.SEARCH && !isPlatform('mobile')
+            borderLeft: menuMode === MenuMode.SEARCH
               ? `3px solid ${user?.color}`
-              : null,
-            backgroundColor: menuMode === MenuMode.SEARCH && isPlatform('mobile')
-              ? palette === 'dark'
-                ? 'white'
-                : 'black'
               : null,
           }}
         >
           <IonIcon icon={searchOutline} style={{
-            color: menuMode === MenuMode.SEARCH && !isPlatform('mobile')
+            color: menuMode === MenuMode.SEARCH
               ? user?.color
               : null,
           }}/>
@@ -167,18 +178,13 @@ const AppBar = () => {
           style={{
             height: 50,
             width: 50,
-            borderLeft: menuMode === MenuMode.MAP && !isPlatform('mobile')
+            borderLeft: menuMode === MenuMode.MAP
               ? `3px solid ${user?.color}`
-              : null,
-            backgroundColor: menuMode === MenuMode.MAP && isPlatform('mobile')
-              ? palette === 'dark'
-                ? 'white'
-                : 'black'
               : null,
           }}
         >
           <IonIcon icon={mapOutline} style={{
-            color: menuMode === MenuMode.MAP && !isPlatform('mobile')
+            color: menuMode === MenuMode.MAP
               ? user?.color
               : null,
           }}/>
@@ -190,18 +196,13 @@ const AppBar = () => {
           style={{
             height: 50,
             width: 50,
-            borderLeft: menuMode === MenuMode.CONTACTS && !isPlatform('mobile')
+            borderLeft: menuMode === MenuMode.CONTACTS
               ? `3px solid ${user?.color}`
-              : null,
-            backgroundColor: menuMode === MenuMode.CONTACTS && isPlatform('mobile')
-              ? palette === 'dark'
-                ? 'white'
-                : 'black'
               : null,
           }}
         >
           <IonIcon icon={peopleOutline} style={{
-            color: menuMode === MenuMode.CONTACTS && !isPlatform('mobile')
+            color: menuMode === MenuMode.CONTACTS
               ? user?.color
               : null,
           }}/>
@@ -214,18 +215,13 @@ const AppBar = () => {
           style={{
             height: 50,
             width: 50,
-            borderLeft: menuMode === MenuMode.ABOUT && !isPlatform('mobile')
+            borderLeft: menuMode === MenuMode.ABOUT
               ? `3px solid ${user?.color}`
-              : null,
-            backgroundColor: menuMode === MenuMode.ABOUT && isPlatform('mobile')
-              ? palette === 'dark'
-                ? 'white'
-                : 'black'
               : null,
           }}
         >
           <IonIcon icon={informationCircleOutline} style={{
-            color: menuMode === MenuMode.ABOUT && !isPlatform('mobile')
+            color: menuMode === MenuMode.ABOUT
               ? user?.color
               : null,
           }}/>
@@ -250,7 +246,7 @@ const AppBar = () => {
         </IonButton>
       </IonButtons>
       <IonCard style={{
-          display: label === MenuMode.ACCOUNT
+          display: label === MenuMode.ACCOUNT && !isPlatform('mobile')
             ? 'block'
             : 'none',
           position: 'absolute',
@@ -261,7 +257,7 @@ const AppBar = () => {
           ACCOUNT
         </IonCard>
         <IonCard style={{
-          display: label === MenuMode.SEARCH
+          display: label === MenuMode.SEARCH && !isPlatform('mobile')
             ? 'block'
             : 'none',
           position: 'absolute',
@@ -272,7 +268,7 @@ const AppBar = () => {
           SEARCH
         </IonCard>
         <IonCard style={{
-          display: label === MenuMode.MAP
+          display: label === MenuMode.MAP && !isPlatform('mobile')
             ? 'block'
             : 'none',
           position: 'absolute',
@@ -283,7 +279,7 @@ const AppBar = () => {
           MAP
         </IonCard>
         <IonCard style={{
-          display: label === MenuMode.CONTACTS
+          display: label === MenuMode.CONTACTS && !isPlatform('mobile')
             ? 'block'
             : 'none',
           position: 'absolute',
@@ -294,7 +290,7 @@ const AppBar = () => {
           CONTACTS
         </IonCard>
         <IonCard style={{
-          display: label === MenuMode.ABOUT
+          display: label === MenuMode.ABOUT && !isPlatform('mobile')
             ? 'block'
             : 'none',
           position: 'absolute',
