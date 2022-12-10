@@ -2,15 +2,23 @@ import { gql, useMutation, useReactiveVar } from '@apollo/client';
 import { useIonToast } from '@ionic/react';
 import { useAppDispatch, useAppSelector } from '../../app/store';
 import { selectSessionId, setAuthIsComplete, setAuthIsInit, setAuthIsValid } from '../auth/authSlice';
+import { mergeUsers } from '../user/userSlice';
 import { mergeArrows, selectArrowIdToInstanceIds, selectIdToInstance, updateInstance } from './arrowSlice';
 
 const SAVE_ARROW = gql`
   mutation SaveArrow($sessionId: String!, $arrowId: String!, $draft: String!) {
     saveArrow(sessionId: $sessionId, arrowId: $arrowId, draft: $draft) {
-      id
-      draft
-      text
-      saveDate
+      user {
+        id
+        saveN
+        saveArrowDate
+      }
+      arrow {
+        id
+        draft
+        text
+        saveDate
+      }
     }
   }
 `;
@@ -38,7 +46,8 @@ export default function useSaveArrow(arrowId: string, instanceId: string) {
     },
     onCompleted: data => {
       console.log(data);
-      dispatch(mergeArrows([data.saveArrow]));
+      dispatch(mergeUsers([data.saveArrow.user]));
+      dispatch(mergeArrows([data.saveArrow.arrow]));
       arrowIdToInstanceIds[arrowId].forEach(id => {
         if (id === instanceId) {
           dispatch(updateInstance({

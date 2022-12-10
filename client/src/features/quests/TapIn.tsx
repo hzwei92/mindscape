@@ -1,7 +1,7 @@
 import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader } from "@ionic/react";
 import { QUEST_WIDTH } from "../../constants";
 
-export default function TabulaRasa2() {
+export default function TapIn() {
   return (
     <div style={{
       width: QUEST_WIDTH,
@@ -10,19 +10,23 @@ export default function TabulaRasa2() {
         fontSize: 40,
         textAlign: 'center',
       }}>
-        Tabula rasa 2
+        Tap in
       </IonCardHeader>
       <IonCardContent style={{
         textAlign: 'center',
         flexDirection: 'column',
       }}>
-        Now we could use some more blank slates!
-        Let's extend the graph a bit to see how that works.
-        <br/><br/>
-        Hit <b>REPLY</b> on the root post.
-        <br/><br/>
-        Hint: There is a REPLY button in the bottom left of each post.
+        A graph starts off with just a root post.
+        That's what you see floating here.
+        Notice you can pan and zoom.
         <br/>
+        <br/>
+        This graph is for your profile, so let's start by typing
+        your <b>current status</b> in the root post.
+        <br/>
+        <br/>
+        Hint: The text gets saved automatically.
+        The app will alert you if there are connection issues.
       </IonCardContent>
     </div>
   )

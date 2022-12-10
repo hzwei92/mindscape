@@ -48,8 +48,17 @@ export class User {
   balance: number;
 
   @Column({ default: 0})
+  saveN: number;
+
+  @Column({ default: 0})
+  moveN: number;
+
+  @Column({ default: 0})
   replyN: number;
-  
+
+  @Column({ default: 0})
+  linkN: number;
+
   @Column('double precision', { nullable: true })
   mapLng: number;
 
@@ -90,13 +99,35 @@ export class User {
   checkAlertsDate: Date;
 
   @Column({nullable: true})
+  togglePaletteDate: Date;
+
+  @Column({nullable: true})
   createGraphDate: Date;
+
+  @Column({nullable: true})
+  saveArrowDate: Date;
+
+  @Column({nullable: true})
+  firstReplyDate: Date;
   
+  @Column({nullable: true})
+  openPostDate: Date;
+
+  @Column({nullable: true})
+  openLinkDate: Date;
+
+  @Column({nullable: true})
+  openArrowDate: Date;
+  
+  @Column({nullable: true})
+  moveTwigDate: Date;
+
+  @Column({nullable: true})
+  graftTwigDate: Date;
+
   @Column({nullable: true})
   navigateGraphDate: Date;
 
-  @Column({nullable: true})
-  togglePaletteDate: Date;
 
   @CreateDateColumn()
   createDate: Date;

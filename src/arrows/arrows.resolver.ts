@@ -17,6 +17,7 @@ import { LinkArrowsResult } from './dto/link-arrows-result.dto';
 import { TransfersService } from 'src/transfers/transfers.service';
 import { CurrentUser, GqlAuthGuard } from 'src/auth/gql-auth.guard';
 import { User as UserEntity } from 'src/users/user.entity';
+import { SaveArrowResult } from './dto/save-arrow-result.dto';
 
 @Resolver(() => Arrow)
 export class ArrowsResolver {
@@ -144,7 +145,7 @@ export class ArrowsResolver {
   
 
   @UseGuards(GqlAuthGuard)
-  @Mutation(() => Arrow, {name: 'saveArrow'})
+  @Mutation(() => SaveArrowResult, {name: 'saveArrow'})
   async saveArrow(
     @CurrentUser() user: UserEntity,
     @Args('sessionId') sessionId: string,
@@ -153,12 +154,23 @@ export class ArrowsResolver {
   ) {
     const arrow = await this.arrowsService.saveArrow(user, arrowId, draft);
 
+    await this.usersService.incrementUserSaveN(user);
+
+    if (!user.saveArrowDate) {
+      await this.usersService.setSaveArrowDate(user);
+    }
+
+    const user1 = await this.usersService.getUserById(user.id);
+    
     this.pubSub.publish('saveArrow', {
       sessionId,
       saveArrow: arrow,
     });
 
-    return arrow;
+    return {
+      user: user1,
+      arrow,
+    };
   }
 
   @UseGuards(GqlAuthGuard)
@@ -183,6 +195,10 @@ export class ArrowsResolver {
 
     await this.usersService.incrementUserReplyN(user);
 
+    if (!user.firstReplyDate) {
+      await this.usersService.setFirstReplyDate(user);
+    }
+    
     const user1 = await this.transfersService.replyTransfer(user, targetVote, linkVote, source, target);
 
     this.pubSub.publish('linkArrows', {

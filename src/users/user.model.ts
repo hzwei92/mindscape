@@ -1,5 +1,4 @@
 import { ObjectType, Field, Int, Float } from '@nestjs/graphql';
-import { Arrow } from 'src/arrows/arrow.model';
 
 @ObjectType()
 export class User {
@@ -31,7 +30,16 @@ export class User {
   balance: number;
 
   @Field(() => Int)
+  saveN: number;
+
+  @Field(() => Int)
+  moveN: number;
+
+  @Field(() => Int)
   replyN: number;
+
+  @Field(() => Int)
+  linkN: number;
 
   @Field(() => Float, { nullable: true })
   mapLng: number;
@@ -63,11 +71,32 @@ export class User {
   @Field({nullable: true})
   createGraphDate: Date;
 
-  @Field({nullable: true})
-  navigateGraphDate: Date;
-
   @Field({ nullable: true })
   togglePaletteDate: Date;
+
+  @Field({ nullable: true })
+  saveArrowDate: Date;
+
+  @Field({ nullable: true })
+  firstReplyDate: Date;
+
+  @Field({ nullable: true })
+  openPostDate: Date;
+
+  @Field({ nullable: true })
+  openLinkDate: Date;
+
+  @Field({ nullable: true })
+  openArrowDate: Date;
+  
+  @Field({ nullable: true })
+  moveTwigDate: Date;
+
+  @Field({ nullable: true })
+  graftTwigDate: Date;
+
+  @Field({nullable: true})
+  navigateGraphDate: Date;
 
   @Field()
   createDate: Date;

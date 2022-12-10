@@ -4,6 +4,10 @@ import { selectSessionId, setAuthIsInit, setAuthIsValid } from '../auth/authSlic
 import { mergeTwigs, selectIdToPos } from '../space/spaceSlice';
 import { useAppDispatch, useAppSelector } from '../../app/store';
 import { useIonToast } from '@ionic/react';
+import { userInfo } from 'os';
+import { useContext } from 'react';
+import { AppContext } from '../../app/App';
+import useSetUserMoveTwigDate from '../user/useSetUserMoveTwigDate';
 
 const MOVE_TWIG = gql`
   mutation MoveTwig($sessionId: String!, $twigId: String!, $x: Int!, $y: Int!, $adjustments: [TwigPosAdjustment!]!) {
@@ -26,9 +30,13 @@ export default function useMoveTwig(abstractId: string) {
 
   const [present] = useIonToast();
 
+  const { user } = useContext(AppContext);
+
   const sessionId = useAppSelector(selectSessionId);
 
   const idToPos = useAppSelector(selectIdToPos(abstractId)) ?? {};
+
+  const { setUserMoveTwigDate } = useSetUserMoveTwigDate();
   
   const [move] = useMutation(MOVE_TWIG, {
     onError: error => {
@@ -74,6 +82,10 @@ export default function useMoveTwig(abstractId: string) {
         adjustments,
       },
     });
+
+    if (user?.openPostDate && !user.moveTwigDate) {
+      setUserMoveTwigDate();
+    }
   }
 
   return { moveTwig };

@@ -245,14 +245,61 @@ export class UsersService {
     }, 'balance', amount);
   }
 
-  async createGraph(user: User) {
+  async setCreateGraphDate(user: User) {
     user.createGraphDate = new Date();
     return this.usersRepository.save(user);
   }
 
+  async setSaveArrowDate(user: User) {
+    user.saveArrowDate = new Date();
+    return this.usersRepository.save(user);
+  }
+
+  async setOpenPostDate(user: User) {
+    user.openPostDate = new Date();
+    return this.usersRepository.save(user);
+  }
+
+  async setOpenLinkDate(user: User) {
+    user.openLinkDate = new Date();
+    return this.usersRepository.save(user);
+  }
+
+  async setOpenArrowDate(user: User) {
+    user.openArrowDate = new Date();
+    return this.usersRepository.save(user);
+  }
+
+  async setMoveTwigDate(user: User) {
+    user.moveTwigDate = new Date();
+    return this.usersRepository.save(user);
+  }
+
+  async setGraftTwigDate(user: User) {
+    user.graftTwigDate = new Date();
+    return this.usersRepository.save(user);
+  }
+  
   async setNavDate(user: User) {
     user.navigateGraphDate = new Date();
     return this.usersRepository.save(user);
+  }
+
+  async setFirstReplyDate(user: User) {
+    user.firstReplyDate = new Date();
+    return this.usersRepository.save(user);
+  }
+
+  async incrementUserSaveN(user: User) {
+    await this.usersRepository.increment({
+      id: user.id,
+    }, 'saveN', 1);
+  }
+
+  async incrementUserMoveN(user: User) {
+    await this.usersRepository.increment({
+      id: user.id,
+    }, 'moveN', 1);
   }
 
   async incrementUserReplyN(user: User) {
@@ -260,4 +307,11 @@ export class UsersService {
       id: user.id,
     }, 'replyN', 1);
   }
+
+  async incrementUserLinkN(user: User) {
+    await this.usersRepository.increment({
+      id: user.id,
+    }, 'N', 1);
+  }
+  
 }

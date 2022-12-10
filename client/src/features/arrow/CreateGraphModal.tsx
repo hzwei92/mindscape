@@ -18,6 +18,7 @@ const CREATE_GRAPH = gql`
         id
         balance
         createGraphDate
+        openArrowDate
       }
       tabs {
         ...FullTabFields

@@ -39,6 +39,7 @@ const REPLY_TWIG = gql`
         id
         balance
         replyN
+        firstReplyDate
       }
       abstract {
         id

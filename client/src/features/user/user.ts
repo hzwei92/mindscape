@@ -17,18 +17,30 @@ export type User = {
   color: string;
   palette: string;
   balance: number;
+  saveN: number;
+  moveN: number;
   replyN: number;
+  linkN: number;
   lng: number | null;
   lat: number | null;
   mapLng: number | null;
   mapLat: number | null;
   mapZoom: number | null;
+
   verifyEmailDate: Date | null;
   activeDate: string;
   checkAlertsDate: string;
-  createGraphDate: string | null;
-  navigateGraphDate: string | null;
   togglePaletteDate: string | null;
+  createGraphDate: string | null;
+  saveArrowDate: string | null;
+  firstReplyDate: string | null;
+  openPostDate: string | null;
+  openLinkDate: string | null;
+  openArrowDate: string | null;
+  moveTwigDate: string | null;
+  graftTwigDate: string | null;
+  navigateGraphDate: string | null;
+
   createDate: string;
   updateDate: string;
   deleteDate: string | null;

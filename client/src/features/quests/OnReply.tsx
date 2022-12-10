@@ -1,7 +1,7 @@
-import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader } from "@ionic/react";
+import { IonCardContent, IonCardHeader } from "@ionic/react";
 import { QUEST_WIDTH } from "../../constants";
 
-export default function TabulaRasa2() {
+export default function OnReply() {
   return (
     <div style={{
       width: QUEST_WIDTH,
@@ -10,19 +10,18 @@ export default function TabulaRasa2() {
         fontSize: 40,
         textAlign: 'center',
       }}>
-        Tabula rasa 2
+        On REPLY
       </IonCardHeader>
       <IonCardContent style={{
         textAlign: 'center',
         flexDirection: 'column',
       }}>
-        Now we could use some more blank slates!
-        Let's extend the graph a bit to see how that works.
+        A post is an identity arrow; it loops around to point back at itself.
+        A link is an arrow that connects two other different arrows.
         <br/><br/>
-        Hit <b>REPLY</b> on the root post.
+        When you use REPLY on an arrow, you create a post and a link.
         <br/><br/>
-        Hint: There is a REPLY button in the bottom left of each post.
-        <br/>
+
       </IonCardContent>
     </div>
   )

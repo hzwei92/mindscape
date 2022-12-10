@@ -192,6 +192,37 @@ export class UsersResolver {
   }
 
   @UseGuards(GqlAuthGuard)
+  @Mutation(() => User, {name: 'setUserOpenPostDate'})
+  async setUserOpenPostDate(
+    @CurrentUser() user: UserEntity,
+  ) {
+    return this.usersService.setOpenPostDate(user);
+  }
+
+  @UseGuards(GqlAuthGuard)
+  @Mutation(() => User, {name: 'setUserOpenLinkDate'})
+  async setUserOpenLinkDate(
+    @CurrentUser() user: UserEntity,
+  ) {
+    return this.usersService.setOpenLinkDate(user);
+  }
+
+  @UseGuards(GqlAuthGuard)
+  @Mutation(() => User, {name: 'setUserMoveTwigDate'})
+  async setUserMoveTwigDate(
+    @CurrentUser() user: UserEntity,
+  ) {
+    return this.usersService.setMoveTwigDate(user);
+  }
+  @UseGuards(GqlAuthGuard)
+  @Mutation(() => User, {name: 'setUserGraftTwigDate'})
+  async setUserGraftTwigDate(
+    @CurrentUser() user: UserEntity,
+  ) {
+    return this.usersService.setGraftTwigDate(user);
+  }
+
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => User, {name: 'setUserNavDate'})
   async setUserNavDate(
     @CurrentUser() user: UserEntity,
