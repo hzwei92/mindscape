@@ -7,6 +7,11 @@ import type { Twig } from './twig';
 import { mergeTwigs } from '../space/spaceSlice';
 import { useIonToast } from '@ionic/react';
 import { FULL_ROLE_FIELDS } from '../role/roleFragments';
+import { userInfo } from 'os';
+import { AppContext } from '../../app/App';
+import useSetUserOpenPostDate from '../user/useSetUserOpenPostDate';
+import useSetUserOpenLinkDate from '../user/useSetUserOpenLinkDate';
+import e from 'express';
 
 const OPEN_TWIG = gql`
   mutation OpenTwig($sessionId: String!, $twigId: String!, $shouldOpen: Boolean!) {
@@ -28,9 +33,15 @@ const useOpenTwig = () => {
 
   const [present] = useIonToast();
 
+  const { user } = useContext(AppContext);
+
   const { abstractId } = useContext(SpaceContext);
 
   const sessionId = useAppSelector(selectSessionId);
+
+  const { setUserOpenPostDate } = useSetUserOpenPostDate();
+  const { setUserOpenLinkDate } = useSetUserOpenLinkDate();
+
 
   const [open] = useMutation(OPEN_TWIG, {
     onError: error => {
@@ -71,6 +82,17 @@ const useOpenTwig = () => {
       abstractId,
       twigs: [twig1],
     }));
+
+    if (twig.sourceId === twig.targetId) {
+      if (!user?.openPostDate) {
+        setUserOpenPostDate();
+      }
+    }
+    else {
+      if (!user?.openLinkDate) {
+        setUserOpenLinkDate();
+      }
+    }
   }
   return { openTwig }
 }

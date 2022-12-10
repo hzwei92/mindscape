@@ -1,14 +1,10 @@
 import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader } from "@ionic/react";
+import { QUEST_WIDTH } from "../../constants";
 
-interface StinkingTimelinesProps {
-  isOpen: boolean;
-  handleClose: () => void;
-}
-export default function StinkingTimelines(props: StinkingTimelinesProps) {
+export default function StinkingTimelines() {
   return (
-    <IonCard style={{
-      margin: 5,
-      width: 280,
+    <div style={{
+      width: QUEST_WIDTH,
     }}>
       <IonCardHeader style={{
         fontSize: 40,
@@ -31,17 +27,7 @@ export default function StinkingTimelines(props: StinkingTimelinesProps) {
         <br/>
         <br/>
         Hint: links are skipped over unless they are opened.
-        <IonButtons style={{
-          marginTop: 20,
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'center',
-        }}>
-          <IonButton onClick={props.handleClose}>
-            OK
-          </IonButton>
-        </IonButtons>
       </IonCardContent>
-    </IonCard>
+    </div>
   )
 }

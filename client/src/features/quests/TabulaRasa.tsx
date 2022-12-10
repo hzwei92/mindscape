@@ -1,14 +1,10 @@
 import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader } from "@ionic/react";
+import { QUEST_WIDTH } from "../../constants";
 
-interface TabulaRasaProps {
-  isOpen: boolean;
-  handleClose: () => void;
-}
-export default function TabulaRasa(props: TabulaRasaProps) {
+export default function TabulaRasa() {
   return (
-    <IonCard style={{
-      margin: 5,
-      width: 280,
+    <div style={{
+      width: QUEST_WIDTH,
     }}>
       <IonCardHeader style={{
         fontSize: 40,
@@ -22,21 +18,16 @@ export default function TabulaRasa(props: TabulaRasaProps) {
       }}>
         A fresh start.
         <br/><br/>
-        Open a new tab to create your first graph.
+        Let's take a moment to appreciate the thin slice of joy
+        that comes with a new beginnning.
+        <br/><br/>
+        Cool. Now, let's get you set up with a profile.
+        <br/><br/>
+        Open a <b>new tab</b> to create an empty graph.
         <br/>
         <br/>
         Hint: Use the + button in the top left.
-        <IonButtons style={{
-          marginTop: 20,
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'center',
-        }}>
-          <IonButton onClick={props.handleClose}>
-            OK
-          </IonButton>
-        </IonButtons>
       </IonCardContent>
-    </IonCard>
+    </div>
   )
 }

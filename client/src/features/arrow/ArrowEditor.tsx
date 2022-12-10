@@ -17,8 +17,6 @@ import { useAppDispatch, useAppSelector } from '../../app/store';
 import { selectInstanceById, updateInstance } from './arrowSlice';
 import moveSelectionToEnd from '../editor/moveSelectionToEnd';
 import { AppContext } from '../../app/App';
-import { DH_NOT_SUITABLE_GENERATOR } from 'constants';
-import { calendarNumberSharp } from 'ionicons/icons';
 //import useSaveArrow from './useSaveArrow';
 
 const iframelyPlugin = createIframelyPlugin();
@@ -56,7 +54,6 @@ export default function ArrowEditor(props: ArrowEditorProps) {
   const instance = useAppSelector(state => selectInstanceById(state, props.instanceId))
 
   const { saveArrow } = useSaveArrow(props.arrow.id, props.instanceId);
-
   const [saveTimeout, setSaveTimeout] = useState(null as ReturnType<typeof setTimeout> | null);
   const [isFocused, setIsFocused] = useState(false);
   const [editorState, setEditorState] = useState(() => {

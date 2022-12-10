@@ -1,9 +1,12 @@
-import { gql, useMutation, useReactiveVar } from '@apollo/client';
+import { gql, useMutation } from '@apollo/client';
 import { useIonToast } from '@ionic/react';
+import { useContext } from 'react';
+import { AppContext } from '../../app/App';
 import { useAppDispatch, useAppSelector } from '../../app/store';
 import { selectSessionId, setAuthIsInit, setAuthIsValid } from '../auth/authSlice';
 import { FULL_ROLE_FIELDS } from '../role/roleFragments';
 import { mergeTwigs, selectIdToTwig } from '../space/spaceSlice';
+import useSetUserGraftTwigDate from '../user/useSetUserGraftTwigDate';
 
 const GRAFT = gql`
   mutation GraftTwig($sessionId: String!, $twigId: String!, $parentTwigId: String!, $x: Int!, $y: Int!) {
@@ -34,9 +37,13 @@ export default function useGraftTwig(abstractId: string) {
 
   const [present] = useIonToast();
 
+  const { user } = useContext(AppContext);
+
   const sessionId = useAppSelector(selectSessionId);
 
   const idToTwig = useAppSelector(selectIdToTwig(abstractId));
+
+  const { setUserGraftTwigDate } = useSetUserGraftTwigDate();
   
   const [graft] = useMutation(GRAFT, {
     onError: error => {
@@ -85,6 +92,10 @@ export default function useGraftTwig(abstractId: string) {
       abstractId,
       twigs: [twig1],
     }));
+
+    if (user?.openLinkDate && !user.graftTwigDate) {
+      setUserGraftTwigDate();
+    }
   }
   return { graftTwig };
 }

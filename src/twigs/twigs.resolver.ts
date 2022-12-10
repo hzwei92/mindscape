@@ -92,6 +92,9 @@ export class TwigsResolver {
   
     await this.usersService.incrementUserReplyN(user);
     
+    if (!user.firstReplyDate) {
+      await this.usersService.setFirstReplyDate(user);
+    }
     const user1 = await this.transfersService.replyTransfer(user, result.targetVote, result.linkVote, result.source, result.targetArrow);
     
     this.pubSub.publish('replyTwig', {
@@ -259,6 +262,8 @@ export class TwigsResolver {
       twigs, 
       role,
     } = await this.twigsService.moveTwig(user, twigId, x, y, adjustments);
+
+    await this.usersService.incrementUserMoveN(user);
 
     this.pubSub.publish('moveTwig', {
       sessionId,

@@ -186,15 +186,19 @@ type Mutation {
   replyTwig(draft: String!, parentTwigId: String!, postId: String!, sessionId: String!, twigId: String!, x: Int!, y: Int!): ReplyTwigResult!
   requestRole(arrowId: String!, sessionId: String!, type: String!): Role!
   resendUserVerification: User!
-  saveArrow(arrowId: String!, draft: String!, sessionId: String!): Arrow!
+  saveArrow(arrowId: String!, draft: String!, sessionId: String!): SaveArrowResult!
   selectTwig(sessionId: String!, twigId: String!): SelectTwigResult!
   setArrowColor(arrowId: String!, color: String!): Arrow!
   setArrowPermissions(arrowId: String!, canAssignMemberRole: String, canEditLayout: String, canPost: String): Arrow!
   setArrowTitle(arrowId: String!, title: String!): Arrow!
   setUserColor(color: String!, sessionId: String!): User!
+  setUserGraftTwigDate: User!
   setUserMap(lat: Float!, lng: Float!, zoom: Float!): User!
+  setUserMoveTwigDate: User!
   setUserName(name: String!, sessionId: String!): User!
   setUserNavDate: User!
+  setUserOpenLinkDate: User!
+  setUserOpenPostDate: User!
   setUserPalette(palette: String!, sessionId: String!): User!
   unfollowUser(leadId: String!): Lead!
   updateTab(isFocus: Boolean!, isFrame: Boolean!, tabId: String!): [Tab!]!
@@ -254,6 +258,11 @@ type Role {
   updateDate: DateTime!
   user: User!
   userId: String!
+}
+
+type SaveArrowResult {
+  arrow: Arrow!
+  user: User!
 }
 
 type SelectTwigResult {
@@ -359,22 +368,32 @@ type User {
   deleteDate: DateTime
   description: String!
   email: String
+  firstReplyDate: DateTime
   followers: [Lead!]!
+  graftTwigDate: DateTime
   id: String!
   isAdmin: Boolean!
   isRegisteredWithGoogle: Boolean!
   isReserve: Boolean!
   leaders: [Lead!]!
+  linkN: Int!
   lowercaseName: String!
   mapLat: Float
   mapLng: Float
   mapZoom: Float
+  moveN: Int!
+  moveTwigDate: DateTime
   name: String!
   navigateGraphDate: DateTime
+  openArrowDate: DateTime
+  openLinkDate: DateTime
+  openPostDate: DateTime
   palette: String!
   replyN: Int!
   roles: [Role!]!
   routeName: String!
+  saveArrowDate: DateTime
+  saveN: Int!
   tabs: [Tab!]!
   togglePaletteDate: DateTime
   updateDate: DateTime!

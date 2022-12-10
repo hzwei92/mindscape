@@ -46,6 +46,9 @@ export class TabsResolver {
 
       const tabs = await this.tabsService.appendTab(user, arrow, false, true);
 
+      if (!user.openArrowDate) {
+        user = await this.usersService.setOpenArrowDate(user);
+      }
       return {
         user, 
         tabs,
@@ -83,8 +86,9 @@ export class TabsResolver {
       const tabs = await this.tabsService.appendTab(user1, arrow, false, true);
 
       if (!user1.createGraphDate) {
-        user1 = await this.usersService.createGraph(user1);
+        user1 = await this.usersService.setCreateGraphDate(user1);
       }
+
       return {
         user: user1,
         tabs,

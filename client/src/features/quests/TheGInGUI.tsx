@@ -3,8 +3,7 @@ import { Dispatch, SetStateAction, useContext } from "react";
 import { AppContext } from "../../app/App";
 import { QUEST_WIDTH } from "../../constants";
 
-
-export default function LetThereBeLight() {
+export default function TheGInGUI() {
   const { user } = useContext(AppContext);
 
   return (
@@ -15,19 +14,18 @@ export default function LetThereBeLight() {
         fontSize: 40,
         textAlign: 'center',
       }}>
-        And then there was light/dark mode...
+        The G in GUI
       </IonCardHeader>
       <IonCardContent style={{
         textAlign: 'center',
         flexDirection: 'column',
       }}>
-        In the beginning, there was only one color palette.
-        Then, there were two.
+        Each graph has a root post that identifies it.
         <br/><br/>
-        Toggle <b>day/night mode</b>.
+        
         <br/>
         <br/>
-        Hint: Use the button in the bottom left.
+        Hint: Use the REPLY button in the bottom left of each post.
       </IonCardContent>
     </div>
   )
