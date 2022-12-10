@@ -23,13 +23,13 @@ export default function IframelyComponent(props: any) {
             setIsLoaded(true);
             if (res.html) {
               console.log(res);
-              setHtml({__html: `<div>${res.url}${res.html}</div>`});
+              setHtml({__html: `<div><a href='${res.url}' target='_blank' rel='noopener noreferrer'>${res.url}</a>${res.html}</div>`});
             } 
             else if (res.error) {
               setError({code: res.error, message: res.message});
             }
             else {
-              setHtml({__html: `<div>${res.url}</div>`});
+              setHtml({__html: `<div><a href='${res.url}' target='_blank' rel='noopener noreferrer'>${res.url}</a></div>`});
             }
           },
           (error) => {
