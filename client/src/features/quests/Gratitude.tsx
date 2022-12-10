@@ -18,10 +18,10 @@ export default function Gratitude() {
       }}>
         Let's take a moment to focus on the things we're grateful for.
         <br/><br/>
-        Thank you for trying this app!
+        Thank you for trying out the app!
         <br/><br/>
         <b>Write</b> a bit in this new post
-        about something interesting that you appreciate having in your life.
+        about something interesting that you appreciate.
         <br/><br/>
         <b>Toggle</b> the font size of a post using the -/+ button around the top right of the post.
       </IonCardContent>

@@ -3,7 +3,6 @@ import { alert, arrowBack, arrowForward } from "ionicons/icons";
 import { useContext, useEffect, useState } from "react";
 import { AppContext } from "../../app/App";
 import LetThereBeLight from "./LetThereBeLight";
-import StinkingTimelines from "./StinkingTimelines";
 import TabulaRasa from "./TabulaRasa";
 import TapIn from "./TapIn";
 import TheGInGUI from "./TheGInGUI";
@@ -11,20 +10,28 @@ import Gratitude from "./Gratitude";
 import TabulaRasa2 from "./TabulaRasa2";
 import { User } from "../user/user";
 import Service from "./Service";
-import { IdToType } from "../../types";
 import Arrows from "./Arrows";
-import OnReply from "./OnReply";
 import Twigs from "./Twigs";
 import ArrowsAllTheWayDown from "./ArrowsAllTheWayDown";
+import Orientation from "./Orientation";
+import { MenuMode } from "../menu/menu";
+import useSetUserViewInfoDate from "../user/useSetUserViewInfoDate";
 
 
 export default function Quests() {
-  const { user, palette } = useContext(AppContext);
+  const { user, menuMode } = useContext(AppContext);
 
   const [isOpen, setIsOpen] = useState(false);
   const [hilight, setHilight] = useState(true);
   const [hilightInterval, setHilightInterval] = useState<ReturnType<typeof setInterval>>();
 
+  const { setUserViewInfoDate } = useSetUserViewInfoDate();
+
+  useEffect(() => {
+    if (menuMode === MenuMode.ABOUT && !user?.viewInfoDate) {
+      setUserViewInfoDate();
+    }
+  }, [menuMode]);
   useEffect(() => {
     setIsOpen(false);
     if (hilightInterval) {
@@ -44,20 +51,8 @@ export default function Quests() {
 
   const [index, setIndex] = useState(-1);
 
-  const quests: IdToType<JSX.Element> = {
-    arrows: <Arrows />,
-    gratitude: <Gratitude />,
-    gui: <TheGInGUI  />,
-    light: <LetThereBeLight />,
-    reply: <OnReply />,
-    service: <Service />,
-    tabula: <TabulaRasa />,
-    tabula2: <TabulaRasa2  />,
-    tapIn: <TapIn  />,
-    timelines: <StinkingTimelines  />,
-    twigs: <Twigs />,
-  }
   const questList: JSX.Element[] = [
+    <Orientation />,
     <LetThereBeLight />,
     <TabulaRasa />,
     <TapIn />,
@@ -67,39 +62,43 @@ export default function Quests() {
     <Arrows />,
     <Twigs />,
     <ArrowsAllTheWayDown />,
+    <TheGInGUI />,
   ]
 
   const resetIndex = (user: User | null) => {
     console.log('hello')
-    if (!user?.togglePaletteDate) {
+    if (!user?.viewInfoDate) {
       setIndex(0);
     }
-    else if (!user.createGraphDate) {
+    else if (!user?.togglePaletteDate) {
       setIndex(1);
     }
-    else if (!user.saveArrowDate){
+    else if (!user.createGraphDate) {
       setIndex(2);
     }
-    else if (!user.firstReplyDate) {
+    else if (!user.saveArrowDate){
       setIndex(3);
     }
-    else if (!user.openPostDate) {
+    else if (!user.firstReplyDate) {
       setIndex(4);
     }
-    else if (!user.moveTwigDate) {
+    else if (!user.openPostDate) {
       setIndex(5);
     }
-    else if (!user.openLinkDate){
+    else if (!user.moveTwigDate) {
       setIndex(6);
     }
-    else if (!user.graftTwigDate) {
+    else if (!user.openLinkDate){
       setIndex(7);
     }
-    else if (!user.openArrowDate) {
+    else if (!user.graftTwigDate) {
       setIndex(8);
     }
-    else {
+    else if (!user.openArrowDate) {
       setIndex(9);
+    }
+    else {
+      setIndex(10);
     }
   }
 
@@ -108,6 +107,7 @@ export default function Quests() {
     resetIndex(user);
   }, [
     user?.id, 
+    user?.viewInfoDate,
     user?.togglePaletteDate,
     user?.createGraphDate,
     user?.saveArrowDate,

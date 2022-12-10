@@ -30,6 +30,7 @@ export type User = {
   verifyEmailDate: Date | null;
   activeDate: string;
   checkAlertsDate: string;
+  viewInfoDate: string | null;
   togglePaletteDate: string | null;
   createGraphDate: string | null;
   saveArrowDate: string | null;

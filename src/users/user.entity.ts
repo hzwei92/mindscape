@@ -99,6 +99,9 @@ export class User {
   checkAlertsDate: Date;
 
   @Column({nullable: true})
+  viewInfoDate: Date;
+  
+  @Column({nullable: true})
   togglePaletteDate: Date;
 
   @Column({nullable: true})

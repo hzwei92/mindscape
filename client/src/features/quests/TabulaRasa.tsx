@@ -26,7 +26,7 @@ export default function TabulaRasa() {
         Open a <b>new tab</b> to create an empty graph.
         <br/>
         <br/>
-        Hint: Use the + button in the top left.
+        Hint: Use the + button in the top left of the tab bar.
       </IonCardContent>
     </div>
   )

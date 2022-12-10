@@ -27,7 +27,7 @@ export default function LetThereBeLight() {
         Toggle <b>day/night mode</b>.
         <br/>
         <br/>
-        Hint: Use the button in the bottom left.
+        Hint: Use the button in the bottom left of the app bar.
       </IonCardContent>
     </div>
   )

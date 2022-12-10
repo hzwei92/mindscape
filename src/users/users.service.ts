@@ -245,6 +245,11 @@ export class UsersService {
     }, 'balance', amount);
   }
 
+  async setViewInfoDate(user: User) {
+    user.viewInfoDate = new Date();
+    return this.usersRepository.save(user);
+  }
+  
   async setCreateGraphDate(user: User) {
     user.createGraphDate = new Date();
     return this.usersRepository.save(user);

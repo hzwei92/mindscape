@@ -200,6 +200,7 @@ type Mutation {
   setUserOpenLinkDate: User!
   setUserOpenPostDate: User!
   setUserPalette(palette: String!, sessionId: String!): User!
+  setUserViewInfoDate: User!
   unfollowUser(leadId: String!): Lead!
   updateTab(isFocus: Boolean!, isFrame: Boolean!, tabId: String!): [Tab!]!
   verifyUser(code: String!): User!
@@ -398,6 +399,7 @@ type User {
   togglePaletteDate: DateTime
   updateDate: DateTime!
   verifyEmailDate: DateTime
+  viewInfoDate: DateTime
 }
 
 type UserAvatar {

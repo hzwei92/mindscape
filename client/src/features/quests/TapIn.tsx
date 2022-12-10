@@ -18,7 +18,6 @@ export default function TapIn() {
       }}>
         A graph starts off with just a root post.
         That's what you see floating here.
-        Notice you can pan and zoom.
         <br/>
         <br/>
         This graph is for your profile, so let's start by typing
