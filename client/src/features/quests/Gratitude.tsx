@@ -22,6 +22,7 @@ export default function Gratitude() {
         <br/><br/>
         <b>Write</b> a bit in this new post
         about something interesting that you appreciate.
+        Maybe you could use this to start a gratitude journal!
         <br/><br/>
         <b>Toggle</b> the font size of a post using the -/+ button around the top right of the post.
       </IonCardContent>

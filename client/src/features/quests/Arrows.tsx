@@ -24,7 +24,7 @@ export default function Arrows() {
         Links have their own content,
         and you can reply to them and link between them.
         <br/><br/>
-        <b>Click</b> on a link to see the resemblence between posts and links.
+        <b>Click</b> on a link to check out the resemblence between posts and links.
         <br/><br/>
         Hint: When a link is closed, it displays the number of upvotes it has.
       </IonCardContent>
