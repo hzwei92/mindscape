@@ -68,11 +68,14 @@ export class User {
   @Field()
   checkAlertsDate: Date;
 
-  @Field({nullable: true})
-  createGraphDate: Date;
-
+  @Field({ nullable: true })
+  viewInfoDate: Date;
+  
   @Field({ nullable: true })
   togglePaletteDate: Date;
+
+  @Field({nullable: true})
+  createGraphDate: Date;
 
   @Field({ nullable: true })
   saveArrowDate: Date;

@@ -21,6 +21,8 @@ export default function Nesting() {
         <br/><br/>
         Hit the <b>OPEN</b> button on an arrow to set it as the root of a new graph.
         <br/><br/>
+        Hint: Each your posts has an OPEN button in its bottom right corner.
+        <br/><br/>
         Hint: if an arrow is the root of a graph, it will display a title underlined and in bold.
         You can click this title to open the graph in a new tab.
       </IonCardContent>

@@ -14,18 +14,13 @@ export default function TheGInGUI() {
         fontSize: 40,
         textAlign: 'center',
       }}>
-        The G in GUI
+        To be continued...
       </IonCardHeader>
       <IonCardContent style={{
         textAlign: 'center',
         flexDirection: 'column',
       }}>
-        Each graph has a root post that identifies it.
-        <br/><br/>
-        
-        <br/>
-        <br/>
-        Hint: Use the REPLY button in the bottom left of each post.
+        More to follow on INs and OUTs, tabs, and more.
       </IonCardContent>
     </div>
   )
