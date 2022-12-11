@@ -163,17 +163,6 @@ function SearchComponent() {
               );
             })
           }
-          <IonInfiniteScroll
-            onIonInfinite={(e: any) => {
-              getAlerts();
-              setTimeout(() => {
-                e.target.complete()
-              }, 300)
-            }}
-            position='bottom'
-          >
-            <IonInfiniteScrollContent loadingSpinner={'dots'}/>
-          </IonInfiniteScroll>
         </IonContent>
       </InstantSearch>
     </IonCard>
