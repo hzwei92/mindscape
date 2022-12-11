@@ -180,7 +180,6 @@ type Mutation {
   pasteArrow(linkDraft: String!, linkId: String!, sessionId: String!, sourceId: String!, targetId: String!): ReplyArrowResult!
   pasteTwig(parentTwigId: String!, postId: String!, sessionId: String!, twigId: String!, x: Int!, y: Int!): ReplyTwigResult!
   publishAvatar(abstractId: String!, sessionId: String!, x: Int, y: Int): User!
-  readAlerts(arrowIds: [String!]!): ReadAlertsResult!
   refreshToken(refreshToken: String!): String!
   registerGoogleUser(token: String!): UserWithTokens!
   registerUser(email: String!, pass: String!): UserWithTokens!
@@ -196,6 +195,7 @@ type Mutation {
   setArrowColor(arrowId: String!, color: String!): Arrow!
   setArrowPermissions(arrowId: String!, canAssignMemberRole: String, canEditLayout: String, canPost: String): Arrow!
   setArrowTitle(arrowId: String!, title: String!): Arrow!
+  setUserCheckAlertsDate: User!
   setUserColor(color: String!, sessionId: String!): User!
   setUserGraftTwigDate: User!
   setUserMap(lat: Float!, lng: Float!, zoom: Float!): User!
@@ -219,11 +219,6 @@ type OpenTwigResult {
 
 type Query {
   getUserByEmail(email: String!): User
-}
-
-type ReadAlertsResult {
-  arrows: [Arrow!]!
-  user: User!
 }
 
 type RemoveTabResult {

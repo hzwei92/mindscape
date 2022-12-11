@@ -7,14 +7,16 @@ import { ALGOLIA_APP_ID, ALGOLIA_APP_KEY, ALGOLIA_INDEX_NAME, OFF_WHITE } from '
 import { useAppDispatch, useAppSelector } from '../../app/store';
 import { searchGoBack, searchGoForward, searchRefresh, selectSearchIndex, selectSearchShouldRefresh, selectSearchSlice, selectSearchStack } from './searchSlice';
 import EntryTree from '../entry/EntryTree';
-import { IonButton, IonButtons, IonCard, IonCardHeader, IonIcon } from '@ionic/react';
-import { chevronBackOutline, chevronForwardOutline, close } from 'ionicons/icons';
+import { IonButton, IonButtons, IonCard, IonCardHeader, IonContent, IonIcon, IonInfiniteScroll, IonInfiniteScrollContent, ScrollDetail } from '@ionic/react';
+import { chevronBackOutline, chevronForwardOutline, close, reload } from 'ionicons/icons';
 import { AppContext } from '../../app/App';
+import { MenuMode } from '../menu/menu';
+import useGetAlerts from '../alerts/useGetAlerts';
 
 function SearchComponent() {
   const dispatch = useAppDispatch();
 
-  const { palette } = useContext(AppContext);
+  const { palette, menuMode } = useContext(AppContext);
 
   const stack = useAppSelector(selectSearchStack);
   const index = useAppSelector(selectSearchIndex);
@@ -23,9 +25,11 @@ function SearchComponent() {
   const shouldRefreshDraft = useAppSelector(selectSearchShouldRefresh);
   const [searchClient, setSearchClient] = useState(null as SearchClient | null);
 
-  const containerEl = useRef<HTMLElement>();
+  const contentRef = useRef<HTMLIonContentElement>(null);
  
-  const [showResizer, setShowResizer] = useState(false);
+  const { getAlerts } = useGetAlerts();
+
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     setSearchClient(algoliasearch(ALGOLIA_APP_ID, ALGOLIA_APP_KEY))
@@ -37,6 +41,12 @@ function SearchComponent() {
     }
   }, [shouldRefreshDraft])
 
+  useEffect(() => {
+    if (menuMode === MenuMode.SEARCH) {
+      contentRef.current?.scrollToPoint(0, 50, 300)
+    }
+  }, [menuMode])
+
   const handleBackClick = (event: React.MouseEvent) => {
     dispatch(searchGoBack());
   };
@@ -45,21 +55,13 @@ function SearchComponent() {
     dispatch(searchGoForward());
   };
 
-  const handleClose = () => {
-
-  };
-
-  const handleResizeMouseEnter = (event: React.MouseEvent) => {
-    setShowResizer(true);
-  };
-
-  const handleResizeMouseLeave = (event: React.MouseEvent) => {
-    setShowResizer(false);
-  };
-
-  const handleResizeMouseDown = (event: React.MouseEvent) => {
-    // setSearchMenuIsResizing(true);
-  };
+  const handleScroll = (event: CustomEvent<ScrollDetail>) => {
+    if (event.detail.scrollTop === 0) {
+      setTimeout(() => {
+        contentRef.current?.scrollToPoint(0, 50, 300)
+      }, 1000)
+    }
+  }
 
   if (!searchClient) return null;
 
@@ -114,11 +116,46 @@ function SearchComponent() {
             <CustomHits />
           </div>
         </IonCard>
-        <div  style={{
-          height: 'calc(100% - 80px)',
-          width: '100%',
-          overflowY: 'scroll',
-        }}>
+        <IonContent 
+          ref={contentRef}
+          scrollEvents={true}
+          onIonScroll={handleScroll}
+          style={{
+            height: 'calc(100% - 80px)',
+            width: '100%',
+          }}
+        >
+          <IonInfiniteScroll
+            onIonInfinite={(e: any) => {
+              setIsLoading(true);
+              getAlerts();
+              setTimeout(() => {
+                e.target.complete()
+                setIsLoading(false)
+              }, 300)
+            }}
+            position='top'
+            style={{
+              height: 50,
+            }}
+          >
+            <IonInfiniteScrollContent loadingSpinner={'dots'} style={{
+              position: 'relative',
+            }}>
+              <IonButtons style={{
+                display: isLoading
+                  ? 'none'
+                  :  'flex',
+                position: 'absolute',
+                top: 10,
+                left: 'calc(50% - 20px)',
+              }}>
+                <IonButton>
+                  <IonIcon icon={reload} size='small'/>
+                </IonButton>
+              </IonButtons>
+            </IonInfiniteScrollContent>
+          </IonInfiniteScroll>
           { 
             slice.entryIds.map((entryId) => {
               return (
@@ -130,8 +167,18 @@ function SearchComponent() {
               );
             })
           }
-          <div style={{height: '10px'}}/>
-        </div>
+          <IonInfiniteScroll
+            onIonInfinite={(e: any) => {
+              getAlerts();
+              setTimeout(() => {
+                e.target.complete()
+              }, 300)
+            }}
+            position='bottom'
+          >
+            <IonInfiniteScrollContent loadingSpinner={'dots'}/>
+          </IonInfiniteScroll>
+        </IonContent>
       </InstantSearch>
     </IonCard>
   )

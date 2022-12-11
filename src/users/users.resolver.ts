@@ -192,6 +192,14 @@ export class UsersResolver {
   }
 
   @UseGuards(GqlAuthGuard)
+  @Mutation(() => User, {name: 'setUserCheckAlertsDate'})
+  async setUserCheckAlertsDate(
+    @CurrentUser() user: UserEntity,
+  ) {
+    return this.usersService.setCheckAlertsDate(user);
+  }
+
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => User, {name: 'setUserViewInfoDate'})
   async setUserViewInfoDate(
     @CurrentUser() user: UserEntity,

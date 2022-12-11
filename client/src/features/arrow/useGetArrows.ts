@@ -1,7 +1,8 @@
 import { gql, useMutation } from '@apollo/client';
 import { useAppDispatch, useAppSelector } from '../../app/store';
+import { Arrow } from './arrow';
 import { FULL_ARROW_FIELDS } from './arrowFragments';
-import { mergeArrows } from './arrowSlice';
+import { mergeArrows, selectArrowIdToInstanceIds, selectIdToInstance, updateInstance } from './arrowSlice';
 
 const GET_ARROWS = gql`
   mutation GetArrows($arrowIds: [String!]!) {
@@ -15,6 +16,9 @@ const GET_ARROWS = gql`
 export default function useGetArrows(onCompleted?: any) {
   const dispatch = useAppDispatch();
 
+  const idToInstance = useAppSelector(selectIdToInstance);
+  const arrowIdToInstanceIds = useAppSelector(selectArrowIdToInstanceIds);
+
   const [get] = useMutation(GET_ARROWS, {
     onError: error => {
       console.error(error);
@@ -23,6 +27,18 @@ export default function useGetArrows(onCompleted?: any) {
       console.log(data);
 
       dispatch(mergeArrows(data.getArrows));
+
+      data.getArrows.forEach((arrow: Arrow) => {
+        const instanceIds = arrowIdToInstanceIds[arrow.id];
+
+        instanceIds.forEach(id => {
+          dispatch(updateInstance({
+            ...idToInstance[id],
+            shouldRefreshDraft: true,
+          }))
+        });
+      });
+
       onCompleted && onCompleted(data.getArrows);
     },
   });
