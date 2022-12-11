@@ -15,6 +15,7 @@ export default function TabulaRasa2() {
       <IonCardContent style={{
         textAlign: 'center',
         flexDirection: 'column',
+        fontSize: 12,
       }}>
         Now we could use some more blank slates!
         Let's extend the graph a bit to see how that works.

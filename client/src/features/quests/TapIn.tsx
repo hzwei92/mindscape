@@ -15,6 +15,7 @@ export default function TapIn() {
       <IonCardContent style={{
         textAlign: 'center',
         flexDirection: 'column',
+        fontSize: 12,
       }}>
         A graph starts off with just a root post.
         That's what you see floating here.

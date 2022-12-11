@@ -15,6 +15,7 @@ export default function Arrows() {
       <IonCardContent style={{
         textAlign: 'center',
         flexDirection: 'column',
+        fontSize: 12,
       }}>
         A post is an arrow that loops around to point back at itself.
         <br/><br/>

@@ -15,6 +15,7 @@ export default function Twigs() {
       <IonCardContent style={{
         textAlign: 'center',
         flexDirection: 'column',
+        fontSize: 12,
       }}>
         Every time you use REPLY in a graph, it generates a post, a link, and a twig.
         <br/><br/>
@@ -24,7 +25,7 @@ export default function Twigs() {
         <b>Drag</b> one post on top of another
         to graft it into a different spot in the tree.
         <br/><br/>
-        Hint: On mobile, you want drag the post's top left corner to be over the target.
+        Hint: On mobile, you want to drag the post's top left corner to be over the target.
         <br/><br/>
         Hint: If you drag a post onto its current parent, nothing happens.
       </IonCardContent>
