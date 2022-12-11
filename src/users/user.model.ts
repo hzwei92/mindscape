@@ -65,12 +65,15 @@ export class User {
   @Field()
   activeDate: Date;
 
-  @Field()
+  @Field({ nullable: true })
   checkAlertsDate: Date;
 
   @Field({ nullable: true })
-  viewInfoDate: Date;
+  loadFeedDate: Date;
   
+  @Field({ nullable: true })
+  viewInfoDate: Date;
+
   @Field({ nullable: true })
   togglePaletteDate: Date;
 

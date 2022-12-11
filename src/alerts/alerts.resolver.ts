@@ -15,6 +15,7 @@ import { Inject, UseGuards } from '@nestjs/common';
 import { RedisPubSub } from 'graphql-redis-subscriptions';
 import { PUB_SUB } from 'src/pub-sub/pub-sub.module';
 import { ReadAlertsResult } from './dto/read-alerts-result.dto';
+import { GetCurrentUserAlertsResult } from './dto/get-current-user-alerts.dto';
 
 @Resolver(() => Alert)
 export class AlertsResolver {
@@ -78,11 +79,20 @@ export class AlertsResolver {
   }
 
   @UseGuards(GqlAuthGuard)
-  @Mutation(() => [Alert], {name: 'getCurrentUserAlerts'})
+  @Mutation(() => GetCurrentUserAlertsResult, {name: 'getCurrentUserAlerts'})
   async getAlertsByUserId(
     @CurrentUser() user: UserEntity,
   ) {
-    return this.alertsService.getUserAlerts(user);
+    const alerts = await this.alertsService.getUserAlerts(user);
+
+    if (!user.loadFeedDate) {
+      user = await this.usersService.setLoadFeedDate(user);
+    }
+
+    return {
+      user, 
+      alerts,
+    }
   }
 
   @UseGuards(GqlAuthGuard)
@@ -91,7 +101,8 @@ export class AlertsResolver {
     @CurrentUser() user: UserEntity,
     @Args('arrowIds', {type: () => [String]}) arrowIds: string[],
   ) {
-    user = await this.usersService.readAlerts(user);
+    user = await this.usersService.setCheckAlertsDate(user);
+
     const arrows = await this.arrowsService.getArrowsByIds(arrowIds);
 
     return {
