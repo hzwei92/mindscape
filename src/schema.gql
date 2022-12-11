@@ -100,6 +100,11 @@ type DragTwigResult {
   twigId: String!
 }
 
+type GetCurrentUserAlertsResult {
+  alerts: [Alert!]!
+  user: User!
+}
+
 type GetUserLeadsResult {
   followers: [Lead!]!
   leaders: [Lead!]!
@@ -152,7 +157,7 @@ type Mutation {
   getArrowByRouteName(routeName: String!): Arrow
   getArrows(arrowIds: [String!]!): [Arrow!]!
   getCurrentUser: User!
-  getCurrentUserAlerts: [Alert!]!
+  getCurrentUserAlerts: GetCurrentUserAlertsResult!
   getCurrentUserLeads: [Lead!]!
   getIns(arrowId: String!, offset: Int!): [Arrow!]!
   getOuts(arrowId: String!, offset: Int!): [Arrow!]!
@@ -361,7 +366,7 @@ input TwigPosAdjustment {
 type User {
   activeDate: DateTime!
   balance: Float!
-  checkAlertsDate: DateTime!
+  checkAlertsDate: DateTime
   color: String!
   createDate: DateTime!
   createGraphDate: DateTime
@@ -378,6 +383,7 @@ type User {
   isReserve: Boolean!
   leaders: [Lead!]!
   linkN: Int!
+  loadFeedDate: DateTime
   lowercaseName: String!
   mapLat: Float
   mapLng: Float

@@ -37,6 +37,7 @@ export const USER_FIELDS = gql`
     activeDate
     verifyEmailDate
     checkAlertsDate
+    loadFeedDate
     viewInfoDate
     togglePaletteDate
     createGraphDate

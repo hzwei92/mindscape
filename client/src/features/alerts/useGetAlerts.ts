@@ -8,6 +8,7 @@ import { Entry } from "../entry/entry";
 import { mergeEntries, selectIdToEntry } from "../entry/entrySlice";
 import { MenuMode } from "../menu/menu";
 import { searchPushSlice, selectSearchSlice } from "../search/searchSlice";
+import { mergeUsers } from "../user/userSlice";
 import { Alert, AlertReason } from "./alert";
 import { FULL_ALERT_FIELDS } from "./alertFragments";
 import { mergeAlerts } from "./alertSlice";
@@ -15,7 +16,13 @@ import { mergeAlerts } from "./alertSlice";
 const GET_ALERTS = gql`
   mutation GetCurrentUserAlerts {
     getCurrentUserAlerts {
-      ...FullAlertFields
+      user {
+        id
+        loadFeedDate
+      }
+      alerts {
+        ...FullAlertFields
+      }
     }
   }
   ${FULL_ALERT_FIELDS}
@@ -39,12 +46,13 @@ export default function useGetAlerts() {
       console.log(data);
 
       setIsInit(true);
-      dispatch(mergeAlerts(data.getCurrentUserAlerts));
+      dispatch(mergeUsers([data.getCurrentUserAlerts.user]));
+      dispatch(mergeAlerts(data.getCurrentUserAlerts.alerts));
 
       const entryIds: string[] = [];
       const idToEntry1: IdToType<Entry> = {};
 
-      let isNotFeed = data.getCurrentUserAlerts
+      let isNotFeed = data.getCurrentUserAlerts.alerts
       .sort((a: Alert, b: Alert) => a.createDate > b.createDate ? -1 : 1)
       .forEach((alert: Alert) => {
         if (alert.reason !== AlertReason.FEED) {

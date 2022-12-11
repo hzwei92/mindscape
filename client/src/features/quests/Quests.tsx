@@ -16,6 +16,7 @@ import ArrowsAllTheWayDown from "./ArrowsAllTheWayDown";
 import Orientation from "./Orientation";
 import { MenuMode } from "../menu/menu";
 import useSetUserViewInfoDate from "../user/useSetUserViewInfoDate";
+import Feed from "./Feed";
 
 
 export default function Quests() {
@@ -62,6 +63,7 @@ export default function Quests() {
     <Arrows />,
     <Twigs />,
     <ArrowsAllTheWayDown />,
+    <Feed />,
     <TheGInGUI />,
   ]
 
@@ -97,8 +99,11 @@ export default function Quests() {
     else if (!user.openArrowDate) {
       setIndex(9);
     }
-    else {
+    else if (!user.loadFeedDate) {
       setIndex(10);
+    }
+    else {
+      setIndex(11);
     }
   }
 
@@ -116,6 +121,9 @@ export default function Quests() {
     user?.moveTwigDate,
     user?.openLinkDate,
     user?.graftTwigDate,
+    user?.openArrowDate,
+    user?.checkAlertsDate,
+    user?.loadFeedDate,
   ])
 
   useEffect(() => {
