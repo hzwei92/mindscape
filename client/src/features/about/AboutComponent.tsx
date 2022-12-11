@@ -76,20 +76,22 @@ export default function AboutComponent() {
             Algorithmic feeds don't offer much opportunity for decision making in the exploration of content.
           </li>
           <li>
-            Regarding <b>tree structures</b>, I can extend a tree with my own posts. 
-            But I also want to be able to fashion my own trees from arbitrary posts,
-            and use these trees as modular expressions.
+            Regarding <b>tree structures</b>, most frontends
+            allow a user to extend a tree with new posts. 
+            But they don't provide the ability to fashion trees from
+            arbitrary posts, such as important quotes.
+            So the user cannot use trees themselves as modular expressions.
           </li>
           <li>
             Mindscape enables the composition of posts into 
             a <b>nested, weighted, directed graph structure</b>, 
-            which has the power to express the three types above.
+            which has the power to express the three structures described above.
           </li>
           <li>
             It also offers the free <b>spatial composition</b> of posts, similar to the placement of icons on desktops.
           </li>
           <li>
-            Mindscape is <b>enzymatic</b> in function, enabling the holding of disparate reagents in place, 
+            Mindscape is <b>enzymatic</b> in function, enabling the holding of different reagents in place, 
             in the view of the user, 
             so a reaction can occur.
           </li>
@@ -198,7 +200,7 @@ export default function AboutComponent() {
           paddingRight: 10,
         }}>
           <li>
-            Mindscape uses a single data type, the <b>arrow</b>, to represent
+            Mindscape uses a single data type, the <b>Arrow</b>, to represent
             both the posts and the links of a graph.
           </li>
           <li>
@@ -214,7 +216,7 @@ export default function AboutComponent() {
             that we can have arrows between all three: post and post, post and link, link and link.
           </li>
           <li>
-            Another data type, the <b>twig</b>, is used to define additional structure on a graph.
+            Another data type, the <b>Twig</b>, is used to define additional structure on a graph.
           </li>
           <li>
             The twig expresses the tagging of a set of arrows with the id of a single arrow.
