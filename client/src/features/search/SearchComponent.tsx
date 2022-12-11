@@ -56,11 +56,7 @@ function SearchComponent() {
   };
 
   const handleScroll = (event: CustomEvent<ScrollDetail>) => {
-    if (event.detail.scrollTop === 0) {
-      setTimeout(() => {
-        contentRef.current?.scrollToPoint(0, 50, 300)
-      }, 1000)
-    }
+
   }
 
   if (!searchClient) return null;
