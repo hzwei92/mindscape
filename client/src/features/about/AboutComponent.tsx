@@ -67,7 +67,7 @@ export default function AboutComponent() {
           </li>
           <li>
             Today, <b>social media</b> organizes posts into timelines and algorithmic feeds.
-            Tree structure is also employed to organize threads accessible via these <b>linear structures</b>.
+            Tree structure is also employed to organize the threads that are accessible via these <b>linear structures</b>.
           </li>
           <li>
             In timelines, old posts disappear into the past, even if they are still relevant.

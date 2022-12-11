@@ -95,23 +95,6 @@ export class AlertsResolver {
     }
   }
 
-  @UseGuards(GqlAuthGuard)
-  @Mutation(() => ReadAlertsResult, {name: 'readAlerts'})
-  async readAlerts(
-    @CurrentUser() user: UserEntity,
-    @Args('arrowIds', {type: () => [String]}) arrowIds: string[],
-  ) {
-    user = await this.usersService.setCheckAlertsDate(user);
-
-    const arrows = await this.arrowsService.getArrowsByIds(arrowIds);
-
-    return {
-      user, 
-      arrows,
-    }
-  }
-
-
   @Subscription(() => Alert, {name: 'alert',
     filter: (payload, variables) => {
       return payload.userId === variables.userId;

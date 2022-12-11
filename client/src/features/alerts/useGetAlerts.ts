@@ -1,11 +1,14 @@
 import { gql, useMutation } from "@apollo/client";
+import { useIonToast } from "@ionic/react";
 import { useContext, useState } from "react";
 import { v4 } from "uuid";
 import { AppContext } from "../../app/App";
 import { useAppDispatch, useAppSelector } from "../../app/store";
 import { IdToType } from "../../types";
+import { selectIdToArrow } from "../arrow/arrowSlice";
 import { Entry } from "../entry/entry";
 import { mergeEntries, selectIdToEntry } from "../entry/entrySlice";
+import { mapAlertToEntry } from "../entry/mapAlertToEntry";
 import { MenuMode } from "../menu/menu";
 import { searchPushSlice, selectSearchSlice } from "../search/searchSlice";
 import { mergeUsers } from "../user/userSlice";
@@ -31,8 +34,11 @@ const GET_ALERTS = gql`
 export default function useGetAlerts() {
   const dispatch = useAppDispatch();
 
+  const [present] = useIonToast();
+
   const { setMenuMode } = useContext(AppContext);
 
+  const idToArrow = useAppSelector(selectIdToArrow);
   const idToEntry = useAppSelector(selectIdToEntry);
   const slice = useAppSelector(selectSearchSlice);
 
@@ -44,95 +50,46 @@ export default function useGetAlerts() {
     },
     onCompleted: data => {
       console.log(data);
+      const { user, alerts } = data.getCurrentUserAlerts;
+
+      dispatch(mergeUsers([user]));
+      dispatch(mergeAlerts(alerts));
 
       setIsInit(true);
-      dispatch(mergeUsers([data.getCurrentUserAlerts.user]));
-      dispatch(mergeAlerts(data.getCurrentUserAlerts.alerts));
 
-      const entryIds: string[] = [];
-      const idToEntry1: IdToType<Entry> = {};
+      const { 
+        entryIds, 
+        idToEntry: idToEntry1
+      } = mapAlertToEntry(user, idToArrow, alerts);
 
-      let isNotFeed = data.getCurrentUserAlerts.alerts
-      .sort((a: Alert, b: Alert) => a.createDate > b.createDate ? -1 : 1)
-      .forEach((alert: Alert) => {
-        if (alert.reason !== AlertReason.FEED) {
-          return true;
+
+      if (
+        slice.entryIds.length !== entryIds.length ||
+        slice.entryIds.some((id, index) => idToEntry[id].arrowId !== idToEntry1[entryIds[index]].arrowId)
+      ) {
+        const isFeed = alerts.some((alert: Alert) => alert.reason === AlertReason.FEED);
+
+        if (isFeed) {
+          present('Feed received!', 1000)
         }
-        if (!alert.source || !alert.link || !alert.target) return false;
-
-        const sourceEntry: Entry = {
-          id: v4(),
-          userId: alert.source.userId,
-          parentId: null,
-          arrowId: alert.source.id,
-          showIns: false,
-          showOuts: true,
-          inIds: [],
-          outIds: [],
-          sourceId: null,
-          targetId: null,
-          shouldGetLinks: false,
-          isDeleted: false,
-        };
-        idToEntry1[sourceEntry.id] = sourceEntry;
-        entryIds.push(sourceEntry.id);
-
-        const targetEntryId = v4();
-
-        const linkEntry: Entry = {
-          id: v4(),
-          userId: alert.link.userId,
-          parentId: sourceEntry.id,
-          arrowId: alert.link.id,
-          showIns: false,
-          showOuts: false,
-          inIds: [],
-          outIds: [],
-          sourceId: sourceEntry.id,
-          targetId: targetEntryId,
-          shouldGetLinks: false,
-          isDeleted: false,
-        };
-
-        idToEntry1[linkEntry.id] = linkEntry;
-        sourceEntry.outIds.push(linkEntry.id);
-
-        const targetEntry: Entry = {
-          id: targetEntryId,
-          userId: alert.target.userId,
-          parentId: linkEntry.id,
-          arrowId: alert.target.id,
-          showIns: false,
-          showOuts: false,
-          inIds: [],
-          outIds: [],
-          sourceId: null,
-          targetId: null,
-          shouldGetLinks: false,
-          isDeleted: false,
-        };
-        idToEntry1[targetEntry.id] = targetEntry;
-
-        return false;
-      });
-
-      if (!isNotFeed) {
-        if (
-          slice.entryIds.length !== entryIds.length ||
-          slice.entryIds.some((id, index) => idToEntry[id].arrowId !== idToEntry1[entryIds[index]].arrowId)
-        ) {
-          dispatch(mergeEntries(idToEntry1));
-          dispatch(searchPushSlice({
-            originalQuery: '',
-            query: '',
-            entryIds,
-            userIds: [],
-          }))
-
+        else {
+          present('Notifications received!', 1000)
         }
-        if (isInit) {
-          setMenuMode(MenuMode.SEARCH);
-        }
+
+        dispatch(mergeEntries(idToEntry1));
+        dispatch(searchPushSlice({
+          originalQuery: '',
+          query: '',
+          entryIds,
+          userIds: [],
+        }))
+      }
+      else {
+        present('Nothing new...', 1000)
+      }
+
+      if (isInit) {
+        setMenuMode(MenuMode.SEARCH);
       }
     }
   });
