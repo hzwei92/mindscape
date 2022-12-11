@@ -121,37 +121,16 @@ function SearchComponent() {
             width: '100%',
           }}
         >
-          <IonInfiniteScroll
-            onIonInfinite={(e: any) => {
-              setIsLoading(true);
-              getAlerts();
-              setTimeout(() => {
-                e.target.complete()
-                setIsLoading(false)
-              }, 300)
-            }}
-            position='top'
-            style={{
-              height: 50,
-            }}
-          >
-            <IonInfiniteScrollContent loadingSpinner={'dots'} style={{
-              position: 'relative',
-            }}>
-              <IonButtons style={{
-                display: isLoading
-                  ? 'none'
-                  :  'flex',
-                position: 'absolute',
-                top: 10,
-                left: 'calc(50% - 20px)',
-              }}>
-                <IonButton onClick={() => getAlerts()}>
-                  <IonIcon icon={reload} size='small'/>
-                </IonButton>
-              </IonButtons>
-            </IonInfiniteScrollContent>
-          </IonInfiniteScroll>
+          <IonButtons style={{
+            display: isLoading
+              ? 'none'
+              :  'flex',
+            justifyContent: 'center',
+          }}>
+            <IonButton onClick={() => getAlerts()}>
+              <IonIcon icon={reload} size='small'/>
+            </IonButton>
+          </IonButtons>
           { 
             slice.entryIds.map((entryId) => {
               return (
@@ -163,6 +142,16 @@ function SearchComponent() {
               );
             })
           }
+          <IonButtons style={{
+            display: isLoading
+              ? 'none'
+              :  'flex',
+            justifyContent: 'center',
+          }}>
+            <IonButton onClick={() => getAlerts()}>
+              <IonIcon icon={reload} size='small'/>
+            </IonButton>
+          </IonButtons>
         </IonContent>
       </InstantSearch>
     </IonCard>
