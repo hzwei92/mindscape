@@ -85,7 +85,7 @@ export default function useGetAlerts() {
         }))
       }
       else {
-        present('Nothing new...', 1000)
+        present('Up to date!', 1000)
       }
 
       if (isInit) {
