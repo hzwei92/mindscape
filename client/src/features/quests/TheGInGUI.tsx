@@ -19,6 +19,7 @@ export default function TheGInGUI() {
       <IonCardContent style={{
         textAlign: 'center',
         flexDirection: 'column',
+        fontSize: 12,
       }}>
         More to follow on INs and OUTs, tabs, COPY/PASTE, and more.
       </IonCardContent>

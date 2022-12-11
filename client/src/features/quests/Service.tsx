@@ -15,6 +15,7 @@ export default function Service() {
       <IonCardContent style={{
         textAlign: 'center',
         flexDirection: 'column',
+        fontSize: 12,
       }}>
         Let's help you connect with people
         who have skills and interests that complement 

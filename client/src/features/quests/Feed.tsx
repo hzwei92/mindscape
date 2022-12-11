@@ -14,13 +14,14 @@ export default function Feed() {
         fontSize: 40,
         textAlign: 'center',
       }}>
-        Reload
+        Hit refresh
       </IonCardHeader>
       <IonCardContent style={{
         textAlign: 'center',
         flexDirection: 'column',
+        fontSize: 12,
       }}>
-        <b>Click</b> the reload button on the right side of the name card.
+        <b>Click</b> the reload button on the right side of the name card above.
         This loads any notifications you might have.
         If you have no notifiactions, 
         then it will show a feed of the app's latest activity.

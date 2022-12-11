@@ -20,6 +20,7 @@ export default function LetThereBeLight() {
       <IonCardContent style={{
         textAlign: 'center',
         flexDirection: 'column',
+        fontSize: 12,
       }}>
         In the beginning, there was only one color palette.
         Then, there were two.

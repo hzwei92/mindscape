@@ -15,6 +15,7 @@ export default function TabulaRasa() {
       <IonCardContent style={{
         textAlign: 'center',
         flexDirection: 'column',
+        fontSize: 12,
       }}>
         A fresh start.
         <br/><br/>

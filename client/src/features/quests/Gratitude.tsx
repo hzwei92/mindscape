@@ -15,6 +15,7 @@ export default function Gratitude() {
       <IonCardContent style={{
         textAlign: 'center',
         flexDirection: 'column',
+        fontSize: 12,
       }}>
         Let's take a moment to focus on the things we're grateful for.
         <br/><br/>

@@ -15,6 +15,7 @@ export default function Nesting() {
       <IonCardContent style={{
         textAlign: 'center',
         flexDirection: 'column',
+        fontSize: 12,
       }}>
         Each arrow can be the root of its own graph.
         The root of a graph is kind of like a folder that holds the graph inside.

@@ -15,6 +15,7 @@ export default function Orientation() {
       <IonCardContent style={{
         textAlign: 'center',
         flexDirection: 'column',
+        fontSize: 12,
       }}>
         Here are some quick tips for using the
         Mindscape platform. 
@@ -29,7 +30,7 @@ export default function Orientation() {
         chronologically based on when they were created.
         <br/>
         <br/>
-        <b>Click</b> the info circle in the app bar on the left to 
+        <b>Click</b> the info circle icon in the app bar on the left to 
         quickly skim the prologue to our story.
       </IonCardContent>
     </div>
