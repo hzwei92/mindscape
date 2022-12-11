@@ -146,7 +146,7 @@ function SearchComponent() {
                 top: 10,
                 left: 'calc(50% - 20px)',
               }}>
-                <IonButton>
+                <IonButton onClick={() => getAlerts()}>
                   <IonIcon icon={reload} size='small'/>
                 </IonButton>
               </IonButtons>
