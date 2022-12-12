@@ -26,8 +26,8 @@ export default function Orientation() {
         <br/>
         <br/>
         Use the buttons at the bottom of the space to 
-        recenter the view and to scroll through the posts
-        chronologically based on when they were created.
+        recenter the view and to move through the posts
+        chronologically based on when they were added to the graph.
         <br/>
         <br/>
         <b>Click</b> the info circle icon in the app bar on the left to 

@@ -7,7 +7,7 @@ import { ALGOLIA_APP_ID, ALGOLIA_APP_KEY, ALGOLIA_INDEX_NAME, OFF_WHITE } from '
 import { useAppDispatch, useAppSelector } from '../../app/store';
 import { searchGoBack, searchGoForward, searchRefresh, selectSearchIndex, selectSearchShouldRefresh, selectSearchSlice, selectSearchStack } from './searchSlice';
 import EntryTree from '../entry/EntryTree';
-import { IonButton, IonButtons, IonCard, IonCardHeader, IonContent, IonIcon, IonInfiniteScroll, IonInfiniteScrollContent, ScrollDetail } from '@ionic/react';
+import { InfiniteScrollCustomEvent, IonButton, IonButtons, IonCard, IonCardHeader, IonContent, IonIcon, IonInfiniteScroll, IonInfiniteScrollContent, ScrollDetail } from '@ionic/react';
 import { chevronBackOutline, chevronForwardOutline, close, reload } from 'ionicons/icons';
 import { AppContext } from '../../app/App';
 import { MenuMode } from '../menu/menu';
@@ -121,16 +121,20 @@ function SearchComponent() {
             width: '100%',
           }}
         >
-          <IonButtons style={{
-            display: isLoading
-              ? 'none'
-              :  'flex',
-            justifyContent: 'center',
-          }}>
-            <IonButton onClick={() => getAlerts()}>
-              <IonIcon icon={reload} size='small'/>
-            </IonButton>
-          </IonButtons>
+          <IonInfiniteScroll
+            position='top'
+            onIonInfinite={(e: InfiniteScrollCustomEvent) => {
+              getAlerts();
+              setTimeout(() => {
+                e.target.complete();
+              }, 300)
+            }}
+            style={{
+              height: 50,
+            }}
+          >
+            <IonInfiniteScrollContent loadingSpinner={'dots'} />
+          </IonInfiniteScroll>
           { 
             slice.entryIds.map((entryId) => {
               return (
@@ -147,6 +151,7 @@ function SearchComponent() {
               ? 'none'
               :  'flex',
             justifyContent: 'center',
+            height: '100%',
           }}>
             <IonButton onClick={() => getAlerts()}>
               <IonIcon icon={reload} size='small'/>
