@@ -62,7 +62,7 @@ export default function useReplyTwigSub(abstractId: string) {
 
       if (!abstract) return;
 
-      present(`${target.i}`, 500);
+      present(`New! ${target.i}.`, 1000);
 
       dispatch(mergeTwigs({
         abstractId: abstract.id,
