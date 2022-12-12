@@ -178,7 +178,8 @@ const SpaceComponent = (props: SpaceComponentProps) => {
     canView, canPost, canEdit, 
     removalTwigId, showRemoveTwigModal, 
     replyTwigId, showReplyTwigModal,
-    touches]);
+    touches
+  ]);
 
   useEffect(() => {
     if (!moveEvent || !spaceEl.current || !spaceRef.current) return;

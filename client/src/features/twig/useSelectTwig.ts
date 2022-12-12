@@ -5,7 +5,7 @@ import type { Twig } from './twig';
 import { useAppDispatch, useAppSelector } from '../../app/store';
 import { selectSessionId, setAuthIsInit, setAuthIsValid } from '../auth/authSlice';
 import { mergeArrows } from '../arrow/arrowSlice';
-import { mergeTwigs, selectAbstractIdToData, selectIdToDescIdToTrue, selectIdToTwig, setSelectedTwigId } from '../space/spaceSlice';
+import { mergeTwigs, selectAbstractIdToData } from '../space/spaceSlice';
 import { useIonRouter, useIonToast } from '@ionic/react';
 
 const SELECT_TWIG = gql`
