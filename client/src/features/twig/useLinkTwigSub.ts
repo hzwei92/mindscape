@@ -1,4 +1,5 @@
 import { gql, useSubscription } from "@apollo/client";
+import { useIonToast } from "@ionic/react";
 import { useAppDispatch, useAppSelector } from "../../app/store";
 import { IdToType } from "../../types";
 import { Arrow } from "../arrow/arrow";
@@ -55,6 +56,8 @@ const LINK_TWIGS = gql`
 export default function useLinkTwigSub(abstractId: string) {
   const dispatch = useAppDispatch();
 
+  const [present] = useIonToast();
+
   const sessionId = useAppSelector(selectSessionId);
 
   useSubscription(LINK_TWIGS, {
@@ -73,6 +76,8 @@ export default function useLinkTwigSub(abstractId: string) {
         target,
         twigs,
       } = linkTwigs;
+
+      present(twigs.map((twig: Twig) => twig.i).join(', '), 500)
 
       dispatch(mergeUsers([user]));
       

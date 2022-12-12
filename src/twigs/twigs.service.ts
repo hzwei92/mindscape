@@ -647,13 +647,6 @@ export class TwigsService {
 
     twigs = await this.twigsRepository.save(twigs);
 
-    if (sourceTwigs.length) {
-      twigs.push(sourceTwigs[0]);
-    }
-    if (targetTwigs.length) {
-      twigs.push(targetTwigs[0]);
-    }
-
     await this.arrowsService.incrementTwigN(abstract.id, twigs.length + 1);
     await this.arrowsService.incrementTwigZ(abstract.id, twigs.length + 1);
 
