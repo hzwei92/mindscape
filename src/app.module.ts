@@ -43,6 +43,9 @@ import { VideoModule } from './video/video.module';
         MAILGUN_DOMAIN: Joi.string().required(),
         GOOGLE_CLIENT_ID: Joi.string().required(),
         GOOGLE_CLIENT_SECRET: Joi.string().required(),
+        TWILIO_ACCOUNT_SID: Joi.string().required(),
+        TWILIO_API_KEY_SID: Joi.string().required(),
+        TWILIO_API_KEY_SECRET: Joi.string().required(),
       }),
     }),
     ServeStaticModule.forRoot({
