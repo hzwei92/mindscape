@@ -1,8 +1,7 @@
-import { IonButton, IonButtons,useIonRouter, IonCard, IonIcon, IonPopover, isPlatform } from "@ionic/react";
+import { IonButton, IonButtons, IonCard, IonIcon, isPlatform } from "@ionic/react";
 import { 
   globeOutline, 
-  informationCircleOutline, 
-  mapOutline, 
+  informationCircleOutline,
   moonOutline, 
   peopleOutline, 
   personCircleOutline, 
@@ -22,6 +21,7 @@ import useAppRouter from "./useAppRouter";
 import icon from './favicon.png';
 import { useAppSelector } from "./store";
 import { selectFocusTab } from "../features/tab/tabSlice";
+import useVoteArrowSub from "../features/vote/useVoteArrowSub";
 
 const AppBar = () => {
   const { setUserPalette } = useSetUserPalette();
@@ -37,6 +37,7 @@ const AppBar = () => {
   useAuth();
   useSaveArrowSub();
   useLinkArrowsSub();
+  useVoteArrowSub();
 
   const [label, setLabel] = useState(MenuMode.NONE);
 
@@ -60,10 +61,6 @@ const AppBar = () => {
     else {
       setMenuMode(mode);
     }
-  }
-
-  const handleAgreeClick = () => {
-
   }
 
   return (
