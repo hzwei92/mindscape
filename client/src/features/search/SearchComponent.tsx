@@ -50,7 +50,7 @@ function SearchComponent() {
 
   useEffect(() => {
     if (isInit) return;
-    contentRef.current?.scrollToPoint(0, 50, 0)
+    contentRef.current?.scrollToPoint(0, 50, 300)
   }, [menuMode, isInit])
 
   const handleBackClick = (event: React.MouseEvent) => {
