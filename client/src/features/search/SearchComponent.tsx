@@ -147,7 +147,7 @@ function SearchComponent() {
             justifyContent: 'center',
             height: '100%',
           }}>
-            <IonButton onClick={() => getAlerts()}>
+            <IonButton onClick={() =>{getAlerts(); contentRef.current?.scrollToPoint(0, 50, 300);}}>
               <IonIcon icon={ellipsisHorizontal} size='small'/>
             </IonButton>
           </IonButtons>
