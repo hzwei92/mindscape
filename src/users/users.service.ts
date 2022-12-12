@@ -83,20 +83,23 @@ export class UsersService {
     const user1 = await this.usersRepository.save(user0);
 
     const startArrow1 = await this.arrowsService.getArrowById(START_ARROW_1_ID);
-    if (startArrow1) {
-      const tab1 = await this.tabsService.appendTab(user1, startArrow1, false, true);
-    }
-
     const startArrow2 = await this.arrowsService.getArrowById(START_ARROW_2_ID);
-    if (startArrow2) {
-      const tab2 = await this.tabsService.appendTab(user1, startArrow2, false, !startArrow1);
-    }
 
     let startArrow = await this.arrowsService.getStartArrow();
     if (!startArrow) {
       startArrow = await this.arrowsService.createStartArrow(user1);
     }
+
     const tab = await this.tabsService.appendTab(user1, startArrow, false, !startArrow1 && !startArrow2);
+
+    if (startArrow2) {
+      const tab2 = await this.tabsService.appendTab(user1, startArrow2, false, !startArrow1);
+    }
+    
+    if (startArrow1) {
+      const tab1 = await this.tabsService.appendTab(user1, startArrow1, false, true);
+    }
+
 
     let reserveUser = await this.getReserveUser();
     if (!reserveUser) {
