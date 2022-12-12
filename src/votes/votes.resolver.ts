@@ -1,4 +1,4 @@
-import { Args, Int, Mutation, Parent, ResolveField, Resolver } from '@nestjs/graphql';
+import { Args, Int, Mutation, Parent, ResolveField, Resolver, Subscription } from '@nestjs/graphql';
 import { User } from 'src/users/user.model';
 import { UsersService } from 'src/users/users.service';
 import { Vote } from './vote.model';
@@ -6,9 +6,11 @@ import { VotesService } from './votes.service';
 import { VoteArrowResult } from './dto/vote-arrow-result.dto';
 import { TransfersService } from 'src/transfers/transfers.service';
 import { ArrowsService } from 'src/arrows/arrows.service';
-import { UseGuards } from '@nestjs/common';
+import { Inject, UseGuards } from '@nestjs/common';
 import { CurrentUser, GqlAuthGuard } from 'src/auth/gql-auth.guard';
 import { User as UserEntity } from 'src/users/user.entity';
+import { PUB_SUB } from 'src/pub-sub/pub-sub.module';
+import { RedisPubSub } from 'graphql-redis-subscriptions';
 
 @Resolver(() => Vote)
 export class VotesResolver {
@@ -17,6 +19,8 @@ export class VotesResolver {
     private readonly votesService: VotesService,
     private readonly arrowsService: ArrowsService,
     private readonly transfersService: TransfersService,
+    @Inject(PUB_SUB)
+    private readonly pubSub: RedisPubSub,
   ) {}
 
   @ResolveField(() => User, {name: 'user'})
@@ -34,20 +38,44 @@ export class VotesResolver {
     @Args('arrowId') arrowId: string,
     @Args('weight', {type: () => Int}) weight: number,
   ) {
-    const result = await this.votesService.voteArrow(user, arrowId, weight);
+    const { arrow, votes } = await this.votesService.voteArrow(user, arrowId, weight);
 
     let user1;
-    if (result.arrow.sourceId === result.arrow.targetId) {
-      user1 = await this.transfersService.votePostTransfer(user, result.votes[0], result.arrow)
+    if (arrow.sourceId === arrow.targetId) {
+      user1 = await this.transfersService.votePostTransfer(user, votes[0], arrow)
     }
     else {
-      const sourceArrow = await this.arrowsService.getArrowById(result.arrow.sourceId);
-      user1 = await this.transfersService.voteLinkTransfer(user, result.votes[0], sourceArrow, result.arrow)
+      const sourceArrow = await this.arrowsService.getArrowById(arrow.sourceId);
+      user1 = await this.transfersService.voteLinkTransfer(user, votes[0], sourceArrow, arrow)
     }
 
+    this.pubSub.publish('voteArrow', {
+      sessionId,
+      voteArrow: {
+        user: user1,
+        arrow,
+        votes,
+      },
+    });
+
     return {
-      ...result,
       user: user1,
+      arrow,
+      votes,
     }
+  }
+
+  @Subscription(() => VoteArrowResult, {name: 'voteArrow',
+    filter: (payload, variables) => {
+      if (payload.sessionId === variables.sessionId) return false;
+      return variables.arrowIds.some(id => id === payload.voteArrow.arrow.id);
+    },
+  })
+  async voteArrowSub(
+    @Args('sessionId') sessionId: string,
+    @Args('arrowIds', {type: () => [String]}) arrowIds: string[],
+  ) {
+    console.log('voteArrowSub');
+    return this.pubSub.asyncIterator('voteArrow');
   }
 }

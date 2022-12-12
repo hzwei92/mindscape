@@ -6,6 +6,7 @@ import { VotesResolver } from './votes.resolver';
 import { UsersModule } from 'src/users/users.module';
 import { ArrowsModule } from 'src/arrows/arrows.module';
 import { TransfersModule } from 'src/transfers/transfers.module';
+import { PubSubModule } from 'src/pub-sub/pub-sub.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { TransfersModule } from 'src/transfers/transfers.module';
     forwardRef(() => UsersModule),
     forwardRef(() => ArrowsModule),
     TransfersModule,
+    PubSubModule,
   ],
   providers: [VotesService, VotesResolver],
   exports: [VotesService],

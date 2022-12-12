@@ -45,7 +45,7 @@ const useAppRouter = () => {
 
     // setSyncPath(path);
     
-    console.log(path, focusTab?.arrowId);
+    // console.log(path, focusTab?.arrowId);
 
     if (path[1] !== 'g') {
       if (focusTab?.arrow?.routeName) {

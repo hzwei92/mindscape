@@ -316,6 +316,7 @@ type Subscription {
   updateUser(sessionId: String!, userIds: [String!]!): User!
   userLead(userId: String!): Lead!
   userRole(sessionId: String!, userId: String!): Role!
+  voteArrow(arrowIds: [String!]!, sessionId: String!): VoteArrowResult!
 }
 
 type Tab {
