@@ -1,15 +1,9 @@
 import { IonButton, IonButtons,useIonRouter, IonCard, IonIcon, IonPopover, isPlatform } from "@ionic/react";
 import { 
-  chatboxOutline, 
-  filterOutline, 
   globeOutline, 
   informationCircleOutline, 
-  invertMode, 
-  invertModeOutline, 
   mapOutline, 
   moonOutline, 
-  notifications, 
-  notificationsOutline, 
   peopleOutline, 
   personCircleOutline, 
   searchOutline, 
@@ -125,7 +119,7 @@ const AppBar = () => {
             width: 50,
             height: 50,
             borderLeft: menuMode === MenuMode.NONE
-              ? `3px solid ${user?.color}`
+              ? `5px solid ${user?.color}`
               : null,
           }}
         >
@@ -143,7 +137,7 @@ const AppBar = () => {
             width: 50,
             height: 50,
             borderLeft: menuMode === MenuMode.ACCOUNT
-              ? `3px solid ${user?.color}`
+              ? `5px solid ${user?.color}`
               : null,
           }}
         >
@@ -161,30 +155,12 @@ const AppBar = () => {
             width: 50,
             height: 50,
             borderLeft: menuMode === MenuMode.SEARCH
-              ? `3px solid ${user?.color}`
+              ? `5px solid ${user?.color}`
               : null,
           }}
         >
           <IonIcon icon={searchOutline} style={{
             color: menuMode === MenuMode.SEARCH
-              ? user?.color
-              : null,
-          }}/>
-        </IonButton>
-        <IonButton 
-          onMouseEnter={handleMenuMouseEnter(MenuMode.MAP)}
-          onMouseLeave={handleMenuMouseLeave}
-          onClick={handleMenuClick(MenuMode.MAP)}
-          style={{
-            height: 50,
-            width: 50,
-            borderLeft: menuMode === MenuMode.MAP
-              ? `3px solid ${user?.color}`
-              : null,
-          }}
-        >
-          <IonIcon icon={mapOutline} style={{
-            color: menuMode === MenuMode.MAP
               ? user?.color
               : null,
           }}/>
@@ -197,7 +173,7 @@ const AppBar = () => {
             height: 50,
             width: 50,
             borderLeft: menuMode === MenuMode.CONTACTS
-              ? `3px solid ${user?.color}`
+              ? `5px solid ${user?.color}`
               : null,
           }}
         >
@@ -216,7 +192,7 @@ const AppBar = () => {
             height: 50,
             width: 50,
             borderLeft: menuMode === MenuMode.ABOUT
-              ? `3px solid ${user?.color}`
+              ? `5px solid ${user?.color}`
               : null,
           }}
         >
@@ -268,23 +244,12 @@ const AppBar = () => {
           SEARCH
         </IonCard>
         <IonCard style={{
-          display: label === MenuMode.MAP && !isPlatform('mobile')
-            ? 'block'
-            : 'none',
-          position: 'absolute',
-          left: 45,
-          top: 145,
-          padding: 10,
-        }}>
-          MAP
-        </IonCard>
-        <IonCard style={{
           display: label === MenuMode.CONTACTS && !isPlatform('mobile')
             ? 'block'
             : 'none',
           position: 'absolute',
           left: 45,
-          top: 195,
+          top: 145,
           padding: 10,
         }}>
           CONTACTS
@@ -295,7 +260,7 @@ const AppBar = () => {
             : 'none',
           position: 'absolute',
           left: 45,
-          top: 245,
+          top: 195,
           padding: 10,
         }}>
           ABOUT

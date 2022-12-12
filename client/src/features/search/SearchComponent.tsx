@@ -8,7 +8,7 @@ import { useAppDispatch, useAppSelector } from '../../app/store';
 import { searchGoBack, searchGoForward, searchRefresh, selectSearchIndex, selectSearchShouldRefresh, selectSearchSlice, selectSearchStack } from './searchSlice';
 import EntryTree from '../entry/EntryTree';
 import { InfiniteScrollCustomEvent, IonButton, IonButtons, IonCard, IonCardHeader, IonContent, IonIcon, IonInfiniteScroll, IonInfiniteScrollContent, ScrollDetail } from '@ionic/react';
-import { chevronBackOutline, chevronForwardOutline, close, reload } from 'ionicons/icons';
+import { chevronBackOutline, chevronForwardOutline, close, ellipsisHorizontal, reload } from 'ionicons/icons';
 import { AppContext } from '../../app/App';
 import { MenuMode } from '../menu/menu';
 import useGetAlerts from '../alerts/useGetAlerts';
@@ -45,7 +45,7 @@ function SearchComponent() {
     if (menuMode === MenuMode.SEARCH) {
       contentRef.current?.scrollToPoint(0, 50, 300)
     }
-  }, [menuMode])
+  }, [menuMode, index])
 
   const handleBackClick = (event: React.MouseEvent) => {
     dispatch(searchGoBack());
@@ -127,7 +127,7 @@ function SearchComponent() {
               getAlerts();
               setTimeout(() => {
                 e.target.complete();
-              }, 300)
+              }, 1000)
             }}
             style={{
               height: 50,
@@ -154,7 +154,7 @@ function SearchComponent() {
             height: '100%',
           }}>
             <IonButton onClick={() => getAlerts()}>
-              <IonIcon icon={reload} size='small'/>
+              <IonIcon icon={ellipsisHorizontal} size='small'/>
             </IonButton>
           </IonButtons>
         </IonContent>
