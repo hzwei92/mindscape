@@ -81,9 +81,6 @@ export const searchSlice = createSlice({
           return initialState;
         }
       })
-      .addCase(setLogin, (state, action) => {
-        return initialState;
-      })
       .addCase(setLogout, () => {
         return initialState;
       })

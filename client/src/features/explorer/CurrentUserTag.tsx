@@ -50,8 +50,9 @@ export default function CurrentUserTag() {
   const { setUserCheckAlertsDate } = useSetUserCheckAlertsDate();
 
   useEffect(() => {
+    if (!user?.id) return;
     getAlerts();
-  }, []);
+  }, [user?.id]);
 
   const handleGetAlertsClick = () => {
     getAlerts();

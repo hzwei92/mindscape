@@ -16,7 +16,7 @@ import useGetAlerts from '../alerts/useGetAlerts';
 function SearchComponent() {
   const dispatch = useAppDispatch();
 
-  const { palette } = useContext(AppContext);
+  const { palette, menuMode } = useContext(AppContext);
 
   const stack = useAppSelector(selectSearchStack);
   const index = useAppSelector(selectSearchIndex);
@@ -31,6 +31,8 @@ function SearchComponent() {
 
   const [isLoading, setIsLoading] = useState(false);
 
+  const [isInit, setIsInit] = useState(false);
+
   useEffect(() => {
     setSearchClient(algoliasearch(ALGOLIA_APP_ID, ALGOLIA_APP_KEY))
   }, []);
@@ -42,8 +44,14 @@ function SearchComponent() {
   }, [shouldRefreshDraft])
 
   useEffect(() => {
-    //contentRef.current?.scrollToPoint(0, 50, 300);
-  }, [index])
+    console.log(index);
+    contentRef.current?.scrollToPoint(0, 50, 300)
+  }, [slice])
+
+  useEffect(() => {
+    if (isInit) return;
+    contentRef.current?.scrollToPoint(0, 50, 0)
+  }, [menuMode, isInit])
 
   const handleBackClick = (event: React.MouseEvent) => {
     dispatch(searchGoBack());
@@ -122,10 +130,19 @@ function SearchComponent() {
           <IonInfiniteScroll
             position='top'
             onIonInfinite={(e: InfiniteScrollCustomEvent) => {
+              console.log('infinite scroll')
+              if (!isInit) {
+                e.target.complete();
+                setIsInit(true);
+                return;
+              }
               getAlerts();
               setTimeout(() => {
                 e.target.complete();
               }, 1000)
+            }}
+            style={{
+              height: 50,
             }}
           >
             <IonInfiniteScrollContent loadingSpinner={'dots'} />
