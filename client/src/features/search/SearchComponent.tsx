@@ -16,7 +16,7 @@ import useGetAlerts from '../alerts/useGetAlerts';
 function SearchComponent() {
   const dispatch = useAppDispatch();
 
-  const { palette, menuMode } = useContext(AppContext);
+  const { palette } = useContext(AppContext);
 
   const stack = useAppSelector(selectSearchStack);
   const index = useAppSelector(selectSearchIndex);
@@ -40,12 +40,6 @@ function SearchComponent() {
       dispatch(searchRefresh(false));
     }
   }, [shouldRefreshDraft])
-
-  useEffect(() => {
-    if (menuMode === MenuMode.SEARCH) {
-      contentRef.current?.scrollToPoint(0, 50, 300)
-    }
-  }, [menuMode, index])
 
   const handleBackClick = (event: React.MouseEvent) => {
     dispatch(searchGoBack());
