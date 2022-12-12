@@ -77,7 +77,7 @@ export default function useLinkTwigSub(abstractId: string) {
         twigs,
       } = linkTwigs;
 
-      present(twigs.map((twig: Twig) => twig.i).join(', '), 500)
+      present(`New! ${twigs.map((twig: Twig) => twig.i).join(', ')}.`, 1000)
 
       dispatch(mergeUsers([user]));
       

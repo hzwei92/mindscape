@@ -59,7 +59,7 @@ export default function usePasteTwigSub(abstractId: string) {
         role,
       } = pasteTwig;
 
-      present(`${target.i}`, 500);
+      present(`New! ${target.i}.`, 1000);
 
       dispatch(mergeTwigs({
         abstractId,
