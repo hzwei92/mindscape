@@ -62,6 +62,8 @@ export default function useReplyTwigSub(abstractId: string) {
 
       if (!abstract) return;
 
+      present(`${target.i}`, 500);
+
       dispatch(mergeTwigs({
         abstractId: abstract.id,
         twigs: [link, target]

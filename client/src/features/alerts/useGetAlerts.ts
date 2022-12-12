@@ -67,13 +67,14 @@ export default function useGetAlerts() {
         slice.entryIds.length !== entryIds.length ||
         slice.entryIds.some((id, index) => idToEntry[id].arrowId !== idToEntry1[entryIds[index]].arrowId)
       ) {
-        const isFeed = alerts.some((alert: Alert) => alert.reason === AlertReason.FEED);
-
-        if (isFeed) {
-          present('Feed received!', 1000)
-        }
-        else {
-          present('Notifications received!', 1000)
+        if (isInit) {
+          const isFeed = alerts.some((alert: Alert) => alert.reason === AlertReason.FEED);
+          if (isFeed) {
+            present('Feed received!', 1000)
+          }
+          else {
+            present('Notifications received!', 1000)
+          }
         }
 
         dispatch(mergeEntries(idToEntry1));
