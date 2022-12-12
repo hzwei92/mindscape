@@ -19,7 +19,7 @@ export default function Twigs() {
       }}>
         Every time you use REPLY in a graph, it generates a post, a link, and a twig.
         <br/><br/>
-        The twig is visualized as a solid line between two arrows.
+        Each twig is rendered in the view as a solid line between two arrows.
         Twigs define the tree shaped layout of posts in a graph.
         <br/><br/>
         <b>Drag</b> one post on top of another

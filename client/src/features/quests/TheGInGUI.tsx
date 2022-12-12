@@ -21,6 +21,8 @@ export default function TheGInGUI() {
         flexDirection: 'column',
         fontSize: 12,
       }}>
+        Clicking a user's name displays their open tabs.
+        <br/><br/>
         More to follow on INs and OUTs, tabs, COPY/PASTE, and more.
       </IonCardContent>
     </div>
