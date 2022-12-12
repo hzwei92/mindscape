@@ -46,11 +46,13 @@ export default function SpaceControls(props: SpaceControlsProps) {
   };
 
   const handleCallClick = () => {
-    console.log('call');
+    if (!props.showVideo) {
+      joinRoom();
+    }
     props.setShowSettings(false);
     props.setShowRoles(false);
     props.setShowVideo(val => !val);
-    joinRoom();
+
   }
 
   const handleMouseMove = (e: React.MouseEvent) => {
