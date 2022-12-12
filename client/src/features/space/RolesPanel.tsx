@@ -2,9 +2,9 @@
 import { Dispatch, SetStateAction, useContext, useEffect, useRef, useState } from 'react';
 import { Role, RoleType } from '../role/role';
 import { SpaceContext } from './SpaceComponent';
-import { SPACE_BAR_HEIGHT, SPACE_PANEL_WIDTH } from '../../constants';
+import { SPACE_PANEL_WIDTH } from '../../constants';
 import { AppContext } from '../../app/App';
-import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonModal, isPlatform } from '@ionic/react';
+import { IonCard, IonCardContent, IonCardHeader } from '@ionic/react';
 import UserTag from '../user/UserTag';
 import { checkPermit, getTimeString } from '../../utils';
 import { useAppSelector } from '../../app/store';
@@ -88,10 +88,6 @@ export default function RolesPanel(props: RolesPanelProps) {
   const handleUserClick = (userId: string) => (event: React.MouseEvent) => {
 
   }
-
-  const handleClose = () => {
-    props.setShowRoles(false);
-  };
 
   const time = new Date(abstract?.user?.activeDate ?? Date.now()).getTime()
   const timeString = getTimeString(time);

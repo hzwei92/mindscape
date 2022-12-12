@@ -2,17 +2,21 @@ import { SPACE_PANEL_WIDTH, TAB_HEIGHT } from '../../constants';
 import { Dispatch, SetStateAction, useContext } from 'react';
 import { SpaceContext } from './SpaceComponent';
 import { IonFab, IonFabButton, IonIcon, isPlatform } from '@ionic/react';
-import { people, peopleOutline, settingsOutline, sync } from 'ionicons/icons';
+import { peopleOutline, settingsOutline, sync, videocamOutline } from 'ionicons/icons';
 import RolesPanel from './RolesPanel';
 import { AppContext } from '../../app/App';
 import SettingsPanel from './SettingsPanel';
 import { MenuMode } from '../menu/menu';
+import useJoinRoom from '../video/useJoinRoom';
+import VideoPanel from './VideoPanel';
 
 interface SpaceControlsProps {
   showSettings: boolean;
   setShowSettings: Dispatch<SetStateAction<boolean>>;
   showRoles: boolean;
   setShowRoles: Dispatch<SetStateAction<boolean>>;
+  showVideo: boolean;
+  setShowVideo: Dispatch<SetStateAction<boolean>>;
   isSynced: boolean;
   setIsSynced: Dispatch<SetStateAction<boolean>>;
 }
@@ -20,14 +24,18 @@ export default function SpaceControls(props: SpaceControlsProps) {
   const { palette, menuMode } = useContext(AppContext);
   const { abstract } = useContext(SpaceContext);
 
+  const { joinRoom } = useJoinRoom();
+
   const handleSettingsClick = () => {
-    props.setShowRoles(false);
     props.setShowSettings(val => !val);
+    props.setShowRoles(false);
+    props.setShowVideo(false);
   };
 
   const handleRolesClick = () => {
     props.setShowSettings(false);
     props.setShowRoles(val => !val);
+    props.setShowVideo(false);
   }
 
   const handleSyncClick = () => {
@@ -36,6 +44,14 @@ export default function SpaceControls(props: SpaceControlsProps) {
       props.setIsSynced(true);
     }, 100);
   };
+
+  const handleCallClick = () => {
+    console.log('call');
+    props.setShowSettings(false);
+    props.setShowRoles(false);
+    props.setShowVideo(val => !val);
+    joinRoom();
+  }
 
   const handleMouseMove = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -54,28 +70,46 @@ export default function SpaceControls(props: SpaceControlsProps) {
     }}>
       <div style={{
         position: 'fixed',
-        right: props.showSettings || props.showRoles
+        right: props.showSettings || props.showRoles || props.showVideo
           ? SPACE_PANEL_WIDTH + 5
           : 0,
       }}>
-            <IonFab style={{
-              marginLeft: -60,
-            }}>
-              <IonFabButton 
-                title='Settings' 
-                size='small' 
-                color={props.showSettings ? 'primary' : 'secondary'}  
-                onClick={handleSettingsClick}
-              >
-                <IonIcon icon={settingsOutline} size='small'/>
-              </IonFabButton> 
-              <IonFabButton title='Members' size='small'  color={props.showRoles ? 'primary' : 'secondary'} onClick={handleRolesClick}>
-                <IonIcon icon={peopleOutline} size='small'/>
-              </IonFabButton> 
-              <IonFabButton title='Sync' size='small' color={!props.isSynced ? 'primary' : 'secondary'} onClick={handleSyncClick}>
-                <IonIcon icon={sync} size='small' />
-              </IonFabButton>  
-            </IonFab>
+        <IonFab style={{
+          marginLeft: -60,
+        }}>
+          <IonFabButton 
+            title='Settings' 
+            size='small' 
+            color={props.showSettings ? 'primary' : 'secondary'}  
+            onClick={handleSettingsClick}
+          >
+            <IonIcon icon={settingsOutline} size='small'/>
+          </IonFabButton> 
+          <IonFabButton 
+            title='Members' 
+            size='small'
+            color={props.showRoles ? 'primary' : 'secondary'}
+            onClick={handleRolesClick}
+          >
+            <IonIcon icon={peopleOutline} size='small'/>
+          </IonFabButton> 
+          <IonFabButton 
+            title='Video Call'
+            size='small'
+            color={props.showVideo ? 'primary' : 'secondary'} 
+            onClick={handleCallClick}
+          >
+            <IonIcon icon={videocamOutline} size='small' />
+          </IonFabButton>  
+          <IonFabButton
+            title='Sync'
+            size='small'
+            color={!props.isSynced ? 'primary' : 'secondary'}
+            onClick={handleSyncClick}
+          >
+            <IonIcon icon={sync} size='small' />
+          </IonFabButton>
+        </IonFab>
       </div>
       <div style={{
         position: 'fixed',
@@ -85,6 +119,7 @@ export default function SpaceControls(props: SpaceControlsProps) {
       }}>
         { props.showRoles && <RolesPanel showRoles={props.showRoles} setShowRoles={props.setShowRoles} /> }
         { props.showSettings && <SettingsPanel showSettings={props.showSettings} setShowSettings={props.setShowSettings} /> }
+        { props.showVideo && <VideoPanel showVideo={props.showVideo} setShowVideo={props.setShowVideo} /> }
       </div>
     </div>
   )

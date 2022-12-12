@@ -23,3 +23,7 @@ body {
 ion-modal {
   z-index: 2000000001;
 }
+
+video {
+  width: 235px;
+}
