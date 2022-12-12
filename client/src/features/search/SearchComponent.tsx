@@ -42,7 +42,7 @@ function SearchComponent() {
   }, [shouldRefreshDraft])
 
   useEffect(() => {
-    contentRef.current?.scrollToPoint(0, 50, 300);
+    //contentRef.current?.scrollToPoint(0, 50, 300);
   }, [index])
 
   const handleBackClick = (event: React.MouseEvent) => {
@@ -126,9 +126,6 @@ function SearchComponent() {
               setTimeout(() => {
                 e.target.complete();
               }, 1000)
-            }}
-            style={{
-              height: 50,
             }}
           >
             <IonInfiniteScrollContent loadingSpinner={'dots'} />
