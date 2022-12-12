@@ -5,7 +5,7 @@ import React, { createContext, Dispatch, memo, MouseEvent, SetStateAction, Touch
 import { AppContext } from '../../app/App';
 import { useAppDispatch, useAppSelector } from '../../app/store';
 import { adjustTwigIdToPosVar } from '../../cache';
-import { APP_BAR_X, CLOSED_LINK_TWIG_DIAMETER, MAX_Z_INDEX, OFF_WHITE, TAB_HEIGHT, TWIG_WIDTH, VIEW_RADIUS } from '../../constants';
+import { APP_BAR_X, CLOSED_LINK_TWIG_DIAMETER, MAX_Z_INDEX, OFF_WHITE, SCROLL_SENSITIVITY, TAB_HEIGHT, TWIG_WIDTH, VIEW_RADIUS } from '../../constants';
 import { IdToType } from '../../types';
 import { checkPermit } from '../../utils';
 import { Arrow } from '../arrow/arrow';
@@ -605,7 +605,7 @@ const SpaceComponent = (props: SpaceComponentProps) => {
             disabled: !!drag?.twigId,
           }}
           wheel={{
-            step: 0.40,
+            step: SCROLL_SENSITIVITY,
           }}
         >
           {({ state, zoomIn, zoomOut, resetTransform, setTransform, ...rest}) => (
