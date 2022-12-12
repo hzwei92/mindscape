@@ -10,22 +10,28 @@ export const mapAlertToEntry = (user: User | null, idToArrow: IdToType<Arrow>, a
   const idToEntry: IdToType<Entry> = {};
   const entryIds: string[] = [];
 
-  const sources: Arrow[] = [];
   const sourceIdToAlerts = alerts.reduce((acc, alert) => {
     if (alert.source?.id) {
       acc[alert.source.id] = [
         ...(acc[alert.source.id] ?? []),
         alert
-      ].sort((a, b) => (a.link?.saveDate ?? '') > (b.link?.saveDate ?? '') ? 1 : -1);
+      ];
     }
     return acc;
   }, {} as IdToType<Alert[]>);
 
+
+  Object.keys(sourceIdToAlerts).forEach(sourceId => {
+    sourceIdToAlerts[sourceId].sort((a, b) => (a.link?.saveDate ?? '') > (b.link?.saveDate ?? '') ? -1 : 1);
+  })
+
   Object.keys(sourceIdToAlerts)
-  .sort((a, b) => (sourceIdToAlerts[a][0].link?.saveDate ?? '') > (sourceIdToAlerts[b][0].link?.saveDate ?? '') 
-    ? -1 
-    : 1
-  ).forEach(sourceId => {
+  .sort((a, b) => {
+    const aLink = sourceIdToAlerts[a][0].link;
+    const bLink = sourceIdToAlerts[b][0].link;
+    return (aLink?.saveDate ?? '') > (bLink?.saveDate ?? '') ? -1 : 1;
+  })
+  .forEach(sourceId => {
     const alerts = sourceIdToAlerts[sourceId]
       .sort((a, b) => 
         (a.link?.saveDate ?? '') > (b.link?.saveDate ?? '') ? -1 : 1
