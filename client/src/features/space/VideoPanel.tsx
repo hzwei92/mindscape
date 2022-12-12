@@ -3,7 +3,7 @@ import { Dispatch, SetStateAction, useContext, useEffect, useState } from 'react
 import { SpaceContext } from './SpaceComponent';
 import { SPACE_PANEL_WIDTH } from '../../constants';
 import { AppContext } from '../../app/App';
-import { IonCard, IonCardContent, IonCardHeader } from '@ionic/react';
+import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader } from '@ionic/react';
 import { 
   LocalParticipant, 
   RemoteParticipant,
@@ -12,6 +12,9 @@ import {
   LocalTrack,
   RemoteTrack,
 } from 'twilio-video';
+import { useAppSelector } from '../../app/store';
+import { selectFocusTab } from '../tab/tabSlice';
+import { selectArrowById } from '../arrow/arrowSlice';
 
 interface VideoPanelProps {
   showVideo: boolean;
@@ -20,11 +23,14 @@ interface VideoPanelProps {
 export default function VideoPanel(props: VideoPanelProps) {
   const { 
     room,
+    setRoom
   } = useContext(AppContext);
 
   const {
     abstract,
   } = useContext(SpaceContext);
+
+  const arrow = useAppSelector(state => selectArrowById(state, room?.name || ''));
 
   const [participants, setParticpants] = useState<any[]>([]);
 
@@ -63,6 +69,12 @@ export default function VideoPanel(props: VideoPanelProps) {
     window.addEventListener("beforeunload", () => room.disconnect());
   }, [room])
 
+  const handleDisconnectClick = () => {
+    room?.disconnect();
+    setRoom(null);
+    props.setShowVideo(false);
+  }
+
   if (!abstract) return null;
 
   return (
@@ -78,6 +90,23 @@ export default function VideoPanel(props: VideoPanelProps) {
         VIDEO CALL
       </IonCardHeader>
       <IonCardContent>
+        <div style={{
+          marginBottom: 10,
+        }}>
+          <div style={{
+            color: arrow?.color,
+          }}>
+            {arrow?.title}
+          </div>
+          /g/{arrow?.routeName}
+        </div>
+        <IonButtons style={{
+          marginBottom: 10,
+        }}>
+          <IonButton onClick={handleDisconnectClick}>
+            DISCONNECT
+          </IonButton>
+        </IonButtons>
         <div id={'participant-'+ room?.localParticipant.identity}/>
         {
           participants.map(p => (

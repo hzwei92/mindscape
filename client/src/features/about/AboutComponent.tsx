@@ -76,11 +76,12 @@ export default function AboutComponent() {
             Algorithmic feeds don't offer much opportunity for decision making in the exploration of content.
           </li>
           <li>
-            Regarding <b>tree structures</b>, most frontends
+            Regarding <b>tree structure</b>, most frontends
             allow a user to extend a tree with new posts. 
-            But they don't provide the ability to fashion trees from
-            arbitrary posts, such as important quotes.
-            So the user cannot use trees themselves as modular expressions.
+            But they don't provide the ability to construct a tree of arbitrary posts,
+            using that tree as a modular expression.
+            The tree could import posts from other trees,
+            quoting them, reusing them in new contexts.
           </li>
           <li>
             Mindscape enables the composition of posts into 

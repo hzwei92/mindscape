@@ -21,7 +21,7 @@ interface SpaceControlsProps {
   setIsSynced: Dispatch<SetStateAction<boolean>>;
 }
 export default function SpaceControls(props: SpaceControlsProps) {
-  const { palette, menuMode } = useContext(AppContext);
+  const { room, menuMode } = useContext(AppContext);
   const { abstract } = useContext(SpaceContext);
 
   const { joinRoom } = useJoinRoom();
@@ -46,7 +46,7 @@ export default function SpaceControls(props: SpaceControlsProps) {
   };
 
   const handleCallClick = () => {
-    if (!props.showVideo) {
+    if (!props.showVideo && !room) {
       joinRoom();
     }
     props.setShowSettings(false);
@@ -98,7 +98,7 @@ export default function SpaceControls(props: SpaceControlsProps) {
           <IonFabButton 
             title='Video Call'
             size='small'
-            color={props.showVideo ? 'primary' : 'secondary'} 
+            color={props.showVideo || !!room ? 'primary' : 'secondary'} 
             onClick={handleCallClick}
           >
             <IonIcon icon={videocamOutline} size='small' />
