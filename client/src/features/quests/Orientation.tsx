@@ -1,4 +1,5 @@
-import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader } from "@ionic/react";
+import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonIcon } from "@ionic/react";
+import { informationCircleOutline } from "ionicons/icons";
 import { QUEST_WIDTH } from "../../constants";
 
 export default function Orientation() {
@@ -30,7 +31,7 @@ export default function Orientation() {
         chronologically based on when they were added to the graph.
         <br/>
         <br/>
-        <b>Click</b> the info circle icon in the app bar on the left to 
+        <b>Click</b> the <IonIcon icon={informationCircleOutline } size='small'/> icon in the app bar on the left to 
         quickly skim the prologue to our story.
       </IonCardContent>
     </div>

@@ -85,7 +85,7 @@ export default function useGetAlerts() {
         }))
       }
       else {
-        present('Up to date!', 1000)
+        present('Your feed is up to date!', 1000)
       }
 
       if (isInit) {

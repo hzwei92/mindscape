@@ -13,7 +13,7 @@ import { selectIdToArrow, } from "../arrow/arrowSlice";
 import { mergeEntries } from "../entry/entrySlice";
 import { searchPushSlice } from "../search/searchSlice";
 import useAlertsSub from "../alerts/useAlertsSub";
-import { reloadOutline } from "ionicons/icons";
+import { ellipsisHorizontal, reloadOutline } from "ionicons/icons";
 import Quests from "../quests/Quests";
 import useGetArrows from "../arrow/useGetArrows";
 import useSetUserCheckAlertsDate from "../user/useSetUserCheckAlertsDate";
@@ -163,8 +163,8 @@ export default function CurrentUserTag() {
                         </IonBadge>
                       </IonButton>
                     : <IonButton onClick={handleGetAlertsClick}>
-                        <IonIcon icon={reloadOutline} style={{
-                          fontSize: 12
+                        <IonIcon icon={ellipsisHorizontal} style={{
+                          fontSize: 20,
                         }}/>
                       </IonButton>
                 }

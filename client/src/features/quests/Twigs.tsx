@@ -23,7 +23,8 @@ export default function Twigs() {
         Twigs define the tree shaped layout of posts in a graph.
         <br/><br/>
         <b>Drag</b> one post on top of another
-        to graft it into a different spot in the tree.
+        to make the dragged post the child of the target post,
+        thus grafting it into a different spot in the tree.
         <br/><br/>
         Hint: On mobile, you want to drag the post's top left corner to be over the target.
         <br/><br/>

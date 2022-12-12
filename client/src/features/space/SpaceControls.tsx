@@ -69,18 +69,9 @@ export default function SpaceControls(props: SpaceControlsProps) {
               <IonFabButton title='Members' size='small'  color={props.showRoles ? 'primary' : 'secondary'} onClick={handleRolesClick}>
                 <IonIcon icon={peopleOutline} size='small'/>
               </IonFabButton> 
-              <div style={{
-                display: props.isSynced
-                  ? 'none'
-                  : 'block'
-              }}>
-                <IonFabButton title='Sync' size='small' color='primary' onClick={handleSyncClick} style={{
-                  marginTop: 1,
-                  fontSize: 20,
-                }}>
-                  <IonIcon icon={sync} size='small' />
-                </IonFabButton>  
-              </div>
+              <IonFabButton title='Sync' size='small' color={isPlatform('mobileweb') || !props.isSynced ? 'primary' : 'secondary'} onClick={handleSyncClick}>
+                <IonIcon icon={sync} size='small' />
+              </IonFabButton>  
             </IonFab>
       </div>
       <div style={{

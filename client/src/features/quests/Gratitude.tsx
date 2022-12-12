@@ -1,4 +1,5 @@
-import { IonCardContent, IonCardHeader } from "@ionic/react";
+import { IonCardContent, IonCardHeader, IonIcon } from "@ionic/react";
+import { add, remove } from "ionicons/icons";
 import { QUEST_WIDTH } from "../../constants";
 
 export default function Gratitude() {
@@ -23,9 +24,13 @@ export default function Gratitude() {
         <br/><br/>
         <b>Write</b> a bit in this new post
         about something interesting that you appreciate.
-        Maybe you could use this to start a gratitude journal!
+        Gratitude journal, maybe?
         <br/><br/>
-        <b>Toggle</b> the font size of a post using the -/+ button around the top right of the post.
+        <b>Toggle</b> the font size of the post by clicking
+        the <IonIcon icon={remove } size='small'/> or <IonIcon icon={add } size='small'/> button
+        in the top right of the post in its color bar.
+        <br/><br/>
+        Hint: Posts have large font by default.
       </IonCardContent>
     </div>
   )

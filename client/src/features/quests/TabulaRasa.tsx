@@ -1,4 +1,5 @@
-import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader } from "@ionic/react";
+import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonIcon } from "@ionic/react";
+import { add } from "ionicons/icons";
 import { QUEST_WIDTH } from "../../constants";
 
 export default function TabulaRasa() {
@@ -27,7 +28,7 @@ export default function TabulaRasa() {
         Open a <b>new tab</b> to create an empty graph.
         <br/>
         <br/>
-        Hint: Use the + button in the top left of the tab bar.
+        Hint: Use the <IonIcon icon={add} size='small'/>  button in the top left of the tab bar.
       </IonCardContent>
     </div>
   )
