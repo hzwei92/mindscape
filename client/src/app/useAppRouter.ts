@@ -39,11 +39,11 @@ const useAppRouter = () => {
     
     const path = router.routeInfo?.pathname.split('/') || [];
 
-    if (path.length === syncPath.length && !path.some((p, i) => p !== syncPath[i])) {
-      return;
-    }
+    // if (path.length === syncPath.length && !path.some((p, i) => p !== syncPath[i])) {
+    //   return;
+    // }
 
-    setSyncPath(path);
+    // setSyncPath(path);
     
     console.log(path, focusTab?.arrowId);
 
@@ -120,7 +120,7 @@ const useAppRouter = () => {
     }
 
     const selectedTwigId = abstractIdToData[arrow.id].selectedTwigId;
-
+    
     if (twigId !== selectedTwigId) {
       dispatch(setSelectedTwigId({
         abstractId: arrow.id,

@@ -25,10 +25,7 @@ export default function useInitSpace(abstractId: string, isSynced: boolean, setI
 
   const [presentToast] = useIonToast();
 
-  const { spaceRef } = useContext(AppContext);
-
   const selectedTwigId = useAppSelector(selectSelectedTwigId(abstractId));
-  const idToPos = useAppSelector(selectIdToPos(abstractId)) ?? {};
 
   const abstract = useAppSelector(state => selectArrowById(state, abstractId));
 
@@ -67,12 +64,6 @@ export default function useInitSpace(abstractId: string, isSynced: boolean, setI
         idToPos: idToPos1,
       }));
 
-      if (!selectedTwigId && abstract?.rootTwigId) {
-        dispatch(setSelectedTwigId({
-          abstractId,
-          twigId: abstract.rootTwigId,
-        }))
-      }
     },
   });
 
