@@ -98,7 +98,7 @@ export default function VideoPanel(props: VideoPanelProps) {
           }}>
             {arrow?.title}
           </div>
-          /g/{arrow?.routeName}
+          {arrow?.routeName && (`/g/${arrow?.routeName}`)}
         </div>
         <IonButtons style={{
           marginBottom: 10,
