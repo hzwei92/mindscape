@@ -41,6 +41,10 @@ function SearchComponent() {
     }
   }, [shouldRefreshDraft])
 
+  useEffect(() => {
+    contentRef.current?.scrollToPoint(0, 50, 300);
+  }, [index])
+
   const handleBackClick = (event: React.MouseEvent) => {
     dispatch(searchGoBack());
   };
