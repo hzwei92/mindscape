@@ -23,6 +23,7 @@ import { SheafsModule } from './sheafs/sheafs.module';
 import { TabsModule } from './tabs/tabs.module';
 import { TransfersModule } from './transfers/transfers.module';
 import { AlertsModule } from './alerts/alerts.module';
+import { VideoModule } from './video/video.module';
 
 @Module({
   imports: [
@@ -116,6 +117,7 @@ import { AlertsModule } from './alerts/alerts.module';
     TabsModule,
     TransfersModule,
     AlertsModule,
+    VideoModule,
   ],
 })
 export class AppModule {}

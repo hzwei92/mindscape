@@ -40,6 +40,7 @@ import ExplorerComponent from '../features/explorer/ExplorerComponent';
 import InitUserModal from '../features/auth/InitUserModal';
 import LoginModal from '../features/auth/LoginModal';
 import { ReactZoomPanPinchRef } from 'react-zoom-pan-pinch';
+import Twilio from 'twilio-video';
 
 setupIonicReact();
 
@@ -91,6 +92,9 @@ export const AppContext = createContext({} as {
   setShowLoginModal: Dispatch<SetStateAction<boolean>>;
 
   spaceRef: React.RefObject<ReactZoomPanPinchRef>;
+
+  room: Twilio.Room | null;
+  setRoom: Dispatch<SetStateAction<Twilio.Room | null>>;
 });
 
 const App: React.FC = () => {
@@ -128,6 +132,8 @@ const App: React.FC = () => {
 
   const [showInitUserModal, setShowInitUserModal] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
+
+  const [room, setRoom] = useState(null as Twilio.Room | null);
 
   useEffect(() => {
     const handleRotate = () => {
@@ -192,6 +198,9 @@ const App: React.FC = () => {
       setShowLoginModal,
 
       spaceRef,
+
+      room,
+      setRoom,
     };
   }, [
     user, 
@@ -208,6 +217,7 @@ const App: React.FC = () => {
     showInitUserModal,
     showLoginModal,
     spaceRef,
+    room,
   ]);
 
   const handleMouseMove = (event: React.MouseEvent) => {

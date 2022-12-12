@@ -4,7 +4,7 @@ import { SpaceContext } from './SpaceComponent';
 import { ChromePicker } from 'react-color';
 import useSetArrowColor from '../arrow/useSetArrowColor';
 import { AppContext } from '../../app/App';
-import { IonCard, IonCardContent, IonCardHeader, IonCheckbox, IonInput, IonItem, IonLabel, IonModal } from '@ionic/react';
+import { IonCard, IonCardContent, IonCardHeader, IonCheckbox, IonInput, IonItem, IonLabel } from '@ionic/react';
 import { SPACE_PANEL_WIDTH } from '../../constants';
 import useSetArrowPermissions from '../arrow/useSetArrowPermissions';
 import { checkPermit } from '../../utils';
@@ -110,10 +110,6 @@ export default function SettingsPanel(props: SettingsPanelProps) {
     }, 500);
     setColorTimeout(timeout);
   };
-
-  const handleClose = () => {
-    props.setShowSettings(false);
-  }
 
   const handleCanAssignMemberRoleClick = (roleType: RoleType) => (e: any) => {
     e.preventDefault();

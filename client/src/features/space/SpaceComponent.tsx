@@ -127,6 +127,7 @@ const SpaceComponent = (props: SpaceComponentProps) => {
   
   const [showSettings, setShowSettings] = useState(false);
   const [showRoles, setShowRoles] = useState(false);
+  const [showVideo, setShowVideo] = useState(false);
 
   const [touches, setTouches] = useState<TouchList | null>(null);
 
@@ -676,6 +677,8 @@ const SpaceComponent = (props: SpaceComponentProps) => {
         setShowRoles={setShowRoles}
         showSettings={showSettings}
         setShowSettings={setShowSettings}
+        showVideo={showVideo}
+        setShowVideo={setShowVideo}
         isSynced={isSynced}
         setIsSynced={setIsSynced}
       />

@@ -116,6 +116,10 @@ type GraftTwigResult {
   twig: Twig!
 }
 
+type JoinRoomResult {
+  token: String!
+}
+
 type Lead {
   createDate: DateTime!
   deleteDate: DateTime
@@ -169,6 +173,7 @@ type Mutation {
   graftTwig(parentTwigId: String!, sessionId: String!, twigId: String!, x: Int!, y: Int!): GraftTwigResult!
   initUser(color: String!, name: String!, palette: String!): UserWithTokens!
   inviteRole(arrowId: String!, sessionId: String!, userName: String!): Role!
+  joinRoom(roomName: String!): JoinRoomResult
   linkArrows(sessionId: String!, sourceId: String!, targetId: String!): LinkArrowsResult!
   linkTwigs(abstractId: String!, sessionId: String!, sourceId: String!, targetId: String!): LinkTwigsResult!
   loginGoogleUser(token: String!): UserWithTokens!
