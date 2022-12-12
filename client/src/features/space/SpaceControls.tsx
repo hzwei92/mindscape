@@ -31,7 +31,10 @@ export default function SpaceControls(props: SpaceControlsProps) {
   }
 
   const handleSyncClick = () => {
-    props.setIsSynced(true);
+    props.setIsSynced(false);
+    setTimeout(() => {
+      props.setIsSynced(true);
+    }, 100);
   };
 
   const handleMouseMove = (e: React.MouseEvent) => {
@@ -69,7 +72,7 @@ export default function SpaceControls(props: SpaceControlsProps) {
               <IonFabButton title='Members' size='small'  color={props.showRoles ? 'primary' : 'secondary'} onClick={handleRolesClick}>
                 <IonIcon icon={peopleOutline} size='small'/>
               </IonFabButton> 
-              <IonFabButton title='Sync' size='small' color={isPlatform('mobileweb') || !props.isSynced ? 'primary' : 'secondary'} onClick={handleSyncClick}>
+              <IonFabButton title='Sync' size='small' color={!props.isSynced ? 'primary' : 'secondary'} onClick={handleSyncClick}>
                 <IonIcon icon={sync} size='small' />
               </IonFabButton>  
             </IonFab>

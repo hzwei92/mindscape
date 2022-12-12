@@ -77,6 +77,7 @@ export default function useInitSpace(abstractId: string, isSynced: boolean, setI
   });
 
   useEffect(() => {
+    console.log(isSynced);
     if (!abstractId) return;
 
     if (abstractId !== syncAbstractId || isSynced) {
