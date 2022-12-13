@@ -15,6 +15,7 @@ import { RoleType } from '../role/role';
 import useRequestRole from '../role/useRequestRole';
 import usePromoteEntry from './usePromotEntry';
 import { MenuMode } from '../menu/menu';
+import { selectSearchSlice } from '../search/searchSlice';
 
 interface EntryControlsProps {
   entry: Entry;
@@ -38,6 +39,8 @@ export default function EntryControls(props: EntryControlsProps) {
     setIsCreatingGraph,
     setMenuMode,
   } = useContext(AppContext);
+
+  const slice = useAppSelector(selectSearchSlice)
 
   const arrowUser = useAppSelector(state => selectUserById(state, props.arrow.userId));
   const role = useAppSelector(state => selectRoleByUserIdAndArrowId(state, user?.id, props.arrow.id));
@@ -220,7 +223,7 @@ export default function EntryControls(props: EntryControlsProps) {
           paddingBottom: 10,
         }}>
           <IonButtons>
-            <IonButton disabled={props.depth === 0} onClick={handlePromoteClick}>
+            <IonButton disabled={props.depth === 0 && slice.entryIds.length === 1} onClick={handlePromoteClick}>
               MOVE TO TOP
             </IonButton>
           </IonButtons>
