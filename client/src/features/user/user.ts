@@ -31,6 +31,8 @@ export type User = {
   activeDate: string;
   checkAlertsDate: string;
   loadFeedDate: string;
+  loadInsDate: string;
+  loadOutsDate: string;
   viewInfoDate: string | null;
   togglePaletteDate: string | null;
   createGraphDate: string | null;

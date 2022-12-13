@@ -45,7 +45,7 @@ const useAppRouter = () => {
 
     // setSyncPath(path);
     
-    // console.log(path, focusTab?.arrowId);
+    console.log(path, focusTab?.arrowId);
 
     if (path[1] !== 'g') {
       if (focusTab?.arrow?.routeName) {
@@ -87,7 +87,7 @@ const useAppRouter = () => {
     }
 
     if (isNaN(parseInt(path[3]))) {
-      router.push(`/g/${path[2]}/0`, undefined, 'replace');
+      router.push(`/g/${path[2]}/0`);
       return;
     }
 

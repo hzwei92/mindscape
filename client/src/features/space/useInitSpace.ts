@@ -1,14 +1,13 @@
 import { gql, useMutation } from '@apollo/client';
 import { FULL_TWIG_FIELDS } from '../twig/twigFragments';
-import { Dispatch, SetStateAction, useContext, useEffect, useState } from 'react';
-import { mergeIdToPos, mergeTwigs, selectIdToPos, selectSelectedTwigId, setSelectedTwigId } from './spaceSlice';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { mergeIdToPos, mergeTwigs, selectSelectedTwigId } from './spaceSlice';
 import { useAppDispatch, useAppSelector } from '../../app/store';
 import { useIonToast } from '@ionic/react';
 import { IdToType } from '../../types';
 import { PosType } from './space';
 import { Twig } from '../twig/twig';
 import { setAuthIsInit, setAuthIsValid } from '../auth/authSlice';
-import { AppContext } from '../../app/App';
 import { selectArrowById } from '../arrow/arrowSlice';
 
 const GET_DETAILS = gql`
@@ -26,8 +25,6 @@ export default function useInitSpace(abstractId: string, isSynced: boolean, setI
   const [presentToast] = useIonToast();
 
   const selectedTwigId = useAppSelector(selectSelectedTwigId(abstractId));
-
-  const abstract = useAppSelector(state => selectArrowById(state, abstractId));
 
   const [syncAbstractId, setSyncAbstractId] = useState(abstractId);
 
@@ -72,6 +69,7 @@ export default function useInitSpace(abstractId: string, isSynced: boolean, setI
     if (!abstractId) return;
 
     if (abstractId !== syncAbstractId || isSynced) {
+      console.log('yo yo yo')
       getTwigs({
         variables: {
           abstractId,

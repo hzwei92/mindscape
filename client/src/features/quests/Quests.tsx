@@ -17,6 +17,7 @@ import Orientation from "./Orientation";
 import { MenuMode } from "../menu/menu";
 import useSetUserViewInfoDate from "../user/useSetUserViewInfoDate";
 import Feed from "./Feed";
+import InsAndOuts from "./InsAndOuts";
 
 
 export default function Quests() {
@@ -55,6 +56,7 @@ export default function Quests() {
   const questList: JSX.Element[] = [
     <Orientation />,
     <LetThereBeLight />,
+    <InsAndOuts />,
     <TabulaRasa />,
     <TapIn />,
     <TabulaRasa2 />,
@@ -75,35 +77,38 @@ export default function Quests() {
     else if (!user?.togglePaletteDate) {
       setIndex(1);
     }
-    else if (!user.createGraphDate) {
+    else if (!user?.loadOutsDate) {
       setIndex(2);
     }
-    else if (!user.saveArrowDate){
+    else if (!user.createGraphDate) {
       setIndex(3);
     }
-    else if (!user.firstReplyDate) {
+    else if (!user.saveArrowDate){
       setIndex(4);
     }
-    else if (!user.openPostDate) {
+    else if (!user.firstReplyDate) {
       setIndex(5);
     }
-    else if (!user.moveTwigDate) {
+    else if (!user.openPostDate) {
       setIndex(6);
     }
-    else if (!user.openLinkDate){
+    else if (!user.moveTwigDate) {
       setIndex(7);
     }
-    else if (!user.graftTwigDate) {
+    else if (!user.openLinkDate){
       setIndex(8);
     }
-    else if (!user.openArrowDate) {
+    else if (!user.graftTwigDate) {
       setIndex(9);
     }
-    else if (!user.loadFeedDate) {
+    else if (!user.openArrowDate) {
       setIndex(10);
     }
-    else {
+    else if (!user.loadFeedDate) {
       setIndex(11);
+    }
+    else {
+      setIndex(12);
     }
   }
 
@@ -114,6 +119,7 @@ export default function Quests() {
     user?.id, 
     user?.viewInfoDate,
     user?.togglePaletteDate,
+    user?.loadOutsDate,
     user?.createGraphDate,
     user?.saveArrowDate,
     user?.firstReplyDate, 
@@ -124,7 +130,7 @@ export default function Quests() {
     user?.openArrowDate,
     user?.checkAlertsDate,
     user?.loadFeedDate,
-  ])
+  ]);
 
   useEffect(() => {
     if (isOpen) {

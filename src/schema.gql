@@ -105,6 +105,11 @@ type GetCurrentUserAlertsResult {
   user: User!
 }
 
+type GetLinksResult {
+  arrows: [Arrow!]!
+  user: User!
+}
+
 type GetUserLeadsResult {
   followers: [Lead!]!
   leaders: [Lead!]!
@@ -163,8 +168,8 @@ type Mutation {
   getCurrentUser: User!
   getCurrentUserAlerts: GetCurrentUserAlertsResult!
   getCurrentUserLeads: [Lead!]!
-  getIns(arrowId: String!, offset: Int!): [Arrow!]!
-  getOuts(arrowId: String!, offset: Int!): [Arrow!]!
+  getIns(arrowId: String!, offset: Int!): GetLinksResult!
+  getOuts(arrowId: String!, offset: Int!): GetLinksResult!
   getRolesByArrowId(arrowId: String!): [Role!]!
   getTwigs(abstractId: String!): [Twig!]!
   getUser(userId: String!): User!
@@ -385,6 +390,8 @@ type User {
   leaders: [Lead!]!
   linkN: Int!
   loadFeedDate: DateTime
+  loadInsDate: DateTime
+  loadOutsDate: DateTime
   lowercaseName: String!
   mapLat: Float
   mapLng: Float

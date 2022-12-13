@@ -18,6 +18,7 @@ import { TransfersService } from 'src/transfers/transfers.service';
 import { CurrentUser, GqlAuthGuard } from 'src/auth/gql-auth.guard';
 import { User as UserEntity } from 'src/users/user.entity';
 import { SaveArrowResult } from './dto/save-arrow-result.dto';
+import { GetLinksResult } from './dto/get-links-result.dto';
 
 @Resolver(() => Arrow)
 export class ArrowsResolver {
@@ -315,23 +316,35 @@ export class ArrowsResolver {
   }
 
   @UseGuards(GqlAuthGuard)
-  @Mutation(() => [Arrow], {name: 'getIns'})
+  @Mutation(() => GetLinksResult, {name: 'getIns'})
   async getIns(
     @CurrentUser() user: UserEntity,
     @Args('arrowId') arrowId: string,
     @Args('offset', {type: () => Int}) offset: number,
   ) {
-    return this.arrowsService.getArrowsByTargetId(arrowId, offset)
+    user = await this.usersService.setLoadInsDate(user);
+    const arrows = await this.arrowsService.getArrowsByTargetId(arrowId, offset)
+
+    return {
+      user, 
+      arrows,
+    }
   }
 
   @UseGuards(GqlAuthGuard)
-  @Mutation(() => [Arrow], {name: 'getOuts'})
+  @Mutation(() => GetLinksResult, {name: 'getOuts'})
   async getOuts(
     @CurrentUser() user: UserEntity,
     @Args('arrowId') arrowId: string,
     @Args('offset', {type: () => Int}) offset: number,
   ) {
-    return this.arrowsService.getArrowsBySourceId(arrowId, offset)
+    user = await this.usersService.setLoadOutsDate(user);
+    const arrows = await this.arrowsService.getArrowsBySourceId(arrowId, offset);
+
+    return {
+      user, 
+      arrows,
+    }
   }
 
   @Subscription(() => Arrow, {name: 'saveArrow',

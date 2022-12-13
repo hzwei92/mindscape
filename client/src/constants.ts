@@ -66,7 +66,7 @@ export const TAB_HEIGHT = 42;
 
 export const QUEST_WIDTH = 280;
 
-export const SCROLL_SENSITIVITY = 0.08;
+export const SCROLL_SENSITIVITY = 0.1;
 
 export const ItemTypes = {
   TAB: 'tab',

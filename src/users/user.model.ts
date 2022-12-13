@@ -70,6 +70,12 @@ export class User {
 
   @Field({ nullable: true })
   loadFeedDate: Date;
+
+  @Field({ nullable: true })
+  loadInsDate: Date;
+
+  @Field({ nullable: true })
+  loadOutsDate: Date;
   
   @Field({ nullable: true })
   viewInfoDate: Date;

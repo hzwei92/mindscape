@@ -10,20 +10,27 @@ import { VOTE_FIELDS } from '../vote/voteFragments';
 import { Arrow } from '../arrow/arrow';
 import { FULL_ARROW_FIELDS } from '../arrow/arrowFragments';
 import { mergeArrows } from '../arrow/arrowSlice';
+import { mergeUsers } from '../user/userSlice';
 
 const GET_OUTS = gql`
   mutation GetOuts($arrowId: String!, $offset: Int!) {
     getOuts(arrowId: $arrowId, offset: $offset) {
-      ...FullArrowFields
-      source {
+      user {
         id
-        outCount
+        loadOutsDate
       }
-      target {
+      arrows {
         ...FullArrowFields
-      }
-      votes {
-        ...VoteFields
+        source {
+          id
+          outCount
+        }
+        target {
+          ...FullArrowFields
+        }
+        votes {
+          ...VoteFields
+        }
       }
     }
   }
@@ -56,7 +63,7 @@ export default function useGetOuts(entryId: string, arrowId: string) {
 
       const idToEntry1: IdToType<Entry> = {};
 
-      data.getOuts.forEach((link: Arrow) => {
+      data.getOuts.arrows.forEach((link: Arrow) => {
         if (!link.target) return;
 
         arrows.push(link);
@@ -123,6 +130,7 @@ export default function useGetOuts(entryId: string, arrowId: string) {
         }
       })
 
+      dispatch(mergeUsers([data.getOuts.user]));
       dispatch(mergeArrows(arrows));
       dispatch(mergeEntries(idToEntry1));
     },

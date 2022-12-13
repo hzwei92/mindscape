@@ -1,6 +1,6 @@
 import { gql, useMutation } from "@apollo/client";
 import { useIonToast } from "@ionic/react";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { v4 } from "uuid";
 import { AppContext } from "../../app/App";
 import { useAppDispatch, useAppSelector } from "../../app/store";
@@ -36,13 +36,17 @@ export default function useGetAlerts() {
 
   const [present] = useIonToast();
 
-  const { setMenuMode } = useContext(AppContext);
+  const { user, setMenuMode } = useContext(AppContext);
 
   const idToArrow = useAppSelector(selectIdToArrow);
   const idToEntry = useAppSelector(selectIdToEntry);
   const slice = useAppSelector(selectSearchSlice);
 
   const [isInit, setIsInit] = useState(false);
+
+  useEffect(() => {
+    setIsInit(false);
+  }, [user?.id])
 
   const [get] = useMutation(GET_ALERTS, {
     onError: err => {
@@ -55,7 +59,6 @@ export default function useGetAlerts() {
       dispatch(mergeUsers([user]));
       dispatch(mergeAlerts(alerts));
 
-      setIsInit(true);
 
       const { 
         entryIds, 
@@ -91,6 +94,9 @@ export default function useGetAlerts() {
 
       if (isInit) {
         setMenuMode(MenuMode.SEARCH);
+      }
+      else {
+        setIsInit(true);
       }
     }
   });
