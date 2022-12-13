@@ -1,12 +1,8 @@
 import { IonCardContent, IonCardHeader, IonIcon } from "@ionic/react";
 import { ellipsisHorizontal } from "ionicons/icons";
-import { useContext } from "react";
-import { AppContext } from "../../app/App";
 import { QUEST_WIDTH } from "../../constants";
 
 export default function Feed() {
-  const { user } = useContext(AppContext);
-
   return (
     <div style={{
       width: QUEST_WIDTH,

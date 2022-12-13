@@ -247,6 +247,16 @@ export class UsersService {
     return this.usersRepository.save(user);
   }
 
+  async setLoadInsDate(user: User) {
+    user.loadInsDate = new Date();
+    return this.usersRepository.save(user);
+  }
+  
+  async setLoadOutsDate(user: User) {
+    user.loadOutsDate = new Date();
+    return this.usersRepository.save(user);
+  }
+
 
   async incrementUserBalance(user: User, amount: number) {
     await this.usersRepository.increment({

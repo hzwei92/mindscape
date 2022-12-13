@@ -102,6 +102,12 @@ export class User {
   loadFeedDate: Date;
 
   @Column({nullable: true})
+  loadInsDate: Date;
+
+  @Column({nullable: true})
+  loadOutsDate: Date;
+
+  @Column({nullable: true})
   viewInfoDate: Date;
   
   @Column({nullable: true})

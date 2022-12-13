@@ -1,12 +1,7 @@
 import { IonCardContent, IonCardHeader } from "@ionic/react";
-import { useContext } from "react";
-import { AppContext } from "../../app/App";
 import { QUEST_WIDTH } from "../../constants";
 
-
-export default function LetThereBeLight() {
-  const { user } = useContext(AppContext);
-
+export default function InsAndOuts() {
   return (
     <div style={{
       width: QUEST_WIDTH,
@@ -15,20 +10,22 @@ export default function LetThereBeLight() {
         fontSize: 40,
         textAlign: 'center',
       }}>
-        And then there was light/dark mode...
+        The INs and OUTs
       </IonCardHeader>
       <IonCardContent style={{
         textAlign: 'center',
         flexDirection: 'column',
         fontSize: 12,
       }}>
-        In the beginning, there was only one color palette.
-        Then, there were two.
+        Every graph is just a slice of the overall data.
         <br/><br/>
-        Toggle <b>day/night mode</b>.
-        <br/>
-        <br/>
-        Hint: Use the button in the bottom left of the app bar.
+        To see what lies underneath the surface, you can 
+        follow links to other posts and graphs.
+        <br/><br/>
+        Click the <b>OUTs</b> button on a post to see the links
+        pointing out from it.
+        <br/><br/>
+        Hint: There is an OUTs button in the bottom of every post.
       </IonCardContent>
     </div>
   )

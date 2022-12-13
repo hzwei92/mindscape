@@ -1,4 +1,4 @@
-import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonIcon } from "@ionic/react";
+import { IonCardContent, IonCardHeader, IonIcon } from "@ionic/react";
 import { add } from "ionicons/icons";
 import { QUEST_WIDTH } from "../../constants";
 

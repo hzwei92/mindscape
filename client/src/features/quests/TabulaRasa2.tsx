@@ -1,4 +1,4 @@
-import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader } from "@ionic/react";
+import { IonCardContent, IonCardHeader } from "@ionic/react";
 import { QUEST_WIDTH } from "../../constants";
 
 export default function TabulaRasa2() {

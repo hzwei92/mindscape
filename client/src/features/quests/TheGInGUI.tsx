@@ -1,11 +1,7 @@
-import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonModal } from "@ionic/react";
-import { Dispatch, SetStateAction, useContext } from "react";
-import { AppContext } from "../../app/App";
+import {  IonCardContent, IonCardHeader } from "@ionic/react";
 import { QUEST_WIDTH } from "../../constants";
 
 export default function TheGInGUI() {
-  const { user } = useContext(AppContext);
-
   return (
     <div style={{
       width: QUEST_WIDTH,

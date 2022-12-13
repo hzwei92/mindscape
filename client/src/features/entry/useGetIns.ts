@@ -10,20 +10,27 @@ import { VOTE_FIELDS } from '../vote/voteFragments';
 import { Arrow } from '../arrow/arrow';
 import { FULL_ARROW_FIELDS } from '../arrow/arrowFragments';
 import { mergeArrows } from '../arrow/arrowSlice';
+import { mergeUsers } from '../user/userSlice';
 
 const GET_INS = gql`
   mutation GetIns($arrowId: String!, $offset: Int!) {
     getIns(arrowId: $arrowId, offset: $offset) {
-      ...FullArrowFields
-      source {
-        ...FullArrowFields
-      }
-      target {
+      user {
         id
-        inCount
+        loadInsDate
       }
-      votes {
-        ...VoteFields
+      arrows {
+        ...FullArrowFields
+        source {
+          ...FullArrowFields
+        }
+        target {
+          id
+          inCount
+        }
+        votes {
+          ...VoteFields
+        }
       }
     }
   }
@@ -56,7 +63,7 @@ export default function useGetIns(entryId: string, arrowId: string) {
 
       const idToEntry1: IdToType<Entry> = {};
 
-      data.getIns.forEach((link: Arrow) => {
+      data.getIns.arrows.forEach((link: Arrow) => {
         if (!link.source) return;
 
         arrows.push(link);
@@ -123,6 +130,7 @@ export default function useGetIns(entryId: string, arrowId: string) {
         }
       });
 
+      dispatch(mergeUsers([data.getIns.user]));
       dispatch(mergeArrows(arrows));
       dispatch(mergeEntries(idToEntry1));
     },
