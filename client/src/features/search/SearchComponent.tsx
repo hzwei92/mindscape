@@ -129,8 +129,9 @@ function SearchComponent() {
         >
           <IonInfiniteScroll
             position='top'
+            threshold='0px'
             onIonInfinite={(e: InfiniteScrollCustomEvent) => {
-              console.log('infinite scroll')
+              console.log('infinite scroll', isInit)
               if (!isInit) {
                 e.target.complete();
                 setIsInit(true);
