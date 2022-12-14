@@ -144,7 +144,7 @@ const SpaceComponent = (props: SpaceComponentProps) => {
 
   useEffect(() => {
     if (selectedTwigId) {
-      spaceRef.current?.zoomToElement('twig-'+ selectedTwigId, undefined, 200);
+      spaceRef.current?.zoomToElement('twig-'+ selectedTwigId, 1.2, 200);
     }
   }, [selectedTwigId]);
 
