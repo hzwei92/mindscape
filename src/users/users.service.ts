@@ -89,16 +89,16 @@ export class UsersService {
     if (!startArrow) {
       startArrow = await this.arrowsService.createStartArrow(user1);
     }
-
     const tab = await this.tabsService.appendTab(user1, startArrow, false, !startArrow1 && !startArrow2);
-
-    if (startArrow2) {
-      const tab2 = await this.tabsService.appendTab(user1, startArrow2, false, !startArrow1);
-    }
     
     if (startArrow1) {
-      const tab1 = await this.tabsService.appendTab(user1, startArrow1, false, true);
+      const tab1 = await this.tabsService.appendTab(user1, startArrow1, false, !startArrow2);
     }
+
+    if (startArrow2) {
+      const tab2 = await this.tabsService.appendTab(user1, startArrow2, false, true);
+    }
+    
 
 
     let reserveUser = await this.getReserveUser();
@@ -251,7 +251,7 @@ export class UsersService {
     user.loadInsDate = new Date();
     return this.usersRepository.save(user);
   }
-  
+
   async setLoadOutsDate(user: User) {
     user.loadOutsDate = new Date();
     return this.usersRepository.save(user);
