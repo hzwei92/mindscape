@@ -235,7 +235,7 @@ function LinkTwig(props: LinkTwigProps) {
         justifyContent: 'center',
         cursor: 'pointer',
         pointerEvents: 'auto',
-        opacity: .8,
+        opacity: .6,
         margin: 0,
       }}>
         <div style={{
