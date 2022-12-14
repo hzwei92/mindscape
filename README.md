@@ -55,6 +55,10 @@ PGADMIN_DEFAULT_PASSWORD=admin
 
 (3) change WORKDIR in the Dockerfile to your working directory
 
-(4) run `yarn install`
+(4) run `yarn install` in the root directory
 
-(5) run `docker-compose up`
+(5) run `docker-compose up` in the root directory
+
+(6) cd into /client and run `yarn install`
+
+(7) run `ionic serve` in /client
