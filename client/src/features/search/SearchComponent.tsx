@@ -7,7 +7,7 @@ import { ALGOLIA_APP_ID, ALGOLIA_APP_KEY, ALGOLIA_INDEX_NAME, OFF_WHITE } from '
 import { useAppDispatch, useAppSelector } from '../../app/store';
 import { searchGoBack, searchGoForward, searchRefresh, selectSearchIndex, selectSearchShouldRefresh, selectSearchSlice, selectSearchStack } from './searchSlice';
 import EntryTree from '../entry/EntryTree';
-import { InfiniteScrollCustomEvent, IonButton, IonButtons, IonCard, IonCardHeader, IonContent, IonIcon, IonInfiniteScroll, IonInfiniteScrollContent, ScrollDetail } from '@ionic/react';
+import { InfiniteScrollCustomEvent, IonButton, IonButtons, IonCard, IonCardHeader, IonContent, IonIcon, IonInfiniteScroll, IonInfiniteScrollContent, isPlatform, ScrollDetail } from '@ionic/react';
 import { chevronBackOutline, chevronForwardOutline, close, ellipsisHorizontal, reload } from 'ionicons/icons';
 import { AppContext } from '../../app/App';
 import { MenuMode } from '../menu/menu';
@@ -127,27 +127,45 @@ function SearchComponent() {
             width: '100%',
           }}
         >
-          <IonInfiniteScroll
-            position='top'
-            threshold='0px'
-            onIonInfinite={(e: InfiniteScrollCustomEvent) => {
-              console.log('infinite scroll', isInit)
-              if (!isInit) {
-                e.target.complete();
-                setIsInit(true);
-                return;
-              }
-              getAlerts();
-              setTimeout(() => {
-                e.target.complete();
-              }, 1000)
-            }}
-            style={{
-              height: 50,
-            }}
-          >
-            <IonInfiniteScrollContent loadingSpinner={'dots'} />
-          </IonInfiniteScroll>
+          {
+            false
+              ? (
+                <IonInfiniteScroll
+                  position='top'
+                  threshold='0px'
+                  onIonInfinite={(e: InfiniteScrollCustomEvent) => {
+                    console.log('infinite scroll', isInit)
+                    if (!isInit) {
+                      e.target.complete();
+                      setIsInit(true);
+                      return;
+                    }
+                    getAlerts();
+                    setTimeout(() => {
+                      e.target.complete();
+                    }, 1000)
+                  }}
+                  style={{
+                    height: 50,
+                  }}
+                >
+                  <IonInfiniteScrollContent loadingSpinner={'dots'} />
+                </IonInfiniteScroll>
+              )
+              : (
+                <IonButtons style={{
+                  display: isLoading
+                    ? 'none'
+                    :  'flex',
+                  justifyContent: 'center',
+                  height: 50,
+                }}>
+                  <IonButton onClick={() =>{getAlerts(); contentRef.current?.scrollToPoint(0, 50, 300);}}>
+                    <IonIcon icon={ellipsisHorizontal} size='small'/>
+                  </IonButton>
+                </IonButtons>
+              )
+          }
           { 
             slice.entryIds.map((entryId) => {
               return (
