@@ -33,6 +33,11 @@ TWILIO_API_KEY_SID='your-twilio-api-key-sid'
 
 TWILIO_API_KEY_SECRET='your-twilio-api-key-secret'
 
+ALGOLIA_APP_ID='your-algolia-app-id'
+ALGOLIA_API_KEY='your-algolia-api-key'
+ALGOLIA_INDEX_NAME='your-algolia-index-name
+
+
 
 (2) add file named docker.env with contents to root directory
 
