@@ -1,4 +1,3 @@
-import { useReactiveVar } from '@apollo/client';
 import { IonCard, IonIcon, useIonToast } from '@ionic/react';
 import { navigateCircleOutline } from 'ionicons/icons';
 import React, { createContext, Dispatch, memo, MouseEvent, SetStateAction, TouchList, useContext, useEffect, useMemo, useRef, useState } from 'react';
