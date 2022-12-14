@@ -38,8 +38,8 @@ export const START_ARROW_TITLE = 'Quickstart'
 export const START_ARROW_ROUTNAME = 'quickstart'
 
 
-export const START_ARROW_1_ID = '' //'319a26c6-8b38-46a4-86d2-48f215fc44ba';
-export const START_ARROW_2_ID = '' //'4ca52a91-81e6-4232-ac72-51fffa166d35';
+export const START_ARROW_1_ID = '4b3b2f71-b280-4f84-a559-a6b21f4747cb';
+export const START_ARROW_2_ID = '34ec62f8-14dd-478b-9d1f-6fccce36ff58';
 
 export const uuidRegexExp = /^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i;
 
