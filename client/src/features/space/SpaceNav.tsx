@@ -102,7 +102,6 @@ export default function SpaceNav() {
       if (selectedTwigId !== twig.id) {
         selectTwig(abstract, twig, canEdit);
       }
-      centerTwig(twig);
     }
   }
 
