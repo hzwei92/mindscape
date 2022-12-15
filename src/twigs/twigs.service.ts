@@ -8,7 +8,7 @@ import { Twig } from './twig.entity';
 import { RoleType } from '../enums';
 import { Arrow } from 'src/arrows/arrow.entity';
 import { User } from 'src/users/user.entity';
-import { checkPermit, IdToType } from 'src/utils';
+import { checkPermit } from 'src/utils';
 import { SheafsService } from 'src/sheafs/sheafs.service';
 import { v4 } from 'uuid';
 import { UsersService } from 'src/users/users.service';
@@ -509,30 +509,33 @@ export class TwigsService {
     else {
       throw new BadRequestException('Insufficient privileges');
     }
+    
+    let descs = [];
+    let baseZ = 0;
+    if (twig.id === abstract.rootTwigId) {
+      descs = await this.getTwigsByAbstractId(abstract.id);
+    }
+    else {
+      descs = await this.twigsRepository.manager.getTreeRepository(Twig).findDescendants(twig);
+      baseZ = abstract.twigZ;
+    }
 
-    const descendants = await this.twigsRepository.manager.getTreeRepository(Twig).findDescendants(twig);
-
-    const baseZ = twig.detailId === abstract.id
-      ? 0
-      : abstract.twigZ;
-
-    const twigs0 = descendants.map((twig, i) => {
-      const twig0 = new Twig();
-      twig0.id = twig.id;
-      if (twig.id === twigId) {
-        twig0.z = baseZ + descendants.length + 1;    
-      }
-      else {
-        twig0.z = baseZ + i + 1;
-      }
-      return twig0;
-    });
-
+    const twigs0 = descs
+      .sort((a, b) => b.z - a.z)
+      .map((t, i) => {
+        if (t.id === twigId) {
+          t.z = baseZ + descs.length + 1;
+        }
+        else {
+          t.z = baseZ + i + 1;
+        }
+        return t;
+      });
     const twigs1 = await this.twigsRepository.save(twigs0);
 
-    const twigZ = baseZ + descendants.length + 1 - abstract.twigZ;
+    const twigZ = baseZ + descs.length + 1;
 
-    await this.arrowsService.incrementTwigZ(abstract.id, twigZ);
+    await this.arrowsService.incrementTwigZ(abstract.id, twigZ - abstract.twigZ);
 
     const abstract1 = await this.arrowsService.getArrowById(abstract.id);
     return {
