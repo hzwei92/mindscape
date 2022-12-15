@@ -3,7 +3,6 @@ import { navigateCircleOutline } from 'ionicons/icons';
 import React, { createContext, Dispatch, memo, MouseEvent, SetStateAction, TouchList, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { AppContext } from '../../app/App';
 import { useAppDispatch, useAppSelector } from '../../app/store';
-import { adjustTwigIdToPosVar } from '../../cache';
 import { APP_BAR_X, CLOSED_LINK_TWIG_DIAMETER, MAX_Z_INDEX, OFF_WHITE, SCROLL_SENSITIVITY, TAB_HEIGHT, TWIG_WIDTH, VIEW_RADIUS } from '../../constants';
 import { IdToType } from '../../types';
 import { checkPermit } from '../../utils';
@@ -563,10 +562,6 @@ const SpaceComponent = (props: SpaceComponentProps) => {
       );
     }
   });
-
-  if (Object.keys(idToPos1).length) {
-    adjustTwigIdToPosVar(idToPos1);
-  }
 
   return (
     <SpaceContext.Provider value={spaceContextValue}>

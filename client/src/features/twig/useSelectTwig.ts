@@ -48,6 +48,10 @@ export default function useSelectTwig() {
     onCompleted: data => {
       console.log(data);
 
+      dispatch(mergeTwigs({
+        abstractId: data.selectTwig.abstract.id,
+        twigs: data.selectTwig.twigs
+      }));
       dispatch(mergeArrows([data.selectTwig.abstract]))
     },
   });
