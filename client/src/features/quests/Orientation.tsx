@@ -11,18 +11,20 @@ export default function Orientation() {
         fontSize: 40,
         textAlign: 'center',
       }}>
-        Orientation
+        1. Orientation
       </IonCardHeader>
       <IonCardContent style={{
         textAlign: 'center',
         flexDirection: 'column',
         fontSize: 12,
       }}>
-        Here are some quick tips for using the
+        Here is an interactive tutorial for using the
         Mindscape platform. 
         <br/>
         <br/>
-        You can pan and zoom the view, but don't zoom out too far unless your device has enough memory.
+        Pan the view by dragging the screen.
+        Zoom by pinch or scroll.
+        Don't zoom out too far unless your device has the memory for it.
         <br/>
         <br/>
         Use the buttons at the bottom of the space to 
@@ -32,7 +34,7 @@ export default function Orientation() {
         <b>Click</b> the <IonIcon icon={informationCircleOutline } size='small'/> icon in the app bar on the left to 
         quickly skim the prologue to our story.
         <br/><br/>
-        Hint: Completing the <b>bolded</b> instructions will advance the slide.
+        Hint: Completing the <b>bolded</b> instructions will move you to the next step of the tutorial.
       </IonCardContent>
     </div>
   )

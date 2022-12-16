@@ -11,7 +11,7 @@ export default function Gratitude() {
         fontSize: 40,
         textAlign: 'center',
       }}>
-        Gratitude
+        7. Gratitude
       </IonCardHeader>
       <IonCardContent style={{
         textAlign: 'center',

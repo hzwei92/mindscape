@@ -11,7 +11,7 @@ export default function TabulaRasa() {
         fontSize: 40,
         textAlign: 'center',
       }}>
-        Tabula rasa
+        4. Tabula rasa
       </IonCardHeader>
       <IonCardContent style={{
         textAlign: 'center',

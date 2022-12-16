@@ -11,7 +11,7 @@ export default function Feed() {
         fontSize: 40,
         textAlign: 'center',
       }}>
-        What's poppin?
+        12. What's poppin?
       </IonCardHeader>
       <IonCardContent style={{
         textAlign: 'center',
