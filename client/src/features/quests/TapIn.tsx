@@ -10,7 +10,7 @@ export default function TapIn() {
         fontSize: 40,
         textAlign: 'center',
       }}>
-        Tap in
+        5. Tap in
       </IonCardHeader>
       <IonCardContent style={{
         textAlign: 'center',

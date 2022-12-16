@@ -10,14 +10,14 @@ export default function InsAndOuts() {
         fontSize: 40,
         textAlign: 'center',
       }}>
-        The INs and OUTs
+        3. The INs and OUTs
       </IonCardHeader>
       <IonCardContent style={{
         textAlign: 'center',
         flexDirection: 'column',
         fontSize: 12,
       }}>
-        Every graph is just a slice of the overall data.
+        Every graph is just a slice of the whole network of data.
         <br/><br/>
         To see what lies underneath the surface, you can 
         follow links to other posts and graphs.

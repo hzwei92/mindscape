@@ -10,7 +10,7 @@ export default function Arrows() {
         fontSize: 40,
         textAlign: 'center',
       }}>
-        Everything is made of arrows
+        9. Everything is made of arrows
       </IonCardHeader>
       <IonCardContent style={{
         textAlign: 'center',

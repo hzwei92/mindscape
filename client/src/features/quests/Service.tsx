@@ -10,7 +10,7 @@ export default function Service() {
         fontSize: 40,
         textAlign: 'center',
       }}>
-        Valar dohaeris
+        8. Valar dohaeris
       </IonCardHeader>
       <IonCardContent style={{
         textAlign: 'center',

@@ -15,7 +15,7 @@ export default function LetThereBeLight() {
         fontSize: 40,
         textAlign: 'center',
       }}>
-        And then there was light/dark mode...
+        2. And then there was light/dark mode...
       </IonCardHeader>
       <IonCardContent style={{
         textAlign: 'center',
