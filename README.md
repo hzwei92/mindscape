@@ -1,3 +1,5 @@
+# mindscape.pub
+
 https://mindscape.pub is an open source, nested graph forum.
 
 The owner of a post can "open" the post, so that it contains its own subgraph of posts. 
@@ -11,7 +13,7 @@ Posts that are removed from a particular subgraph remain in the overall graph.
 
 Posts can be linked to one another, as well as pasted into subgraphs.
 
-#The Arrow Protocol
+# The Arrow Protocol
 
 Mindscape is a client-server architecture that implements the Arrow Protocol.
 
