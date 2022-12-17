@@ -7,7 +7,7 @@ The owner of a post can "open" the post, so that it contains its own subgraph of
 The owner is then the moderator of that subgraph, able to modify its overall layout
 (including removal of posts).
 
-When a user posts into someone else's subgraph, they can modify the layout (including removal) only for their own posts.
+When a user posts into someone else's subgraph, they can modify the layout (including post removal) only for their own posts.
 
 Posts that are removed from a particular subgraph remain in the overall graph.
 
@@ -41,3 +41,10 @@ They enable a single Arrow to take part in multiple subgraphs.
 They define the tree structure of nesting of subgraphs.
 
 They also define the tree layout of posts within a subgraph.
+
+# Roadmap
+
+1. Mobile app. So you can receive notifications and make calls on you mobile device.
+2. Arweave. So that each arrow/subgraph is saved into the permaweb.
+
+
