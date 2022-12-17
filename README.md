@@ -27,6 +27,17 @@ source_URI and target_URI can be set to NULL or to id_URI to implement a post.
 
 otherwise, source_URI !== target_URI, and the Arrow functions as a link.
 
+Using Arrows as links has a few advantages over embedded URIs
+
+1. Modularity. We can update the linkage between posts without modifying the posts.
+2. Bidrectional travel. If we index the Arrows by source_URI and target_URI, we can query for links in either direction.
+3. Intra-arrow metadata. Since each arrow is its own row/object, it can be extended with additional data, e.g. authorID, upVotes, etc.
+4. Extra-arrow metadata. Since each arrow is has its own URI, we can attach Arrows to it to extend the metadata arbitrarily.
+
 Twigs are an additional data type used to define the layout of a subgraph.
 
 They enable a single Arrow to take part in multiple subgraphs.
+
+They define the tree structure of nesting of subgraphs.
+
+They also define the tree layout of posts within a subgraph.
