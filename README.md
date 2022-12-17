@@ -9,7 +9,7 @@ The owner is then the moderator of that subgraph, able to modify its overall lay
 
 When a user posts into someone else's subgraph, they can modify the layout (including post removal) only for their own posts.
 
-Posts that are removed from a particular subgraph remain in the overall graph.
+Posts that are removed from a local subgraph remain in the global graph.
 
 Posts can be linked to one another, as well as pasted into subgraphs.
 
@@ -17,7 +17,15 @@ Posts can be linked to one another, as well as pasted into subgraphs.
 
 Mindscape is a client-server architecture that implements the Arrow Protocol.
 
-The Arrow Protocol seeks to enable the composition of data into modular trees, called subgraphs, that are local views of a global graph.
+The Arrow Protocol seeks to enable the composition of posts (a post, i.e. any piece of data that has its own URI) into modular trees, called subgraphs, that are local views of a global graph.
+
+For instance, suppose two people each write an article in the form of a subgraph. 
+The two subgraphs could quote the same post.
+The intersection of these subgraphs on this post would connect readers of one subgraph to the other, and vice versa.
+
+In online writing, modularity is powerful because each module has its own linkage, i.e. context, associated with it.
+
+Each subgraph is a curated view. Posts are resusable across subgraphs. Use subgraphs to organize subgraphs.
 
 The key innovation of the Arrow Protocol is the usage of Arrows instead of embedded URIs as the main way to link information together. 
 
