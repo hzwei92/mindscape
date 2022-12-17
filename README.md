@@ -1,64 +1,30 @@
+https://mindscape.pub is an open source, nested graph forum.
 
+The owner of a post can "open" the post, so that it contains its own subgraph of posts. 
 
+The owner is then the moderator of that subgraph, able to modify its overall layout
+(including removal of posts).
 
-(1) add file named .env with contents to the root directory:
+When a user posts into someone else's subgraph, they can modify the layout (including removal) only for their own posts.
 
-NODE_ENV=development
+Posts that are removed from a particular subgraph remain in the overall graph.
 
-PORT=9000
+Posts can be linked to one another, as well as pasted into subgraphs.
 
-DATABASE_URL=postgres://admin:admin@mindscape_postgres_1:5432/mindscape
+#The Arrow Protocol
 
-REDIS_URL=redis://mindscape_redis_1:6379
+Mindscape is a client-server architecture that implements the Arrow Protocol.
 
-JWT_ACCESS_TOKEN_SECRET=secret
+The Arrow Protocol seeks to enable the composition of data into modular trees, called subgraphs, that are local views of a global graph.
 
-JWT_ACCESS_TOKEN_EXPIRATION_TIME=600
+The key innovation of the Arrow Protocol is the usage of Arrows instead of embedded URIs to link information together. 
 
-JWT_REFRESH_TOKEN_SECRET=secretsecret
+An Arrow is essentially a row or object with the structure (id_URI, source_URI, target_URI).
 
-JWT_REFRESH_TOKEN_EXPIRATION_TIME=604800
+source_URI and target_URI can be set to NULL or to id_URI to implement a post.
 
-MAILGUN_API_KEY='your-mailgun-api-key'
+otherwise, source_URI !== target_URI, and the Arrow functions as a link.
 
-MAILGUN_DOMAIN='your-mailgun-domain'
+Twigs are an additional data type used to define the layout of a subgraph.
 
-GOOGLE_CLIENT_ID='your-google-client-id'
-
-GOOGLE_CLIENT_SECRET='your-google-client-secret'
-
-TWILIO_ACCOUNT_SID='your-twilio-account-sid'
-
-TWILIO_API_KEY_SID='your-twilio-api-key-sid'
-
-TWILIO_API_KEY_SECRET='your-twilio-api-key-secret'
-
-ALGOLIA_APP_ID='your-algolia-app-id'
-
-ALGOLIA_API_KEY='your-algolia-api-key'
-
-ALGOLIA_INDEX_NAME='your-algolia-index-name
-
-
-
-(2) add file named docker.env with contents to root directory
-
-POSTGRES_USER=admin
-
-POSTGRES_PASSWORD=admin
-
-POSTGRES_DB=mindscape
-
-PGADMIN_DEFAULT_EMAIL=admin@admin.com
-
-PGADMIN_DEFAULT_PASSWORD=admin
-
-(3) change WORKDIR in the Dockerfile to your working directory
-
-(4) run `yarn install` in the root directory
-
-(5) run `docker-compose up` in the root directory
-
-(6) cd into /client and run `yarn install`
-
-(7) run `ionic serve` in /client
+They enable a single Arrow to take part in multiple subgraphs.
