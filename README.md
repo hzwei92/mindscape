@@ -19,20 +19,22 @@ Mindscape is a client-server architecture that implements the Arrow Protocol.
 
 The Arrow Protocol seeks to enable the composition of data into modular trees, called subgraphs, that are local views of a global graph.
 
-The key innovation of the Arrow Protocol is the usage of Arrows instead of embedded URIs to link information together. 
+The key innovation of the Arrow Protocol is the usage of Arrows instead of embedded URIs as the main way to link information together. 
 
-An Arrow is essentially a row or object with the structure (id_URI, source_URI, target_URI).
+An Arrow is essentially a row or object with the structure (id_URI, source_URI, target_URI, data).
 
 source_URI and target_URI can be set to NULL or to id_URI to implement a post.
 
 otherwise, source_URI !== target_URI, and the Arrow functions as a link.
 
-Using Arrows as links has a few advantages over embedded URIs
+Using Arrows as links has a few advantages over using embedded URIs, aka hyperlinks, to structure a graph.
 
 1. Modularity. We can update the linkage between posts without modifying the posts.
 2. Bidrectional travel. If we index the Arrows by source_URI and target_URI, we can query for links in either direction.
-3. Intra-arrow metadata. Since each arrow is its own row/object, it can be extended with additional data, e.g. authorID, upVotes, etc.
-4. Extra-arrow metadata. Since each arrow is has its own URI, we can attach Arrows to it to extend the metadata arbitrarily.
+3. Intra-arrow metadata. Since each arrow is its own row/object, the schema can be extended with additional data, e.g. authorID, upVotes, etc.
+4. Extra-arrow metadata. Since each arrow is has its own URI, we can attach Arrows to it to attach arbitrary metadata to it.
+
+Furthermore, Arrows are compatible with the continued usage of hyperlinks.
 
 Twigs are an additional data type used to define the layout of a subgraph.
 
